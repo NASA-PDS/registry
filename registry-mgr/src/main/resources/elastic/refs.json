@@ -1,0 +1,43 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "analysis": {
+      "normalizer": {
+        "keyword_lowercase": {
+          "type": "custom",
+          "filter": ["lowercase"]
+        }
+      }
+    }
+  },
+
+  "mappings": {
+    "dynamic": false,
+    "dynamic_templates": [
+      {
+        "strings": {
+          "match_mapping_type": "string",
+          "mapping": {
+            "type": "keyword"
+          }
+        }
+      }
+    ],
+    "properties": {
+      "reference_type": { "type": "keyword" },
+
+      "collection_lidvid": { "type": "keyword" },
+      "collection_lid": { "type": "keyword" },
+      "collection_vid": { "type": "float" },
+
+      "product_lidvid": { "type": "keyword" },
+      "product_lid": { "type": "keyword" },
+
+      "batch_id": { "type": "integer" },
+      "batch_size": { "type": "integer" },
+
+      "_package_id": { "type": "keyword" }
+    }
+  }
+}
