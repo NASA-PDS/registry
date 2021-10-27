@@ -1,0 +1,59 @@
+{
+  "settings": {
+    "index.mapping.total_fields.limit": "3000",
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "analysis": {
+      "normalizer": {
+        "keyword_lowercase": {
+          "type": "custom",
+          "filter": ["lowercase"]
+        }
+      }
+    }
+  },
+
+  "mappings": {
+    "dynamic": false,
+    "dynamic_templates": [
+      {
+        "strings": {
+          "match_mapping_type": "string",
+          "mapping": {
+            "type": "keyword"
+          }
+        }
+      }
+    ],
+    "properties": {
+      "lid": { "type": "keyword" },
+      "vid": { "type": "float" },
+      "lidvid": { "type": "keyword" },
+
+      "title": {"type": "text", "analyzer": "english"},
+      "description": {"type": "text", "analyzer": "english"},
+
+      "product_class": { "type": "keyword" },
+      "archive_status": { "type": "keyword" }, 
+      "_package_id": { "type": "keyword" },
+
+      "ops:Harvest_Info/ops:node_name": { "type": "keyword" },
+      "ops:Harvest_Info/ops:harvest_date_time": { "type": "date" },
+
+      "ops:Label_File_Info/ops:creation_date_time": { "type": "date" },
+      "ops:Label_File_Info/ops:file_ref": { "type": "keyword" },
+      "ops:Label_File_Info/ops:file_name": { "type": "keyword" },
+      "ops:Label_File_Info/ops:file_size": { "type": "long" },
+      "ops:Label_File_Info/ops:md5_checksum": { "type": "keyword" },
+      "ops:Label_File_Info/ops:blob": { "type": "binary", "index": false },
+      "ops:Label_File_Info/ops:json_blob": { "type": "binary", "index": false },
+
+      "ops:Data_File_Info/ops:creation_date_time": { "type": "date" },
+      "ops:Data_File_Info/ops:file_ref": { "type": "keyword" },
+      "ops:Data_File_Info/ops:file_name": { "type": "keyword" },
+      "ops:Data_File_Info/ops:file_size": { "type": "long" },
+      "ops:Data_File_Info/ops:md5_checksum": { "type": "keyword" },
+      "ops:Data_File_Info/ops:mime_type": { "type": "keyword" }
+    }
+  }
+}
