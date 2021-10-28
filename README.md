@@ -21,7 +21,13 @@ This repository uses subtree to reference the sub-components repository:
     git subtree add --prefix api-search-query-lexer https://github.com/NASA-PDS/api-search-query-lexer.git main --squash
     git subtree add --prefix registry-api-service https://github.com/NASA-PDS/registry-api-service.git main --squash
 
-## 🏃 Getting Started With This Template
+## 🏃 Getting Started With This Respository
+
+Create a branch on a subtree
+
+    git subtree split --prefix=registry-api-service -b new_branch
+
+
 
 See our wiki page for more info on setting up your new repo. You can remove this section once you have completed the necessary start-up steps.
 
