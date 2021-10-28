@@ -10,7 +10,7 @@ This repository uses subtree to reference the sub-components repository:
     git subtree add --prefix harvest https://github.com/NASA-PDS/harvest.git main --squash
     git subtree add --prefix registry-manager https://github.com/NASA-PDS/pds-registry-mgr-elastic.git main --squash
     git subtree add --prefix pds-api-javalib https://github.com/NASA-PDS/pds-api-javalib.git main --squash
-    git subtree add --prefix pds-api-javalib https://github.com/NASA-PDS/pds-api-javalib.git main --squash
+    git subtree add --prefix registry-api-service https://github.com/NASA-PDS/registry-api-service.git main --squash
 
 ## 🏃 Getting Started With This Template
 
