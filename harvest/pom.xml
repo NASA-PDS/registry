@@ -27,11 +27,6 @@
 
     <!-- Inherit release profile, reporting, SNAPSHOT repo, etc. from parent 
         repo -->
-    <parent>
-        <groupId>gov.nasa</groupId>
-        <artifactId>pds</artifactId>
-        <version>1.12.0</version>
-    </parent>
 
     <groupId>gov.nasa.pds</groupId>
     <artifactId>harvest</artifactId>
