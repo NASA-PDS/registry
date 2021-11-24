@@ -6,20 +6,13 @@ This repository contains the PDS registry application. It is the aggregation of 
 
 This repository uses subtree to reference the sub-components repository:
 
-    git remote add pds-registry-common https://github.com/NASA-PDS/pds-registry-common.git
-    git remote add harvest https://github.com/NASA-PDS/harvest.git
-    git remote add registry-manager https://github.com/NASA-PDS/pds-registry-mgr-elastic.git
-    git remote add pds-api-javalib https://github.com/NASA-PDS/pds-api-javalib.git
-    git remote add api-search-query-lexer https://github.com/NASA-PDS/api-search-query-lexer.git
-    git remote add registry-api-service https://github.com/NASA-PDS/registry-api-service.git 
-	
+    git subrepo clone https://github.com/NASA-PDS/pds-registry-common.git pds-registry-common
+    git subrepo clone https://github.com/NASA-PDS/harvest.git harvest
+    git subrepo clone https://github.com/NASA-PDS/pds-registry-mgr-elastic.git registry-manager
+    git subrepo clone https://github.com/NASA-PDS/pds-api-javalib.git pds-api-javalib
+    git subrepo clone https://github.com/NASA-PDS/api-search-query-lexer.git api-search-query-lexer
+    git subrepo clone https://github.com/NASA-PDS/registry-api-service.git registry-api-service
 
-    git subtree add --prefix pds-registry-common https://github.com/NASA-PDS/pds-registry-common.git main --squash
-    git subtree add --prefix harvest https://github.com/NASA-PDS/harvest.git main --squash
-    git subtree add --prefix registry-manager https://github.com/NASA-PDS/pds-registry-mgr-elastic.git main --squash
-    git subtree add --prefix pds-api-javalib https://github.com/NASA-PDS/pds-api-javalib.git main --squash
-    git subtree add --prefix api-search-query-lexer https://github.com/NASA-PDS/api-search-query-lexer.git main --squash
-    git subtree add --prefix registry-api-service https://github.com/NASA-PDS/registry-api-service.git main --squash
 
 ## 🏃 Getting Started With This Respository
 
