@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/NASA-PDS/pds-api-javalib.git
+	branch = main
+	commit = e890acfb5a5006415ce9789437316064cf4ae822
+	parent = d694f4b7f14904e6e2039989362012a31225492a
+	method = merge
+	cmdver = 0.4.3
