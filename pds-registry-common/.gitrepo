@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/NASA-PDS/pds-registry-common.git
+	branch = main
+	commit = 557e8fcbf1ef9767b20806f664ba4ab85f5f096c
+	parent = cd0cade1b8aef8cd9ed65374eca05e8e47901700
+	method = merge
+	cmdver = 0.4.3
