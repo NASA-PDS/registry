@@ -2,6 +2,16 @@
 
 This repository contains the PDS registry application. It is the aggregation of the different PDS registry sub-components (harvest, api...) and some starter script.
 
+## Prerequisite
+
+To contribute to this repository you will need git subrepo (https://github.com/ingydotnet/git-subrepo):
+
+    git clone https://github.com/ingydotnet/git-subrepo ~/tools/git-subrepo                                           
+    echo 'source ~/tools/git-subrepo/.rc' >> ~/.bashrc
+    source ~/.bashrc
+
+
+
 ## How this repository was done
 
 This repository uses subtree to reference the sub-components repository:
