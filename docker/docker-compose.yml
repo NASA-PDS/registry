@@ -33,16 +33,26 @@ version: "3.9"
 services:
   # Registry loader component with Harvest and Registry Manager
   registry-loader:
-    profiles: ["tools"]
+    profiles: ["reg-loader"]
     image: ${REG_LOADER_IMAGE}
     environment:
       - ES_URL=${ES_URL}
-      - HARVEST_CFG_FILE=${HARVEST_CFG_FILE}
     volumes:
-      - ${HARVEST_CFG_DIR}:/cfg
+      - ${HARVEST_CFG_FILE}:/cfg/harvest-config.xml
       - ${HARVEST_DATA_DIR}:/data
     networks:
-      - pds-network
+      - pds
+
+    # Registry loader component with Harvest and Registry Manager
+  registry-loader-test:
+    profiles: [ "reg-loader-test" ]
+    image: ${REG_LOADER_IMAGE}
+    environment:
+      - ES_URL=${ES_URL}
+      - RUN_TESTS=true
+      - TEST_DATA_URL=${TEST_DATA_URL}
+    networks:
+      - pds
 
   # Elasticsearch
   elasticsearch:
@@ -54,7 +64,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     networks:
-      - pds-network
+      - pds
 
   # Registry API
   registry-api:
@@ -66,8 +76,8 @@ services:
       - ${REG_API_APP_PROPERTIES_FILE}:/usr/local/registry-api-service/application.properties
       - ${REG_API_WAIT_FOR_ES_SCRIPT}:/usr/local/registry-api-service/wait-for-elasticsearch.sh
     networks:
-      - pds-network
+      - pds
     command: /usr/local/registry-api-service/wait-for-elasticsearch.sh
 
 networks:
-  pds-network:
+  pds:
