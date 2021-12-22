@@ -31,7 +31,8 @@
 version: "3.9"
 
 services:
-  # Registry loader component with Harvest and Registry Manager
+
+  # Executes Registry Loader component, which contains Harvest and Registry Manager
   registry-loader:
     profiles: ["reg-loader"]
     image: ${REG_LOADER_IMAGE}
@@ -43,7 +44,7 @@ services:
     networks:
       - pds
 
-    # Registry loader component with Harvest and Registry Manager
+  # Downloads and harvests test data with Registry loader
   registry-loader-test:
     profiles: [ "reg-loader-test" ]
     image: ${REG_LOADER_IMAGE}
@@ -54,7 +55,7 @@ services:
     networks:
       - pds
 
-  # Elasticsearch
+  # Starts Elasticsearch
   elasticsearch:
     profiles: ["elastic","services"]
     image: ${ES_IMAGE}
@@ -66,7 +67,7 @@ services:
     networks:
       - pds
 
-  # Registry API
+  # Starts Registry API
   registry-api:
     profiles: ["api","services"]
     image: ${REG_API_IMAGE}
@@ -81,3 +82,7 @@ services:
 
 networks:
   pds:
+    driver: bridge
+    labels:
+      org.label-schema.name: Planetary Data System (PDS)
+      org.label-schema.description: Internal bridge network for interprocess communication of services for the PDS

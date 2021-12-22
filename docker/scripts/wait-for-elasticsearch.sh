@@ -1,6 +1,4 @@
-#!/bin/bash
-
-#!/usr/bin/env bash
+#!/bin/sh
 
 # Copyright 2021, California Institute of Technology ("Caltech").
 # U.S. Government sponsorship acknowledged.
