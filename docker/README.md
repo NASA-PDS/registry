@@ -1,7 +1,7 @@
 # 🪐 Docker Compose for Registry Components
 
 This directory contains the files related with docker compose for Registry Container. To learn more about docker compose,
-please refer to https://docs.docker.com/compose/.
+please refer to [https://docs.docker.com/compose/](https://docs.docker.com/compose/).
 
 The docker-compose.yml file contains following 3 components.
 * registry-loader - Executes the Registry Loader component, which contains Harvest and Registry Manager
@@ -15,9 +15,9 @@ Also, the docker-compose.yml file contains following profiles.
 | --------------------- | ------------ |
 | elastic               | Used to start only Elasticsearch |
 | api                   | Used to start only Registry API|
-| services              |Used to start both Elasticsearch and Registry API |
-| reg-loader       |Used to execute only Registry Loader |
-| reg-loader-test  |Used to execute only Registry Loader with test data |
+| services              | Used to start both Elasticsearch and Registry API |
+| reg-loader            | Used to execute only Registry Loader |
+| reg-loader-test       | Used to execute only Registry Loader with test data (Test data is automatically downloaded from a URL |
 
 With the use of above profiles the docker compose can start components individually
 or as a group of components as follows. The `-d` option at the end of the commands is used to
@@ -87,6 +87,7 @@ REG_API_APP_PROPERTIES_FILE=./config/application.properties
 # Absolute path of the wait-for-elasticsearch.sh script
 REG_API_WAIT_FOR_ES_SCRIPT=./scripts/wait-for-elasticsearch.sh
 ```
+
 5. Make sure that the Harvest configuration file has the directory path configured as `/data` as shown the following example.
 
 ```
@@ -130,7 +131,9 @@ TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-na
 
 ## 🏃 Steps to execute registry components with docker compose
 
-1. Start the backend services (both Elasticsearch and the Registry API) as follows.
+1. Open a terminal and change the current working directory to `registry/docker`.
+
+2. Start the backend services (both Elasticsearch and the Registry API) as follows.
 
 ```
 docker-compose --profile=services up -d
@@ -144,7 +147,7 @@ Alternatively, it is possible to start only Elasticsearch as follows.
 docker-compose --profile=elastic up -d
 ```
 
-2. Execute the Registry Loader as follows.
+3. Execute the Registry Loader as follows.
 
 ```
 docker-compose --profile=reg-loader up
@@ -170,7 +173,7 @@ Wait for the following message in the terminal to make sure if the execution of 
 docker-registry-loader-1 exited with code 0
 ```
 
-3. Test the deployment.
+4. Test the deployment.
 
 Follow the instructions in the following sections at the end of the [Test Your Deployment](https://nasa-pds.github.io/pds-registry-app/install/test.html).
 
