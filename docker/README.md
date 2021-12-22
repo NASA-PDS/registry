@@ -179,3 +179,30 @@ Follow the instructions in the following sections at the end of the [Test Your D
 
 * Query Elasticsearch
 * Use Registry API
+
+## 🏃 Cleaning up the deployment
+
+* The Registry Loader can be cleaned up as follows.
+
+```
+docker-compose --profile=reg-loader down
+```
+
+Note: Ignore any `failed to remove network` errors, because the related docker network 
+has active endpoints of other services.
+
+
+* The Registry Loader with test data can be cleaned up as follows.
+
+```
+docker-compose --profile=reg-loader-test down
+```
+
+Note: Ignore any `failed to remove network` errors, because the related docker network
+has active endpoints of other services.
+
+* The Registry API and Elasticsearch can be cleaned up as follows.
+
+```
+docker-compose --profile=services down
+```
