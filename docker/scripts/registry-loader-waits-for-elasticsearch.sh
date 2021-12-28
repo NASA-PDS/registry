@@ -40,8 +40,6 @@ while ! curl --output /dev/null --silent --head --fail http://elasticsearch:9200
   sleep 1
 done
 
-echo "Starting Registry API service..."  1>&2
-java -cp /usr/local/registry-api-service \
-     -jar /usr/local/registry-api-service/registry-api-service.jar \
-     --spring.config.location=file:///usr/local/registry-api-service/application.properties \
-     gov.nasa.pds.api.engineering.SpringBootMain
+echo "Starting registry-loader..."  1>&2
+chmod a+x /usr/local/bin/entrypoint.sh
+/usr/local/bin/entrypoint.sh
