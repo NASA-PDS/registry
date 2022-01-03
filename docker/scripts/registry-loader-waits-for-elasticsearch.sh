@@ -36,7 +36,7 @@
 
 echo "Waiting for Elasticsearch to launch..."  1>&2
 while ! curl --output /dev/null --silent --head --fail http://elasticsearch:9200; do
-  echo "waiting for elasticsearch"
+  echo "waiting for elasticsearch" 1>&2
   sleep 1
 done
 

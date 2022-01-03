@@ -56,7 +56,6 @@ services:
       - pds
     volumes:
       - ./scripts/registry-loader-waits-for-elasticsearch.sh:/usr/local/bin/registry-loader-waits-for-elasticsearch.sh
-    #command: ["sleep", "300"]
     entrypoint: /usr/local/bin/registry-loader-waits-for-elasticsearch.sh
 
   # Starts Elasticsearch
