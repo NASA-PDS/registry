@@ -33,10 +33,10 @@ docker-compose --profile=reg-loader up
 
 ## 🏃 Steps to configure registry components to be executed with docker compose
 
-1. Open the `.env` file (located in the same directory with the `docker.compose.yml` file).
+#### 1. Open the `.env` file (located in the same directory with the `docker.compose.yml` file).
 
 
-2. Check and update (if necessary) the following environment variables related with Elasticsearch.
+#### 2. Check and update (if necessary) the following environment variables related with Elasticsearch.
 
 | Environment Variable  | Description |
 | --------------------- | ----------- |
@@ -55,7 +55,7 @@ ES_IMAGE=docker.elastic.co/elasticsearch/elasticsearch:7.8.1
 ES_DISCOVERY_TYPE=single-node
 ```
 
-3. Check and update (if necessary) the `elasticSearch.host` property in the `config/application.properties` file. 
+#### 3. Check and update (if necessary) the `elasticSearch.host` property in the `config/application.properties` file. 
 
 Make sure this `application.properties` file is up-to-date with the latest changes in the Registry API service. It is recommended to 
 get a copy of `application.properties` from the latest code of the Registry API service 
@@ -69,7 +69,7 @@ name used in the `docker-compose.yml`.
 elasticSearch.host=elasticsearch:9200
 ```
 
-4. Check and update (if necessary) the following environment variables related with the Registry API.
+#### 4. Check and update (if necessary) the following environment variables related with the Registry API.
 
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
@@ -88,7 +88,7 @@ REG_API_APP_PROPERTIES_FILE=./config/application.properties
 REG_API_WAIT_FOR_ES_SCRIPT=./scripts/wait-for-elasticsearch.sh
 ```
 
-5. Make sure that the Harvest configuration file has the directory path configured as `/data` as shown the following example.
+#### 5. Make sure that the Harvest configuration file has the directory path configured as `/data`, as shown in the following example.
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -102,7 +102,7 @@ REG_API_WAIT_FOR_ES_SCRIPT=./scripts/wait-for-elasticsearch.sh
 
 ```
 
-6. Check and update (if necessary) the following environment variables related with the Registry Loader.
+#### 6. Check and update (if necessary) the following environment variables related with the Registry Loader.
 
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
@@ -131,9 +131,9 @@ TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-na
 
 ## 🏃 Steps to execute registry components with docker compose
 
-1. Open a terminal and change the current working directory to `registry/docker`.
+#### 1. Open a terminal and change the current working directory to `registry/docker`.
 
-2. Start the backend services (both Elasticsearch and the Registry API) as follows.
+#### 2. Start the backend services (both Elasticsearch and the Registry API) as follows.
 
 ```
 docker-compose --profile=services up -d
@@ -147,7 +147,7 @@ Alternatively, it is possible to start only Elasticsearch as follows.
 docker-compose --profile=elastic up -d
 ```
 
-3. Execute the Registry Loader as follows.
+#### 3. Execute the Registry Loader as follows.
 
 ```
 docker-compose --profile=reg-loader up
@@ -155,27 +155,57 @@ docker-compose --profile=reg-loader up
 
 When above command is executed, the Registry Loader will use the configurations and data provided with the following 
 environment variables configured in the `.env` file.
+```
 * HARVEST_CFG_FILE
 * HARVEST_DATA_DIR
+```
 
 Alternatively, it is possible to execute the Registry Loader with test data as follows.
-
 ```
 docker-compose --profile=reg-loader-test up
 ```
+
 When above command is executed, the Registry Loader will download test data from URL configured with the following
 environment variable  in the `.env` file.
+```
 * TEST_DATA_URL
+```
 
 Wait for the following message in the terminal to make sure if the execution of the Registry Loader exited with code 0.
-
 ```
 docker-registry-loader-1 exited with code 0
 ```
 
-4. Test the deployment.
+#### 4. Test the deployment.
 
 Follow the instructions in the following sections at the end of the [Test Your Deployment](https://nasa-pds.github.io/pds-registry-app/install/test.html).
 
 * Query Elasticsearch
 * Use Registry API
+
+## 🏃 Cleaning up the deployment
+
+#### * The Registry Loader can be cleaned up as follows.
+
+```
+docker-compose --profile=reg-loader down
+```
+
+Note: Ignore any `failed to remove network` errors, because the related docker network 
+has active endpoints of other services.
+
+
+#### * The Registry Loader with test data can be cleaned up as follows.
+
+```
+docker-compose --profile=reg-loader-test down
+```
+
+Note: Ignore any `failed to remove network` errors, because the related docker network
+has active endpoints of other services.
+
+#### * The Registry API and Elasticsearch can be cleaned up as follows.
+
+```
+docker-compose --profile=services down
+```
