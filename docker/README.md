@@ -31,6 +31,15 @@ docker-compose --profile=services up -d
 docker-compose --profile=reg-loader up
 ```
 
+For test, start the registry with some test data loaded:
+
+    docker-compose --profile=integration-test up
+
+
+For API dev, start the registry with some test data, without the API:
+
+    docker-compose --profile=pre-api-dev up
+
 ## 🏃 Steps to configure registry components to be executed with docker compose
 
 #### 1. Open the `.env` file (located in the same directory with the `docker.compose.yml` file).

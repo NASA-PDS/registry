@@ -46,7 +46,7 @@ services:
 
   # Downloads and harvests test data with Registry loader
   registry-loader-test:
-    profiles: [ "reg-loader-test", "pre-api-dev" ]
+    profiles: [ "reg-loader-test", "pre-api-dev", "integration-test" ]
     image: ${REG_LOADER_IMAGE}
     environment:
       - ES_URL=${ES_URL}
@@ -60,7 +60,7 @@ services:
 
   # Starts Elasticsearch
   elasticsearch:
-    profiles: ["elastic","services", "pre-api-dev"]
+    profiles: ["elastic","services", "pre-api-dev", "integration-test"]
     image: ${ES_IMAGE}
     environment:
       - discovery.type=${ES_DISCOVERY_TYPE}
@@ -72,7 +72,7 @@ services:
 
   # Starts Registry API
   registry-api:
-    profiles: ["api","services"]
+    profiles: ["api","services", "integration-test"]
     image: ${REG_API_IMAGE}
     ports:
       - "8080:8080"
