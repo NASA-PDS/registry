@@ -24,21 +24,21 @@ or as a group of components as follows. The `-d` option at the end of the comman
 run containers in detached mode (Run containers in the background).
 
 ```
-docker-compose --profile=elastic up -d
+docker compose --profile=elastic up -d
 
-docker-compose --profile=services up -d
+docker compose --profile=services up -d
 
-docker-compose --profile=reg-loader up
+docker compose --profile=reg-loader up
 ```
 
 For test, start the registry with some test data loaded:
 
-    docker-compose --profile=integration-test up
+    docker compose --profile=integration-test up
 
 
 For API dev, start the registry with some test data, without the API:
 
-    docker-compose --profile=pre-api-dev up
+    docker compose --profile=pre-api-dev up
 
 ## 🏃 Steps to configure registry components to be executed with docker compose
 
