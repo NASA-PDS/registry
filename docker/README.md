@@ -121,7 +121,6 @@ REG_API_APP_PROPERTIES_FILE=./config/application.properties
 | ES_URL                        | Elasticsearch URL (the host name is the Elasticsearch service name specified in the docker compose) |
 | HARVEST_CFG_FILE              | Absolute path of the Harvest configuration file in the host machine (E.g.: `/tmp/cfg/harvest-config.xml`) |
 | TEST_DATA_URL                 | URL to download the test data to Harvest (only required, if executing with test data) |
-| HARVEST_DATA_DIR              | Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/data/urn-nasa-pds-insight_rad`) |
 
 ```    
 # Docker image of the Registry Loader
@@ -132,9 +131,6 @@ ES_URL=http://elasticsearch:9200
 
 # Absolute path of the Harvest configuration file in the host machine (E.g.: /tmp/cfg/harvest-config.xml)
 HARVEST_CFG_FILE=/tmp/cfg/harvest-test-config.xml
-
-# Absolute path of the Harvest data directory in the host machine (E.g.: /tmp/data/urn-nasa-pds-insight_rad)
-HARVEST_DATA_DIR=/tmp/data
 
 # URL to download the test data to Harvest (only required, if executing with test data)
 TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-nasa-pds-insight_rad.tar.gz
