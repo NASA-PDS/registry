@@ -1,4 +1,4 @@
-# Copyright © 2021, California Institute of Technology ("Caltech").
+# Copyright © 2022, California Institute of Technology ("Caltech").
 # U.S. Government sponsorship acknowledged.
 #
 # All rights reserved.
@@ -32,7 +32,7 @@ version: "3.9"
 
 services:
 
-  # Executes Registry Loader component, which contains Harvest and Registry Manager
+  # Executes the Registry Loader component, which contains Harvest and Registry Manager
   registry-loader:
     profiles: ["reg-loader"]
     image: ${REG_LOADER_IMAGE}
@@ -44,7 +44,7 @@ services:
     networks:
       - pds
 
-  # Downloads and harvests test data with Registry loader
+  # Downloads and harvests test data with the Registry loader
   registry-loader-test:
     profiles: [ "reg-loader-test", "pre-api-dev", "integration-test" ]
     image: ${REG_LOADER_IMAGE}
@@ -70,7 +70,7 @@ services:
     networks:
       - pds
 
-  # Starts Registry API
+  # Starts the Registry API
   registry-api:
     profiles: ["api","services", "integration-test"]
     image: ${REG_API_IMAGE}
@@ -78,10 +78,47 @@ services:
       - "8080:8080"
     volumes:
       - ${REG_API_APP_PROPERTIES_FILE}:/usr/local/registry-api-service/application.properties
-      - ${REG_API_WAIT_FOR_ES_SCRIPT}:/usr/local/registry-api-service/wait-for-elasticsearch.sh
+      - ./scripts/registry-api-waits-for-elasticsearch.sh:/usr/local/registry-api-service/registry-api-waits-for-elasticsearch.sh
     networks:
       - pds
-    command: /usr/local/registry-api-service/wait-for-elasticsearch.sh
+    command: /usr/local/registry-api-service/registry-api-waits-for-elasticsearch.sh
+
+  # Starts the Big Data Harvest Server
+  big-data-harvest-server:
+    profiles: ["big-data-services", "big-data"]
+    image: ${BIG_DATA_HARVEST_SERVER_IMAGE}
+    ports:
+      - "8005:8005"
+    volumes:
+      - ${HARVEST_SERVER_CONFIG_FILE}:/cfg/harvest-server.cfg
+      - ${HARVEST_DATA_DIR}:/data
+      - ./scripts/big-data-harvest-server-waits-for-elasticsearch.sh:/usr/local/bin/big-data-harvest-server-waits-for-elasticsearch.sh
+    entrypoint: /usr/local/bin/big-data-harvest-server-waits-for-elasticsearch.sh
+    networks:
+      - pds
+
+  # Starts the Big Data Crawler Server
+  big-data-crawler-server:
+    profiles: ["big-data-services", "big-data"]
+    image: ${BIG_DATA_CRAWLER_SERVER_IMAGE}
+    ports:
+      - "8001:8001"
+    volumes:
+      - $CRAWLER_SERVER_CONFIG_FILE:/cfg/crawler-server.cfg
+      - ${HARVEST_DATA_DIR}:/data
+    networks:
+      - pds
+
+  # Executes the Big Data Harvest Client
+  big-data-harvest-client:
+    profiles: ["big-data-client", "big-data"]
+    image: ${BIG_DATA_HARVEST_CLIENT_IMAGE}
+    volumes:
+      - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-job-config.xml
+      - ${HARVEST_DATA_DIR}:/data
+      - ${HARVEST_CLIENT_CONFIG_FILE}:/cfg/harvest-client.cfg
+    networks:
+      - pds
 
 networks:
   pds:
