@@ -121,6 +121,7 @@ REG_API_APP_PROPERTIES_FILE=./config/application.properties
 | ES_URL                        | Elasticsearch URL (the host name is the Elasticsearch service name specified in the docker compose) |
 | HARVEST_CFG_FILE              | Absolute path of the Harvest configuration file in the host machine (E.g.: `/tmp/cfg/harvest-config.xml`) |
 | TEST_DATA_URL                 | URL to download the test data to Harvest (only required, if executing with test data) |
+| HARVEST_DATA_DIR              | Absolute path for the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`). If the Big Data Harvest Client is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
 
 ```    
 # Docker image of the Registry Loader
@@ -139,8 +140,13 @@ TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-na
 # Common Configuartions
 # --------------------------------------------------------------------
 
-# Absolute path of the Harvest data directory in the host machine (E.g.: /tmp/data/urn-nasa-pds-insight_rad)
-HARVEST_DATA_DIR=/tmp/data
+# Absolute path for the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`).
+# If the Big Data Harvest Client is executed with the option to download test data, then this directory will be
+# cleaned-up and populated with test data. Make sure to have the same `HARVEST_DATA_DIR` value set in the
+# environment variables of the Big Data Harvest Server, Big Data Crawler Server and Big Data Harvest Client.
+# Also, this `HARVEST_DATA_DIR` location should be accessible from the docker containers of the Big Data Harvest Server,
+# Big Data Crawler Server and Big Data Harvest Client.
+HARVEST_DATA_DIR=/tmp/big-data-harvest-data
 ```
 
 ## 🏃 Steps to execute registry components with docker compose
@@ -232,7 +238,7 @@ docker compose --profile=services down
 
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
-| HARVEST_DATA_DIR           | Absolute path for the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`). If the Big Data Harvest Client is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
+| HARVEST_DATA_DIR              | Absolute path for the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`). If the Big Data Harvest Client is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
 
 ```
 # --------------------------------------------------------------------
