@@ -60,7 +60,7 @@ services:
 
   # Starts Elasticsearch
   elasticsearch:
-    profiles: ["elastic","services", "pre-api-dev", "integration-test"]
+    profiles: ["elastic",  "services", "pre-api-dev", "integration-test", "big-data", "big-data-integration-test"]
     image: ${ES_IMAGE}
     environment:
       - discovery.type=${ES_DISCOVERY_TYPE}
@@ -72,7 +72,7 @@ services:
 
   # Starts the Registry API
   registry-api:
-    profiles: ["api","services", "integration-test"]
+    profiles: ["api", "services", "integration-test", "big-data", "big-data-integration-test"]
     image: ${REG_API_IMAGE}
     ports:
       - "8080:8080"
@@ -85,21 +85,21 @@ services:
 
   # Starts the Big Data Harvest Server
   big-data-harvest-server:
-    profiles: ["big-data-services", "big-data"]
+    profiles: ["big-data-services", "big-data", "big-data-integration-test"]
     image: ${BIG_DATA_HARVEST_SERVER_IMAGE}
+    environment:
+      - ES_URL=${ES_URL}
     ports:
       - "8005:8005"
     volumes:
       - ${HARVEST_SERVER_CONFIG_FILE}:/cfg/harvest-server.cfg
       - ${HARVEST_DATA_DIR}:/data
-      - ./scripts/big-data-harvest-server-waits-for-elasticsearch.sh:/usr/local/bin/big-data-harvest-server-waits-for-elasticsearch.sh
-    entrypoint: /usr/local/bin/big-data-harvest-server-waits-for-elasticsearch.sh
     networks:
       - pds
 
   # Starts the Big Data Crawler Server
   big-data-crawler-server:
-    profiles: ["big-data-services", "big-data"]
+    profiles: ["big-data-services", "big-data", "big-data-integration-test"]
     image: ${BIG_DATA_CRAWLER_SERVER_IMAGE}
     ports:
       - "8001:8001"
@@ -120,6 +120,19 @@ services:
     networks:
       - pds
 
+  # Executes the Big Data Harvest Client with test data
+  big-data-harvest-client-test:
+    profiles: ["big-data-harvest-client-test", "big-data", "big-data-integration-test"]
+    image: ${BIG_DATA_HARVEST_CLIENT_IMAGE}
+    environment:
+      - RUN_TESTS=true
+      - TEST_DATA_URL=${TEST_DATA_URL}
+    volumes:
+      - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-job-config.xml
+      - ${HARVEST_DATA_DIR}:/data
+      - ${HARVEST_CLIENT_CONFIG_FILE}:/cfg/harvest-client.cfg
+    networks:
+      - pds
 networks:
   pds:
     driver: bridge

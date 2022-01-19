@@ -232,15 +232,20 @@ docker compose --profile=services down
 
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
-| HARVEST_DATA_DIR              | Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/data/urn-nasa-pds-insight_rad`) |
+| HARVEST_DATA_DIR           | Absolute path for the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`). If the Big Data Harvest Client is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
 
 ```
 # --------------------------------------------------------------------
 # Common Configuartions
 # --------------------------------------------------------------------
 
-# Absolute path of the Harvest data directory in the host machine (E.g.: /tmp/data/urn-nasa-pds-insight_rad)
-HARVEST_DATA_DIR=/tmp/data
+# Absolute path for the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`).
+# If the Big Data Harvest Client is executed with the option to download test data, then this directory will be
+# cleaned-up and populated with test data. Make sure to have the same `HARVEST_DATA_DIR` value set in the
+# environment variables of the Big Data Harvest Server, Big Data Crawler Server and Big Data Harvest Client.
+# Also, this `HARVEST_DATA_DIR` location should be accessible from the docker containers of the Big Data Harvest Server,
+# Big Data Crawler Server and Big Data Harvest Client.
+HARVEST_DATA_DIR=/tmp/big-data-harvest-data
 ```
 
 #### 2. Update the Big Data Harvest Server configuration file.
@@ -351,6 +356,12 @@ To start only Big Data Harvest Client
 ```
 docker compose --profile=big-data-client up
 ```
+
+To execute Big Data Integration Tests with downloaded test data
+```
+docker compose --profile=big-data-integration-test up
+```
+
 
 #### 4. Test the deployment.
 
