@@ -14,16 +14,17 @@ The docker-compose.yml file contains following components.
 
 Also, the docker-compose.yml file contains following profiles.
 
-| Profile               | Purpose |
-| --------------------- | ------------ |
-| elastic               | Used to start only Elasticsearch |
-| api                   | Used to start only Registry API|
-| services              | Used to start both Elasticsearch and Registry API |
-| reg-loader            | Used to execute only Registry Loader |
-| reg-loader-test       | Used to execute only Registry Loader with test data (Test data is automatically downloaded from a URL) |
-| big-data              | Used to start all big-data components (Big Data Harvest Server, Big Data Crawler Server and Big Data Harvest Client) |
-| big-data-services     | Used to start only Big Data Harvest Server and Big Data Crawler Server |
-| big-data-client       | Used to execute only Big Data Harvest Client |
+| Profile                   | Purpose |
+| ------------------------- | ------------ |
+| elastic                   | Used to start only Elasticsearch |
+| api                       | Used to start only Registry API|
+| services                  | Used to start both Elasticsearch and Registry API |
+| reg-loader                | Used to execute only Registry Loader |
+| reg-loader-test           | Used to execute only Registry Loader with test data (Test data is automatically downloaded from a URL) |
+| big-data                  | Used to start all big-data components |
+| big-data-services         | Used to start only Big Data Harvest Server and Big Data Crawler Server |
+| big-data-client           | Used to execute only Big Data Harvest Client |
+| big-data-integration-test | Used to start all big-data components with test data |
 
 With the use of above profiles the docker compose can start components individually
 or as a group of components as follows. The `-d` option at the end of the commands is used to
@@ -338,6 +339,17 @@ HARVEST_JOB_CONFIG_FILE=/tmp/cfg/harvest-job-config.xml
 # Absolute path for the Big Data Harvest Client configuration file in the host machine (E.g.: /tmp/conf/harvest-client.cfg)
 HARVEST_CLIENT_CONFIG_FILE=/tmp/cfg/harvest-client.cfg
 ```
+
+#### 9. Configure RabbitMQ
+
+The RabbitMQ can be configured by using the `rabbitmq-definitions.json` file available at the `registry/docker/config` directory.
+
+* Open the `rabbitmq-definitions.json` file.
+* Locate the definition for the user `harvest` under the `users`. 
+* The password of the user `harvest` should be specified as a RabbitMQ `password_hash`. Generate a password hash using 
+the `rabbit_password_hashing_sha256` algorithm (The Python script available at the https://stackoverflow.com/questions/41306350/how-to-generate-password-hash-for-rabbitmq-management-http-api/53016240#53016240 
+can be used to generate a password hash for a new password hash).
+* Update the `password_hash` of the `harvest` user with the newly generated password hash.
 
 ## 🏃 Steps to execute the Big Data Harvest components with docker compose
 

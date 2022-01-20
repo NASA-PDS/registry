@@ -70,6 +70,19 @@ services:
     networks:
       - pds
 
+  # Starts RabbitMQ
+  rabbit-mq:
+    profiles: ["rabbitmq", "big-data", "big-data-integration-test"]
+    image: rabbitmq:3.9-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./config/rabbitmq-definitions.json:/etc/rabbitmq/definitions.json:ro
+    networks:
+      - pds
+
   # Starts the Registry API
   registry-api:
     profiles: ["api", "services", "integration-test", "big-data", "big-data-integration-test"]
@@ -133,6 +146,7 @@ services:
       - ${HARVEST_CLIENT_CONFIG_FILE}:/cfg/harvest-client.cfg
     networks:
       - pds
+
 networks:
   pds:
     driver: bridge
