@@ -52,15 +52,15 @@ services:
       - ES_URL=${ES_URL}
       - RUN_TESTS=true
       - TEST_DATA_URL=${TEST_DATA_URL}
-    networks:
-      - pds
     volumes:
       - ./scripts/registry-loader-waits-for-elasticsearch.sh:/usr/local/bin/registry-loader-waits-for-elasticsearch.sh
+    networks:
+      - pds
     entrypoint: /usr/local/bin/registry-loader-waits-for-elasticsearch.sh
 
   # Starts Elasticsearch
   elasticsearch:
-    profiles: ["elastic",  "services", "pre-api-dev", "integration-test", "big-data", "big-data-integration-test"]
+    profiles: ["elastic", "services", "pre-api-dev", "integration-test", "big-data", "big-data-integration-test"]
     image: ${ES_IMAGE}
     environment:
       - discovery.type=${ES_DISCOVERY_TYPE}
@@ -69,6 +69,18 @@ services:
       - "9300:9300"
     networks:
       - pds
+
+  # Initializes Elasticsearch by creating registry and data dictionary indices by utilizing the Registry Loader
+  init-elasticsearch:
+    profiles: ["elastic", "big-data", "big-data-integration-test"]
+    image: ${REG_LOADER_IMAGE}
+    environment:
+      - ES_URL=${ES_URL}
+    volumes:
+      - ./scripts/init-elasticsearch.sh:/usr/local/bin/init-elasticsearch.sh
+    networks:
+      - pds
+    entrypoint: ["bash", "/usr/local/bin/init-elasticsearch.sh"]
 
   # Starts RabbitMQ
   rabbit-mq:
