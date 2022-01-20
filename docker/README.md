@@ -51,7 +51,6 @@ For API dev, start the registry with some test data, without the API:
 
 #### 1. Open the `.env` file (located in the same directory with the `docker.compose.yml` file).
 
-
 #### 2. Check and update (if necessary) the following environment variables related with Elasticsearch.
 
 | Environment Variable  | Description |
@@ -262,7 +261,8 @@ HARVEST_DATA_DIR=/tmp/big-data-harvest-data
 * Make sure to specify the exact IP address of the host machine (E.g.: `192.168.0.1`), when configuring the `rmq.host` and
   `es.url`.
 
-#### 3. Check and update (if necessary) the following environment variables related with the Big Data Harvest Server.
+#### 3. Check and update (if necessary) the following environment variables related with the Big Data Harvest Server in the `.env` file.
+
 
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
@@ -288,7 +288,7 @@ HARVEST_SERVER_CONFIG_FILE=/tmp/cfg/harvest-server.cfg
 * Update the properties such as `rmq.host`, `rmq.user` and `rmq.password` to match with your deployment environment.
 * Make sure to specify the exact IP address of the host machine (E.g.: `192.168.0.1`), when configuring the `rmq.host`.
 
-#### 5. Check and update (if necessary) the following environment variables related with the Big Data Crawler Server.
+#### 5. Check and update (if necessary) the following environment variables related with the Big Data Crawler Server in the `.env` file.
 
 
 | Environment Variable          | Description |
@@ -322,7 +322,7 @@ CRAWLER_SERVER_CONFIG_FILE=/tmp/cfg/crawler-server.cfg
 * An example for a Harvest job file can be found at https://github.com/NASA-PDS/big-data-harvest-client/blob/main/src/main/resources/examples/directories.xml.
   Make sure to update the `/path/to/archive` in the Harvest job file to point to a valid Harvest data directory.
 
-#### 8. Check and update (if necessary) the following environment variables related with the Big Data Harvest Client.
+#### 8. Check and update (if necessary) the following environment variables related with the Big Data Harvest Client in the `.env` file.
 
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
