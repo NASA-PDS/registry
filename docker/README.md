@@ -122,7 +122,7 @@ REG_API_APP_PROPERTIES_FILE=./config/application.properties
 | ES_URL                        | Elasticsearch URL (the host name is the Elasticsearch service name specified in the docker compose) |
 | HARVEST_CFG_FILE              | Absolute path of the Harvest configuration file in the host machine (E.g.: `/tmp/cfg/harvest-config.xml`) |
 | TEST_DATA_URL                 | URL to download the test data to Harvest (only required, if executing with test data) |
-| HARVEST_DATA_DIR              | Absolute path for the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`). If the Big Data Harvest Client is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
+| HARVEST_DATA_DIR              | Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`). If the Big Data Harvest Client is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
 
 ```    
 # Docker image of the Registry Loader
@@ -141,7 +141,7 @@ TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-na
 # Common Configuartions
 # --------------------------------------------------------------------
 
-# Absolute path for the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`).
+# Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`).
 # If the Big Data Harvest Client is executed with the option to download test data, then this directory will be
 # cleaned-up and populated with test data. Make sure to have the same `HARVEST_DATA_DIR` value set in the
 # environment variables of the Big Data Harvest Server, Big Data Crawler Server and Big Data Harvest Client.
@@ -239,14 +239,14 @@ docker compose --profile=services down
 
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
-| HARVEST_DATA_DIR              | Absolute path for the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`). If the Big Data Harvest Client is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
+| HARVEST_DATA_DIR              | Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`). If the Big Data Harvest Client is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
 
 ```
 # --------------------------------------------------------------------
 # Common Configuartions
 # --------------------------------------------------------------------
 
-# Absolute path for the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`).
+# Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`).
 # If the Big Data Harvest Client is executed with the option to download test data, then this directory will be
 # cleaned-up and populated with test data. Make sure to have the same `HARVEST_DATA_DIR` value set in the
 # environment variables of the Big Data Harvest Server, Big Data Crawler Server and Big Data Harvest Client.
@@ -259,13 +259,15 @@ HARVEST_DATA_DIR=/tmp/big-data-harvest-data
 
 * Get a copy of the `harvest-server.cfg` file from https://github.com/NASA-PDS/big-data-harvest-server/blob/main/src/main/resources/conf/harvest-server.cfg and keep it in a local file location such as `/tmp/cfg/harvest-server.cfg`.
 * Update the properties such as `rmq.host`, `rmq.user`, `rmq.password` and `es.url` to match with your deployment environment.
+* Make sure to specify the exact IP address of the host machine (E.g.: `192.168.0.1`), when configuring the `rmq.host` and
+  `es.url`.
 
 #### 3. Check and update (if necessary) the following environment variables related with the Big Data Harvest Server.
 
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
 | BIG_DATA_HARVEST_SERVER_IMAGE | Docker image of the Big Data Harvest Server. Make sure this docker image is available. |
-| HARVEST_SERVER_CONFIG_FILE    | Absolute path for the Big Data Harvest Server configuration file in the host machine (E.g.: `/tmp/cfg/harvest-server.cfg`) |
+| HARVEST_SERVER_CONFIG_FILE    | Absolute path of the Big Data Harvest Server configuration file in the host machine (E.g.: `/tmp/cfg/harvest-server.cfg`) |
 
 ```    
 # --------------------------------------------------------------------
@@ -275,7 +277,7 @@ HARVEST_DATA_DIR=/tmp/big-data-harvest-data
 # Docker image of the Big Data Harvest Server
 BIG_DATA_HARVEST_SERVER_IMAGE=nasapds/big-data-harvest-server
 
-# Absolute path for the Big Data Harvest Server configuration file in the host machine (E.g.: /tmp/cfg/harvest-server.cfg)
+# Absolute path of the Big Data Harvest Server configuration file in the host machine (E.g.: /tmp/cfg/harvest-server.cfg)
 HARVEST_SERVER_CONFIG_FILE=/tmp/cfg/harvest-server.cfg
 ```
 
@@ -284,6 +286,7 @@ HARVEST_SERVER_CONFIG_FILE=/tmp/cfg/harvest-server.cfg
 * Get a copy of the `harvest-client.cfg` file from https://github.com/NASA-PDS/big-data-crawler-server/blob/main/src/main/resources/conf/crawler-server.cfg and
   keep it in a local file location such as `/tmp/cfg/crawler-server.cfg`.
 * Update the properties such as `rmq.host`, `rmq.user` and `rmq.password` to match with your deployment environment.
+* Make sure to specify the exact IP address of the host machine (E.g.: `192.168.0.1`), when configuring the `rmq.host`.
 
 #### 5. Check and update (if necessary) the following environment variables related with the Big Data Crawler Server.
 
@@ -291,7 +294,7 @@ HARVEST_SERVER_CONFIG_FILE=/tmp/cfg/harvest-server.cfg
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
 | BIG_DATA_CRAWLER_SERVER_IMAGE | Docker image of the Big Data Harvest Crawler. Make sure this docker image is available. |
-| CRAWLER_SERVER_CONFIG_FILE    | Absolute path for the Big Data Crawler Server configuration file in the host machine (`E.g.: /tmp/cfg/crawler-server.cfg`) |
+| CRAWLER_SERVER_CONFIG_FILE    | Absolute path of the Big Data Crawler Server configuration file in the host machine (`E.g.: /tmp/cfg/crawler-server.cfg`) |
 
 ```    
 # --------------------------------------------------------------------
@@ -301,7 +304,7 @@ HARVEST_SERVER_CONFIG_FILE=/tmp/cfg/harvest-server.cfg
 # Docker image of the Big Data Crawler Server
 BIG_DATA_CRAWLER_SERVER_IMAGE=nasapds/big-data-crawler-server
 
-# Absolute path for the Big Data Crawler Server configuration file in the host machine (E.g.: /tmp/cfg/crawler-server.cfg)
+# Absolute path of the Big Data Crawler Server configuration file in the host machine (E.g.: /tmp/cfg/crawler-server.cfg)
 CRAWLER_SERVER_CONFIG_FILE=/tmp/cfg/crawler-server.cfg
 ```
 
@@ -310,6 +313,8 @@ CRAWLER_SERVER_CONFIG_FILE=/tmp/cfg/crawler-server.cfg
 * Get a copy of the `harvest-client.cfg` file from https://github.com/NASA-PDS/big-data-harvest-client/blob/main/src/main/resources/conf/harvest-client.cfg and
   keep it in a local file location such as `/tmp/conf/harvest-client.cfg`.
 * Update the properties such as `rmq.host`, `rmq.user` and `rmq.password` to match with your deployment environment.
+* Make sure to specify the exact IP address of the host machine (E.g.: `192.168.0.1`), when configuring the `rmq.host`.
+
 
 #### 7. Update the Harvest job file.
 
@@ -322,8 +327,8 @@ CRAWLER_SERVER_CONFIG_FILE=/tmp/cfg/crawler-server.cfg
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
 | BIG_DATA_HARVEST_CLIENT_IMAGE | Docker image of the Big Data Harvest Client. Make sure this docker image is available. |
-| HARVEST_JOB_CONFIG_FILE       | Absolute path for the Harvest job file in the host machine (E.g.: `/tmp/cfg/harvest-job-config.xml`) |
-| HARVEST_CLIENT_CONFIG_FILE    | Absolute path for the Big Data Harvest Client configuration file in the host machine (E.g.: `/tmp/conf/harvest-client.cfg`) |
+| HARVEST_JOB_CONFIG_FILE       | Absolute path of the Harvest job file in the host machine (E.g.: `/tmp/cfg/harvest-job-config.xml`) |
+| HARVEST_CLIENT_CONFIG_FILE    | Absolute path of the Big Data Harvest Client configuration file in the host machine (E.g.: `/tmp/conf/harvest-client.cfg`) |
 
 ```    
 # --------------------------------------------------------------------
@@ -333,10 +338,10 @@ CRAWLER_SERVER_CONFIG_FILE=/tmp/cfg/crawler-server.cfg
 # Docker image of the Big Data Harvest Client
 BIG_DATA_HARVEST_CLIENT_IMAGE=nasapds/big-data-harvest-client
 
-# Absolute path for the Harvest job file in the host machine (E.g.: /tmp/cfg/harvest-job-config.xml)
+# Absolute path of the Harvest job file in the host machine (E.g.: /tmp/cfg/harvest-job-config.xml)
 HARVEST_JOB_CONFIG_FILE=/tmp/cfg/harvest-job-config.xml
 
-# Absolute path for the Big Data Harvest Client configuration file in the host machine (E.g.: /tmp/conf/harvest-client.cfg)
+# Absolute path of the Big Data Harvest Client configuration file in the host machine (E.g.: /tmp/conf/harvest-client.cfg)
 HARVEST_CLIENT_CONFIG_FILE=/tmp/cfg/harvest-client.cfg
 ```
 
