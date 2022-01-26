@@ -136,7 +136,7 @@ services:
 
   # Executes the Registry Harvest CLI
   registry-harvest-cli:
-    profiles: ["registry-harvest-cli", "big-data"]
+    profiles: ["registry-harvest-cli"]
     image: ${REGISTRY_HARVEST_CLI_IMAGE}
     volumes:
       - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-job-config.xml
@@ -147,7 +147,7 @@ services:
 
   # Executes the Registry Harvest CLI with test data
   registry-harvest-cli-test:
-    profiles: ["registry-harvest-cli-test", "big-data", "big-data-integration-test"]
+    profiles: ["registry-harvest-cli-test", "big-data-integration-test"]
     image: ${REGISTRY_HARVEST_CLI_IMAGE}
     environment:
       - RUN_TESTS=true
