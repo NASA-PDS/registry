@@ -108,10 +108,10 @@ services:
       - pds
     command: /usr/local/registry-api-service/registry-api-waits-for-elasticsearch.sh
 
-  # Starts the Big Data Harvest Server
-  big-data-harvest-server:
+  # Starts the Registry Harvest Service
+  registry-harvest-service:
     profiles: ["big-data-services", "big-data", "big-data-integration-test"]
-    image: ${BIG_DATA_HARVEST_SERVER_IMAGE}
+    image: ${REGISTRY_HARVEST_SERVICE_IMAGE}
     environment:
       - ES_URL=${ES_URL}
     ports:
@@ -122,10 +122,10 @@ services:
     networks:
       - pds
 
-  # Starts the Big Data Crawler Server
-  big-data-crawler-server:
+  # Starts the Registry Crawler Service
+  registry-crawler-service:
     profiles: ["big-data-services", "big-data", "big-data-integration-test"]
-    image: ${BIG_DATA_CRAWLER_SERVER_IMAGE}
+    image: ${REGISTRY_CRAWLER_SERVICE_IMAGE}
     ports:
       - "8001:8001"
     volumes:
@@ -134,10 +134,10 @@ services:
     networks:
       - pds
 
-  # Executes the Big Data Harvest Client
-  big-data-harvest-client:
-    profiles: ["big-data-client", "big-data"]
-    image: ${BIG_DATA_HARVEST_CLIENT_IMAGE}
+  # Executes the Registry Harvest CLI
+  registry-harvest-cli:
+    profiles: ["registry-harvest-cli", "big-data"]
+    image: ${REGISTRY_HARVEST_CLI_IMAGE}
     volumes:
       - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-job-config.xml
       - ${HARVEST_DATA_DIR}:/data
@@ -145,10 +145,10 @@ services:
     networks:
       - pds
 
-  # Executes the Big Data Harvest Client with test data
-  big-data-harvest-client-test:
-    profiles: ["big-data-harvest-client-test", "big-data", "big-data-integration-test"]
-    image: ${BIG_DATA_HARVEST_CLIENT_IMAGE}
+  # Executes the Registry Harvest CLI with test data
+  registry-harvest-cli-test:
+    profiles: ["registry-harvest-cli-test", "big-data", "big-data-integration-test"]
+    image: ${REGISTRY_HARVEST_CLI_IMAGE}
     environment:
       - RUN_TESTS=true
       - TEST_DATA_URL=${TEST_DATA_URL}

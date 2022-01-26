@@ -8,9 +8,9 @@ The docker-compose.yml file contains following components.
 * registry-loader-test - Downloads and harvests test data with the Registry loader
 * elasticsearch - Starts Elasticsearch
 * registry-api - Starts the Registry API
-* big-data-harvest-server - Starts the Big Data Harvest Server
-* big-data-crawler-server - Starts the Big Data Crawler Server
-* big-data-harvest-client - Starts the Big Data Harvest Client
+* registry-harvest-service - Starts the Registry Harvest Service
+* registry-crawler-service- Starts the Registry Crawler Service
+* registry-harvest-cli - Starts the Registry Harvest CLI
 
 Also, the docker-compose.yml file contains following profiles.
 
@@ -22,8 +22,8 @@ Also, the docker-compose.yml file contains following profiles.
 | reg-loader                | Used to execute only Registry Loader |
 | reg-loader-test           | Used to execute only Registry Loader with test data (Test data is automatically downloaded from a URL) |
 | big-data                  | Used to start all big-data components |
-| big-data-services         | Used to start only Big Data Harvest Server and Big Data Crawler Server |
-| big-data-client           | Used to execute only Big Data Harvest Client |
+| big-data-services         | Used to start only Registry Harvest Service and Registry Crawler Service |
+| big-data-client           | Used to execute only Registry Harvest CLI |
 | big-data-integration-test | Used to start all big-data components with test data |
 
 With the use of above profiles the docker compose can start components individually
@@ -121,7 +121,7 @@ REG_API_APP_PROPERTIES_FILE=./config/application.properties
 | ES_URL                        | Elasticsearch URL (the host name is the Elasticsearch service name specified in the docker compose) |
 | HARVEST_CFG_FILE              | Absolute path of the Harvest configuration file in the host machine (E.g.: `/tmp/cfg/harvest-config.xml`) |
 | TEST_DATA_URL                 | URL to download the test data to Harvest (only required, if executing with test data) |
-| HARVEST_DATA_DIR              | Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`). If the Big Data Harvest Client is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
+| HARVEST_DATA_DIR              | Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/registry-harvest-data`). If the Registry Harvest CLI is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
 
 ```    
 # Docker image of the Registry Loader
@@ -140,13 +140,13 @@ TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-na
 # Common Configuartions
 # --------------------------------------------------------------------
 
-# Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`).
-# If the Big Data Harvest Client is executed with the option to download test data, then this directory will be
+# Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/registry-harvest-data`).
+# If the Registry Harvest CLI is executed with the option to download test data, then this directory will be
 # cleaned-up and populated with test data. Make sure to have the same `HARVEST_DATA_DIR` value set in the
-# environment variables of the Big Data Harvest Server, Big Data Crawler Server and Big Data Harvest Client.
-# Also, this `HARVEST_DATA_DIR` location should be accessible from the docker containers of the Big Data Harvest Server,
-# Big Data Crawler Server and Big Data Harvest Client.
-HARVEST_DATA_DIR=/tmp/big-data-harvest-data
+# environment variables of the Registry Harvest Service, Registry Crawler Service and Registry Harvest CLI.
+# Also, this `HARVEST_DATA_DIR` location should be accessible from the docker containers of the Registry Harvest Service,
+# Registry Crawler Service and Registry Harvest CLI.
+HARVEST_DATA_DIR=/tmp/registry-harvest-data
 ```
 
 ## 🏃 Steps to execute registry components with docker compose
@@ -230,7 +230,7 @@ has active endpoints of other services.
 docker compose --profile=services down
 ```
 
-## 🏃 Steps to configure the Big Data Harvest components to be executed with docker compose
+## 🏃 Steps to configure the Scalable Harvest components to be executed with docker compose
 
 #### 1. Open the `.env` file (located in the same directory with the `docker.compose.yml` file).
 
@@ -238,79 +238,79 @@ docker compose --profile=services down
 
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
-| HARVEST_DATA_DIR              | Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`). If the Big Data Harvest Client is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
+| HARVEST_DATA_DIR              | Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/registry-harvest-data`). If the Registry Harvest CLI is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
 
 ```
 # --------------------------------------------------------------------
 # Common Configuartions
 # --------------------------------------------------------------------
 
-# Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/big-data-harvest-data`).
-# If the Big Data Harvest Client is executed with the option to download test data, then this directory will be
+# Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/registry-harvest-data`).
+# If the Registry Harvest CLI is executed with the option to download test data, then this directory will be
 # cleaned-up and populated with test data. Make sure to have the same `HARVEST_DATA_DIR` value set in the
-# environment variables of the Big Data Harvest Server, Big Data Crawler Server and Big Data Harvest Client.
-# Also, this `HARVEST_DATA_DIR` location should be accessible from the docker containers of the Big Data Harvest Server,
-# Big Data Crawler Server and Big Data Harvest Client.
-HARVEST_DATA_DIR=/tmp/big-data-harvest-data
+# environment variables of the Registry Harvest Service, Registry Crawler Service and Registry Harvest CLI.
+# Also, this `HARVEST_DATA_DIR` location should be accessible from the docker containers of the Registry Harvest Service,
+# Registry Crawler Service and Registry Harvest CLI.
+HARVEST_DATA_DIR=/tmp/registry-harvest-data
 ```
 
-#### 2. Update the Big Data Harvest Server configuration file.
+#### 2. Update the Registry Harvest Service configuration file.
 
-* Get a copy of the `harvest-server.cfg` file from https://github.com/NASA-PDS/big-data-harvest-server/blob/main/src/main/resources/conf/harvest-server.cfg and keep it in a local file location such as `/tmp/cfg/harvest-server.cfg`.
+* Get a copy of the `harvest-server.cfg` file from https://github.com/NASA-PDS/registry-harvest-service/blob/main/src/main/resources/conf/harvest-server.cfg and keep it in a local file location such as `/tmp/cfg/harvest-server.cfg`.
 * Update the properties such as `rmq.host`, `rmq.user`, `rmq.password` and `es.url` to match with your deployment environment.
 * Make sure to specify the exact IP address of the host machine (E.g.: `192.168.0.1`), when configuring the `rmq.host` and
   `es.url`.
 
-#### 3. Check and update (if necessary) the following environment variables related with the Big Data Harvest Server in the `.env` file.
+#### 3. Check and update (if necessary) the following environment variables related with the Registry Harvest Service in the `.env` file.
 
 
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
-| BIG_DATA_HARVEST_SERVER_IMAGE | Docker image of the Big Data Harvest Server. Make sure this docker image is available. |
-| HARVEST_SERVER_CONFIG_FILE    | Absolute path of the Big Data Harvest Server configuration file in the host machine (E.g.: `/tmp/cfg/harvest-server.cfg`) |
+| BIG_DATA_HARVEST_SERVER_IMAGE | Docker image of the Registry Harvest Service. Make sure this docker image is available. |
+| HARVEST_SERVER_CONFIG_FILE    | Absolute path of the Registry Harvest Service configuration file in the host machine (E.g.: `/tmp/cfg/harvest-server.cfg`) |
 
 ```    
 # --------------------------------------------------------------------
-# Big Data Harvest Server
+# Registry Harvest Service
 # --------------------------------------------------------------------
 
-# Docker image of the Big Data Harvest Server
-BIG_DATA_HARVEST_SERVER_IMAGE=nasapds/big-data-harvest-server
+# Docker image of the Registry Harvest Service
+BIG_DATA_HARVEST_SERVER_IMAGE=nasapds/registry-harvest-service
 
-# Absolute path of the Big Data Harvest Server configuration file in the host machine (E.g.: /tmp/cfg/harvest-server.cfg)
+# Absolute path of the Registry Harvest Service configuration file in the host machine (E.g.: /tmp/cfg/harvest-server.cfg)
 HARVEST_SERVER_CONFIG_FILE=/tmp/cfg/harvest-server.cfg
 ```
 
-#### 4. Update the Big Data Crawler Server configuration file.
+#### 4. Update the Registry Crawler Service configuration file.
 
 * Get a copy of the `harvest-client.cfg` file from https://github.com/NASA-PDS/big-data-crawler-server/blob/main/src/main/resources/conf/crawler-server.cfg and
   keep it in a local file location such as `/tmp/cfg/crawler-server.cfg`.
 * Update the properties such as `rmq.host`, `rmq.user` and `rmq.password` to match with your deployment environment.
 * Make sure to specify the exact IP address of the host machine (E.g.: `192.168.0.1`), when configuring the `rmq.host`.
 
-#### 5. Check and update (if necessary) the following environment variables related with the Big Data Crawler Server in the `.env` file.
+#### 5. Check and update (if necessary) the following environment variables related with the Registry Crawler Service in the `.env` file.
 
 
-| Environment Variable          | Description |
-| ----------------------------- | ----------- |
-| BIG_DATA_CRAWLER_SERVER_IMAGE | Docker image of the Big Data Harvest Crawler. Make sure this docker image is available. |
-| CRAWLER_SERVER_CONFIG_FILE    | Absolute path of the Big Data Crawler Server configuration file in the host machine (`E.g.: /tmp/cfg/crawler-server.cfg`) |
+| Environment Variable           | Description |
+| ------------------------------ | ----------- |
+| REGISTRY_CRAWLER_SERVICE_IMAGE | Docker image of the Registry Crawler Service. Make sure this docker image is available. |
+| CRAWLER_SERVER_CONFIG_FILE     | Absolute path of the Registry Crawler Service configuration file in the host machine (`E.g.: /tmp/cfg/crawler-server.cfg`) |
 
 ```    
 # --------------------------------------------------------------------
-# Big Data Crawler Server
+# Registry Crawler Service
 # --------------------------------------------------------------------
 
-# Docker image of the Big Data Crawler Server
-BIG_DATA_CRAWLER_SERVER_IMAGE=nasapds/big-data-crawler-server
+# Docker image of the Registry Crawler Service
+REGISTRY_CRAWLER_SERVICE_IMAGE=nasapds/big-data-crawler-server
 
-# Absolute path of the Big Data Crawler Server configuration file in the host machine (E.g.: /tmp/cfg/crawler-server.cfg)
+# Absolute path of the Registry Crawler Service configuration file in the host machine (E.g.: /tmp/cfg/crawler-server.cfg)
 CRAWLER_SERVER_CONFIG_FILE=/tmp/cfg/crawler-server.cfg
 ```
 
-#### 6. Update the Big Data Harvest Client configuration file.
+#### 6. Update the Registry Harvest CLI configuration file.
 
-* Get a copy of the `harvest-client.cfg` file from https://github.com/NASA-PDS/big-data-harvest-client/blob/main/src/main/resources/conf/harvest-client.cfg and
+* Get a copy of the `harvest-client.cfg` file from https://github.com/NASA-PDS/registry-harvest-cli/blob/main/src/main/resources/conf/harvest-client.cfg and
   keep it in a local file location such as `/tmp/conf/harvest-client.cfg`.
 * Update the properties such as `rmq.host`, `rmq.user` and `rmq.password` to match with your deployment environment.
 * Make sure to specify the exact IP address of the host machine (E.g.: `192.168.0.1`), when configuring the `rmq.host`.
@@ -319,29 +319,29 @@ CRAWLER_SERVER_CONFIG_FILE=/tmp/cfg/crawler-server.cfg
 #### 7. Update the Harvest job file.
 
 * Create a Harvest job file in a local file location (E.g.: `/tmp/cfg/harvest-job-config.xml`).
-* An example for a Harvest job file can be found at https://github.com/NASA-PDS/big-data-harvest-client/blob/main/src/main/resources/examples/directories.xml.
+* An example for a Harvest job file can be found at https://github.com/NASA-PDS/registry-harvest-cli/blob/main/src/main/resources/examples/directories.xml.
   Make sure to update the `/path/to/archive` in the Harvest job file to point to a valid Harvest data directory.
 
-#### 8. Check and update (if necessary) the following environment variables related with the Big Data Harvest Client in the `.env` file.
+#### 8. Check and update (if necessary) the following environment variables related with the Registry Harvest CLI in the `.env` file.
 
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
-| BIG_DATA_HARVEST_CLIENT_IMAGE | Docker image of the Big Data Harvest Client. Make sure this docker image is available. |
+| REGISTRY_HARVEST_CLI_IMAGE    | Docker image of the Registry Harvest CLI. Make sure this docker image is available. |
 | HARVEST_JOB_CONFIG_FILE       | Absolute path of the Harvest job file in the host machine (E.g.: `/tmp/cfg/harvest-job-config.xml`) |
-| HARVEST_CLIENT_CONFIG_FILE    | Absolute path of the Big Data Harvest Client configuration file in the host machine (E.g.: `/tmp/conf/harvest-client.cfg`) |
+| HARVEST_CLIENT_CONFIG_FILE    | Absolute path of the Registry Harvest CLI configuration file in the host machine (E.g.: `/tmp/conf/harvest-client.cfg`) |
 
 ```    
 # --------------------------------------------------------------------
-# Big Data Client Server
+# Registry Harvest CLI
 # --------------------------------------------------------------------
 
-# Docker image of the Big Data Harvest Client
-BIG_DATA_HARVEST_CLIENT_IMAGE=nasapds/big-data-harvest-client
+# Docker image of the Registry Harvest CLI
+REGISTRY_HARVEST_CLI_IMAGE=nasapds/registry-harvest-cli
 
 # Absolute path of the Harvest job file in the host machine (E.g.: /tmp/cfg/harvest-job-config.xml)
 HARVEST_JOB_CONFIG_FILE=/tmp/cfg/harvest-job-config.xml
 
-# Absolute path of the Big Data Harvest Client configuration file in the host machine (E.g.: /tmp/conf/harvest-client.cfg)
+# Absolute path of the Registry Harvest CLI configuration file in the host machine (E.g.: /tmp/conf/harvest-client.cfg)
 HARVEST_CLIENT_CONFIG_FILE=/tmp/cfg/harvest-client.cfg
 ```
 
@@ -356,31 +356,31 @@ the `rabbit_password_hashing_sha256` algorithm (The Python script available at t
 can be used to generate a password hash for a new password hash).
 * Update the `password_hash` of the `harvest` user with the newly generated password hash.
 
-## 🏃 Steps to execute the Big Data Harvest components with docker compose
+## 🏃 Steps to execute the Scalable Harvest components with docker compose
 
 #### 1. Open a terminal and change the current working directory to `registry/docker`.
 
 #### 2. Setup Elasticsearch and RabbitMQ as explained in the following document.
 TODO: Add the link to the Scalable Harvest documentation.
 
-#### 3. Start Big Data Harvest components as follows.
+#### 3. Start Scalable Harvest components as follows.
 
-To start all big-data components (Big Data Harvest Server, Big Data Crawler Server and Big Data Harvest Client) 
+To start all big-data components (Registry Harvest Service, Registry Crawler Service and Registry Harvest CLI) 
 ```
 docker compose --profile=big-data up
 ```
 
-To start only Big Data Harvest Server and Big Data Crawler Server
+To start only Registry Harvest Service and Registry Crawler Service
 ```
 docker compose --profile=big-data-services up
 ```
 
-To start only Big Data Harvest Client
+To start only Registry Harvest CLI
 ```
 docker compose --profile=big-data-client up
 ```
 
-To execute Big Data Integration Tests with downloaded test data
+To execute Scalable Harvest Integration Tests with downloaded test data
 ```
 docker compose --profile=big-data-integration-test up
 ```
@@ -392,9 +392,9 @@ Follow the instructions in the following section at the end of the [Test Your De
 
 * Query Elasticsearch
 
-## 🏃 Cleaning up the Big Data Harvest deployment
+## 🏃 Cleaning up the Scalable Harvest deployment
 
-#### * The Big Data Harvest deployment can be cleaned up as follows.
+#### * The Scalable Harvest deployment can be cleaned up as follows.
 
 ```
 docker compose --profile=big-data down
