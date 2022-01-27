@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright 2021, California Institute of Technology ("Caltech").
+# Copyright 2022, California Institute of Technology ("Caltech").
 # U.S. Government sponsorship acknowledged.
 #
 # All rights reserved.
@@ -30,18 +30,20 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# ------------------------------------------------------------------------------------------------
-# This script is used to wait for Elasticsearch to start before starting the Registry API service.
-# ------------------------------------------------------------------------------------------------
+# -------------------------------------------------
+# This script is used to initialize Elasticsearch.
+# -------------------------------------------------
+
+# Check if the ES_URL environment variable is set
+if [ -z "$ES_URL" ]; then
+    echo "Error: 'ES_URL' (Elasticsearch URL) environment variable is not set. Use docker's -e option." 1>&2
+    exit 1
+fi
 
 echo "Waiting for Elasticsearch to launch..."  1>&2
-while ! curl --output /dev/null --silent --head --fail http://elasticsearch:9200; do
-  echo "waiting for elasticsearch" 1>&2
+while ! curl --output /dev/null --silent --head --fail "$ES_URL"; do
   sleep 1
 done
 
-echo "Starting Registry API service..."  1>&2
-java -cp /usr/local/registry-api-service \
-     -jar /usr/local/registry-api-service/registry-api-service.jar \
-     --spring.config.location=file:///usr/local/registry-api-service/application.properties \
-     gov.nasa.pds.api.engineering.SpringBootMain
+echo "Creating registry and data dictionary indices..." 1>&2
+registry-manager create-registry -es "$ES_URL"

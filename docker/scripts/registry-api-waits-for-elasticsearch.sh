@@ -31,7 +31,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 # ------------------------------------------------------------------------------------------------
-# This script is used to wait for Elasticsearch to start before starting the Registry Loader.
+# This script is used to wait for Elasticsearch to start before starting the Registry API service.
 # ------------------------------------------------------------------------------------------------
 
 echo "Waiting for Elasticsearch to launch..."  1>&2
@@ -40,6 +40,8 @@ while ! curl --output /dev/null --silent --head --fail http://elasticsearch:9200
   sleep 1
 done
 
-echo "Starting registry-loader..."  1>&2
-chmod a+x /usr/local/bin/entrypoint.sh
-/usr/local/bin/entrypoint.sh
+echo "Starting Registry API service..."  1>&2
+java -cp /usr/local/registry-api-service \
+     -jar /usr/local/registry-api-service/registry-api-service.jar \
+     --spring.config.location=file:///usr/local/registry-api-service/application.properties \
+     gov.nasa.pds.api.engineering.SpringBootMain

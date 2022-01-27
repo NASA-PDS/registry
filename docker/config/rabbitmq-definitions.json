@@ -1,0 +1,50 @@
+{
+  "rabbit_version": "3.9",
+  "users": [
+    {
+      "name": "harvest",
+      "password_hash": "<ADD PASSWORD HASH HERE> (The Python script available at the https://stackoverflow.com/questions/41306350/how-to-generate-password-hash-for-rabbitmq-management-http-api/53016240#53016240 can be used to generate a password hash for a new password hash)",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "harvest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "queues": [
+    {
+      "name": "harvest.jobs",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "harvest.dirs",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "harvest.products",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "harvest.collections",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ]
+}
