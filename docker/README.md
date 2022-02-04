@@ -361,7 +361,7 @@ can be used to generate a password hash for a new password hash).
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
 | POSTMAN_NEWMAN_IMAGE          | Docker image of Newman (a command-line collection runner for Postman) |
-| POSTMAN_COLLECTION_FILE       | Absolute path of the postman collection to be executed with the test data (E.g.: ./postman/postman_collection.json) |
+| POSTMAN_COLLECTION_FILE       | Absolute path of the Postman collection to be executed with the test data (E.g.: ./postman/postman_collection.json) |
 
 ```    
 # --------------------------------------------------------------------
@@ -371,7 +371,7 @@ can be used to generate a password hash for a new password hash).
 # Docker image of Newman (a command-line collection runner for Postman)
 POSTMAN_NEWMAN_IMAGE=postman/newman
 
-# Absolute path of the postman collection to be executed with the test data (E.g.: ./postman/postman_collection.json)
+# Absolute path of the Postman collection to be executed with the test data (E.g.: ./postman/postman_collection.json)
 POSTMAN_COLLECTION_FILE=./postman/postman_collection.json
 ```
 
