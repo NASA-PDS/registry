@@ -159,6 +159,17 @@ services:
     networks:
       - pds
 
+  # Executes the Postman collection with test data
+  postman-collection-test:
+    profiles: ["postman-test", "big-data-integration-test"]
+    image: ${POSTMAN_NEWMAN_IMAGE}
+    volumes:
+      - ${POSTMAN_COLLECTION_FILE}:/postman/postman-collection.json
+      - ./scripts/postman-waits-for-test-data.sh:/usr/local/bin/postman-waits-for-test-data.sh
+    networks:
+      - pds
+    entrypoint: ["sh", "/usr/local/bin/postman-waits-for-test-data.sh"]
+
 networks:
   pds:
     driver: bridge
