@@ -30,11 +30,11 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# -----------------------------------------------------------------------------------------------------------
-# This script is used to wait for data to be available in the Registry-API, before starting the Postman tests.
-# -----------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------
+# This script is used to wait for test data to be available in the Registry-API, before starting the Postman tests.
+# ------------------------------------------------------------------------------------------------------------------
 
-echo "Waiting for data to be available in the Registry-API, before starting the Postman tests..."  1>&2
+echo "Waiting for test data to be available in the Registry-API, before starting the Postman tests..."  1>&2
 sleep 180
 
 echo "Starting Postman tests..."  1>&2
