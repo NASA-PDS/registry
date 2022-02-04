@@ -24,7 +24,7 @@ Also, the docker-compose.yml file contains following profiles.
 | big-data                  | Used to start all big-data components |
 | big-data-services         | Used to start only Registry Harvest Service and Registry Crawler Service |
 | big-data-client           | Used to execute only Registry Harvest CLI |
-| big-data-integration-test | Used to start all big-data components with test data |
+| big-data-integration-test | Used to start all big-data components with test data and execute a Postman collection to run tests |
 
 With the use of above profiles the docker compose can start components individually
 or as a group of components as follows. The `-d` option at the end of the commands is used to
@@ -355,6 +355,25 @@ The RabbitMQ can be configured by using the `rabbitmq-definitions.json` file ava
 the `rabbit_password_hashing_sha256` algorithm (The Python script available at the https://stackoverflow.com/questions/41306350/how-to-generate-password-hash-for-rabbitmq-management-http-api/53016240#53016240 
 can be used to generate a password hash for a new password hash).
 * Update the `password_hash` of the `harvest` user with the newly generated password hash.
+
+#### 10. Check and update (if necessary) the following environment variables related with the Postman Collection Test
+
+| Environment Variable          | Description |
+| ----------------------------- | ----------- |
+| POSTMAN_NEWMAN_IMAGE          | Docker image of Newman (a command-line collection runner for Postman) |
+| POSTMAN_COLLECTION_FILE       | Absolute path of the postman collection to be executed with the test data (E.g.: ./postman/postman_collection.json) |
+
+```    
+# --------------------------------------------------------------------
+# Registry Harvest CLI
+# --------------------------------------------------------------------
+
+# Docker image of Newman (a command-line collection runner for Postman)
+POSTMAN_NEWMAN_IMAGE=postman/newman
+
+# Absolute path of the postman collection to be executed with the test data (E.g.: ./postman/postman_collection.json)
+POSTMAN_COLLECTION_FILE=./postman/postman_collection.json
+```
 
 ## 🏃 Steps to execute the Scalable Harvest components with docker compose
 
