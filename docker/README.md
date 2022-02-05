@@ -47,6 +47,36 @@ For API dev, start the registry with some test data, without the API:
 
     docker compose --profile=pre-api-dev up
 
+
+## 🏃 Quick start guide - with default configurations
+
+This quick start guide is a quick way to start all Registry Components, load test data and run tests with a Postman
+collection. This quick start steps use default configurations such as default username and password.
+
+PLEASE DO NOT use the quick start with default configurations in any environment other than your local machine. Make sure 
+to replace the default passwords with your own passwords as explained in the following section:
+**Steps to configure registry components to be executed with docker compose** to ensure security.
+
+**Steps to quick start all Registry Components, load test data and run tests with a Postman collection**
+
+1) Get the latest copy of the Registry from https://github.com/NASA-PDS/registry.
+```
+git clone https://github.com/NASA-PDS/registry.git
+```
+2) Open a terminal and change the current working directory to `registry/docker`.
+```
+cd docker
+```
+3) Deploy and execute integration tests with the following single command.
+```
+docker compose --profile=big-data-integration-test up
+```
+4) To clean the deployment, execute the following command.
+```
+docker compose --profile=big-data-integration-test down
+```
+
+
 ## 🏃 Steps to configure registry components to be executed with docker compose
 
 #### 1. Open the `.env` file (located in the same directory with the `docker.compose.yml` file).

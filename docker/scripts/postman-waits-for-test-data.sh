@@ -35,7 +35,7 @@
 # ------------------------------------------------------------------------------------------------------------------
 
 echo "Waiting for test data to be available in the Registry-API, before starting the Postman tests..."  1>&2
-sleep 180
+sleep 240
 
 echo "Starting Postman tests..."  1>&2
 newman run /postman/postman-collection.json --env-var baseUrl=registry-api:8080
