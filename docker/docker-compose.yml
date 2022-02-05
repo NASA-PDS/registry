@@ -90,8 +90,8 @@ services:
       - "15672:15672"
       - "5672:5672"
     volumes:
-      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
-      - ./config/rabbitmq-definitions.json:/etc/rabbitmq/definitions.json:ro
+      - ./default-config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./default-config/rabbitmq-definitions.json:/etc/rabbitmq/definitions.json:ro
     networks:
       - pds
 
