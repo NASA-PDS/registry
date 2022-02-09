@@ -3,7 +3,7 @@
   "users": [
     {
       "name": "harvest",
-      "password_hash": "<ADD PASSWORD HASH HERE> (The Python script available at the https://stackoverflow.com/questions/41306350/how-to-generate-password-hash-for-rabbitmq-management-http-api/53016240#53016240 can be used to generate a password hash for a new password hash)",
+      "password_hash": "d/hQxz0npBVirMPzW821BijSvzlozRiWAynAzgPzyXNhpqa4",
       "hashing_algorithm": "rabbit_password_hashing_sha256",
       "tags": "administrator"
     }

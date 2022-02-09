@@ -90,8 +90,8 @@ services:
       - "15672:15672"
       - "5672:5672"
     volumes:
-      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
-      - ./config/rabbitmq-definitions.json:/etc/rabbitmq/definitions.json:ro
+      - ./default-config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./default-config/rabbitmq-definitions.json:/etc/rabbitmq/definitions.json:ro
     networks:
       - pds
 
@@ -158,6 +158,17 @@ services:
       - ${HARVEST_CLIENT_CONFIG_FILE}:/cfg/harvest-client.cfg
     networks:
       - pds
+
+  # Executes the Postman collection with test data
+  postman-collection-test:
+    profiles: ["postman-test", "big-data-integration-test"]
+    image: ${POSTMAN_NEWMAN_IMAGE}
+    volumes:
+      - ${POSTMAN_COLLECTION_FILE}:/postman/postman-collection.json
+      - ./scripts/postman-waits-for-test-data.sh:/usr/local/bin/postman-waits-for-test-data.sh
+    networks:
+      - pds
+    entrypoint: ["sh", "/usr/local/bin/postman-waits-for-test-data.sh"]
 
 networks:
   pds:

@@ -24,7 +24,7 @@ Also, the docker-compose.yml file contains following profiles.
 | big-data                  | Used to start all big-data components |
 | big-data-services         | Used to start only Registry Harvest Service and Registry Crawler Service |
 | big-data-client           | Used to execute only Registry Harvest CLI |
-| big-data-integration-test | Used to start all big-data components with test data |
+| big-data-integration-test | Used to start all big-data components with test data and execute a Postman collection to run tests |
 
 With the use of above profiles the docker compose can start components individually
 or as a group of components as follows. The `-d` option at the end of the commands is used to
@@ -46,6 +46,36 @@ For test, start the registry with some test data loaded:
 For API dev, start the registry with some test data, without the API:
 
     docker compose --profile=pre-api-dev up
+
+
+## 🏃 Quick start guide - with default configurations
+
+This quick start guide is a quick way to start all Registry Components, load test data and run tests with a Postman
+collection. This quick start steps use default configurations such as default username and password.
+
+PLEASE DO NOT use the quick start with default configurations in any environment other than your local machine. Make sure 
+to replace the default passwords with your own passwords as explained in the following section:
+**Steps to configure registry components to be executed with docker compose** to ensure security.
+
+**Steps to quick start all Registry Components, load test data and run tests with a Postman collection**
+
+1) Get the latest copy of the Registry from https://github.com/NASA-PDS/registry.
+```
+git clone https://github.com/NASA-PDS/registry.git
+```
+2) Open a terminal and change the current working directory to `registry/docker`.
+```
+cd docker
+```
+3) Deploy and execute integration tests with the following single command.
+```
+docker compose --profile=big-data-integration-test up
+```
+4) To clean the deployment, execute the following command.
+```
+docker compose --profile=big-data-integration-test down
+```
+
 
 ## 🏃 Steps to configure registry components to be executed with docker compose
 
@@ -355,6 +385,25 @@ The RabbitMQ can be configured by using the `rabbitmq-definitions.json` file ava
 the `rabbit_password_hashing_sha256` algorithm (The Python script available at the https://stackoverflow.com/questions/41306350/how-to-generate-password-hash-for-rabbitmq-management-http-api/53016240#53016240 
 can be used to generate a password hash for a new password hash).
 * Update the `password_hash` of the `harvest` user with the newly generated password hash.
+
+#### 10. Check and update (if necessary) the following environment variables related with the Postman Collection Test
+
+| Environment Variable          | Description |
+| ----------------------------- | ----------- |
+| POSTMAN_NEWMAN_IMAGE          | Docker image of Newman (a command-line collection runner for Postman) |
+| POSTMAN_COLLECTION_FILE       | Absolute path of the Postman collection to be executed with the test data (E.g.: ./postman/postman_collection.json) |
+
+```    
+# --------------------------------------------------------------------
+# Registry Harvest CLI
+# --------------------------------------------------------------------
+
+# Docker image of Newman (a command-line collection runner for Postman)
+POSTMAN_NEWMAN_IMAGE=postman/newman
+
+# Absolute path of the Postman collection to be executed with the test data (E.g.: ./postman/postman_collection.json)
+POSTMAN_COLLECTION_FILE=./postman/postman_collection.json
+```
 
 ## 🏃 Steps to execute the Scalable Harvest components with docker compose
 
