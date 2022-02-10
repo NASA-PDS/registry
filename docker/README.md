@@ -74,6 +74,8 @@ cd docker
 ```
 docker compose --profile=int-registry-service-loader-test up
 ```
+Note: This may take several minutes, including data loading  delays between components.
+
 4) To clean the deployment, execute the following command.
 ```
 docker compose --profile=int-registry-service-loader-test down
