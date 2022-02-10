@@ -1,4 +1,4 @@
-# 🪐 Docker Compose for Registry Components
+[# 🪐 Docker Compose for Registry Components
 
 This directory contains the files related with docker compose for Registry Container. To learn more about docker compose,
 please refer to [https://docs.docker.com/compose/](https://docs.docker.com/compose/).
@@ -14,38 +14,41 @@ The docker-compose.yml file contains following components.
 
 Also, the docker-compose.yml file contains following profiles.
 
-| Profile                   | Purpose |
-| ------------------------- | ------------ |
-| elastic                   | Used to start only Elasticsearch |
-| api                       | Used to start only Registry API|
-| services                  | Used to start both Elasticsearch and Registry API |
-| reg-loader                | Used to execute only Registry Loader |
-| reg-loader-test           | Used to execute only Registry Loader with test data (Test data is automatically downloaded from a URL) |
-| big-data                  | Used to start all big-data components |
-| big-data-services         | Used to start only Registry Harvest Service and Registry Crawler Service |
-| big-data-client           | Used to execute only Registry Harvest CLI |
-| big-data-integration-test | Used to start all big-data components with test data and execute a Postman collection to run tests |
+| Components\\Profiles                                 | dev-api | dev-api-test | pds-core-registry | int-registry-batch-loader | int-registry-batch-loader-test | int-registry-service-loader | int-registry-service-loader-test | pds-loader-services | pds-batch-loader   | pds-service-loader   | int-test   |
+| ---------------------------------------------------- | ------- | ------------ | ----------------- | ------------------------- | ------------------------------ | --------------------------- | -------------------------------- | ------------------- | ------------------ | -------------------- | ---------- |
+| Elasticsearch                                        | x       | x            | x                 | x                         | x                              | x                           | x                                |                     |                    |                      |            |
+| Elasticsearch init                                   | x       | x            | x                 | x                         | x                              | x                           | x                                |                     |                    |                      |            |
+| Registry API                                         |         |              | x                 | x                         | x                              | x                           | x                                |                     |                    |                      |            |
+| Registry loader test init                            |         | x            |                   | x                         | x                              |                             |                                  |                     |                    |                      |            |
+| Registry loader                                      |         |              |                   |                           |                                |                             |                                  |                     | x                  |                      |            |
+| Registry API integration tests (postman collection)  |         |              |                   |                           | x                              |                             | x                                |                     |                    |                      | x          |
+| Rabbitmq                                             |         |              |                   |                           |                                | x                           | x                                | x                   |                    |                      |            |
+| Registry harvest service                             |         |              |                   |                           |                                | x                           | x                                | x                   |                    |                      |            |
+| Registry crawler service                             |         |              |                   |                           |                                | x                           | x                                | x                   |                    |                      |            |
+| Registry harvest cli test init                       |         |              |                   |                           |                                |                             | x                                |                     |                    |                      |            |
+| Registry harvest cli                                 |         |              |                   |                           |                                |                             |                                  |                     |                    | x                    |            |
+
 
 With the use of above profiles the docker compose can start components individually
 or as a group of components as follows. The `-d` option at the end of the commands is used to
 run containers in detached mode (Run containers in the background).
 
 ```
-docker compose --profile=elastic up -d
+docker compose --profile=dev-api up -d
 
-docker compose --profile=services up -d
+docker compose --profile=pds-core-registry up -d
 
-docker compose --profile=reg-loader up
+docker compose --profile=dev-api-test up
 ```
 
 For test, start the registry with some test data loaded:
 
-    docker compose --profile=integration-test up
+    docker compose --profile=int-registry-batch-loader-test up
 
 
 For API dev, start the registry with some test data, without the API:
 
-    docker compose --profile=pre-api-dev up
+    docker compose --profile=dev-api-test up
 
 
 ## 🏃 Quick start guide - with default configurations
@@ -69,11 +72,13 @@ cd docker
 ```
 3) Deploy and execute integration tests with the following single command.
 ```
-docker compose --profile=big-data-integration-test up
+docker compose --profile=int-registry-service-loader-test up
 ```
+Note: This may take several minutes, including data loading  delays between components.
+
 4) To clean the deployment, execute the following command.
 ```
-docker compose --profile=big-data-integration-test down
+docker compose --profile=int-registry-service-loader-test down
 ```
 
 
@@ -126,7 +131,7 @@ elasticSearch.host=elasticsearch:9200
 REG_API_IMAGE=pds/registry-api-service:0.4.0-SNAPSHOT
 
 # Absolute path of the application.properties file to be used for the Registry API
-REG_API_APP_PROPERTIES_FILE=./config/application.properties
+REG_API_APP_PROPERTIES_FILE=./default-config/application.properties
 ```
 
 #### 5. Make sure that the Harvest configuration file has the directory path configured as `/data`, as shown in the following example.
@@ -149,19 +154,19 @@ REG_API_APP_PROPERTIES_FILE=./config/application.properties
 | ----------------------------- | ----------- |
 | REG_LOADER_IMAGE              | Docker image of the Registry Loader. Make sure this docker image is available. |
 | ES_URL                        | Elasticsearch URL (the host name is the Elasticsearch service name specified in the docker compose) |
-| HARVEST_CFG_FILE              | Absolute path of the Harvest configuration file in the host machine (E.g.: `/tmp/cfg/harvest-config.xml`) |
+| HARVEST_CFG_FILE              | Absolute path of the Harvest configuration file in the host machine (E.g.: `./default-config/harvest-job-config.xml`) |
 | TEST_DATA_URL                 | URL to download the test data to Harvest (only required, if executing with test data) |
 | HARVEST_DATA_DIR              | Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/registry-harvest-data`). If the Registry Harvest CLI is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
 
 ```    
 # Docker image of the Registry Loader
-REG_LOADER_IMAGE=pds/registry-loader
+REG_LOADER_IMAGE=nasapds/registry-loader
 
 # Elasticsearch URL (the host name is the Elasticsearch service name specified in the docker compose)
 ES_URL=http://elasticsearch:9200
 
-# Absolute path of the Harvest configuration file in the host machine (E.g.: /tmp/cfg/harvest-config.xml)
-HARVEST_CFG_FILE=/tmp/cfg/harvest-test-config.xml
+# Absolute path of the Harvest configuration file in the host machine (E.g.: ./default-config/harvest-job-config.xml)
+HARVEST_CFG_FILE=./default-config/harvest-job-config.xml
 
 # URL to download the test data to Harvest (only required, if executing with test data)
 TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-nasa-pds-insight_rad.tar.gz
@@ -170,13 +175,13 @@ TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-na
 # Common Configuartions
 # --------------------------------------------------------------------
 
-# Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/registry-harvest-data`).
+# Absolute path of the Harvest data directory in the host machine (E.g.: `./test-data/registry-harvest-data`).
 # If the Registry Harvest CLI is executed with the option to download test data, then this directory will be
 # cleaned-up and populated with test data. Make sure to have the same `HARVEST_DATA_DIR` value set in the
 # environment variables of the Registry Harvest Service, Registry Crawler Service and Registry Harvest CLI.
 # Also, this `HARVEST_DATA_DIR` location should be accessible from the docker containers of the Registry Harvest Service,
 # Registry Crawler Service and Registry Harvest CLI.
-HARVEST_DATA_DIR=/tmp/registry-harvest-data
+HARVEST_DATA_DIR=./test-data/registry-harvest-data
 ```
 
 ## 🏃 Steps to execute registry components with docker compose
@@ -186,21 +191,21 @@ HARVEST_DATA_DIR=/tmp/registry-harvest-data
 #### 2. Start the backend services (both Elasticsearch and the Registry API) as follows.
 
 ```
-docker compose --profile=services up -d
+docker compose --profile=pds-core-registry up -d
 ```
 
 When above command is executed, the Registry API will wait for Elasticsearch to start.
 
-Alternatively, it is possible to start only Elasticsearch as follows.
+Alternatively, it is possible to start only Elasticsearch as follows (see the table with profiles and components above).
 
 ```
-docker compose --profile=elastic up -d
+docker compose --profile=dev-api up -d
 ```
 
 #### 3. Execute the Registry Loader as follows.
 
 ```
-docker compose --profile=reg-loader up
+docker compose --profile=pds-batch-loader up
 ```
 
 When above command is executed, the Registry Loader will use the configurations and data provided with the following
@@ -212,7 +217,7 @@ environment variables configured in the `.env` file.
 
 Alternatively, it is possible to execute the Registry Loader with test data as follows.
 ```
-docker compose --profile=reg-loader-test up
+docker compose --profile=int-registry-batch-loader-test up
 ```
 
 When above command is executed, the Registry Loader will download test data from URL configured with the following
@@ -223,7 +228,7 @@ environment variable  in the `.env` file.
 
 Wait for the following message in the terminal to make sure if the execution of the Registry Loader exited with code 0.
 ```
-docker-registry-loader-1 exited with code 0
+docker-reg-api-integration-test-1 exited with code 0
 ```
 
 #### 4. Test the deployment.
@@ -238,7 +243,7 @@ Follow the instructions in the following sections at the end of the [Test Your D
 #### * The Registry Loader can be cleaned up as follows.
 
 ```
-docker compose --profile=reg-loader down
+docker compose --profile=pds-batch-loader down
 ```
 
 Note: Ignore any `failed to remove network` errors, because the related docker network
@@ -248,17 +253,11 @@ has active endpoints of other services.
 #### * The Registry Loader with test data can be cleaned up as follows.
 
 ```
-docker compose --profile=reg-loader-test down
+docker compose --profile=int-registry-batch-loader-test down
 ```
 
-Note: Ignore any `failed to remove network` errors, because the related docker network
-has active endpoints of other services.
-
-#### * The Registry API and Elasticsearch can be cleaned up as follows.
-
-```
-docker compose --profile=services down
-```
+Note: Ignore any `failed to remove network` errors, because the related docker network may
+have active endpoints of other services.
 
 ## 🏃 Steps to configure the Scalable Harvest components to be executed with docker compose
 
@@ -275,13 +274,13 @@ docker compose --profile=services down
 # Common Configuartions
 # --------------------------------------------------------------------
 
-# Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/registry-harvest-data`).
+# Absolute path of the Harvest data directory in the host machine (E.g.: `./test-data/registry-harvest-data`).
 # If the Registry Harvest CLI is executed with the option to download test data, then this directory will be
 # cleaned-up and populated with test data. Make sure to have the same `HARVEST_DATA_DIR` value set in the
 # environment variables of the Registry Harvest Service, Registry Crawler Service and Registry Harvest CLI.
 # Also, this `HARVEST_DATA_DIR` location should be accessible from the docker containers of the Registry Harvest Service,
 # Registry Crawler Service and Registry Harvest CLI.
-HARVEST_DATA_DIR=/tmp/registry-harvest-data
+HARVEST_DATA_DIR=./test-data/registry-harvest-data
 ```
 
 #### 2. Update the Registry Harvest Service configuration file.
@@ -297,7 +296,7 @@ HARVEST_DATA_DIR=/tmp/registry-harvest-data
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
 | BIG_DATA_HARVEST_SERVER_IMAGE | Docker image of the Registry Harvest Service. Make sure this docker image is available. |
-| HARVEST_SERVER_CONFIG_FILE    | Absolute path of the Registry Harvest Service configuration file in the host machine (E.g.: `/tmp/cfg/harvest-server.cfg`) |
+| HARVEST_SERVER_CONFIG_FILE    | Absolute path of the Registry Harvest Service configuration file in the host machine (E.g.: `./default-config/harvest-server.cfg`) |
 
 ```    
 # --------------------------------------------------------------------
@@ -305,10 +304,10 @@ HARVEST_DATA_DIR=/tmp/registry-harvest-data
 # --------------------------------------------------------------------
 
 # Docker image of the Registry Harvest Service
-BIG_DATA_HARVEST_SERVER_IMAGE=nasapds/registry-harvest-service
+REGISTRY_HARVEST_SERVICE_IMAGE=nasapds/registry-harvest-service
 
 # Absolute path of the Registry Harvest Service configuration file in the host machine (E.g.: /tmp/cfg/harvest-server.cfg)
-HARVEST_SERVER_CONFIG_FILE=/tmp/cfg/harvest-server.cfg
+HARVEST_SERVER_CONFIG_FILE=./default-config/harvest-server.cfg
 ```
 
 #### 4. Update the Registry Crawler Service configuration file.
@@ -324,7 +323,7 @@ HARVEST_SERVER_CONFIG_FILE=/tmp/cfg/harvest-server.cfg
 | Environment Variable           | Description |
 | ------------------------------ | ----------- |
 | REGISTRY_CRAWLER_SERVICE_IMAGE | Docker image of the Registry Crawler Service. Make sure this docker image is available. |
-| CRAWLER_SERVER_CONFIG_FILE     | Absolute path of the Registry Crawler Service configuration file in the host machine (`E.g.: /tmp/cfg/crawler-server.cfg`) |
+| CRAWLER_SERVER_CONFIG_FILE     | Absolute path of the Registry Crawler Service configuration file in the host machine (`E.g.: ./default-config/crawler-server.cfg`) |
 
 ```    
 # --------------------------------------------------------------------
@@ -332,23 +331,23 @@ HARVEST_SERVER_CONFIG_FILE=/tmp/cfg/harvest-server.cfg
 # --------------------------------------------------------------------
 
 # Docker image of the Registry Crawler Service
-REGISTRY_CRAWLER_SERVICE_IMAGE=nasapds/big-data-crawler-server
+REGISTRY_CRAWLER_SERVICE_IMAGE=nasapds/registry-crawler-service
 
 # Absolute path of the Registry Crawler Service configuration file in the host machine (E.g.: /tmp/cfg/crawler-server.cfg)
-CRAWLER_SERVER_CONFIG_FILE=/tmp/cfg/crawler-server.cfg
+CRAWLER_SERVER_CONFIG_FILE=./default-config/crawler-server.cfg
 ```
 
 #### 6. Update the Registry Harvest CLI configuration file.
 
 * Get a copy of the `harvest-client.cfg` file from https://github.com/NASA-PDS/registry-harvest-cli/blob/main/src/main/resources/conf/harvest-client.cfg and
-  keep it in a local file location such as `/tmp/conf/harvest-client.cfg`.
+  keep it in a local file location such as `./default-config/harvest-client.cfg`.
 * Update the properties such as `rmq.host`, `rmq.user` and `rmq.password` to match with your deployment environment.
 * Make sure to specify the exact IP address of the host machine (E.g.: `192.168.0.1`), when configuring the `rmq.host`.
 
 
 #### 7. Update the Harvest job file.
 
-* Create a Harvest job file in a local file location (E.g.: `/tmp/cfg/harvest-job-config.xml`).
+* Create a Harvest job file in a local file location (E.g.: `./default-config/cfg/harvest-job-config.xml`).
 * An example for a Harvest job file can be found at https://github.com/NASA-PDS/registry-harvest-cli/blob/main/src/main/resources/examples/directories.xml.
   Make sure to update the `/path/to/archive` in the Harvest job file to point to a valid Harvest data directory.
 
@@ -357,8 +356,8 @@ CRAWLER_SERVER_CONFIG_FILE=/tmp/cfg/crawler-server.cfg
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
 | REGISTRY_HARVEST_CLI_IMAGE    | Docker image of the Registry Harvest CLI. Make sure this docker image is available. |
-| HARVEST_JOB_CONFIG_FILE       | Absolute path of the Harvest job file in the host machine (E.g.: `/tmp/cfg/harvest-job-config.xml`) |
-| HARVEST_CLIENT_CONFIG_FILE    | Absolute path of the Registry Harvest CLI configuration file in the host machine (E.g.: `/tmp/conf/harvest-client.cfg`) |
+| HARVEST_JOB_CONFIG_FILE       | Absolute path of the Harvest job file in the host machine (E.g.: `./default-config/harvest-job-config.xml`) |
+| HARVEST_CLIENT_CONFIG_FILE    | Absolute path of the Registry Harvest CLI configuration file in the host machine (E.g.: `./default-config/harvest-client.cfg`) |
 
 ```    
 # --------------------------------------------------------------------
@@ -369,10 +368,10 @@ CRAWLER_SERVER_CONFIG_FILE=/tmp/cfg/crawler-server.cfg
 REGISTRY_HARVEST_CLI_IMAGE=nasapds/registry-harvest-cli
 
 # Absolute path of the Harvest job file in the host machine (E.g.: /tmp/cfg/harvest-job-config.xml)
-HARVEST_JOB_CONFIG_FILE=/tmp/cfg/harvest-job-config.xml
+HARVEST_JOB_CONFIG_FILE=./default-config/harvest-job-config.xml
 
 # Absolute path of the Registry Harvest CLI configuration file in the host machine (E.g.: /tmp/conf/harvest-client.cfg)
-HARVEST_CLIENT_CONFIG_FILE=/tmp/cfg/harvest-client.cfg
+HARVEST_CLIENT_CONFIG_FILE=./default-config/harvest-client.cfg
 ```
 
 #### 9. Configure RabbitMQ
@@ -414,26 +413,15 @@ TODO: Add the link to the Scalable Harvest documentation.
 
 #### 3. Start Scalable Harvest components as follows.
 
-To start all big-data components (Registry Harvest Service, Registry Crawler Service and Registry Harvest CLI) 
+To start all Scalable Harvest server-side components without downloaded test data
 ```
-docker compose --profile=big-data up
-```
-
-To start only Registry Harvest Service and Registry Crawler Service
-```
-docker compose --profile=big-data-services up
-```
-
-To start only Registry Harvest CLI
-```
-docker compose --profile=big-data-client up
+docker compose --profile=int-registry-service-loader up -d
 ```
 
 To execute Scalable Harvest Integration Tests with downloaded test data
 ```
-docker compose --profile=big-data-integration-test up
+docker compose --profile=int-registry-service-loader-test up
 ```
-
 
 #### 4. Test the deployment.
 
@@ -446,8 +434,8 @@ Follow the instructions in the following section at the end of the [Test Your De
 #### * The Scalable Harvest deployment can be cleaned up as follows.
 
 ```
-docker compose --profile=big-data down
+docker compose --profile=int-registry-service-loader-test down
 ```
 
-Note: Ignore any `failed to remove network` errors, because the related docker network
-has active endpoints of other services.
+Note: Ignore any `failed to remove network` errors, because the related docker network may
+have active endpoints of other services.
