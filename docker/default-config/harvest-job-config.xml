@@ -15,15 +15,9 @@
   *     JAXA     - Japan Aerospace Exploration Agency
 -->
 <harvest nodeName="PDS_ENG">
-
   <directories>
-    <!-- Path to one or more directories with PDS4 labels -->
     <path>/data</path>
   </directories>
-
-  <fileInfo>
-    <!-- UPDATE with your own local path and base url where pds4 archive are published -->
-    <fileRef replacePrefix="/data" with="https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-nasa-pds-insight_rad/" />
-  </fileInfo>
-
+  <registry url="http://elasticsearch:9200" index="registry" />
+  <autogenFields/>
 </harvest>

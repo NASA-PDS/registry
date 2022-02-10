@@ -1,4 +1,4 @@
-# 🪐 Docker Compose for Registry Components
+[# 🪐 Docker Compose for Registry Components
 
 This directory contains the files related with docker compose for Registry Container. To learn more about docker compose,
 please refer to [https://docs.docker.com/compose/](https://docs.docker.com/compose/).
@@ -14,17 +14,20 @@ The docker-compose.yml file contains following components.
 
 Also, the docker-compose.yml file contains following profiles.
 
-| Profile                   | Purpose |
-| ------------------------- | ------------ |
-| elastic                   | Used to start only Elasticsearch |
-| api                       | Used to start only Registry API|
-| services                  | Used to start both Elasticsearch and Registry API |
-| reg-loader                | Used to execute only Registry Loader |
-| reg-loader-test           | Used to execute only Registry Loader with test data (Test data is automatically downloaded from a URL) |
-| big-data                  | Used to start all big-data components |
-| big-data-services         | Used to start only Registry Harvest Service and Registry Crawler Service |
-| big-data-client           | Used to execute only Registry Harvest CLI |
-| big-data-integration-test | Used to start all big-data components with test data and execute a Postman collection to run tests |
+| Components\\Profiles                                 | dev-api | dev-api-test | pds-core-registry | int-registry-batch-loader | int-registry-batch-loader-test | int-registry-service-loader | int-registry-service-loader-test | pds-loader-services | pds-batch-loader\* | pds-service-loader\* | int-test\* |
+| ---------------------------------------------------- | ------- | ------------ | ----------------- | ------------------------- | ------------------------------ | --------------------------- | -------------------------------- | ------------------- | ------------------ | -------------------- | ---------- |
+| Elasticsearch                                        | x       | x            | x                 | x                         | x                              | x                           | x                                |                     |                    |                      |            |
+| Elasticsearch init                                   | x       | x            | x                 | x                         | x                              | x                           | x                                |                     |                    |                      |            |
+| Registry API                                         |         |              | x                 | x                         | x                              | x                           | x                                |                     |                    |                      |            |
+| Registry loader test init                            |         | x            |                   | x                         | x                              |                             |                                  |                     |                    |                      |            |
+| Registry loader                                      |         |              |                   |                           |                                |                             |                                  |                     | x                  |                      |            |
+| Registry API integration tests (postman collection?) |         |              |                   |                           | x                              | x                           | x                                |                     |                    |                      | x          |
+| Rabbitmq                                             |         |              |                   |                           |                                | x                           | x                                | x                   |                    |                      |            |
+| Registry harvest service                             |         |              |                   |                           |                                | x                           | x                                | x                   |                    |                      |            |
+| Registry crawler service                             |         |              |                   |                           |                                | x                           | x                                | x                   |                    |                      |            |
+| Registry harvest cli test init                       |         |              |                   |                           |                                |                             | x                                |                     |                    |                      |            |
+| Registry harvest cli                                 |         |              |                   |                           |                                |                             |                                  |                     |                    | x                    |            |
+
 
 With the use of above profiles the docker compose can start components individually
 or as a group of components as follows. The `-d` option at the end of the commands is used to
@@ -450,4 +453,4 @@ docker compose --profile=big-data down
 ```
 
 Note: Ignore any `failed to remove network` errors, because the related docker network
-has active endpoints of other services.
+has active endpoints of other services.]()

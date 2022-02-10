@@ -40,6 +40,9 @@ while ! curl --output /dev/null --silent --head --fail http://elasticsearch:9200
   sleep 1
 done
 
+echo "Waiting for the creation of registry and data dictionary indices..."  1>&2
+sleep 60
+
 echo "Starting registry-loader..."  1>&2
 chmod a+x /usr/local/bin/entrypoint.sh
 /usr/local/bin/entrypoint.sh
