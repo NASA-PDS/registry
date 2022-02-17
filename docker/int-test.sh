@@ -30,18 +30,15 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# ------------------------------------------------------------------------------------------------------------------
-# This script is used to wait for test data to be available in the Registry-API, before starting the Postman tests.
-# ------------------------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------
+# This script is a wrapper to execute Postman integration tests with docker compose. Please note
+# that the test data should be already available in Elasticsearch. If it is required to load test data
+# before executing the integration test, then use the pds-batch-loader.sh or pds-service-loader.sh
+# wrapper scripts as explained in the README file.
+#
+# Usage: ./int-test.sh
+#
+# -----------------------------------------------------------------------------------------------------
 
-# Check if the ES_URL environment variable is set
-if [ -z "$REG_API_URL" ]; then
-    echo "Error: '$REG_API_URL' (Registry API URL) environment variable is not set. Use docker's -e option." 1>&2
-    exit 1
-fi
-
-echo "Waiting for test data to be available in the Registry-API, before starting the Postman tests..."  1>&2
-sleep 240
-
-echo "Starting Postman tests..."  1>&2
-newman run /postman/postman-collection.json --env-var baseUrl="$REG_API_URL"
+# Execute Postman integration tests with docker compose
+docker compose run reg-api-integration-test

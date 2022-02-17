@@ -38,6 +38,14 @@ For API dev, start the registry with some test data, without the API:
 
     docker compose --profile=dev-api up
 
+In addition, the following wrapper scripts available in the `registry/docker` directory can be used to easily execute
+some docker compose services.
+
+| Script Usage | Description |
+| ------------ | ----------- |
+| `./int-test.sh` | This script is a wrapper to execute Postman integration tests with docker compose. Please note that the test data should be already available in Elasticsearch. If it is required to load test data before executing the integration test, then use the `int-registry-batch-loader` docker compose profile or `int-registry-service-loader` docker compose profile, as explained in this README file. |
+| `./pds-batch-loader.sh <harvest_job_config_file_path>` | This script is a wrapper to run the registry loader with docker compose, while passing a Harvest job configuration file as an argument. |
+| `./pds-service-loader.sh <harvest_job_config_file_path>` | This script is a wrapper to run the registry-harvest-cli with docker compose, while passing a Harvest job configuration file as an argument. |
 
 ## 🏃 Quick start guide - with default configurations
 
@@ -142,9 +150,9 @@ REG_API_APP_PROPERTIES_FILE=./default-config/application.properties
 | ----------------------------- | ----------- |
 | REG_LOADER_IMAGE              | Docker image of the Registry Loader. Make sure this docker image is available. |
 | ES_URL                        | Elasticsearch URL (the host name is the Elasticsearch service name specified in the docker compose) |
-| HARVEST_CFG_FILE              | Absolute path of the Harvest configuration file in the host machine (E.g.: `./default-config/harvest-job-config.xml`) |
 | TEST_DATA_URL                 | URL to download the test data to Harvest (only required, if executing with test data) |
 | HARVEST_DATA_DIR              | Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/registry-harvest-data`). If the Registry Harvest CLI is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
+| HARVEST_JOB_CONFIG_FILE       | Absolute path of the Harvest configuration file in the host machine (E.g.: `./default-config/harvest-job-config.xml`) |
 
 ```    
 # Docker image of the Registry Loader
@@ -152,9 +160,6 @@ REG_LOADER_IMAGE=nasapds/registry-loader
 
 # Elasticsearch URL (the host name is the Elasticsearch service name specified in the docker compose)
 ES_URL=http://elasticsearch:9200
-
-# Absolute path of the Harvest configuration file in the host machine (E.g.: ./default-config/harvest-job-config.xml)
-HARVEST_CFG_FILE=./default-config/harvest-job-config.xml
 
 # URL to download the test data to Harvest (only required, if executing with test data)
 TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-nasa-pds-insight_rad.tar.gz
@@ -170,6 +175,9 @@ TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-na
 # Also, this `HARVEST_DATA_DIR` location should be accessible from the docker containers of the Registry Harvest Service,
 # Registry Crawler Service and Registry Harvest CLI.
 HARVEST_DATA_DIR=./test-data/registry-harvest-data
+
+# Absolute path of the Harvest job file in the host machine (E.g.: ./default-config/harvest-job-config.xml)
+HARVEST_JOB_CONFIG_FILE=./default-config/harvest-job-config.xml
 ```
 
 ## 🏃 Steps to execute registry components with docker compose
@@ -199,7 +207,7 @@ docker compose --profile=pds-batch-loader up
 When above command is executed, the Registry Loader will use the configurations and data provided with the following
 environment variables configured in the `.env` file.
 ```
-* HARVEST_CFG_FILE
+* HARVEST_JOB_CONFIG_FILE
 * HARVEST_DATA_DIR
 ```
 
@@ -344,8 +352,8 @@ CRAWLER_SERVER_CONFIG_FILE=./default-config/crawler-server.cfg
 | Environment Variable          | Description |
 | ----------------------------- | ----------- |
 | REGISTRY_HARVEST_CLI_IMAGE    | Docker image of the Registry Harvest CLI. Make sure this docker image is available. |
-| HARVEST_JOB_CONFIG_FILE       | Absolute path of the Harvest job file in the host machine (E.g.: `./default-config/harvest-job-config.xml`) |
 | HARVEST_CLIENT_CONFIG_FILE    | Absolute path of the Registry Harvest CLI configuration file in the host machine (E.g.: `./default-config/harvest-client.cfg`) |
+| HARVEST_JOB_CONFIG_FILE       | Absolute path of the Harvest job file in the host machine (E.g.: `./default-config/harvest-job-config.xml`) |
 
 ```    
 # --------------------------------------------------------------------
@@ -355,11 +363,15 @@ CRAWLER_SERVER_CONFIG_FILE=./default-config/crawler-server.cfg
 # Docker image of the Registry Harvest CLI
 REGISTRY_HARVEST_CLI_IMAGE=nasapds/registry-harvest-cli
 
-# Absolute path of the Harvest job file in the host machine (E.g.: /tmp/cfg/harvest-job-config.xml)
-HARVEST_JOB_CONFIG_FILE=./default-config/harvest-job-config.xml
-
 # Absolute path of the Registry Harvest CLI configuration file in the host machine (E.g.: /tmp/conf/harvest-client.cfg)
 HARVEST_CLIENT_CONFIG_FILE=./default-config/harvest-client.cfg
+
+# --------------------------------------------------------------------
+# Common Configuartions
+# --------------------------------------------------------------------
+
+# Absolute path of the Harvest job file in the host machine (E.g.: ./default-config/harvest-job-config.xml)
+HARVEST_JOB_CONFIG_FILE=./default-config/harvest-job-config.xml
 ```
 
 #### 9. Configure RabbitMQ

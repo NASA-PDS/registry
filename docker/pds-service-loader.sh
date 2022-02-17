@@ -30,18 +30,34 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# ------------------------------------------------------------------------------------------------------------------
-# This script is used to wait for test data to be available in the Registry-API, before starting the Postman tests.
-# ------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
+# This script is a wrapper to run the registry-harvest-cli with docker compose, while passing a
+# Harvest job configuration file as an argument.
+#
+# Usage: ./pds-service-loader.sh <harvest_job_config_file_path>
+#
+# ----------------------------------------------------------------------------------------------
 
-# Check if the ES_URL environment variable is set
-if [ -z "$REG_API_URL" ]; then
-    echo "Error: '$REG_API_URL' (Registry API URL) environment variable is not set. Use docker's -e option." 1>&2
-    exit 1
+# Common functions to print usage
+print_usage () {
+  echo "Usage: $0 <harvest_job_config_file_path>" 1>&2
+  echo "Pass an absolute path of a Harvest job configuration file in the host machine (E.g.: ./default-config/harvest-job-config.xml)" 1>&2
+}
+
+# Check if an argument is provided to this script
+if [ -z "$1" ]; then
+  print_usage
+  exit 1
 fi
 
-echo "Waiting for test data to be available in the Registry-API, before starting the Postman tests..."  1>&2
-sleep 240
+HARVEST_JOB_CONFIG_FILE=$1
 
-echo "Starting Postman tests..."  1>&2
-newman run /postman/postman-collection.json --env-var baseUrl="$REG_API_URL"
+# Check if the Harvest job configuration file exists
+if [ ! -f "$HARVEST_JOB_CONFIG_FILE" ]; then
+  echo "Error: The Harvest job configuration file ${HARVEST_JOB_CONFIG_FILE} passed as an argument does not exist."  1>&2
+  print_usage
+  exit 1
+fi
+
+# Execute docker compose run to load data
+docker compose run registry-harvest-cli
