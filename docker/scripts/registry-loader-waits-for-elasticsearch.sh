@@ -34,8 +34,14 @@
 # This script is used to wait for Elasticsearch to start before starting the Registry Loader.
 # ------------------------------------------------------------------------------------------------
 
+# Check if the ES_URL environment variable is set
+if [ -z "$ES_URL" ]; then
+    echo "Error: 'ES_URL' (Elasticsearch URL) environment variable is not set. Use docker's -e option." 1>&2
+    exit 1
+fi
+
 echo "Waiting for Elasticsearch to launch..."  1>&2
-while ! curl --output /dev/null --silent --head --fail http://elasticsearch:9200; do
+while ! curl --output /dev/null --silent --head --fail "$ES_URL"; do
   echo "waiting for elasticsearch" 1>&2
   sleep 1
 done

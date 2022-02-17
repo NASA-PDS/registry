@@ -39,14 +39,14 @@ services:
     environment:
       - ES_URL=${ES_URL}
     volumes:
-      - ${HARVEST_CFG_FILE}:/cfg/harvest-config.xml
+      - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-config.xml
       - ${HARVEST_DATA_DIR}:/data
     networks:
       - pds
 
   # Downloads and harvests test data with the Registry loader
   registry-loader-test-init:
-    profiles: ["dev-api-test", "int-registry-batch-loader-test"]
+    profiles: ["dev-api", "int-registry-batch-loader"]
     image: ${REG_LOADER_IMAGE}
     environment:
       - ES_URL=${ES_URL}
@@ -60,7 +60,7 @@ services:
 
   # Starts Elasticsearch
   elasticsearch:
-    profiles: ["dev-api", "dev-api-test", "pds-core-registry", "int-registry-batch-loader", "int-registry-batch-loader-test", "int-registry-service-loader", "int-registry-service-loader-test"]
+    profiles: ["dev-api", "pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]
     image: ${ES_IMAGE}
     environment:
       - discovery.type=${ES_DISCOVERY_TYPE}
@@ -72,7 +72,7 @@ services:
 
   # Initializes Elasticsearch by creating registry and data dictionary indices by utilizing the Registry Loader
   elasticsearch-init:
-    profiles: ["dev-api", "dev-api-test", "pds-core-registry", "int-registry-batch-loader", "int-registry-batch-loader-test", "int-registry-service-loader", "int-registry-service-loader-test"]
+    profiles: ["dev-api", "pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]
     image: ${REG_LOADER_IMAGE}
     environment:
       - ES_URL=${ES_URL}
@@ -84,7 +84,7 @@ services:
 
   # Starts RabbitMQ
   rabbit-mq:
-    profiles: ["int-registry-service-loader", "int-registry-service-loader-test", "pds-loader-services"]
+    profiles: ["int-registry-service-loader", "pds-loader-services"]
     image: rabbitmq:3.9-management
     ports:
       - "15672:15672"
@@ -97,8 +97,10 @@ services:
 
   # Starts the Registry API
   registry-api:
-    profiles: ["pds-core-registry", "int-registry-batch-loader", "int-registry-batch-loader-test", "int-registry-service-loader", "int-registry-service-loader-test"]
+    profiles: ["pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]
     image: ${REG_API_IMAGE}
+    environment:
+      - ES_URL=${ES_URL}
     ports:
       - "8080:8080"
     volumes:
@@ -110,7 +112,7 @@ services:
 
   # Starts the Registry Harvest Service
   registry-harvest-service:
-    profiles: ["int-registry-service-loader", "int-registry-service-loader-test", "pds-loader-services"]
+    profiles: ["int-registry-service-loader", "pds-loader-services"]
     image: ${REGISTRY_HARVEST_SERVICE_IMAGE}
     environment:
       - ES_URL=${ES_URL}
@@ -124,7 +126,7 @@ services:
 
   # Starts the Registry Crawler Service
   registry-crawler-service:
-    profiles: ["int-registry-service-loader", "int-registry-service-loader-test", "pds-loader-services"]
+    profiles: ["int-registry-service-loader", "pds-loader-services"]
     image: ${REGISTRY_CRAWLER_SERVICE_IMAGE}
     ports:
       - "8001:8001"
@@ -147,7 +149,7 @@ services:
 
   # Executes the Registry Harvest CLI with test data
   registry-harvest-cli-test-init:
-    profiles: ["int-registry-service-loader-test"]
+    profiles: ["int-registry-service-loader"]
     image: ${REGISTRY_HARVEST_CLI_IMAGE}
     environment:
       - RUN_TESTS=true
@@ -163,16 +165,20 @@ services:
   reg-api-integration-test:
     profiles: ["int-test"]
     image: ${POSTMAN_NEWMAN_IMAGE}
+    environment:
+      - REG_API_URL=${REG_API_URL}
     volumes:
       - ${POSTMAN_COLLECTION_FILE}:/postman/postman-collection.json
     networks:
       - pds
-    command: "run /postman/postman-collection.json --env-var baseUrl=registry-api:8080"
+    command: "run /postman/postman-collection.json --env-var baseUrl=${REG_API_URL}"
 
   # Executes Registry API integration test as a Postman collection with test data (after waiting for data to be loaded)
   reg-api-integration-test-with-wait:
-    profiles: ["int-registry-batch-loader-test", "int-registry-service-loader-test"]
+    profiles: ["int-registry-batch-loader", "int-registry-service-loader"]
     image: ${POSTMAN_NEWMAN_IMAGE}
+    environment:
+      - REG_API_URL=${REG_API_URL}
     volumes:
       - ${POSTMAN_COLLECTION_FILE}:/postman/postman-collection.json
       - ./scripts/postman-waits-for-test-data.sh:/usr/local/bin/postman-waits-for-test-data.sh
