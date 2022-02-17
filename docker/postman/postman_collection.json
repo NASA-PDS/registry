@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "1d15fc70-c2ae-46e8-98f8-57f9b0392561",
-		"name": "Planetary Data System API Demo",
+		"_postman_id": "8264807d-79e5-4ec2-9895-aadd666cca4f",
+		"name": "Planetary Data System API Reference Tests",
 		"description": "Federated PDS API which provides actionable end points standardized\nbetween the different nodes.\n\n\nContact Support:\n Email: pds-operator@jpl.nasa.gov",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -10,281 +10,1322 @@
 			"name": "products",
 			"item": [
 				{
-					"name": "URN resolver for lidvid",
-					"event": [
+					"name": "lidvid resolver",
+					"item": [
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", () => {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/products/:lidvid",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products",
-								":lidvid"
-							],
-							"variable": [
+							"name": "found",
+							"item": [
 								{
-									"key": "lidvid",
-									"value": "urn:nasa:pds:insight_rad::2.1",
-									"description": "(Required) lidvid (urn)"
+									"name": "non supported",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", () => {",
+													"  pm.response.to.have.status(500);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disabledSystemHeaders": {}
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/not-supported",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:lidvid",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":lidvid"
+											],
+											"variable": [
+												{
+													"key": "lidvid",
+													"value": "urn:nasa:pds:insight_rad::2.1",
+													"description": "(Required) lidvid (urn)"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Internal server error",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "lidvid not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Successful request",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "xml",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/xml"
+												}
+											],
+											"cookie": [],
+											"body": "magna voluptate irure ullamco in"
+										}
+									]
+								},
+								{
+									"name": "default Copy",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", () => {",
+													"  pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disabledSystemHeaders": {}
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/products/:lidvid",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":lidvid"
+											],
+											"variable": [
+												{
+													"key": "lidvid",
+													"value": "urn:nasa:pds:insight_rad::2.1",
+													"description": "(Required) lidvid (urn)"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Internal server error",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "lidvid not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Successful request",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "xml",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/xml"
+												}
+											],
+											"cookie": [],
+											"body": "magna voluptate irure ullamco in"
+										}
+									]
+								},
+								{
+									"name": "application/pds4+xml",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", () => {",
+													"  pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disabledSystemHeaders": {}
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:lidvid",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":lidvid"
+											],
+											"variable": [
+												{
+													"key": "lidvid",
+													"value": "urn:nasa:pds:insight_rad::2.1",
+													"description": "(Required) lidvid (urn)"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Internal server error",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "lidvid not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Successful request",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "xml",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/xml"
+												}
+											],
+											"cookie": [],
+											"body": "magna voluptate irure ullamco in"
+										}
+									]
+								},
+								{
+									"name": "application/json",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", () => {",
+													"  pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disabledSystemHeaders": {}
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:lidvid",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":lidvid"
+											],
+											"variable": [
+												{
+													"key": "lidvid",
+													"value": "urn:nasa:pds:insight_rad::2.1",
+													"description": "(Required) lidvid (urn)"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Internal server error",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "lidvid not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Successful request",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "xml",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/xml"
+												}
+											],
+											"cookie": [],
+											"body": "magna voluptate irure ullamco in"
+										}
+									]
 								}
 							]
-						}
-					},
-					"response": [
-						{
-							"name": "Internal server error",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/products/:lidvid",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"products",
-										":lidvid"
-									],
-									"variable": [
-										{
-											"key": "lidvid"
-										}
-									]
-								}
-							},
-							"status": "Internal Server Error",
-							"code": 500,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "text/plain"
-								}
-							],
-							"cookie": [],
-							"body": ""
 						},
 						{
-							"name": "lidvid not found",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/products/:lidvid",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"products",
-										":lidvid"
-									],
-									"variable": [
+							"name": "not found",
+							"item": [
+								{
+									"name": "application/json",
+									"event": [
 										{
-											"key": "lidvid"
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", () => {",
+													"  pm.response.to.have.status(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/products/:lidvid",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":lidvid"
+											],
+											"variable": [
+												{
+													"key": "lidvid",
+													"value": "magna voluptate irure ullamco in",
+													"description": "(Required) lidvid (urn)"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "lidvid not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Successful request",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "xml",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/xml"
+												}
+											],
+											"cookie": [],
+											"body": "magna voluptate irure ullamco in"
+										},
+										{
+											"name": "Internal server error",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								},
+								{
+									"name": "application/xml",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", () => {",
+													"  pm.response.to.have.status(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/products/:lidvid",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":lidvid"
+											],
+											"variable": [
+												{
+													"key": "lidvid",
+													"value": "magna voluptate irure ullamco in",
+													"description": "(Required) lidvid (urn)"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "lidvid not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Successful request",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "xml",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/xml"
+												}
+											],
+											"cookie": [],
+											"body": "magna voluptate irure ullamco in"
+										},
+										{
+											"name": "Internal server error",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								},
+								{
+									"name": "application/pds4+xml",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", () => {",
+													"  pm.response.to.have.status(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/products/:lidvid",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":lidvid"
+											],
+											"variable": [
+												{
+													"key": "lidvid",
+													"value": "magna voluptate irure ullamco in",
+													"description": "(Required) lidvid (urn)"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "lidvid not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Successful request",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "xml",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/xml"
+												}
+											],
+											"cookie": [],
+											"body": "magna voluptate irure ullamco in"
+										},
+										{
+											"name": "Internal server error",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								},
+								{
+									"name": "text/csv",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", () => {",
+													"  pm.response.to.have.status(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/csv",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:lidvid",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":lidvid"
+											],
+											"variable": [
+												{
+													"key": "lidvid",
+													"value": "magna voluptate irure ullamco in",
+													"description": "(Required) lidvid (urn)"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "lidvid not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Successful request",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "xml",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/xml"
+												}
+											],
+											"cookie": [],
+											"body": "magna voluptate irure ullamco in"
+										},
+										{
+											"name": "Internal server error",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								},
+								{
+									"name": "default",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", () => {",
+													"  pm.response.to.have.status(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/products/:lidvid",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":lidvid"
+											],
+											"variable": [
+												{
+													"key": "lidvid",
+													"value": "magna voluptate irure ullamco in",
+													"description": "(Required) lidvid (urn)"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "lidvid not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Successful request",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "xml",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/xml"
+												}
+											],
+											"cookie": [],
+											"body": "magna voluptate irure ullamco in"
+										},
+										{
+											"name": "Internal server error",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
 										}
 									]
 								}
-							},
-							"status": "Not Found",
-							"code": 404,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "text/plain"
-								}
-							],
-							"cookie": [],
-							"body": ""
-						},
-						{
-							"name": "Successful request",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/products/:lidvid",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"products",
-										":lidvid"
-									],
-									"variable": [
-										{
-											"key": "lidvid"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "xml",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/xml"
-								}
-							],
-							"cookie": [],
-							"body": "magna voluptate irure ullamco in"
+							]
 						}
 					]
 				},
 				{
-					"name": "URN resolver for lidvid not existing",
-					"event": [
+					"name": "search",
+					"item": [
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 404\", () => {",
-									"  pm.response.to.have.status(404);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/products/:lidvid",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products",
-								":lidvid"
-							],
-							"variable": [
-								{
-									"key": "lidvid",
-									"value": "magna voluptate irure ullamco in",
-									"description": "(Required) lidvid (urn)"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "lidvid not found",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/products/:lidvid",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"products",
-										":lidvid"
-									],
-									"variable": [
-										{
-											"key": "lidvid"
-										}
-									]
-								}
-							},
-							"status": "Not Found",
-							"code": 404,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "text/plain"
-								}
-							],
-							"cookie": [],
-							"body": ""
+							"name": "all",
+							"item": []
 						},
 						{
-							"name": "Successful request",
-							"originalRequest": {
+							"name": "default",
+							"request": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/products/:lidvid",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"products",
-										":lidvid"
-									],
-									"variable": [
-										{
-											"key": "lidvid"
-										}
-									]
-								}
+								"url": null
 							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "xml",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/xml"
-								}
-							],
-							"cookie": [],
-							"body": "magna voluptate irure ullamco in"
+							"response": []
 						},
 						{
-							"name": "Internal server error",
-							"originalRequest": {
+							"name": "application/pds4+xml Copy",
+							"request": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/products/:lidvid",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"products",
-										":lidvid"
-									],
-									"variable": [
-										{
-											"key": "lidvid"
-										}
-									]
-								}
+								"url": null
 							},
-							"status": "Internal Server Error",
-							"code": 500,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "text/plain"
-								}
-							],
-							"cookie": [],
-							"body": ""
+							"response": []
 						}
 					]
 				}
