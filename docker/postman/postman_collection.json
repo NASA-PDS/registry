@@ -22,8 +22,8 @@
 											"listen": "test",
 											"script": {
 												"exec": [
-													"pm.test(\"Status code is 200\", () => {",
-													"  pm.response.to.have.status(500);",
+													"pm.test(\"Status code is 501\", () => {",
+													"  pm.response.to.have.status(501);",
 													"});"
 												],
 												"type": "text/javascript"
