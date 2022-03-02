@@ -1,0 +1,5 @@
+# Ignore everything in this directory
+*
+# Except following files
+!.gitignore
+!generate-certs.sh
