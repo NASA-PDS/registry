@@ -1,4 +1,4 @@
-[# 🪐 Docker Compose for Registry Components
+# 🪐 Docker Compose for Registry Components
 
 This directory contains the files related with docker compose for Registry Container. To learn more about docker compose,
 please refer to [https://docs.docker.com/compose/](https://docs.docker.com/compose/).
