@@ -41,7 +41,7 @@ pipeline {
         // How long to wait (in seconds) before killing containers:
         shutdown_timeout = "30"
         // Simplified `docker-compose` command:
-        compose = "docker-compose --profile int-registry-service-loader --project registry --file ${WORKSPACE}/docker/docker-compose.yaml"
+        compose = "docker-compose --profile int-registry-service-loader --project-name registry --file ${WORKSPACE}/docker/docker-compose.yaml"
 
         // Additional environment variables can be overridden here; see the `registry/docker/.env` file
     }
