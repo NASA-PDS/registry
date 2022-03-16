@@ -38,12 +38,22 @@ pipeline {
 
     // Environment variables
     environment {
+        // Pipeline-Specific Environtment
+        // ------------------------------
+        //
         // How long to wait (in seconds) before killing containers:
         shutdown_timeout = "30"
         // Simplified `docker-compose` command:
-        compose = "docker-compose --profile int-registry-service-loader --project-name registry --file ${WORKSPACE}/docker/docker-compose.yml"
+        compose = "docker-compose --profile int-registry-service-loader --project-name registry --file ${env.WORKSPACE}/docker/docker-compose.yml"
 
-        // Additional environment variables can be overridden here; see the `registry/docker/.env` file
+        // Registry-Specific Environment
+        // -----------------------------
+        //
+        // Registry API properties; we generate this file in the build step
+        REG_API_APP_PROPERTIES_FILE = "${env.WORKSPACE}/app.props"
+
+        // Where to harvest the data from
+        HARVEST_DATA_DIR = "${env.WORKSPACE}/test-data/registry-harvest-data"
     }
 
     options {
@@ -53,11 +63,18 @@ pipeline {
 
     stages {
         stage('🧱 Build') {
-            // The repository is already built so there's nothing that needs to be done; we just
-            // want to get at the `docker-compose.yaml` file. However, we include the stage for
-            // reporting purposes (all pipelines should have a build stage).
+            // It's already built pe se, but we want a clean environment each time we deploy and with the
+            // precisely same test data as in the source repository, so the "build" step here is more like
+            // a "clean" step.
             steps {
-                echo 'No-op build step: ✓'
+                sh "install --directory ${env.HARVEST_DATA_DIR}"
+                dir(${env.HARVEST_DATA_DIR}) {
+                    sh "find . -delete"
+                }
+                sh "sed -e s/8080/19999/ < ${env.WORKSPACE}/docker/application.properties > ${env.WORKSPACE}/app.props"
+                sh "printenv"
+                sh "pwd"
+                echo "That's all folks 🎬"
             }
         }
         stage('🩺 Test') {
@@ -72,7 +89,7 @@ pipeline {
             steps {
                 sh "$compose down --remove-orphans --timeout ${shutdown_timeout} ||:"
                 // 🔮 TODO: Include --no-color? 
-                sh "$compose up --detach --quiet-pull --timeout ${shutdown_timeout}"
+                // sh "$compose up --detach --quiet-pull --timeout ${shutdown_timeout}"
             }
 
             // 🔮 TODO: Include a `post {…}` block to do post-deployment test queries?
