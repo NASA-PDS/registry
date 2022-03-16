@@ -34,7 +34,7 @@
 pipeline {
 
     // We want this to run completely on pds-expo.jpl.nasa.gov
-    agent { node('pds-dev') }
+    agent { node('pds-expo') }
 
     // Environment variables
     environment {
@@ -54,11 +54,17 @@ pipeline {
             // The repository is already built so there's nothing that needs to be done; we just
             // want to get at the `docker-compose.yaml` file. However, we include the stage for
             // reporting purposes (all pipelines should have a build stage).
+            steps {
+                echo 'No-op build step: ✓'
+            }
         }
         stage('🩺 Test') {
             // The repository is already tested so there's nothing that needs to be done; However,
             // we include the stage for reporting purposes (all pipelines should have a test
             // stage).
+            steps {
+                echo 'No-op test step: ✓'
+            }
         }
         stage('🚀 Deploy') {
             steps {
