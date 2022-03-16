@@ -23,7 +23,7 @@
 											"script": {
 												"exec": [
 													"pm.test(\"Status code is 200\", () => {",
-													"  pm.response.to.have.status(500);",
+													"  pm.response.to.have.status(406);",
 													"});"
 												],
 												"type": "text/javascript"
@@ -42,147 +42,6 @@
 												"type": "text"
 											}
 										],
-										"url": {
-											"raw": "{{baseUrl}}/products/:lidvid",
-											"host": [
-												"{{baseUrl}}"
-											],
-											"path": [
-												"products",
-												":lidvid"
-											],
-											"variable": [
-												{
-													"key": "lidvid",
-													"value": "urn:nasa:pds:insight_rad::2.1",
-													"description": "(Required) lidvid (urn)"
-												}
-											]
-										}
-									},
-									"response": [
-										{
-											"name": "Internal server error",
-											"originalRequest": {
-												"method": "GET",
-												"header": [],
-												"url": {
-													"raw": "{{baseUrl}}/products/:lidvid",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"products",
-														":lidvid"
-													],
-													"variable": [
-														{
-															"key": "lidvid"
-														}
-													]
-												}
-											},
-											"status": "Internal Server Error",
-											"code": 500,
-											"_postman_previewlanguage": "text",
-											"header": [
-												{
-													"key": "Content-Type",
-													"value": "text/plain"
-												}
-											],
-											"cookie": [],
-											"body": ""
-										},
-										{
-											"name": "lidvid not found",
-											"originalRequest": {
-												"method": "GET",
-												"header": [],
-												"url": {
-													"raw": "{{baseUrl}}/products/:lidvid",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"products",
-														":lidvid"
-													],
-													"variable": [
-														{
-															"key": "lidvid"
-														}
-													]
-												}
-											},
-											"status": "Not Found",
-											"code": 404,
-											"_postman_previewlanguage": "text",
-											"header": [
-												{
-													"key": "Content-Type",
-													"value": "text/plain"
-												}
-											],
-											"cookie": [],
-											"body": ""
-										},
-										{
-											"name": "Successful request",
-											"originalRequest": {
-												"method": "GET",
-												"header": [],
-												"url": {
-													"raw": "{{baseUrl}}/products/:lidvid",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"products",
-														":lidvid"
-													],
-													"variable": [
-														{
-															"key": "lidvid"
-														}
-													]
-												}
-											},
-											"status": "OK",
-											"code": 200,
-											"_postman_previewlanguage": "xml",
-											"header": [
-												{
-													"key": "Content-Type",
-													"value": "application/xml"
-												}
-											],
-											"cookie": [],
-											"body": "magna voluptate irure ullamco in"
-										}
-									]
-								},
-								{
-									"name": "default Copy",
-									"event": [
-										{
-											"listen": "test",
-											"script": {
-												"exec": [
-													"pm.test(\"Status code is 200\", () => {",
-													"  pm.response.to.have.status(200);",
-													"});"
-												],
-												"type": "text/javascript"
-											}
-										}
-									],
-									"protocolProfileBehavior": {
-										"disabledSystemHeaders": {}
-									},
-									"request": {
-										"method": "GET",
-										"header": [],
 										"url": {
 											"raw": "{{baseUrl}}/products/:lidvid",
 											"host": [
@@ -326,7 +185,154 @@
 										"header": [
 											{
 												"key": "Accept",
-												"value": "application/json",
+												"value": "application/vnd.nasa.pds.pds4+xml",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:lidvid",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":lidvid"
+											],
+											"variable": [
+												{
+													"key": "lidvid",
+													"value": "urn:nasa:pds:insight_rad::2.1",
+													"description": "(Required) lidvid (urn)"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Internal server error",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "lidvid not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Successful request",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "xml",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/xml"
+												}
+											],
+											"cookie": [],
+											"body": "magna voluptate irure ullamco in"
+										}
+									]
+								},
+								{
+									"name": "application/pds4+json",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", () => {",
+													"  pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disabledSystemHeaders": {}
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/vnd.nasa.pds.pds4+json",
 												"type": "text"
 											}
 										],
@@ -602,6 +608,144 @@
 						{
 							"name": "not found",
 							"item": [
+								{
+									"name": "application/not-supported",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", () => {",
+													"  pm.response.to.have.status(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/products/:lidvid",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":lidvid"
+											],
+											"variable": [
+												{
+													"key": "lidvid",
+													"value": "magna voluptate irure ullamco in",
+													"description": "(Required) lidvid (urn)"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "lidvid not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Successful request",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "xml",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/xml"
+												}
+											],
+											"cookie": [],
+											"body": "magna voluptate irure ullamco in"
+										},
+										{
+											"name": "Internal server error",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								},
 								{
 									"name": "application/json",
 									"event": [
@@ -895,7 +1039,157 @@
 									],
 									"request": {
 										"method": "GET",
-										"header": [],
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/vnd.nasa.pds.pds4+xml",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:lidvid",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":lidvid"
+											],
+											"variable": [
+												{
+													"key": "lidvid",
+													"value": "magna voluptate irure ullamco in",
+													"description": "(Required) lidvid (urn)"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "lidvid not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Successful request",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "xml",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/xml"
+												}
+											],
+											"cookie": [],
+											"body": "magna voluptate irure ullamco in"
+										},
+										{
+											"name": "Internal server error",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/products/:lidvid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"products",
+														":lidvid"
+													],
+													"variable": [
+														{
+															"key": "lidvid"
+														}
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								},
+								{
+									"name": "application/pds4+json",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", () => {",
+													"  pm.response.to.have.status(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/vnd.nasa.pds.pds4+json",
+												"type": "text"
+											}
+										],
 										"url": {
 											"raw": "{{baseUrl}}/products/:lidvid",
 											"host": [
@@ -1310,20 +1604,219 @@
 							"item": []
 						},
 						{
-							"name": "default",
+							"name": "not-supported",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(406);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
-								"header": [],
-								"url": null
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/not-supported",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products"
+									]
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "application/pds4+xml Copy",
+							"name": "default",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
-								"header": [],
-								"url": null
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/pds4+xml",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "application/json",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "application/xml",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/xml",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "application/pds4+json",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.nasa.pds.pds4+json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "application/pds4+xml",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.nasa.pds.pds4+xml",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products"
+									]
+								}
 							},
 							"response": []
 						}
