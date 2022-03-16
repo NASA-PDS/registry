@@ -38,10 +38,12 @@ pipeline {
 
     // Environment variables
     environment {
-        profile = "int-registry-service-loader"  // Overarching `docker-compose` profile
-        shutdown_timeout = "30"                  // How long to wait (in seconds) before killing containers
+        // How long to wait (in seconds) before killing containers:
+        shutdown_timeout = "30"
+        // Simplified `docker-compose` command:
+        compose = "docker-compose --profile int-registry-service-loader --project registry --file ${WORKSPACE}/docker/docker-compose.yaml"
 
-        // Additional environment variables can be overridden here; see the `docker/.env` file
+        // Additional environment variables can be overridden here; see the `registry/docker/.env` file
     }
 
     options {
@@ -68,9 +70,9 @@ pipeline {
         }
         stage('🚀 Deploy') {
             steps {
-                sh "docker-compose --profile=${profile} down --remove-orphans --timeout ${shutdown_timeout} ||:"
+                sh "$compose down --remove-orphans --timeout ${shutdown_timeout} ||:"
                 // 🔮 TODO: Include --no-color? 
-                sh "docker-compose --profile=${profile} up --detach --quiet-pull --timeout ${shutdown_timeout}"
+                sh "$compose up --detach --quiet-pull --timeout ${shutdown_timeout}"
             }
 
             // 🔮 TODO: Include a `post {…}` block to do post-deployment test queries?
