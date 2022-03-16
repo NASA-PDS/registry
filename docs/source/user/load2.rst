@@ -152,7 +152,7 @@ Input Directories and Filters
 Process Directories
 ===================
 
-To process products from one or more directories, add the following section in Harvest configuration file:
+To process products from one or more directories, add the following section in job configuration file:
 
 .. code-block:: xml
 
@@ -178,7 +178,7 @@ First, create a manifest file and list all files you want to process. One file p
    /data/d1/CCF_0088_0674757853_190FDR_N0040048CACH00100_0A10LLJ07.xml
    /data/d1/CCF_0088_0674757853_190FDR_N0040048CACH00100_0A10LLJ09.xml
 
-Next, add the following section in Harvest configuration file:
+Next, add the following section in job configuration file:
 
 .. code-block:: xml
 
@@ -198,7 +198,7 @@ Filtering Products by Class
 ===========================
 
 You can include or exclude products of a particular class. For example, to only process documents, add following 
-product filter in Harvest configuration file:
+product filter in job configuration file:
 
 .. code-block:: xml
 
@@ -224,4 +224,37 @@ To exclude documents, add following product filter:
 
 .. note::
    You could not have both include and exclude filters at the same time.
+
+
+File Reference / Access URL
+***************************
+
+Harvest extracts absolute paths of product and label files, such as
+
+.. code-block:: javascript
+
+  "ops:Label_File_Info/ops:file_ref":"/tmp/d5/naif0012.xml",
+  "ops:Data_File_Info/ops:file_ref":"/tmp/d5/naif0012.tls",
+
+Note that on Windows, backslashes are replaced with forward slashes and disk letter is included.
+
+.. code-block:: javascript
+
+  "ops:Label_File_Info/ops:file_ref":"C:/tmp/d4/bundle_orex_spice_v009.xml",
+
+To replace a file path prefix with another value, such as a URL, add <fileRef/> tag in job configuration file:
+
+.. code-block:: xml
+
+  <fileInfo>
+    <fileRef replacePrefix="/C:/tmp/d4/" 
+             with="https://naif.jpl.nasa.gov/pub/naif/pds/pds4/orex/orex_spice/" />
+  </fileInfo>
+
+After running Harvest, you should get different *file_ref* value:
+
+.. code-block:: javascript
+
+  "ops:Label_File_Info/ops:file_ref":
+      "https://naif.jpl.nasa.gov/pub/naif/pds/pds4/orex/orex_spice/bundle_orex_spice_v009.xml"
 
