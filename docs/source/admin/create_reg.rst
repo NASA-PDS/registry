@@ -29,29 +29,62 @@ Prerequisites
 Create Registry
 ***************
 
-To create registry indices in local Elasticsearch (running at *http://localhost:9200*) 
-with 1 shard and 0 replicas, run the following Registry Manager command
+To create registry indices run Registry Manager's "create-registry" command.
+You can pass the following optional parameters:
+
+ * **-es <url>** - Elasticsearch URL. Default value is http://localhost:9200
+ * **-index <name>** - Elasticsearch index name. Default value is "registry".
+ * **-auth <file>** - Elasticsearch authentication configuration file. See example below.
+ * **-shards <number>** - Number of shards (partitions) for registry index. Default value is 1.
+ * **-replicas <number>** - Number of replicas (extra copies) of registry index. Default value is 0.
+
+.. note:: Default number of shards and replicas is not recommended for production.
+
+Examples
+========
+
+Create Registry indices in local Elasticsearch (http://localhost:9200) with default number of shards and replicas.
 
 .. code-block:: python
 
    registry-manager create-registry
 
-You can customize *create-registry* command by passing several parameters, 
-such as Elasticsearch URL, number of shards and replicas, authentication parameters.
-To see the list of available parameters and basic usage run
 
-.. code-block:: bash
+Create Registry indices in remote Elasticsearch with 3 shards and 1 replica.
 
-   registry-manager create-registry -help
+.. code-block:: python
 
-To check that registry indices were created open the following URL in 
-a browser: *http://localhost:9200/_cat/indices?v* or use *curl*.
+   registry-manager create-registry \
+       -es https://my-host.my-domain:9999 \
+       -auth /my/path/auth.cfg \
+       -shards 3 \
+       -replicas 1
+
+
+If your Elasticsearch server requires authentication, you have to create an authentication configuration 
+file and provide following parameters:
+
+.. code-block:: python
+
+   # true - trust self-signed certificates; false - don't trust.
+   trust.self-signed = true
+   user = pds-user1
+   password = mypassword
+
+
+Check that indices were created
+===============================
+
+To check that registry indices were created, call the following Elasticsearch REST API:
+http://localhost:9200/_cat/indices?v
+
+Update Elasticsearch URL and pass user name and password if needed. 
 
 .. code-block:: bash
 
    curl "http://localhost:9200/_cat/indices?v"
 
-The response should look similar to this. Make sure that index status is "green". 
+The response should look similar to this. Make sure that each index health is "green". 
 
 .. code-block:: bash
 
@@ -64,12 +97,20 @@ The response should look similar to this. Make sure that index status is "green"
 Delete Registry
 ***************
 
-To delete registry indices from local Elasticsearch run the following command:
+To delete registry indices, run Registry Manager's "delete-registry" command.
+You can pass the following optional parameters:
+
+ * **-es <url>** - Elasticsearch URL. Default value is http://localhost:9200
+ * **-index <name>** - Elasticsearch index name. Default value is "registry".
+ * **-auth <file>** - Elasticsearch authentication configuration file.
+
+Examples
+========
+
+Delete registry indices from local Elasticsearch (http://localhost:9200)
 
 .. code-block:: python
 
    registry-manager delete-registry
 
-You can customize *delete-registry* command by passing several parameters, 
-such as Elasticsearch URL, and authentication parameters.
 
