@@ -6,3 +6,4 @@ User Tasks
    load1
    load2
    update_status
+   delete_data
