@@ -75,7 +75,7 @@ pipeline {
                 dir("${env.HARVEST_DATA_DIR}") {
                     sh "find . -delete"
                 }
-                sh "sed -e s/8080/19999/ < ${env.WORKSPACE}/docker/application.properties > ${env.WORKSPACE}/app.props"
+                sh "sed -e s/8080/19999/ < ${env.WORKSPACE}/docker/default-config/application.properties > ${env.REG_API_APP_PROPERTIES_FILE}"
                 sh "printenv"
                 sh "pwd"
                 echo "That's all folks 🎬"
