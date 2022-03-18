@@ -82,3 +82,7 @@ target/
 .DS_Store
 ._*
 
+# Generated during Jenkins Pipelines
+app.props
+test-data/
+pipeline-compose.yaml

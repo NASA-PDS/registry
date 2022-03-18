@@ -49,6 +49,8 @@ pipeline {
         shutdown_timeout = "30"
         // Simplified `docker-compose` command:
         compose = "docker-compose --profile int-registry-service-loader --project-name registry --file ${env.WORKSPACE}/docker/docker-compose.yml"
+        // Where we want to finally listen (not the extravagant port 8080 but something more humble)
+        listen_port = "19999"
 
         // Registry-Specific Environment
         // -----------------------------
@@ -58,6 +60,9 @@ pipeline {
 
         // Where to harvest the data from
         HARVEST_DATA_DIR = "${env.WORKSPACE}/test-data/registry-harvest-data"
+
+        // Since we're not listening on 8080
+        REG_API_URL = "http://registry-api:${listen_port}"
     }
 
     options {
@@ -70,12 +75,14 @@ pipeline {
             // It's already built pe se, but we want a clean environment each time we deploy and with the
             // precisely same test data as in the source repository, so the "build" step here is more like
             // a "clean" step.
+            //
+            // We do build a custom `application.properites` file though
             steps {
                 sh "install --directory ${env.HARVEST_DATA_DIR}"
                 dir("${env.HARVEST_DATA_DIR}") {
                     sh "find . -delete"
                 }
-                sh "sed -e s/8080/19999/ < ${env.WORKSPACE}/docker/default-config/application.properties > ${env.REG_API_APP_PROPERTIES_FILE}"
+                sh "sed -e s/8080/${listen_port}/ < ${env.WORKSPACE}/docker/default-config/application.properties > ${env.REG_API_APP_PROPERTIES_FILE}"
                 sh "printenv"
                 sh "pwd"
                 echo "That's all folks 🎬"
