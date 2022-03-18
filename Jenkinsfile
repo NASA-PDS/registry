@@ -30,13 +30,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Declarative pipeline for continuous deployment of the Registry
+// Declarative Pipeline
+// ====================
+//
+// This is a Jenkins pipline (of the declarative variety) for continuous deployment of the Registry.
+// See https://www.jenkins.io/doc/book/pipeline/syntax/ for more information.
+
 pipeline {
 
-    // We want this to run completely on pds-expo.jpl.nasa.gov
+    // We want this to run completely on pds-expo.jpl.nasa.gov and nowhere else
     agent { node('pds-expo') }
 
-    // Environment variables
     environment {
         // Pipeline-Specific Environtment
         // ------------------------------
@@ -68,7 +72,7 @@ pipeline {
             // a "clean" step.
             steps {
                 sh "install --directory ${env.HARVEST_DATA_DIR}"
-                dir(${env.HARVEST_DATA_DIR}) {
+                dir("${env.HARVEST_DATA_DIR}") {
                     sh "find . -delete"
                 }
                 sh "sed -e s/8080/19999/ < ${env.WORKSPACE}/docker/application.properties > ${env.WORKSPACE}/app.props"
