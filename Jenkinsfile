@@ -66,7 +66,7 @@ pipeline {
         compose_yaml = "${env.WORKSPACE}/pipeline-compose.yaml"
 
         // Simplified `docker-compose` command:
-        compose = "docker-compose --profile int-registry-service-loader --project-name registry --file $compose_yaml"
+        compose = "docker-compose --profile int-registry-batch-loader --project-name registry --file $compose_yaml"
     }
 
     options {
@@ -89,7 +89,7 @@ pipeline {
                 echo "Generating ${env.REG_API_APP_PROPERTIES_FILE}"
                 sh "sed -e s/8080/${listen_port}/ < ${env.WORKSPACE}/docker/default-config/application.properties > ${env.REG_API_APP_PROPERTIES_FILE}"
                 echo "And also generating $compose_yaml"
-                sh "sed -e s/8080/${listen_port}/g < ${env.WORKSPACE}/docker/docker-compose.yml > $compose_yaml"
+                sh "sed -e s/8080:8080/${listen_port}:8080/ < ${env.WORKSPACE}/docker/docker-compose.yml > $compose_yaml"
                 sh "printenv"
                 sh "pwd"
                 echo "That's all folks 🎬"
@@ -107,7 +107,7 @@ pipeline {
             steps {
                 sh "$compose down --remove-orphans --timeout ${shutdown_timeout} ||:"
                 // 🔮 TODO: Include --no-color? 
-                // sh "$compose up --detach --quiet-pull --timeout ${shutdown_timeout}"
+                sh "$compose up --detach --quiet-pull --timeout ${shutdown_timeout}"
             }
 
             // 🔮 TODO: Include a `post {…}` block to do post-deployment test queries?
