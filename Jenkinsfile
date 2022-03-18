@@ -66,7 +66,7 @@ pipeline {
         compose_yaml = "${env.WORKSPACE}/pipeline-compose.yaml"
 
         // Simplified `docker-compose` command:
-        compose = "docker-compose --profile int-registry-batch-loader --project-name registry --file $compose_yaml"
+        compose = "docker-compose --project-directory ${env.WORKSPACE}/docker --profile int-registry-batch-loader --project-name registry --file $compose_yaml"
     }
 
     options {
@@ -80,7 +80,8 @@ pipeline {
             // precisely same test data as in the source repository, so the "build" step here is more like
             // a "clean" step.
             //
-            // We do build a custom `application.properites` file though
+            // We do build custom `application.properites` and `docker-compose.yaml` files though. So there's
+            // some building going on.
             steps {
                 sh "install --directory ${env.HARVEST_DATA_DIR}"
                 dir("${env.HARVEST_DATA_DIR}") {
@@ -90,20 +91,20 @@ pipeline {
                 sh "sed -e s/8080/${listen_port}/ < ${env.WORKSPACE}/docker/default-config/application.properties > ${env.REG_API_APP_PROPERTIES_FILE}"
                 echo "And also generating $compose_yaml"
                 sh "sed -e s/8080:8080/${listen_port}:8080/ < ${env.WORKSPACE}/docker/docker-compose.yml > $compose_yaml"
-                sh "printenv"
-                sh "pwd"
-                echo "That's all folks 🎬"
             }
         }
         stage('🩺 Test') {
-            // The repository is already tested so there's nothing that needs to be done; However,
-            // we include the stage for reporting purposes (all pipelines should have a test
-            // stage).
+            // The repository's upstream projects have already tested everything there's nothing that needs
+            // to be done; However, we include the stage for reporting purposes (all pipelines should have a
+            // test stage.
             steps {
                 echo 'No-op test step: ✓'
             }
         }
         stage('🚀 Deploy') {
+            // Deployment is where the action happens: stop everything, then start 'em back up'.
+            //
+            // FYI, the `||:` is standard Bourne shell shorthand for "ignore errors".
             steps {
                 sh "$compose down --remove-orphans --timeout ${shutdown_timeout} ||:"
                 // 🔮 TODO: Include --no-color? 
