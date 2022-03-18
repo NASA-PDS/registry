@@ -47,29 +47,19 @@ pipeline {
         //
         // How long to wait (in seconds) before killing containers:
         shutdown_timeout = "30"
-        // Where we want to finally listen (not the extravagant port 8080 but something more humble)
-        listen_port = "19999"
+        // Simplified `docker-compose` command:
+        compose = "docker-compose --profile int-registry-batch-loader --project-name registry --file ${env.WORKSPACE}/docker/docker-compose.yml"
 
         // Registry-Specific Environment
         // -----------------------------
         //
-        // Registry API properties; we generate this file in the build step
-        REG_API_APP_PROPERTIES_FILE = "${env.WORKSPACE}/app.props"
-
         // Where to harvest the data from
         HARVEST_DATA_DIR = "${env.WORKSPACE}/test-data/registry-harvest-data"
 
-        // Since we're not listening on 8080
-        REG_API_URL = "http://registry-api:${listen_port}"
-
-        // Our generated docker-compose.yaml file:
-        compose_yaml = "${env.WORKSPACE}/pipeline-compose.yaml"
-
-        // Simplified `docker-compose` command:
-        compose = "docker-compose --project-directory ${env.WORKSPACE}/docker --profile int-registry-batch-loader --project-name registry --file $compose_yaml"
     }
 
     options {
+        // Self-explanatory
         disableConcurrentBuilds()
         skipStagesAfterUnstable()
     }
@@ -79,22 +69,17 @@ pipeline {
             // It's already built pe se, but we want a clean environment each time we deploy and with the
             // precisely same test data as in the source repository, so the "build" step here is more like
             // a "clean" step.
-            //
-            // We do build custom `application.properites` and `docker-compose.yaml` files though. So there's
-            // some building going on.
             steps {
                 sh "install --directory ${env.HARVEST_DATA_DIR}"
                 dir("${env.HARVEST_DATA_DIR}") {
                     sh "find . -delete"
                 }
-                echo "Generating ${env.REG_API_APP_PROPERTIES_FILE}"
-                sh "sed -e s/8080/${listen_port}/ < ${env.WORKSPACE}/docker/default-config/application.properties > ${env.REG_API_APP_PROPERTIES_FILE}"
-                echo "And also generating $compose_yaml"
-                sh "sed -e s/8080:8080/${listen_port}:8080/ < ${env.WORKSPACE}/docker/docker-compose.yml > $compose_yaml"
+                // Other ideas: try deploying to a different port from 8080 by using `sed` to generate
+                // a custom application.properties file and/or `docker-compose.yaml` file.
             }
         }
         stage('🩺 Test') {
-            // The repository's upstream projects have already tested everything there's nothing that needs
+            // The repository's upstream projects have already tested everything—there's nothing that needs
             // to be done; However, we include the stage for reporting purposes (all pipelines should have a
             // test stage.
             steps {
