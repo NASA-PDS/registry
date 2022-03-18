@@ -47,8 +47,6 @@ pipeline {
         //
         // How long to wait (in seconds) before killing containers:
         shutdown_timeout = "30"
-        // Simplified `docker-compose` command:
-        compose = "docker-compose --profile int-registry-service-loader --project-name registry --file ${env.WORKSPACE}/docker/docker-compose.yml"
         // Where we want to finally listen (not the extravagant port 8080 but something more humble)
         listen_port = "19999"
 
@@ -63,6 +61,12 @@ pipeline {
 
         // Since we're not listening on 8080
         REG_API_URL = "http://registry-api:${listen_port}"
+
+        // Our generated docker-compose.yaml file:
+        compose_yaml = "${env.WORKSPACE}/pipeline-compose.yaml"
+
+        // Simplified `docker-compose` command:
+        compose = "docker-compose --profile int-registry-service-loader --project-name registry --file $compose_yaml"
     }
 
     options {
@@ -82,7 +86,10 @@ pipeline {
                 dir("${env.HARVEST_DATA_DIR}") {
                     sh "find . -delete"
                 }
+                echo "Generating ${env.REG_API_APP_PROPERTIES_FILE}"
                 sh "sed -e s/8080/${listen_port}/ < ${env.WORKSPACE}/docker/default-config/application.properties > ${env.REG_API_APP_PROPERTIES_FILE}"
+                echo "And also generating $compose_yaml"
+                sh "sed -e s/8080/${listen_port}/g < ${env.WORKSPACE}/docker/docker-compose.yml > $compose_yaml"
                 sh "printenv"
                 sh "pwd"
                 echo "That's all folks 🎬"
