@@ -16,7 +16,7 @@ Some applications, like Harvest or Registry Manager will not run with **Java 1.8
 Test if Java is already installed
 *********************************
 
-To test if Java is already installed on your system, run the following command from a command prompt::
+To test if Java is already installed on your system, run the following command in a terminal::
 
    java -version
 
