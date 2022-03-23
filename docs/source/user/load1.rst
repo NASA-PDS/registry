@@ -146,13 +146,11 @@ Registry Integration
 ********************
 
 Standalone Harvest tool loads extracted PDS4 metadata into Elasticsearch database.
-You have to configure following parameters:
+You have to configure following Elasticsearch parameters:
 
  * **url** - Registry (Elasticsearch) URL
  * **index** - Elasticsearch index name. This is an optional parameter. Default value is 'registry'.
  * **auth** - Registry (Elasticsearch) authentication configuration file. This is an optional parameter.
-
-The Registry security configuration is described in the <a href="../security/reg-mgr.html">following section</a>.
 
 Below are few examples:
 
@@ -176,10 +174,12 @@ Below are few examples:
     ...
   </harvest>
 
-Where authentication configuration file would have following parameters:
+If your Elasticsearch server requires authentication, you have to create an authentication 
+configuration file and provide following parameters:
 
 .. code-block:: python
 
+  # true - trust self-signed certificates; false - don't trust.
   trust.self-signed = true
   user = pds-user1
   password = mypassword
