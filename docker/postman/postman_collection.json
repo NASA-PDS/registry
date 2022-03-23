@@ -24,7 +24,9 @@
 												"exec": [
 													"pm.test(\"Status code is 200\", () => {",
 													"  pm.response.to.have.status(406);",
-													"});"
+													"});",
+													"",
+													""
 												],
 												"type": "text/javascript"
 											}
@@ -1786,6 +1788,42 @@
 						},
 						{
 							"name": "application/pds4+xml",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.nasa.pds.pds4+xml",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "text/csv",
 							"event": [
 								{
 									"listen": "test",
