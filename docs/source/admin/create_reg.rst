@@ -10,9 +10,9 @@ client components, such as Crawler Server, Harvest Server, Standalone Harvest CL
 
  * **registry** - this index stores metadata extracted from PDS4 labels, one ES document per PDS label.
  * **registry-dd** - this index stores data dictionary - a list of searchable fields and its data types.
-   When registry is created, the data dictionary is populated with fields (attributes) from PDS common and few discipline dictionaries.
+   When registry is created, the registry data dictionary is populated with PDS common and few discipline dictionaries.
    Harvest automatically loads new dictionaries from schema location specified in PDS4 labels.
-   You can also add more fields and LDDs manually as described in <a href="reg-custom.html#DD">Registry Customization / Data Dictionary</a> section.
+   You can also add more fields and LDDs manually with Registry Manager tool.
  * **registry-refs** - this index stores product references extracted from collection inventory files.
    There could be 1 or more ES documents per inventory file.
 
