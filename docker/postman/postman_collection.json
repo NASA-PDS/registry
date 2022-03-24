@@ -112,7 +112,8 @@
 													],
 													"variable": [
 														{
-															"key": "lidvid"
+															"key": "lidvid",
+															"value": "urn:nasa:pds:not_found::2.1"
 														}
 													]
 												}
@@ -465,8 +466,22 @@
 											"listen": "test",
 											"script": {
 												"exec": [
+													"pm.test(\"Response takes less than 1s\", () => {",
+													"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+													"});",
+													"",
 													"pm.test(\"Status code is 200\", () => {",
 													"  pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"Has summary\", () => {",
+													"    const responseJson = pm.response.json();",
+													"    pm.expect(responseJson).to.have.property('summary');",
+													"});",
+													"",
+													"pm.test(\"Has data\", () => {",
+													"    const responseJson = pm.response.json();",
+													"    pm.expect(responseJson).to.have.property(\"data\");",
 													"});"
 												],
 												"type": "text/javascript"
