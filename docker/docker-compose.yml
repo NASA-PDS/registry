@@ -41,6 +41,7 @@ services:
     volumes:
       - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-config.xml
       - ${HARVEST_DATA_DIR}:/data
+      - ./default-config/es-auth.cfg:/etc/es-auth.cfg
     networks:
       - pds
 
@@ -54,6 +55,7 @@ services:
       - TEST_DATA_URL=${TEST_DATA_URL}
     volumes:
       - ./scripts/registry-loader-waits-for-elasticsearch.sh:/usr/local/bin/registry-loader-waits-for-elasticsearch.sh
+      - ./default-config/es-auth.cfg:/etc/es-auth.cfg
     networks:
       - pds
     entrypoint: /usr/local/bin/registry-loader-waits-for-elasticsearch.sh
@@ -64,9 +66,16 @@ services:
     image: ${ES_IMAGE}
     environment:
       - discovery.type=${ES_DISCOVERY_TYPE}
+    # Uncomment the following environment variable to use OpenSearch without security
+    # - plugins.security.disabled=true
+    volumes:
+      - ./certs/node1.pem:/usr/share/opensearch/config/esnode.pem
+      - ./certs/node1-key.pem:/usr/share/opensearch/config/esnode-key.pem
+      - ./certs/root-ca.pem:/usr/share/opensearch/config/root-ca.pem
+      - ./default-config/opensearch.yml:/usr/share/opensearch/config/opensearch.yml
     ports:
       - "9200:9200"
-      - "9300:9300"
+      - "9600:9600" # required for Performance Analyzer
     networks:
       - pds
 
@@ -78,6 +87,7 @@ services:
       - ES_URL=${ES_URL}
     volumes:
       - ./scripts/elasticsearch-init.sh:/usr/local/bin/elasticsearch-init.sh
+      - ./default-config/es-auth.cfg:/etc/es-auth.cfg
     networks:
       - pds
     entrypoint: ["bash", "/usr/local/bin/elasticsearch-init.sh"]
@@ -121,6 +131,7 @@ services:
     volumes:
       - ${HARVEST_SERVER_CONFIG_FILE}:/cfg/harvest-server.cfg
       - ${HARVEST_DATA_DIR}:/data
+      - ./default-config/es-auth.cfg:/etc/es-auth.cfg
     networks:
       - pds
 

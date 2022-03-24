@@ -62,17 +62,28 @@ to replace the default passwords with your own passwords as explained in the fol
 ```
 git clone https://github.com/NASA-PDS/registry.git
 ```
-2) Open a terminal and change the current working directory to `registry/docker`.
+2) Open a terminal and change the current working directory to `registry/docker/certs`.
 ```
-cd docker
+cd docker/certs
 ```
-3) Deploy and execute integration tests with the following single command.
+
+3) Generate certificates required for OpenSearch by executing the following shell script.
+```
+./generate-certs.sh
+```
+
+4) Change the current working directory to `registry/docker`.
+```
+cd ..
+```
+
+5) Deploy and execute integration tests with the following single command.
 ```
 docker compose --profile=int-registry-service-loader up
 ```
 Note: This may take several minutes, including data loading  delays between components.
 
-4) To clean the deployment, execute the following command.
+6) To clean the deployment, execute the following command.
 ```
 docker compose --profile=int-registry-service-loader down
 ```
@@ -179,6 +190,19 @@ HARVEST_DATA_DIR=./test-data/registry-harvest-data
 # Absolute path of the Harvest job file in the host machine (E.g.: ./default-config/harvest-job-config.xml)
 HARVEST_JOB_CONFIG_FILE=./default-config/harvest-job-config.xml
 ```
+
+#### 7. Generate certificates
+
+1) Open a terminal and change the current working directory to `registry/docker/certs`.
+```
+cd docker/certs
+```
+
+2) Generate the certificates required for OpenSearch by executing the following shell script.
+```
+./generate-certs.sh
+```
+
 
 ## 🏃 Steps to execute registry components with docker compose
 
