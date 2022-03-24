@@ -22,7 +22,7 @@
 											"listen": "test",
 											"script": {
 												"exec": [
-													"pm.test(\"Status code is 200\", () => {",
+													"pm.test(\"Status code is 406\", () => {",
 													"  pm.response.to.have.status(406);",
 													"});",
 													"",
