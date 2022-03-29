@@ -24,4 +24,5 @@ Sitemap
    user/tasks
    admin/tasks
    install/install
+   cloud/cloud
    support/support
