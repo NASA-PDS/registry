@@ -63,12 +63,12 @@ whitelist. More details on the installation of the Registry Tools can be found :
 Registry API
 ************
 Once data has been ingested using the Registry Tools, queries can be submitted using the Registry
-API which is :doc:`documented here (TBD) </about>`. Registry queries are based on the following
-endpoint pattern:
+API which is `documented here <https://nasa-pds.github.io/pds-api/search-api-user-guide.html>`_. 
+Registry queries are based on the following endpoint pattern:
 
-.. code-block:: python
+.. code-block:: bash
 
-   https://pds.nasa.gov/api/<search-endpoint>/<version>
+  https://pds.nasa.gov/api/<search-endpoint>/<version>
 
 To submit a cross-cluster search enabled query (i.e. to the EN registry which will search 
 across all DN registries), the `<search-endpoint>` is simply `search`. To direct a query to 
@@ -78,17 +78,12 @@ the particular DN abbreviation such as 'GEO', 'ATM', 'SBNUMB', etc.
 `<version>` is the API version, which is currently `0.4`. So to query for the first 10 
 products from the EN registry, the following API request is used:
 
-.. code-block:: python
+.. code-block:: bash
 
-    https://pds.nasa.gov/api/search/0.4/products?limit=10
+  https://pds.nasa.gov/api/search/0.4/products?limit=10
 
 Similarly, to directly access the RMS registry:
 
-.. code-block:: python
+.. code-block:: bash
 
-    https://pds.nasa.gov/api/search-rms/0.4/products?limit=10
-
-
-
-
-
+  https://pds.nasa.gov/api/search-rms/0.4/products?limit=10
