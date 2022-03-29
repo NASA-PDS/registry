@@ -4935,6 +4935,63 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "requirements",
+			"item": [
+				{
+					"name": "NASA-PDS/pds-api#72",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"Number of results is 1\", () => {",
+									"    pm.expect(data.length).to.equal(1); ",
+									"});",
+									"",
+									"pm.test(\"time found in range\", () => {",
+									"    pm.expect(data[0].start_date_time).to.eql(\"2018-05-05T00:00:00Z\"); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?&q=((pds:Time_Coordinates.pds:start_date_time gt \"2018-05-04T00:00:00Z\") and (pds:Time_Coordinates.pds:start_date_time lt \"2018-05-06T00:00:00Z\"))",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "q",
+									"value": "((pds:Time_Coordinates.pds:start_date_time gt \"2018-05-04T00:00:00Z\") and (pds:Time_Coordinates.pds:start_date_time lt \"2018-05-06T00:00:00Z\"))"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
