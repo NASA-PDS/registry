@@ -53,6 +53,7 @@ services:
       - ES_URL=${ES_URL}
       - RUN_TESTS=true
       - TEST_DATA_URL=${TEST_DATA_URL}
+      - TEST_DATA_LIDVID=${TEST_DATA_LIDVID}
     volumes:
       - ./scripts/registry-loader-waits-for-elasticsearch.sh:/usr/local/bin/registry-loader-waits-for-elasticsearch.sh
       - ./default-config/es-auth.cfg:/etc/es-auth.cfg
@@ -165,6 +166,7 @@ services:
     environment:
       - RUN_TESTS=true
       - TEST_DATA_URL=${TEST_DATA_URL}
+      - TEST_DATA_LIDVID=${TEST_DATA_LIDVID}
     volumes:
       - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-job-config.xml
       - ${HARVEST_DATA_DIR}:/data

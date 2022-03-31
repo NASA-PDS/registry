@@ -162,6 +162,7 @@ REG_API_APP_PROPERTIES_FILE=./default-config/application.properties
 | REG_LOADER_IMAGE              | Docker image of the Registry Loader. Make sure this docker image is available. |
 | ES_URL                        | Elasticsearch URL (the host name is the Elasticsearch service name specified in the docker compose) |
 | TEST_DATA_URL                 | URL to download the test data to Harvest (only required, if executing with test data) |
+| TEST_DATA_LIDVID              | The lidvid of the test data, which is used to set the archive status |
 | HARVEST_DATA_DIR              | Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/registry-harvest-data`). If the Registry Harvest CLI is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
 | HARVEST_JOB_CONFIG_FILE       | Absolute path of the Harvest configuration file in the host machine (E.g.: `./default-config/harvest-job-config.xml`) |
 
@@ -171,9 +172,6 @@ REG_LOADER_IMAGE=nasapds/registry-loader
 
 # Elasticsearch URL (the host name is the Elasticsearch service name specified in the docker compose)
 ES_URL=http://elasticsearch:9200
-
-# URL to download the test data to Harvest (only required, if executing with test data)
-TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-nasa-pds-insight_rad.tar.gz
 
 # --------------------------------------------------------------------
 # Common Configuartions
@@ -189,6 +187,12 @@ HARVEST_DATA_DIR=./test-data/registry-harvest-data
 
 # Absolute path of the Harvest job file in the host machine (E.g.: ./default-config/harvest-job-config.xml)
 HARVEST_JOB_CONFIG_FILE=./default-config/harvest-job-config.xml
+
+# URL to download the test data to Harvest (only required, if executing with test data)
+TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-nasa-pds-insight_rad.tar.gz
+
+# The lidvid of the test data, which is used to set the archive status (only required, if executing with test data)
+TEST_DATA_LIDVID=urn:nasa:pds:insight_rad::2.1
 ```
 
 #### 7. Generate certificates
