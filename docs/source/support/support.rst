@@ -1,0 +1,7 @@
+=======
+Support
+=======
+
+.. toctree::
+   contact
+   contribute
