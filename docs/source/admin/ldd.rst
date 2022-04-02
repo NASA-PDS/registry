@@ -32,7 +32,7 @@ Usually you don't need to load data dictionaries manually if they are listed in 
 Prerequisites
 *************
 
- * Elasticsearch server is running.
+ * OpenSearch server is running.
  * Registry Manager command-line tool is installed.
 
 

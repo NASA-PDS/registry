@@ -9,7 +9,7 @@ To load PDS4 data into Registry you have to use Harvest software. There are two 
 a simple standalone command-line tool and a scalable Harvest consisting of several server and and
 client components. Scalable Harvest can process big data sets in parallel. 
 Both versions extract metadata from PDS4 products (labels) and load extracted
-metadata into Elasticsearch database. 
+metadata into OpenSearch database. 
 
 This document describes how to use Harvest Client command-line tool to submit jobs to Scalable Harvest Server cluster.
 
@@ -17,8 +17,8 @@ This document describes how to use Harvest Client command-line tool to submit jo
 Prerequisites
 *************
 
-* Elasticsearch server is running.
-* Registry indices are created in Elasticsearch.
+* OpenSearch server is running.
+* Registry indices are created in OpenSearch.
 * All server components - RabbitMQ, Crawler Server, Harvest Server - are deployed and running on-prem or in the cloud.
 * Harvest Client command-line tool is installed.
 
@@ -102,12 +102,12 @@ You should see output similar to this::
    [INFO] Created job f282a012-115e-429c-b445-f5eed1d81303
 
 
-After submitting a job, you can monitor progress by querying Elasticsearch::
+After submitting a job, you can monitor progress by querying OpenSearch::
 
    curl "http://localhost:9200/registry/_search?q=_package_id:f282a012-115e-429c-b445-f5eed1d81303"
 
 .. note::
-   For backward compatibility, job ID field is called "_package_id" in Elasticsearch.
+   For backward compatibility, job ID field is called "_package_id" in OpenSearch.
 
 The following sections describe job configuration file in more detail.
 
@@ -135,7 +135,7 @@ One of the following values can be used:
   * **JAXA**     - Japan Aerospace Exploration Agency
   * **ROSCOSMOS** - Russian State Corporation for Space Activities
 
-This value is saved in "ops:Harvest_Info/ops:node_name" field in Elasticsearch document:
+This value is saved in "ops:Harvest_Info/ops:node_name" field in OpenSearch document:
 
 .. code-block:: javascript
 

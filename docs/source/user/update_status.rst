@@ -21,16 +21,16 @@ You can use either Registry Manager or Harvest Client (Scalable Harvest deployme
 Prerequisites - Registry Manager
 ********************************
 
-  * Elasticsearch server is running.
-  * Registry indices are created in Elasticsearch.
+  * OpenSearch server is running.
+  * Registry indices are created in OpenSearch.
   * Some data is ingested into the Registry.
   * Registry Manager command-line tool is installed.
 
 Prerequisites - Harvest Client
 ******************************
 
-  * Elasticsearch server is running.
-  * Registry indices are created in Elasticsearch.
+  * OpenSearch server is running.
+  * Registry indices are created in OpenSearch.
   * Some data is ingested into the Registry.
   * All server components - RabbitMQ, Crawler Server, Harvest Server - are deployed and running on-prem or in the cloud.
   * Harvest Client command-line tool is installed.
@@ -50,13 +50,13 @@ The following parameters are required:
 
 Optional parameters:
 
- * **-es <url>** - Elasticsearch URL. Default URL is "http://localhost:9200".
- * **-index <name>** - Elasticsearch index name. Default value is 'registry'.
- * **-auth <file>** - Elasticsearch authentication configuration file. See example below.
+ * **-es <url>** - OpenSearch URL. Default URL is "http://localhost:9200".
+ * **-index <name>** - OpenSearch index name. Default value is 'registry'.
+ * **-auth <file>** - OpenSearch authentication configuration file. See example below.
 
 **Examples:**
 
-Update local Registry / Elasticsearch (http://localhost:9200), no authentication.
+Update local Registry / OpenSearch (http://localhost:9200), no authentication.
 
 .. code-block:: bash
 
@@ -64,7 +64,7 @@ Update local Registry / Elasticsearch (http://localhost:9200), no authentication
        -status archived 
        -lidvid "urn:nasa:pds:kaguya_grs_spectra:document::1.0"
 
-Update remote Registry / Elasticsearch
+Update remote Registry / OpenSearch
 
 .. code-block:: bash
 
@@ -74,7 +74,7 @@ Update remote Registry / Elasticsearch
        -es https://my-host.my-domain:9999 \
        -auth /my/path/auth.cfg
 
-If your Elasticsearch server requires authentication, you have to create an authentication configuration 
+If your OpenSearch server requires authentication, you have to create an authentication configuration 
 file and provide following parameters:
 
 .. code-block:: python

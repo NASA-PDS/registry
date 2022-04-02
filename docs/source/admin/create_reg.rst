@@ -5,7 +5,7 @@ Create / Delete Registry
 Overview
 ********
 
-You must create following registry indices in Elasticsearch, before running any Harvest server or 
+You must create following registry indices in OpenSearch, before running any Harvest server or 
 client components, such as Crawler Server, Harvest Server, Standalone Harvest CLI or Harvest Client CLI.
 
  * **registry** - this index stores metadata extracted from PDS4 labels, one ES document per PDS label.
@@ -22,7 +22,7 @@ The indices are created with Registry Manager command-line tool.
 Prerequisites
 *************
 
- * Elasticsearch server is running.
+ * OpenSearch server is running.
  * Registry Manager command-line tool is installed.
 
 
@@ -32,9 +32,9 @@ Create Registry
 To create registry indices run Registry Manager's "create-registry" command.
 You can pass the following optional parameters:
 
- * **-es <url>** - Elasticsearch URL. Default value is http://localhost:9200
- * **-index <name>** - Elasticsearch index name. Default value is "registry".
- * **-auth <file>** - Elasticsearch authentication configuration file. See example below.
+ * **-es <url>** - OpenSearch URL. Default value is http://localhost:9200
+ * **-index <name>** - OpenSearch index name. Default value is "registry".
+ * **-auth <file>** - OpenSearch authentication configuration file. See example below.
  * **-shards <number>** - Number of shards (partitions) for registry index. Default value is 1.
  * **-replicas <number>** - Number of replicas (extra copies) of registry index. Default value is 0.
 
@@ -43,14 +43,14 @@ You can pass the following optional parameters:
 Examples
 ========
 
-Create Registry indices in local Elasticsearch (http://localhost:9200) with default number of shards and replicas.
+Create Registry indices in local OpenSearch (http://localhost:9200) with default number of shards and replicas.
 
 .. code-block:: python
 
    registry-manager create-registry
 
 
-Create Registry indices in remote Elasticsearch with 3 shards and 1 replica.
+Create Registry indices in remote OpenSearch with 3 shards and 1 replica.
 
 .. code-block:: python
 
@@ -61,7 +61,7 @@ Create Registry indices in remote Elasticsearch with 3 shards and 1 replica.
        -replicas 1
 
 
-If your Elasticsearch server requires authentication, you have to create an authentication configuration 
+If your OpenSearch server requires authentication, you have to create an authentication configuration 
 file and provide following parameters:
 
 .. code-block:: python
@@ -75,10 +75,10 @@ file and provide following parameters:
 Check that indices were created
 ===============================
 
-To check that registry indices were created, call the following Elasticsearch REST API:
+To check that registry indices were created, call the following OpenSearch REST API:
 http://localhost:9200/_cat/indices?v
 
-Update Elasticsearch URL and pass user name and password if needed. 
+Update OpenSearch URL and pass user name and password if needed. 
 
 .. code-block:: bash
 
@@ -100,14 +100,14 @@ Delete Registry
 To delete registry indices, run Registry Manager's "delete-registry" command.
 You can pass the following optional parameters:
 
- * **-es <url>** - Elasticsearch URL. Default value is http://localhost:9200
- * **-index <name>** - Elasticsearch index name. Default value is "registry".
- * **-auth <file>** - Elasticsearch authentication configuration file.
+ * **-es <url>** - OpenSearch URL. Default value is http://localhost:9200
+ * **-index <name>** - OpenSearch index name. Default value is "registry".
+ * **-auth <file>** - OpenSearch authentication configuration file.
 
 Examples
 ========
 
-Delete registry indices from local Elasticsearch (http://localhost:9200)
+Delete registry indices from local OpenSearch (http://localhost:9200)
 
 .. code-block:: python
 

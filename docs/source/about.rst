@@ -4,25 +4,25 @@ About PDS Registry
 
 PDS Registry provides functionality for tracking, searching, auditing, locating, and maintaining artifacts within the system. 
 These artifacts can range from data files and label files, schemas, dictionary definitions for objects and elements, services, etc. 
-The core functionality for this component is satisfied by `Elasticsearch <https://www.elastic.co/>`_.
+The core functionality for this component is satisfied by `OpenSearch <https://opensearch.org/>`_.
 
 The high level architecture of PDS Registry and its main components is shown below.
 
 .. image:: _static/images/registry-harvest.png 
 
 
-Elasticsearch
+OpenSearch
 *************
 
-`Elasticsearch <https://www.elastic.co/>`_ is a NoSQL database based on Apache Lucene project, 
-optimized for text search. All metadata extracted from PDS4 labels is storted in Elasticsearch database.
+`OpenSearch <https://opensearch.org/>`_ is a NoSQL database based on Apache Lucene project, 
+optimized for text search. All metadata extracted from PDS4 labels is storted in OpenSearch database.
 
 
 Harvest
 *******
 
 Harvest is a software to crawl and extract metadata from PDS4 labels and to load 
-extracted information into Elasticsearch. There are two versions of Harvest:
+extracted information into OpenSearch. There are two versions of Harvest:
 
  * Standalone command-line tool.
  * Scalable Harvest.
@@ -46,7 +46,7 @@ Registry Manager
 
 A command-line tool to perform admin tasks on a Registry, such as:
 
- * Create or delete registry indices in Elasticsearch.
+ * Create or delete registry indices in OpenSearch.
  * Manage registry data dictionary.
  * Update product archive status.
 

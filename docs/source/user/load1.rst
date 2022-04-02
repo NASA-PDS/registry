@@ -9,7 +9,7 @@ To load PDS4 data into Registry you have to use Harvest software. There are two 
 a simple standalone command-line tool and a scalable Harvest consisting of several server and and
 client components. Scalable Harvest can process big data sets in parallel. 
 Both versions extract metadata from PDS4 products (labels) and load extracted
-metadata into Elasticsearch database. 
+metadata into OpenSearch database. 
 
 This document describes how to load data with Standalone Harvest command-line tool.
 
@@ -17,8 +17,8 @@ This document describes how to load data with Standalone Harvest command-line to
 Prerequisites
 *************
 
-  * Elasticsearch server is running.
-  * Registry indices are created in Elasticsearch.
+  * OpenSearch server is running.
+  * Registry indices are created in OpenSearch.
   * Standalone Harvest command-line tool is installed.
 
 
@@ -26,7 +26,7 @@ Standalone Harvest Quick Start
 ******************************
 
 To run Harvest you need an XML configuration file. 
-The configuration file has several sections such as Registry (Elasticsearch) configuration
+The configuration file has several sections such as Registry (OpenSearch) configuration
 and the path to the data. Example configuration files are located in *<INSTALL_DIR>/conf/examples*.
   
 The ideal configurations for Harvest is *conf/examples/directories.xml*. You will want to update the nodeName:
@@ -36,7 +36,7 @@ The ideal configurations for Harvest is *conf/examples/directories.xml*. You wil
   <harvest nodeName="PDS_GEO">
 
 
-Registry (Elasticsearch) configuration:
+Registry (OpenSearch) configuration:
 
 .. code-block:: xml
 
@@ -66,7 +66,7 @@ If you save this file as */tmp/kaguya.cfg* and run Harvest
    harvest -c /tmp/kaguya.cfg
 
 all XML files in */data/orex/orex_spice* folder and its subfolders will be processed.
-All metadata from PDS4 labels will be extracted and loaded into Registry (Elasticsearch).
+All metadata from PDS4 labels will be extracted and loaded into Registry (OpenSearch).
 
 You will see multiple log messages similar to these:
 
@@ -91,8 +91,8 @@ You will see multiple log messages similar to these:
   [SUMMARY] Package ID: e46f6ba9-6151-48ee-b822-b0536e3e4bd9
 
 
-To quickly check that data was loaded you can query Registry indices in Elasticsearch by calling
-`Elasticsearch Search API <https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html/>`_
+To quickly check that data was loaded you can query Registry indices in OpenSearch by calling
+`OpenSearch Search API <https://opensearch.org/docs/latest/opensearch/query-dsl/index/>`_
 or in a web browser. For example,
 
 .. code-block:: python
@@ -130,7 +130,7 @@ One of the following values can be used:
   * **ROSCOSMOS** - Russian State Corporation for Space Activities
 
 
-This value is saved in "ops:Harvest_Info/ops:node_name" field in Elasticsearch document:
+This value is saved in "ops:Harvest_Info/ops:node_name" field in OpenSearch document:
 
 .. code-block:: javascript
 
@@ -145,16 +145,16 @@ This value is saved in "ops:Harvest_Info/ops:node_name" field in Elasticsearch d
 Registry Integration
 ********************
 
-Standalone Harvest tool loads extracted PDS4 metadata into Elasticsearch database.
-You have to configure following Elasticsearch parameters:
+Standalone Harvest tool loads extracted PDS4 metadata into OpenSearch database.
+You have to configure following OpenSearch parameters:
 
- * **url** - Registry (Elasticsearch) URL
- * **index** - Elasticsearch index name. This is an optional parameter. Default value is 'registry'.
- * **auth** - Registry (Elasticsearch) authentication configuration file. This is an optional parameter.
+ * **url** - Registry (OpenSearch) URL
+ * **index** - OpenSearch index name. This is an optional parameter. Default value is 'registry'.
+ * **auth** - Registry (OpenSearch) authentication configuration file. This is an optional parameter.
 
 Below are few examples:
 
-**Local Elasticsearch instance (localhost)**
+**Local OpenSearch instance (localhost)**
 
 .. code-block:: xml
 
@@ -164,7 +164,7 @@ Below are few examples:
     ...
   </harvest>
 
-**Remote Elasticsearch instance (on-prem or cloud)**
+**Remote OpenSearch instance (on-prem or cloud)**
 
 .. code-block:: xml
 
@@ -174,7 +174,7 @@ Below are few examples:
     ...
   </harvest>
 
-If your Elasticsearch server requires authentication, you have to create an authentication 
+If your OpenSearch server requires authentication, you have to create an authentication 
 configuration file and provide following parameters:
 
 .. code-block:: python
@@ -395,7 +395,7 @@ You can expect up to 900% compression rate for some files.
 For example, many LADEE housekeeping labels are about 45KB. Compressed BLOB size is about 5KB.
 For smaller files, such as collection labels, compression rate is about 350% (5.5KB file is compressed to 1.6KB).
 
-After loading data into Elasticsearch, you can extract original labels by running Registry Manager tool:
+After loading data into OpenSearch, you can extract original labels by running Registry Manager tool:
 
 .. code-block:: python
 
