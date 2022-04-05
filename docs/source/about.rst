@@ -8,7 +8,7 @@ The core functionality for this component is satisfied by `OpenSearch <https://o
 
 The high level architecture of PDS Registry and its main components is shown below.
 
-.. image:: _static/images/registry-harvest.png 
+.. image:: _static/images/registry-arc.png 
 
 
 OpenSearch
@@ -30,15 +30,16 @@ extracted information into OpenSearch. There are two versions of Harvest:
 **Standalone Harvest**
 
 A command-line tool which doesn't require complex installation and configuration. 
-The standalone Harvest can run on a laptop.
 This tool is recommended for small data sets of up to 5,000-10,000 of PDS4 labels.
 
 **Scalable Harvest**
 
-This product consists of several server components: RabbitMQ message broker, Crawler server, and Harvest server, 
-which can be deployed in the cloud or on-prem. Also there is a Harvest Client command-line tool to submit jobs
+Scalable Harvest consists of several server components: RabbitMQ message broker, Crawler server, and Harvest server.
+These components can be deployed in the cloud or on-prem. Also there is a Harvest Client command-line tool to submit jobs
 to server components asynchronously.
 This setup is recommended if you want to process big data sets in parallel.
+
+.. image:: _static/images/scalable-harvest.png 
 
 
 Registry Manager

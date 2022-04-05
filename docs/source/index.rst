@@ -11,7 +11,7 @@ The core functionality for this component is satisfied by `OpenSearch <https://o
 
 The high level architecture of PDS Registry and its main components is shown below.
 
-.. image:: _static/images/registry-harvest.png 
+.. image:: _static/images/registry-arc.png 
 
 
 Sitemap
