@@ -6,18 +6,19 @@ please refer to [https://docs.docker.com/compose/](https://docs.docker.com/compo
 The docker-compose.yml file contains following profiles and each profile will start the components as shown in the table below.
 
 | Components\\Profiles                                 | dev-api | pds-core-registry | int-registry-batch-loader | int-registry-service-loader | pds-loader-services | pds-batch-loader | pds-service-loader | int-test |
-| ---------------------------------------------------- | ------- | ----------------- | ------------------------- | --------------------------- | ------------------- | ---------------- | ------------------ | -------- |
-| Elasticsearch                                        | x       | x                 | x                         | x                           |                     |                  |                    |          |
-| Elasticsearch init                                   | x       | x                 | x                         | x                           |                     |                  |                    |          |
-| Registry API                                         |         | x                 | x                         | x                           |                     |                  |                    |          |
-| Registry loader test init                            | x       |                   | x                         |                             |                     |                  |                    |          |
-| Registry loader                                      |         |                   |                           |                             |                     | x                |                    |          |
-| Registry API integration tests (postman collection?) |         |                   | x                         | x                           |                     |                  |                    | x        |
-| Rabbitmq                                             |         |                   |                           | x                           | x                   |                  |                    |          |
-| Registry harvest service                             |         |                   |                           | x                           | x                   |                  |                    |          |
-| Registry crawler service                             |         |                   |                           | x                           | x                   |                  |                    |          |
-| Registry harvest cli test init                       |         |                   |                           | x                           |                     |                  |                    |          |
-| Registry harvest cli                                 |         |                   |                           |                             |                     |                  | x                  |          |
+|:-----------------------------------------------------|:-------:|:-----------------:|:-------------------------:|:---------------------------:|:-------------------:|:----------------:|:------------------:|:--------:|
+| Elasticsearch                                        | ✓       | ✓                 | ✓                         | ✓                           |                     |                  |                    |          |
+| Elasticsearch init                                   | ✓       | ✓                 | ✓                         | ✓                           |                     |                  |                    |          |
+| Registry API                                         |         | ✓                 | ✓                         | ✓                           |                     |                  |                    |          |
+| Registry loader test init                            | ✓       |                   | ✓                         |                             |                     |                  |                    |          |
+| Registry loader                                      |         |                   |                           |                             |                     | ✓                |                    |          |
+| Registry API integration tests (postman collection?) |         |                   | ✓                         | ✓                           |                     |                  |                    | ✓        |
+| Rabbitmq                                             |         |                   |                           | ✓                           | ✓                   |                  |                    |          |
+| Registry harvest service                             |         |                   |                           | ✓                           | ✓                   |                  |                    |          |
+| Registry crawler service                             |         |                   |                           | ✓                           | ✓                   |                  |                    |          |
+| Registry harvest cli test init                       |         |                   |                           | ✓                           |                     |                  |                    |          |
+| Registry harvest cli                                 |         |                   |                           |                             |                     |                  | ✓                  |          |
+| TLS termination                                      |         | ✓                 | ✓                         | ✓                           |                     |                  |                    |          |
 
 With the use of above profiles the docker compose can start components individually
 or as a group of components as follows. The `-d` option at the end of the commands is used to
@@ -233,6 +234,8 @@ Follow the instructions in the following sections at the end of the [Test Your D
 
 * Query Elasticsearch
 * Use Registry API
+
+Note that the Registry API is published to port 8080 as `http` and—when not using the `dev-api` profile—to port 8443 as `https` (with a self-signed certificate) on all host interfaces.
 
 ## 🏃 Cleaning up the Registry Loader deployment
 
