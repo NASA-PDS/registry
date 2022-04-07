@@ -76,6 +76,8 @@ pipeline {
                 dir("${env.HARVEST_DATA_DIR}") {
                     sh "find . -delete"
                 }
+                // Do this too?
+                //    sh "$compose pull --ignore-pull-failures --include-deps --quiet"
                 // Other ideas: try deploying to a different port from 8080 by using `sed` to generate
                 // a custom application.properties file and/or `docker-compose.yaml` file.
             }
