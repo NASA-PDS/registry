@@ -56,6 +56,8 @@ pipeline {
         // Where to harvest the data from
         HARVEST_DATA_DIR = "${env.WORKSPACE}/test-data/registry-harvest-data"
 
+        // Hostname for certificate verification
+        CERT_CN = "pds-expo.jpl.nasa.gov"
     }
 
     options {
@@ -90,12 +92,13 @@ pipeline {
             // Deployment is where the action happens: stop everything, then start 'em back up'.
             //
             // FYI, the `||:` is standard Bourne shell shorthand for "ignore errors".
-            steps {
-                sh "$compose down --remove-orphans --timeout ${shutdown_timeout} ||:"
-                // 🔮 TODO: Include --no-color? 
-                sh "$compose up --detach --quiet-pull --timeout ${shutdown_timeout}"
+            dir ("${env.WORKSPACE}/docker") {
+                steps {
+                    sh "$compose down --remove-orphans --timeout ${shutdown_timeout} --volumes ||:"
+                    // 🔮 TODO: Include --no-color?
+                    sh "$compose up --detach --quiet-pull --timeout ${shutdown_timeout}"
+                }
             }
-
             // 🔮 TODO: Include a `post {…}` block to do post-deployment test queries?
         }
     }
