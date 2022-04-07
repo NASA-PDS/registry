@@ -46,7 +46,7 @@ pipeline {
         // ------------------------------
         //
         // How long to wait (in seconds) before killing containers:
-        shutdown_timeout = "30"
+        shutdown_timeout = "60"
         // Simplified `docker-compose` command:
         compose = "docker-compose --profile int-registry-batch-loader --project-name registry --file ${env.WORKSPACE}/docker/docker-compose.yml"
 
@@ -91,9 +91,11 @@ pipeline {
             //
             // FYI, the `||:` is standard Bourne shell shorthand for "ignore errors".
             steps {
-                sh "$compose down --remove-orphans --timeout ${shutdown_timeout} ||:"
-                // 🔮 TODO: Include --no-color? 
-                sh "$compose up --detach --quiet-pull --timeout ${shutdown_timeout}"
+                dir("${env.WORKSPACE}/docker") {
+                    sh "$compose down --remove-orphans --timeout ${shutdown_timeout} --volumes ||:"
+                    // 🔮 TODO: Include --no-color? 
+                    sh "$compose up --detach --quiet-pull --timeout ${shutdown_timeout}"
+                }
             }
 
             // 🔮 TODO: Include a `post {…}` block to do post-deployment test queries?
