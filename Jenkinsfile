@@ -92,8 +92,8 @@ pipeline {
             // Deployment is where the action happens: stop everything, then start 'em back up'.
             //
             // FYI, the `||:` is standard Bourne shell shorthand for "ignore errors".
-            dir ("${env.WORKSPACE}/docker") {
-                steps {
+            steps {
+                dir ("${env.WORKSPACE}/docker") {
                     sh "$compose down --remove-orphans --timeout ${shutdown_timeout} --volumes ||:"
                     // 🔮 TODO: Include --no-color?
                     sh "$compose up --detach --quiet-pull --timeout ${shutdown_timeout}"
