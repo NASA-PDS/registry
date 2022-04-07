@@ -55,7 +55,7 @@ pipeline {
         //
         // Where to harvest the data from
         HARVEST_DATA_DIR = "${env.WORKSPACE}/test-data/registry-harvest-data"
-
+        CERT_CN = "pds-expo.jpl.nasa.gov"
     }
 
     options {
