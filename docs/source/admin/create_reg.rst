@@ -5,8 +5,9 @@ Create / Delete Registry
 Overview
 ********
 
-You must create following registry indices in OpenSearch, before running any Harvest server or 
-client components, such as Crawler Server, Harvest Server, Standalone Harvest CLI or Harvest Client CLI.
+Indices must be created in OpenSearch, before running the registry.
+
+The indices used by the registry are:
 
  * **registry** - this index stores metadata extracted from PDS4 labels, one ES document per PDS label.
  * **registry-dd** - this index stores data dictionary - a list of searchable fields and its data types.
@@ -22,8 +23,8 @@ The indices are created with Registry Manager command-line tool.
 Prerequisites
 *************
 
- * OpenSearch server is running.
- * Registry Manager command-line tool is installed.
+ * OpenSearch server is `running <https://opensearch.org/>`_.
+ * Registry Manager command-line tool is `installed <../install/tools.html#registry-manager>`_.
 
 
 Create Registry
@@ -61,7 +62,7 @@ Create Registry indices in remote OpenSearch with 3 shards and 1 replica.
        -replicas 1
 
 
-If your OpenSearch server requires authentication, you have to create an authentication configuration 
+If your OpenSearch server requires authentication, you have to create an authentication configuration
 file and provide following parameters:
 
 .. code-block:: python
@@ -78,13 +79,13 @@ Check that indices were created
 To check that registry indices were created, call the following OpenSearch REST API:
 http://localhost:9200/_cat/indices?v
 
-Update OpenSearch URL and pass user name and password if needed. 
+Update OpenSearch URL and pass user name and password if needed.
 
 .. code-block:: bash
 
    curl "http://localhost:9200/_cat/indices?v"
 
-The response should look similar to this. Make sure that each index health is "green". 
+The response should look similar to this. Make sure that each index health is "green".
 
 .. code-block:: bash
 
@@ -112,5 +113,3 @@ Delete registry indices from local OpenSearch (http://localhost:9200)
 .. code-block:: python
 
    registry-manager delete-registry
-
-

@@ -80,7 +80,9 @@ and provide following parameters:
 OpenSearch API
 *****************
 
-You can also use OpenSearch 
+.. warning::
+    Only use this if you really know what you are doing and how to do it.
+
+You can also use OpenSearch
 `delete by query API <https://opensearch.org/docs/latest/opensearch/rest-api/document-apis/delete-by-query/>`_
 to delete documents from the Registry / OpenSearch.
-
