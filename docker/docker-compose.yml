@@ -192,6 +192,7 @@ services:
     image: ${PROXYCRYPT_IMAGE}
     environment:
       PROXY_URL: http://registry-api:8080/
+      PROXY_REDIRECT:
       CERT_CN:
     ports:
       - "8443:443"
