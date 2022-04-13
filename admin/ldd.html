@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Dictionary &mdash; PDS Registry 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Installation" href="../install/install.html" />
+    <link rel="prev" title="Create / Delete Registry" href="create_reg.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PDS Registry
+            <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About PDS Registry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/tasks.html">User Tasks</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tasks.html">Admin Tasks</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="create_reg.html">Create / Delete Registry</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Data Dictionary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-installed-data-dictionaries">List Installed Data Dictionaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#load-pds-data-dictionary-files">Load PDS Data Dictionary Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support/support.html">Support</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PDS Registry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="tasks.html">Admin Tasks</a> &raquo;</li>
+      <li>Data Dictionary</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="data-dictionary">
+<h1>Data Dictionary<a class="headerlink" href="#data-dictionary" title="Permalink to this headline"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
+<p>Data Dictionary provides field definitions for all metadata fields which can be stored in PDS Registry.
+Data type information is required to properly parse date and numeric fields.</p>
+<p>When a registry is created, the registry data dictionary is populated with PDS common and few discipline dictionaries.
+Latest versions of PDS4 data dictionaries are available at
+<a class="reference external" href="https://pds.nasa.gov/datastandards/dictionaries/">PDS website</a>.</p>
+<p>When loading data, the Harvest tool will try to download and install data dictionaries listed in PDS4 label’s <strong>xsi:schemaLocation</strong>
+attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Product_Observational</span> <span class="n">xmlns</span><span class="o">=</span><span class="s2">&quot;http://pds.nasa.gov/pds4/pds/v1&quot;</span>
+    <span class="n">xmlns</span><span class="p">:</span><span class="n">cart</span><span class="o">=</span><span class="s2">&quot;http://pds.nasa.gov/pds4/cart/v1&quot;</span>
+    <span class="n">xmlns</span><span class="p">:</span><span class="n">disp</span><span class="o">=</span><span class="s2">&quot;http://pds.nasa.gov/pds4/disp/v1&quot;</span>
+    <span class="n">xmlns</span><span class="p">:</span><span class="n">mars2020</span><span class="o">=</span><span class="s2">&quot;http://pds.nasa.gov/pds4/mission/mars2020/v1&quot;</span>
+    <span class="o">...</span>
+    <span class="n">xsi</span><span class="p">:</span><span class="n">schemaLocation</span><span class="o">=</span><span class="s2">&quot;</span>
+        <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">pds</span><span class="o">.</span><span class="n">nasa</span><span class="o">.</span><span class="n">gov</span><span class="o">/</span><span class="n">pds4</span><span class="o">/</span><span class="n">pds</span><span class="o">/</span><span class="n">v1</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">pds</span><span class="o">.</span><span class="n">nasa</span><span class="o">.</span><span class="n">gov</span><span class="o">/</span><span class="n">pds4</span><span class="o">/</span><span class="n">pds</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">PDS4_PDS_1G00</span><span class="o">.</span><span class="n">xsd</span>
+        <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">pds</span><span class="o">.</span><span class="n">nasa</span><span class="o">.</span><span class="n">gov</span><span class="o">/</span><span class="n">pds4</span><span class="o">/</span><span class="n">disp</span><span class="o">/</span><span class="n">v1</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">pds</span><span class="o">.</span><span class="n">nasa</span><span class="o">.</span><span class="n">gov</span><span class="o">/</span><span class="n">pds4</span><span class="o">/</span><span class="n">disp</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">PDS4_DISP_1G00_1500</span><span class="o">.</span><span class="n">xsd</span>
+        <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">pds</span><span class="o">.</span><span class="n">nasa</span><span class="o">.</span><span class="n">gov</span><span class="o">/</span><span class="n">pds4</span><span class="o">/</span><span class="n">cart</span><span class="o">/</span><span class="n">v1</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">pds</span><span class="o">.</span><span class="n">nasa</span><span class="o">.</span><span class="n">gov</span><span class="o">/</span><span class="n">pds4</span><span class="o">/</span><span class="n">cart</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">PDS4_CART_1G00_1950</span><span class="o">.</span><span class="n">xsd</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<p>Usually you don’t need to load data dictionaries manually if they are listed in PDS4 label’s <strong>xsi:schemaLocation</strong> attribute.</p>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>OpenSearch server is <a class="reference external" href="https://opensearch.org/">running</a>.</p></li>
+<li><p>Registry Manager command-line tool is <a class="reference external" href="../install/tools.html#registry-manager">installed</a>.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="list-installed-data-dictionaries">
+<h2>List Installed Data Dictionaries<a class="headerlink" href="#list-installed-data-dictionaries" title="Permalink to this headline"></a></h2>
+<p>To list all data dictionaries in the Registry run the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">registry</span><span class="o">-</span><span class="n">manager</span> <span class="nb">list</span><span class="o">-</span><span class="n">dd</span>
+</pre></div>
+</div>
+<p>You will see the list similar to this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Namespace</span>            <span class="n">File</span>                                        <span class="n">Version</span>   <span class="n">Date</span>
+<span class="o">-----------------------------------------------------------------------------------------------</span>
+<span class="n">cart</span>                 <span class="n">PDS4_CART_1F00_1950</span><span class="o">.</span><span class="n">JSON</span>                   <span class="mf">1.15.0.0</span>   <span class="mi">2020</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">21</span><span class="n">T21</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">19</span><span class="n">Z</span>
+<span class="n">disp</span>                 <span class="n">PDS4_DISP_1F00_1500</span><span class="o">.</span><span class="n">JSON</span>                   <span class="mf">1.15.0.0</span>   <span class="mi">2020</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">15</span><span class="n">T22</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">58</span><span class="n">Z</span>
+<span class="n">geom</span>                 <span class="n">PDS4_GEOM_1F00_1910</span><span class="o">.</span><span class="n">JSON</span>                   <span class="mf">1.15.0.0</span>   <span class="mi">2021</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">12</span><span class="n">T00</span><span class="p">:</span><span class="mi">37</span><span class="p">:</span><span class="mi">40</span><span class="n">Z</span>
+<span class="n">img</span>                  <span class="n">PDS4_IMG_1F00_1810</span><span class="o">.</span><span class="n">JSON</span>                    <span class="mf">1.15.0.0</span>   <span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">14</span><span class="n">T02</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">04</span><span class="n">Z</span>
+<span class="n">img_surface</span>          <span class="n">PDS4_IMG_SURFACE_1F00_1240</span><span class="o">.</span><span class="n">JSON</span>            <span class="mf">1.15.0.0</span>   <span class="mi">2021</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">12</span><span class="n">T00</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">39</span><span class="n">Z</span>
+<span class="n">msn</span>                  <span class="n">PDS4_MSN_1F00_1300</span><span class="o">.</span><span class="n">JSON</span>                    <span class="mf">1.15.0.0</span>   <span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">14</span><span class="n">T02</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">21</span><span class="n">Z</span>
+<span class="n">msn_surface</span>          <span class="n">PDS4_MSN_SURFACE_1F00_1200</span><span class="o">.</span><span class="n">JSON</span>            <span class="mf">1.15.0.0</span>   <span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">14</span><span class="n">T02</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">29</span><span class="n">Z</span>
+<span class="n">particle</span>             <span class="n">PDS4_PARTICLE_1G00_2010</span><span class="o">.</span><span class="n">JSON</span>               <span class="mf">1.16.0.0</span>   <span class="mi">2021</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">05</span><span class="n">T21</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">47</span><span class="n">Z</span>
+<span class="n">pds</span>                  <span class="n">PDS4_PDS_1F00</span><span class="o">.</span><span class="n">JSON</span>                         <span class="mf">1.15.0.0</span>   <span class="mi">2020</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">23</span><span class="n">T15</span><span class="p">:</span><span class="mi">16</span><span class="p">:</span><span class="mi">28</span><span class="n">Z</span>
+<span class="n">proc</span>                 <span class="n">PDS4_PROC_1F00_1210</span><span class="o">.</span><span class="n">JSON</span>                   <span class="mf">1.15.0.0</span>   <span class="mi">2020</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">09</span><span class="n">T03</span><span class="p">:</span><span class="mi">22</span><span class="p">:</span><span class="mi">22</span><span class="n">Z</span>
+<span class="n">rings</span>                <span class="n">PDS4_RINGS_1F00_1A00</span><span class="o">.</span><span class="n">JSON</span>                  <span class="mf">1.15.0.0</span>   <span class="mi">2020</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">02</span><span class="n">T19</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mi">01</span><span class="n">Z</span>
+<span class="n">sp</span>                   <span class="n">PDS4_SP_1F00_1300</span><span class="o">.</span><span class="n">JSON</span>                     <span class="mf">1.15.0.0</span>   <span class="mi">2020</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">03</span><span class="n">T19</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">46</span><span class="n">Z</span>
+</pre></div>
+</div>
+</section>
+<section id="load-pds-data-dictionary-files">
+<h2>Load PDS Data Dictionary Files<a class="headerlink" href="#load-pds-data-dictionary-files" title="Permalink to this headline"></a></h2>
+<p>To load standard PDS4 data dictionary JSON file, for example, <em>orex_ldd_OREX_1300.JSON</em>,
+run the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">registry</span><span class="o">-</span><span class="n">manager</span> <span class="n">load</span><span class="o">-</span><span class="n">dd</span> <span class="o">-</span><span class="n">dd</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">pds</span><span class="o">/</span><span class="n">schema</span><span class="o">/</span><span class="n">orex_ldd_OREX_1300</span><span class="o">.</span><span class="n">JSON</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="create_reg.html" class="btn btn-neutral float-left" title="Create / Delete Registry" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../install/install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022 California Institute of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

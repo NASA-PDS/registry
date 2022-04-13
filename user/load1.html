@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Load Data - Standalone Harvest &mdash; PDS Registry 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Load Data - Scalable Harvest" href="load2.html" />
+    <link rel="prev" title="User Tasks" href="tasks.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PDS Registry
+            <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About PDS Registry</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tasks.html">User Tasks</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Load Data - Standalone Harvest</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#standalone-harvest-quick-start">Standalone Harvest Quick Start</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="load2.html">Load Data - Scalable Harvest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html">Detailed harvest job configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="update_status.html">Update Archive Status</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delete_data.html">Delete Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/tasks.html">Admin Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support/support.html">Support</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PDS Registry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="tasks.html">User Tasks</a> &raquo;</li>
+      <li>Load Data - Standalone Harvest</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="load-data-standalone-harvest">
+<h1>Load Data - Standalone Harvest<a class="headerlink" href="#load-data-standalone-harvest" title="Permalink to this headline"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
+<p>To load PDS4 data into Registry you have to use Harvest software. There are two versions of Harvest:
+a simple standalone command-line tool and a scalable Harvest which can process big data sets in parallel thanks to distributed components comminucating through a message broker.
+Both versions extract metadata from PDS4 products (labels) and load extracted
+metadata into OpenSearch database.</p>
+<p>This document describes how to load data with Standalone Harvest command-line tool.</p>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>OpenSearch server is <a class="reference external" href="https://opensearch.org/">running</a>.</p></li>
+<li><p>Registry indices are <a class="reference external" href="../admin/create_reg.html#create-registry">created</a> in OpenSearch.</p></li>
+<li><p>Standalone Harvest command-line tool is <a class="reference external" href="../install/tools.html#standalone-harvest">installed</a>.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="standalone-harvest-quick-start">
+<h2>Standalone Harvest Quick Start<a class="headerlink" href="#standalone-harvest-quick-start" title="Permalink to this headline"></a></h2>
+<p>To run Harvest you need a job configuration file (XML).
+The configuration file has several sections such as Registry (OpenSearch) configuration
+and the path to the data. Example configuration files are located in <em>&lt;INSTALL_DIR&gt;/conf/examples</em>.</p>
+<p>The most useful configuration for an Harvest’s job is <em>conf/examples/directories.xml</em>. You will want to update the nodeName:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_GEO&quot;</span><span class="nt">&gt;</span>
+</pre></div>
+</div>
+<p>Registry (OpenSearch) configuration:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;registry</span> <span class="na">url=</span><span class="s">&quot;http://localhost:9200&quot;</span> <span class="na">index=</span><span class="s">&quot;registry&quot;</span> <span class="na">auth=</span><span class="s">&quot;/path/to/auth.cfg&quot;</span> <span class="nt">/&gt;</span>
+</pre></div>
+</div>
+<p>The path to the data:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;directories&gt;</span>
+  <span class="nt">&lt;path&gt;</span>/data/geo/urn-nasa-pds-kaguya_grs_spectra<span class="nt">&lt;/path&gt;</span>
+<span class="nt">&lt;/directories&gt;</span>
+</pre></div>
+</div>
+<p>And the URL prefix for the data:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;fileInfo&gt;</span>
+  <span class="c">&lt;!-- UPDATE with your own local path and base url where pds4 archive is published --&gt;</span>
+  <span class="nt">&lt;fileRef</span> <span class="na">replacePrefix=</span><span class="s">&quot;/data/geo/&quot;</span> <span class="na">with=</span><span class="s">&quot;https://pds-geosciences.wustl.edu/lunar/&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/fileInfo&gt;</span>
+</pre></div>
+</div>
+<p>If you save this file as <em>/tmp/kaguya.cfg</em> and run Harvest</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">harvest</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">kaguya</span><span class="o">.</span><span class="n">cfg</span>
+</pre></div>
+</div>
+<p>all XML files in <em>/data/orex/orex_spice</em> folder and its subfolders will be processed.
+All metadata from PDS4 labels will be extracted and loaded into Registry (OpenSearch).</p>
+<p>You will see multiple log messages similar to these:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Processing</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Geo</span>\<span class="n">kaguya_grs_spectra</span>\<span class="n">data_ephemerides</span>\<span class="n">kgrs_ephemerides</span><span class="o">.</span><span class="n">xml</span>
+<span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Processing</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Geo</span>\<span class="n">kaguya_grs_spectra</span>\<span class="n">data_spectra</span>\<span class="n">kgrs_calibrated_spectra_per1</span><span class="o">.</span><span class="n">xml</span>
+<span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Processing</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Geo</span>\<span class="n">kaguya_grs_spectra</span>\<span class="n">data_spectra</span>\<span class="n">kgrs_calibrated_spectra_per2</span><span class="o">.</span><span class="n">xml</span>
+<span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Processing</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Geo</span>\<span class="n">kaguya_grs_spectra</span>\<span class="n">data_spectra</span>\<span class="n">kgrs_calibrated_spectra_per3</span><span class="o">.</span><span class="n">xml</span>
+<span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Processing</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Geo</span>\<span class="n">kaguya_grs_spectra</span>\<span class="n">data_spectra</span>\<span class="n">spectra_data_collection_inventory</span><span class="o">.</span><span class="n">xml</span>
+<span class="o">...</span>
+<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span> <span class="n">Summary</span><span class="p">:</span>
+<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span> <span class="n">Skipped</span> <span class="n">files</span><span class="p">:</span> <span class="mi">0</span>
+<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span> <span class="n">Processed</span> <span class="n">files</span><span class="p">:</span> <span class="mi">14</span>
+<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span> <span class="n">File</span> <span class="n">counts</span> <span class="n">by</span> <span class="nb">type</span><span class="p">:</span>
+<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span>   <span class="n">Product_Bundle</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span>   <span class="n">Product_Collection</span><span class="p">:</span> <span class="mi">4</span>
+<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span>   <span class="n">Product_Context</span><span class="p">:</span> <span class="mi">3</span>
+<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span>   <span class="n">Product_Document</span><span class="p">:</span> <span class="mi">2</span>
+<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span>   <span class="n">Product_Observational</span><span class="p">:</span> <span class="mi">4</span>
+<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span> <span class="n">Package</span> <span class="n">ID</span><span class="p">:</span> <span class="n">e46f6ba9</span><span class="o">-</span><span class="mi">6151</span><span class="o">-</span><span class="mi">48</span><span class="n">ee</span><span class="o">-</span><span class="n">b822</span><span class="o">-</span><span class="n">b0536e3e4bd9</span>
+</pre></div>
+</div>
+<p>To quickly check that data was loaded you can query Registry indices in OpenSearch by calling
+<a class="reference external" href="https://opensearch.org/docs/latest/opensearch/query-dsl/index/">OpenSearch Search API</a>
+or in a web browser. For example,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select all products</span>
+<span class="n">curl</span> <span class="s2">&quot;http://localhost:9200/registry/_search?q=*&amp;amp;pretty&quot;</span>
+
+<span class="c1"># Select only collections</span>
+<span class="n">curl</span> <span class="s2">&quot;http://localhost:9200/registry/_search?q=product_class:Product_Collection&amp;amp;pretty&quot;</span>
+</pre></div>
+</div>
+<p>This <a class="reference external" href="./harvest_job_configuration.html">page</a> describes the job configuration file in detail.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tasks.html" class="btn btn-neutral float-left" title="User Tasks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="load2.html" class="btn btn-neutral float-right" title="Load Data - Scalable Harvest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022 California Institute of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
