@@ -83,3 +83,5 @@ build/
 .DS_Store
 ._*
 
+# Generated during Jenkins Pipelines
+test-data/

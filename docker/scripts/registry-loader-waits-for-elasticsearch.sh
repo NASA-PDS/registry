@@ -41,7 +41,8 @@ if [ -z "$ES_URL" ]; then
 fi
 
 echo "Waiting for Elasticsearch to launch..."  1>&2
-while ! curl --output /dev/null --silent --head --fail "$ES_URL"; do
+# TODO Warning: Use the default username and password only for testing purposes in local setup
+while ! curl --output /dev/null --silent --head --fail "$ES_URL" -u 'admin:admin' --insecure; do
   echo "waiting for elasticsearch" 1>&2
   sleep 1
 done

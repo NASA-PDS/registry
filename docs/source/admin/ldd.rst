@@ -9,19 +9,19 @@ Data Dictionary provides field definitions for all metadata fields which can be 
 Data type information is required to properly parse date and numeric fields.
 
 When a registry is created, the registry data dictionary is populated with PDS common and few discipline dictionaries.
-Latest versions of PDS4 data dictionaries are available at 
+Latest versions of PDS4 data dictionaries are available at
 `PDS website <https://pds.nasa.gov/datastandards/dictionaries/>`_.
 
-The Harvest tool will try to download and install data dictionaries listed in PDS4 label's **xsi:schemaLocation** 
+When loading data, the Harvest tool will try to download and install data dictionaries listed in PDS4 label's **xsi:schemaLocation**
 attribute::
 
-  <Product_Observational xmlns="http://pds.nasa.gov/pds4/pds/v1" 
-      xmlns:cart="http://pds.nasa.gov/pds4/cart/v1" 
-      xmlns:disp="http://pds.nasa.gov/pds4/disp/v1" 
-      xmlns:mars2020="http://pds.nasa.gov/pds4/mission/mars2020/v1" 
+  <Product_Observational xmlns="http://pds.nasa.gov/pds4/pds/v1"
+      xmlns:cart="http://pds.nasa.gov/pds4/cart/v1"
+      xmlns:disp="http://pds.nasa.gov/pds4/disp/v1"
+      xmlns:mars2020="http://pds.nasa.gov/pds4/mission/mars2020/v1"
       ...
       xsi:schemaLocation="
-          http://pds.nasa.gov/pds4/pds/v1 https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1G00.xsd   
+          http://pds.nasa.gov/pds4/pds/v1 https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1G00.xsd
           http://pds.nasa.gov/pds4/disp/v1 https://pds.nasa.gov/pds4/disp/v1/PDS4_DISP_1G00_1500.xsd
           http://pds.nasa.gov/pds4/cart/v1 https://pds.nasa.gov/pds4/cart/v1/PDS4_CART_1G00_1950.xsd
           ...
@@ -32,8 +32,8 @@ Usually you don't need to load data dictionaries manually if they are listed in 
 Prerequisites
 *************
 
- * Elasticsearch server is running.
- * Registry Manager command-line tool is installed.
+ * OpenSearch server is `running <https://opensearch.org/>`_.
+ * Registry Manager command-line tool is `installed <../install/tools.html#registry-manager>`_.
 
 
 List Installed Data Dictionaries
@@ -68,4 +68,3 @@ To load standard PDS4 data dictionary JSON file, for example, *orex_ldd_OREX_130
 run the following command::
 
   registry-manager load-dd -dd /home/pds/schema/orex_ldd_OREX_1300.JSON
-

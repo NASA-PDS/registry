@@ -18,6 +18,6 @@
   <directories>
     <path>/data</path>
   </directories>
-  <registry url="http://elasticsearch:9200" index="registry" />
+  <registry url="https://elasticsearch:9200" index="registry" auth="/etc/es-auth.cfg" />
   <autogenFields/>
 </harvest>

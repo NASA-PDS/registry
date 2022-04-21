@@ -17,64 +17,57 @@ You can change that value to any of the following:
 
 You can use either Registry Manager or Harvest Client (Scalable Harvest deployments only) for this task.
 
-
-Prerequisites - Registry Manager
-********************************
-
-  * Elasticsearch server is running.
-  * Registry indices are created in Elasticsearch.
-  * Some data is ingested into the Registry.
-  * Registry Manager command-line tool is installed.
-
-Prerequisites - Harvest Client
-******************************
-
-  * Elasticsearch server is running.
-  * Registry indices are created in Elasticsearch.
-  * Some data is ingested into the Registry.
-  * All server components - RabbitMQ, Crawler Server, Harvest Server - are deployed and running on-prem or in the cloud.
-  * Harvest Client command-line tool is installed.
-
-
 Registry Manager
-****************
+*****************
+
+Prerequisites
+=============
+
+  * OpenSearch server is `running <https://opensearch.org/>`_.
+  * Registry indices are `created <../admin/create_reg.html#create-registry>`_ in OpenSearch.
+  * Some data is `ingested <./load1.html>`_ into the Registry.
+  * Registry Manager command-line tool is `installed <../install/tools.html#registry-manager>`_.
+
+
+Set status
+===========
 
 To set product archive status, execute Registry Manager's "set-archive-status" command.
 
 The following parameters are required:
 
  * **-status <status>** - New status. Pass one of the following values: "archived", "certified", "restricted", "staged".
- * **-lidvid <id>** - LIDVID of a product to update. If the product is a collection product, 
+ * **-lidvid <id>** - LIDVID of a product to update. If the product is a collection product,
    all primary references from the collection inventory will be also updated.
    If the product is a bundle product, all bundle's collections will be also updated.
 
 Optional parameters:
 
- * **-es <url>** - Elasticsearch URL. Default URL is "http://localhost:9200".
- * **-index <name>** - Elasticsearch index name. Default value is 'registry'.
- * **-auth <file>** - Elasticsearch authentication configuration file. See example below.
+ * **-es <url>** - OpenSearch URL. Default URL is "http://localhost:9200".
+ * **-index <name>** - OpenSearch index name. Default value is 'registry'.
+ * **-auth <file>** - OpenSearch authentication configuration file. See example below.
 
 **Examples:**
 
-Update local Registry / Elasticsearch (http://localhost:9200), no authentication.
+Update local Registry / OpenSearch (http://localhost:9200), no authentication.
 
 .. code-block:: bash
 
    registry-manager set-archive-status \
-       -status archived 
+       -status archived
        -lidvid "urn:nasa:pds:kaguya_grs_spectra:document::1.0"
 
-Update remote Registry / Elasticsearch
+Update remote Registry / OpenSearch
 
 .. code-block:: bash
 
    registry-manager set-archive-status \
-       -status archived 
+       -status archived
        -lidvid "urn:nasa:pds:kaguya_grs_spectra:document::1.0" \
        -es https://my-host.my-domain:9999 \
        -auth /my/path/auth.cfg
 
-If your Elasticsearch server requires authentication, you have to create an authentication configuration 
+If your OpenSearch server requires authentication, you have to create an authentication configuration
 file and provide following parameters:
 
 .. code-block:: python
@@ -88,12 +81,25 @@ file and provide following parameters:
 Harvest Client (Scalable Harvest only)
 **************************************
 
+Prerequisites
+=============
+
+  * OpenSearch server is `running <https://opensearch.org/>`_.
+  * Registry indices are `created <../admin/create_reg.html#create-registry>`_ in OpenSearch.
+  * Some data is `ingested <./load2.html>`_ into the Registry.
+  * All server components - RabbitMQ, Crawler Server, Harvest Server - are deployed and running on-prem or in the cloud.
+  * Harvest Client command-line tool is `installed <../install/tools.html#harvest-client>`_.
+
+
+Set status
+===========
+
 To set product archive status, execute Harvest Client's "set-archive-status" command.
 
 The following parameters are required:
 
  * **-status <status>** - New status. Pass one of the following values: "archived", "certified", "restricted", "staged".
- * **-lidvid <id>** - LIDVID of a product to update. If the product is a collection product, 
+ * **-lidvid <id>** - LIDVID of a product to update. If the product is a collection product,
    all primary references from the collection inventory will be also updated.
    If the product is a bundle product, all bundle's collections will be also updated.
 
@@ -119,6 +125,5 @@ Usually Harvest Client is configured after the installation. Example configurati
 .. code-block:: bash
 
    harvest-client set-archive-status \
-       -status archived 
+       -status archived
        -lidvid "urn:nasa:pds:kaguya_grs_spectra:document::1.0"
-
