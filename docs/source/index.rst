@@ -5,13 +5,13 @@
 PDS Registry
 ============
 
-PDS Registry provides functionality for tracking, searching, auditing, locating, and maintaining artifacts within the system. 
-These artifacts can range from data files and label files, schemas, dictionary definitions for objects and elements, services, etc. 
+PDS Registry provides functionality for tracking, searching, auditing, locating, and maintaining artifacts within the system.
+These artifacts can range from data files and label files, schemas, dictionary definitions for objects and elements, services, etc.
 The core functionality for this component is satisfied by `OpenSearch <https://opensearch.org/>`_.
 
 The high level architecture of PDS Registry and its main components is shown below.
 
-.. image:: _static/images/registry-arc.png 
+.. image:: _static/images/registry-arc.png
 
 
 Sitemap
@@ -21,8 +21,8 @@ Sitemap
    :maxdepth: 2
 
    about
+   cloud_startup
    user/tasks
    admin/tasks
    install/install
-   cloud/cloud
    support/support

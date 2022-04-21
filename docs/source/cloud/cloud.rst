@@ -1,7 +1,0 @@
-=====
-Cloud
-=====
-
-.. toctree::
-   architecture
-   quickstart
