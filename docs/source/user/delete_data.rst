@@ -5,12 +5,12 @@ Delete Data
 Overview
 ********
 
-You can delete data from PDS Registry (Elasticsearch) with Registry Manager command-line tool.
+You can delete data from PDS Registry (OpenSearch) with Registry Manager command-line tool.
 
 Prerequisites
 *************
 
- * Elasticsearch server is running.
+ * OpenSearch server is running.
  * Registry Manager command-line tool is installed.
 
 
@@ -28,9 +28,9 @@ You have to pass one of the following parameters:
 
 You can also pass optional parameters:
 
- * **-es <url>** - Elasticsearch URL. Default URL is "http://localhost:9200".
- * **-index <name>** - Elasticsearch index name. Default value is 'registry'.
- * **-auth <file>** - Elasticsearch authentication configuration file. See example below.
+ * **-es <url>** - OpenSearch URL. Default URL is "http://localhost:9200".
+ * **-index <name>** - OpenSearch index name. Default value is 'registry'.
+ * **-auth <file>** - OpenSearch authentication configuration file. See example below.
 
 Examples
 ********
@@ -45,7 +45,7 @@ Examples
       -index registry \
       -auth path/to/auth.cfg
 
-If your Elasticsearch server requires authentication, you have to create an authentication configuration file
+If your OpenSearch server requires authentication, you have to create an authentication configuration file
 and provide following parameters:
 
 .. code-block:: python
@@ -77,10 +77,12 @@ and provide following parameters:
   registry-manager delete-data -all -index test1
 
 
-Elasticsearch API
+OpenSearch API
 *****************
 
-You can also use Elasticsearch 
-`delete by query API <https://www.elastic.co/guide/en/elasticsearch/reference/7.8/docs-delete-by-query.html>`_
-to delete documents from the Registry / Elasticsearch.
+.. warning::
+    Only use this if you really know what you are doing and how to do it.
 
+You can also use OpenSearch
+`delete by query API <https://opensearch.org/docs/latest/opensearch/rest-api/document-apis/delete-by-query/>`_
+to delete documents from the Registry / OpenSearch.

@@ -6,18 +6,19 @@ please refer to [https://docs.docker.com/compose/](https://docs.docker.com/compo
 The docker-compose.yml file contains following profiles and each profile will start the components as shown in the table below.
 
 | Components\\Profiles                                 | dev-api | pds-core-registry | int-registry-batch-loader | int-registry-service-loader | pds-loader-services | pds-batch-loader | pds-service-loader | int-test |
-| ---------------------------------------------------- | ------- | ----------------- | ------------------------- | --------------------------- | ------------------- | ---------------- | ------------------ | -------- |
-| Elasticsearch                                        | x       | x                 | x                         | x                           |                     |                  |                    |          |
-| Elasticsearch init                                   | x       | x                 | x                         | x                           |                     |                  |                    |          |
-| Registry API                                         |         | x                 | x                         | x                           |                     |                  |                    |          |
-| Registry loader test init                            | x       |                   | x                         |                             |                     |                  |                    |          |
-| Registry loader                                      |         |                   |                           |                             |                     | x                |                    |          |
-| Registry API integration tests (postman collection?) |         |                   | x                         | x                           |                     |                  |                    | x        |
-| Rabbitmq                                             |         |                   |                           | x                           | x                   |                  |                    |          |
-| Registry harvest service                             |         |                   |                           | x                           | x                   |                  |                    |          |
-| Registry crawler service                             |         |                   |                           | x                           | x                   |                  |                    |          |
-| Registry harvest cli test init                       |         |                   |                           | x                           |                     |                  |                    |          |
-| Registry harvest cli                                 |         |                   |                           |                             |                     |                  | x                  |          |
+|:-----------------------------------------------------|:-------:|:-----------------:|:-------------------------:|:---------------------------:|:-------------------:|:----------------:|:------------------:|:--------:|
+| Elasticsearch                                        | ✓       | ✓                 | ✓                         | ✓                           |                     |                  |                    |          |
+| Elasticsearch init                                   | ✓       | ✓                 | ✓                         | ✓                           |                     |                  |                    |          |
+| Registry API                                         |         | ✓                 | ✓                         | ✓                           |                     |                  |                    |          |
+| Registry loader test init                            | ✓       |                   | ✓                         |                             |                     |                  |                    |          |
+| Registry loader                                      |         |                   |                           |                             |                     | ✓                |                    |          |
+| Registry API integration tests (postman collection?) |         |                   | ✓                         | ✓                           |                     |                  |                    | ✓        |
+| Rabbitmq                                             |         |                   |                           | ✓                           | ✓                   |                  |                    |          |
+| Registry harvest service                             |         |                   |                           | ✓                           | ✓                   |                  |                    |          |
+| Registry crawler service                             |         |                   |                           | ✓                           | ✓                   |                  |                    |          |
+| Registry harvest cli test init                       |         |                   |                           | ✓                           |                     |                  |                    |          |
+| Registry harvest cli                                 |         |                   |                           |                             |                     |                  | ✓                  |          |
+| TLS termination                                      |         | ✓                 | ✓                         | ✓                           |                     |                  |                    |          |
 
 With the use of above profiles the docker compose can start components individually
 or as a group of components as follows. The `-d` option at the end of the commands is used to
@@ -62,17 +63,28 @@ to replace the default passwords with your own passwords as explained in the fol
 ```
 git clone https://github.com/NASA-PDS/registry.git
 ```
-2) Open a terminal and change the current working directory to `registry/docker`.
+2) Open a terminal and change the current working directory to `registry/docker/certs`.
 ```
-cd docker
+cd docker/certs
 ```
-3) Deploy and execute integration tests with the following single command.
+
+3) Generate certificates required for OpenSearch by executing the following shell script.
+```
+./generate-certs.sh
+```
+
+4) Change the current working directory to `registry/docker`.
+```
+cd ..
+```
+
+5) Deploy and execute integration tests with the following single command.
 ```
 docker compose --profile=int-registry-service-loader up
 ```
 Note: This may take several minutes, including data loading  delays between components.
 
-4) To clean the deployment, execute the following command.
+6) To clean the deployment, execute the following command.
 ```
 docker compose --profile=int-registry-service-loader down
 ```
@@ -151,6 +163,7 @@ REG_API_APP_PROPERTIES_FILE=./default-config/application.properties
 | REG_LOADER_IMAGE              | Docker image of the Registry Loader. Make sure this docker image is available. |
 | ES_URL                        | Elasticsearch URL (the host name is the Elasticsearch service name specified in the docker compose) |
 | TEST_DATA_URL                 | URL to download the test data to Harvest (only required, if executing with test data) |
+| TEST_DATA_LIDVID              | The lidvid of the test data, which is used to set the archive status |
 | HARVEST_DATA_DIR              | Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/registry-harvest-data`). If the Registry Harvest CLI is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
 | HARVEST_JOB_CONFIG_FILE       | Absolute path of the Harvest configuration file in the host machine (E.g.: `./default-config/harvest-job-config.xml`) |
 
@@ -160,9 +173,6 @@ REG_LOADER_IMAGE=nasapds/registry-loader
 
 # Elasticsearch URL (the host name is the Elasticsearch service name specified in the docker compose)
 ES_URL=http://elasticsearch:9200
-
-# URL to download the test data to Harvest (only required, if executing with test data)
-TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-nasa-pds-insight_rad.tar.gz
 
 # --------------------------------------------------------------------
 # Common Configuartions
@@ -178,7 +188,26 @@ HARVEST_DATA_DIR=./test-data/registry-harvest-data
 
 # Absolute path of the Harvest job file in the host machine (E.g.: ./default-config/harvest-job-config.xml)
 HARVEST_JOB_CONFIG_FILE=./default-config/harvest-job-config.xml
+
+# URL to download the test data to Harvest (only required, if executing with test data)
+TEST_DATA_URL=https://pds-gamma.jpl.nasa.gov/data/pds4/test-data/registry/urn-nasa-pds-insight_rad.tar.gz
+
+# The lidvid of the test data, which is used to set the archive status (only required, if executing with test data)
+TEST_DATA_LIDVID=urn:nasa:pds:insight_rad::2.1
 ```
+
+#### 7. Generate certificates
+
+1) Open a terminal and change the current working directory to `registry/docker/certs`.
+```
+cd docker/certs
+```
+
+2) Generate the certificates required for OpenSearch by executing the following shell script.
+```
+./generate-certs.sh
+```
+
 
 ## 🏃 Steps to execute registry components with docker compose
 
@@ -233,6 +262,8 @@ Follow the instructions in the following sections at the end of the [Test Your D
 
 * Query Elasticsearch
 * Use Registry API
+
+Note that the Registry API is published to port 8080 as `http` and—when not using the `dev-api` profile—to port 8443 as `https` (with a self-signed certificate) on all host interfaces.
 
 ## 🏃 Cleaning up the Registry Loader deployment
 

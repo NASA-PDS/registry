@@ -10,7 +10,7 @@ This document describes how to install following PDS Registry tools (command-lin
  * **Standalone Harvest** extracts metadata from PDS4 labels and loads extracted metadata into PDS Registry.
  * **Harvest Client** has to be used with Scalable Harvest server components to submit asynchronous jobs
    to the server cluster.
- * **Registry Manager** is a tool to create Registry indices in Elasticsearch and to 
+ * **Registry Manager** is a tool to create Registry indices in OpenSearch and to 
    manage data and LDDs (data dictionaries).
  * **Supplementer** can be used to load supplemental metadata into PDS Registry.
 
