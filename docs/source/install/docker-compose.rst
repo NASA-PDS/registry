@@ -20,7 +20,7 @@ Therefore, the deployment procedures described here can be used to deploy server
 Prerequisites
 *************
 
-Before using docker compose commands, it is required to install the following tools.
+It is required to install the following tools.
 
     * **docker** Can be downloaded installed as explained in https://docs.docker.com/get-docker/
 
@@ -104,8 +104,6 @@ command::
 
     docker compose --profile=<DOCKER_COMPOSE_PROFILE_NAME> down
 
-Server-side Profiles
-~~~~~~~~~~~~~~~~~~~~
 
 The following table contains commonly used and production ready server-side profiles and descriptions.
 
@@ -121,24 +119,25 @@ The following table contains commonly used and production ready server-side prof
 ====================== ==================================================== ==============================================
 
 
-Client-side Profiles
-~~~~~~~~~~~~~~~~~~~~
+Client-side operations
+****************************
 
-The following table contains commonly used and production ready client-side profiles and descriptions.
 
-====================== ==================================================== ==============================================
- Profile Name           Description                                          Prerequisites
+To ingest data in the registry, you need to run client side command (which use docker compose as well internally)
 
-                                                                             (profiles to start before this)
+================================================ ==================================================== ==============================================
+ Command prototype                                 Description                                          Prerequisites
 
-====================== ==================================================== ==============================================
- pds-batch-loader       Executes the Standalone Harvest client-side tool.    The `pds-core-registry` server-side profile
-                        This tool is recommended for small data sets of      must be up and running
-                        up to 10,000 PDS4 labels.
- pds-service-loader     Executes the Scalable Harvest client-side tool.      The `pds-service-loader` server-side profile
-                        This tool is   recommended for larger data sets of   must be up and running
-                        over 10,000 PDS4 labels.
-====================== ==================================================== ==============================================
+                                                                                                        (profiles to start before this)
+
+================================================ ==================================================== ==============================================
+ pds-batch-loader.sh  <harvest job confg file>     Executes the Standalone Harvest client-side tool.    The `pds-core-registry` server-side profile
+                                                   This tool is recommended for small data sets of      must be up and running
+                                                   up to 10,000 PDS4 labels.
+ pds-service-loader.sh <harvest job confg file>    Executes the Scalable Harvest client-side tool.      The `pds-service-loader` server-side profile
+                                                   This tool is   recommended for larger data sets of   must be up and running
+                                                   over 10,000 PDS4 labels.
+================================================ ==================================================== ==============================================
 
 
 Common deployment scenarii
@@ -202,15 +201,15 @@ commands::
     docker compose --profile=pds-batch-loader down
 
 
-Deploying Scalable Harvest
-**************************
+Core registry with Scalable Harvest
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 As explained above, the Scalable Harvest is suitable to process larger data sets of more than 10,000 PDS4 labels.
 
 You can execute the following instructions to deploy the server-side and client-side components of Scalable Harvest.
 
 Deploying the Sever-side Components of Scalable Harvest
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------------------------------
 
 1) Open a new terminal and change the current working directory to the `<REGISTRY_ROOT>/docker` directory.
 
@@ -235,7 +234,7 @@ Deploying the Sever-side Components of Scalable Harvest
 
 
 Deploying the Client-side Components of Standalone Harvest
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------------------------------
 
 1) Open a new terminal and change the current working directory to the `<REGISTRY_ROOT>/docker` directory.
 
@@ -252,7 +251,7 @@ Deploying the Client-side Components of Standalone Harvest
 5) Click on the **Try it out!** button to see the Response Body.
 
 Clean-up the Deployment
-~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 
 The docker containers deployed above can be easily uninstalled and cleaned-up using the following
 commands::
