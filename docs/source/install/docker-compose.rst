@@ -58,9 +58,6 @@ On Linux you can use the following command::
     # and Registry Crawler Service.
     HARVEST_DATA_DIR=./test-data/registry-harvest-data
 
-    # Absolute path of the Harvest job file in the host machine (E.g.: ./default-config/harvest-job-config.xml)
-    HARVEST_JOB_CONFIG_FILE=./default-config/harvest-job-config.xml
-
 .. note::
     The `HARVEST_DATA_DIR` specified above should have the directories of the data to be harvested.
 
@@ -89,9 +86,9 @@ On Linux you can use the following command::
 Deployment profiles
 ****************************
 
-Deployment profiles are defined to parameterize your deployment, either you only want to run the server side core components of the registry (OpenSearch and web API) or run an harvest standalone job, or run the scalable harvest services.
+Deployment profiles are defined to parameterize your deployment, either you only want to run the server side core components of the registry (OpenSearch and web API) or run an harvest standalone job, or run the scalable harvest services...
 
-Using a profile name, you can start only the required components of the Registry as follows. ::
+Using a profile name, you can start the required components of the Registry as follows. ::
 
     docker compose --profile=<DOCKER_COMPOSE_PROFILE_NAME> up --detach
 
@@ -105,7 +102,7 @@ command::
     docker compose --profile=<DOCKER_COMPOSE_PROFILE_NAME> down
 
 
-The following table contains commonly used and production ready server-side profiles and descriptions.
+The following table contains commonly used server-side profiles and descriptions.
 
 ====================== ==================================================== ==============================================
  Profile Name           Description                                          Prerequisites
@@ -123,7 +120,7 @@ Client-side operations
 ****************************
 
 
-To ingest data in the registry, you need to run client side command (which use docker compose as well internally)
+To trigger data ingestion in the registry, you need to run client side commands (which use docker compose as well internally)
 
 ================================================ ==================================================== ==============================================
  Command prototype                                 Description                                          Prerequisites
@@ -147,17 +144,17 @@ Common deployment scenarii
 Core Registry with Standalone Harvest
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-As explained above, the Standalone Harvest is a simplified deployment, which is suitable to process smaller data sets of
+As explained above, the Standalone Harvest simple batch tool, which is suitable to process small data sets of
 up to 10,000 PDS4 labels.
 
-You can execute the following instructions to deploy the server-side and client-side components of Standalone Harvest.
+You can execute the following instructions to deploy the registry and load small amount of data.
 
 Deploying the Sever-side Components of Standalone Harvest
 ----------------------------------------------------------
 
-1) Open a new terminal and change the current working directory to the `<REGISTRY_ROOT>/docker` directory.
+1) Open a new terminal and change the current working directory to the ``<REGISTRY_ROOT>/docker`` directory.
 
-2) Start the `pds-core-registry` components as follows. ::
+2) Start opensearch and the PDS search API as follows. ::
 
     docker compose --profile=pds-core-registry  up
 
@@ -172,22 +169,26 @@ Deploying the Sever-side Components of Standalone Harvest
     docker-registry-api-1        |  :: Spring Boot ::        (v2.3.1.RELEASE)
     docker-registry-api-1        |
 
-Deploying the Client-side Components of Standalone Harvest
+Run Standalone Harvest to load some PDS4 products
 -----------------------------------------------------------
 
-1) Open a new terminal and change the current working directory to the `<REGISTRY_ROOT>/docker` directory.
+1) Open a new terminal and change the current working directory to the ``<REGISTRY_ROOT>/docker/scripts`` directory.
 
-2) Start the `pds-core-registry` components as follows. ::
+2) Define an harvest job configuration as specified in :doc:`Harvest Job Configuration<../user/harvest_job_configuration>`
 
-    docker compose --profile=pds-batch-loader  up
+3) Run the harvest command:
 
-3) Wait for the following log messages in the terminal. ::
+    ./pds-batch-loader.sh  <harvest job confg file>
+
+This is using docker compose in the background so no need to install anything more.
+
+4) Wait for the following log messages in the terminal. ::
 
     docker-registry-loader-1 exited with code 0
 
-4) Visit the http://localhost:8080/swagger-ui.html#!/collections/getCollection of the Registry API.
+5) Visit the http://localhost:8080/swagger-ui.html#!/collections/getCollection of the Registry API.
 
-5) Click on the **Try it out!** button to see the Response Body.
+6) Click on the **Try it out!** button to see the Response Body.
 
 
 Clean-up the Deployment
@@ -198,22 +199,24 @@ commands::
 
     docker compose --profile=pds-core-registry down
 
-    docker compose --profile=pds-batch-loader down
-
 
 Core registry with Scalable Harvest
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 As explained above, the Scalable Harvest is suitable to process larger data sets of more than 10,000 PDS4 labels.
 
-You can execute the following instructions to deploy the server-side and client-side components of Scalable Harvest.
+You can execute the following instructions to deploy the server-side components of Registry with Scalable Harvest and load some data.
+
+.. note::
+  Docker Compose running on a single host, the scalability of this tool is not at its full potential yet, we will propose in the future a production ready deployment procedure (e.g. using kubernetes) to actually scale the ingestion.
+
 
 Deploying the Sever-side Components of Scalable Harvest
 --------------------------------------------------------
 
-1) Open a new terminal and change the current working directory to the `<REGISTRY_ROOT>/docker` directory.
+1) Open a new terminal and change the current working directory to the ``<REGISTRY_ROOT>/docker`` directory.
 
-2) Start the `pds-core-registry` components as follows. ::
+2) Start opensearch and the PDS search API as follows. ::
 
     docker compose --profile=pds-core-registry  up
 
@@ -232,23 +235,26 @@ Deploying the Sever-side Components of Scalable Harvest
 
     docker compose --profile=pds-loader-services up
 
-
-Deploying the Client-side Components of Standalone Harvest
+Run Scalable Harvest Service client to load some PDS4 products
 -----------------------------------------------------------
 
-1) Open a new terminal and change the current working directory to the `<REGISTRY_ROOT>/docker` directory.
+1) Open a new terminal and change the current working directory to the ``<REGISTRY_ROOT>/docker/scripts/`` directory.
 
-2) Start the `pds-service-loader` components as follows. ::
+2) Define an harvest job configuration as specified in :doc:`Harvest Job Configuration<../user/harvest_job_configuration>`
 
-    docker compose --profile=pds-service-loader up
+3) Run the harvest command:
 
-3) Wait for the following log messages in the terminal. ::
+    ./pds-service-loader.sh  <harvest job confg file>
+
+This is using docker compose in the background so no need to install anything more.
+
+4) Wait for the following log messages in the terminal. ::
 
     docker-registry-harvest-cli-1 exited with code 0
 
-4) Visit the http://localhost:8080/swagger-ui.html#!/collections/getCollection of the Registry API.
+5) Visit the http://localhost:8080/swagger-ui.html#!/collections/getCollection of the Registry API.
 
-5) Click on the **Try it out!** button to see the Response Body.
+6) Click on the **Try it out!** button to see the Response Body.
 
 Clean-up the Deployment
 ------------------------
@@ -259,9 +265,6 @@ commands::
     docker compose --profile=pds-core-registry down
 
     docker compose --profile=pds-loader-services down
-
-    docker compose --profile=pds-service-loader down
-
 
 
 .. note::
