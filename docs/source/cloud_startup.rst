@@ -9,7 +9,7 @@ This page provides the steps necessary to get going with data ingestion and
 querying of the PDS Registry Service on the cloud from the perspective of a Discipline
 Node (DN).
 
-Initial set-up
+Initial Set-up
 **************
 
 To get things going, you should have provided the EN contact with the following:
@@ -24,7 +24,7 @@ transit of the credentials. The IP addresses are added to the Opensearch access 
 Along with your Opensearch user credentials you will receive the URL which points to your Opensearch
 instance - we will refer to this as the Opensearch URL.
 
-Changing Your Opensearch password
+Changing Your Opensearch Password
 *********************************
 
 Note: One limitation of AWS Opensearch is the inability to change user
@@ -51,7 +51,7 @@ Registry Tools
 **************
 
 Once the above setup is complete, the Registry Tools are used to process and ingest product
-metadata into the Registry. Details on how to run these tools is found in the :doc:`User
+metadata into the Registry. Details on how to run these tools are found in the :doc:`User
 Tasks Section</user/tasks>`
 
 The registry tools (i.e. Harvest - both standalone and scalable, Registry Manager) are deployed on premise, on a system that has been included in the Opensearch

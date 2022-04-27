@@ -24,7 +24,7 @@ Only **Java 11** is supported.
 Some applications, like Harvest or Registry Manager will not run with **Java 1.8**.
 
 
-Test if Java is already installed
+Test If Java Is Already Installed
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To test if Java is already installed on your system, run the following command in a terminal::
@@ -123,16 +123,15 @@ For example, if you are using BASH, add the following to your *.bash_profile*::
   HARVEST_CLIENT_HOME=/path/to/harvest-client-x.y.z
   REGISTRY_HOME=/path/to/registry-manager-x.y.z
   SUPPLEMENTER_HOME=/path/to/supplementer-x.y.z
-  
+
   export PATH=${PATH}:$HARVEST_HOME/bin:$REGISTRY_HOME/bin
   export PATH=${PATH}:$HARVEST_CLIENT_HOME/bin:$SUPPLEMENTER_HOME/bin:
 
 **Windows**
 
-Open the Start Menu and begin typing "environment". Select "Edit environment variables for your account". 
+Open the Start Menu and begin typing "environment". Select "Edit environment variables for your account".
 
-.. image:: /_static/images/win-env.png 
+.. image:: /_static/images/win-env.png
 
 "Environment Variables" dialog will open where you can edit "Path" variable.
-Add "bin" directory of Harvest, Registry Manager and other tools to "Path" variable. 
-
+Add "bin" directory of Harvest, Registry Manager and other tools to "Path" variable.

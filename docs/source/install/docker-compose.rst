@@ -12,10 +12,10 @@ The container based deployment of the PDS Registry components is orchestrated by
 Therefore, the deployment procedures described here can be used to deploy server-side and/or client-side registry components, without having to install the individual components manually.
 
 .. warning::
- these deployment are not intended for production given that 1. docker compose works on a single host and 2. permanent storage is left to docker to manage.
+   These deployment are not intended for production given that 1. docker compose works on a single host and 2. permanent storage is left to docker to manage.
 
 .. note::
-    To learn more about docker compose, please visit https://docs.docker.com/compose/.
+   To learn more about docker compose, please visit https://docs.docker.com/compose/.
 
 Prerequisites
 *************
@@ -83,7 +83,7 @@ On Linux you can use the following command::
 
         cd ..
 
-Deployment profiles
+Deployment Profiles
 ****************************
 
 Deployment profiles are defined to parameterize your deployment, either you only want to run the server side core components of the registry (OpenSearch and web API) or run an harvest standalone job, or run the scalable harvest services...
@@ -116,7 +116,7 @@ The following table contains commonly used server-side profiles and descriptions
 ====================== ==================================================== ==============================================
 
 
-Client-side operations
+Client-side Operations
 ****************************
 
 
@@ -131,13 +131,13 @@ To trigger data ingestion in the registry, you need to run client side commands 
  pds-batch-loader.sh  <harvest job confg file>     Executes the Standalone Harvest client-side tool.    The `pds-core-registry` server-side profile
                                                    This tool is recommended for small data sets of      must be up and running
                                                    up to 10,000 PDS4 labels.
- pds-service-loader.sh <harvest job confg file>    Executes the Scalable Harvest client-side tool.      The `pds-service-loader` server-side profile
+ pds-service-loader.sh <harvest job confg file>    Executes the Scalable Harvest client-side tool.      The `pds-loader-services` server-side profile
                                                    This tool is   recommended for larger data sets of   must be up and running
                                                    over 10,000 PDS4 labels.
 ================================================ ==================================================== ==============================================
 
 
-Common deployment scenarii
+Common Deployment Scenarii
 ****************************
 
 
@@ -169,14 +169,14 @@ Deploying the Sever-side Components of Standalone Harvest
     docker-registry-api-1        |  :: Spring Boot ::        (v2.3.1.RELEASE)
     docker-registry-api-1        |
 
-Run Standalone Harvest to load some PDS4 products
+Run Standalone Harvest to Load Some PDS4 Products
 -----------------------------------------------------------
 
 1) Open a new terminal and change the current working directory to the ``<REGISTRY_ROOT>/docker/scripts`` directory.
 
-2) Define an harvest job configuration as specified in :doc:`Harvest Job Configuration<../user/harvest_job_configuration>`
+2) Define a harvest job configuration as specified in :doc:`Harvest Job Configuration<../user/harvest_job_configuration>`
 
-3) Run the harvest command:
+3) Run the harvest command. ::
 
     ./pds-batch-loader.sh  <harvest job confg file>
 
@@ -200,7 +200,7 @@ commands::
     docker compose --profile=pds-core-registry down
 
 
-Core registry with Scalable Harvest
+Core Registry with Scalable Harvest
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 As explained above, the Scalable Harvest is suitable to process larger data sets of more than 10,000 PDS4 labels.
@@ -235,14 +235,14 @@ Deploying the Sever-side Components of Scalable Harvest
 
     docker compose --profile=pds-loader-services up
 
-Run Scalable Harvest Service client to load some PDS4 products
------------------------------------------------------------
+Run Scalable Harvest Service Client to Load Some PDS4 Products
+----------------------------------------------------------------
 
 1) Open a new terminal and change the current working directory to the ``<REGISTRY_ROOT>/docker/scripts/`` directory.
 
-2) Define an harvest job configuration as specified in :doc:`Harvest Job Configuration<../user/harvest_job_configuration>`
+2) Define a harvest job configuration as specified in :doc:`Harvest Job Configuration<../user/harvest_job_configuration>`
 
-3) Run the harvest command:
+3) Run the harvest command. ::
 
     ./pds-service-loader.sh  <harvest job confg file>
 
