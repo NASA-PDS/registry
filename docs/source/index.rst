@@ -5,14 +5,12 @@
 PDS Registry
 ============
 
-PDS Registry provides functionality for tracking, searching, auditing, locating, and maintaining artifacts within the system. 
-These artifacts can range from data files and label files, schemas, dictionary definitions for objects and elements, services, etc. 
-The core functionality for this component is satisfied by `OpenSearch <https://opensearch.org/>`_.
+PDS Registry provides functionality for tracking, searching, auditing, locating, and maintaining artifacts within the system.
+These artifacts can range from data files and label files, schemas, dictionary definitions for objects and elements, services, etc...
 
-The high level architecture of PDS Registry and its main components is shown below.
+The PDS Registry is both the Service which provides the functions listed above overall the different nodes of the PDS in an integrated way, and it is the software Application which implements these functions at the node level.
 
-.. image:: _static/images/registry-arc.png 
-
+This documentation is intended for the users and administrators who contribute to the PDS Registry Service. The users of the PDS Registry Service through the web API should refer to the `PDS Search API user's guide <https://nasa-pds.github.io/pds-api/>`_
 
 Sitemap
 =======
@@ -21,6 +19,7 @@ Sitemap
    :maxdepth: 2
 
    about
+   cloud_startup
    user/tasks
    admin/tasks
    install/install

@@ -5,17 +5,23 @@ Docker Container Based Deployment
 Overview
 ********
 
-Docker Compose is a tool for defining and running multi-container Docker applications. All registry components are
-containerized as docker images and published in https://hub.docker.com/u/nasapds. Therefore, the docker compose tool
-can be used to deploy both server-side and client-side registry components.
+All the PDS Registry components are containerized as docker images and published in https://hub.docker.com/u/nasapds.
+
+The container based deployment of the PDS Registry components is orchestrated by Docker Compose, a tool for defining and running multi-container Docker applications.
+
+Therefore, the deployment procedures described here can be used to deploy server-side and/or client-side registry components, without having to install the individual components manually.
+
+.. warning::
+   These deployment are not intended for production given that 1. docker compose works on a single host and 2. permanent storage is left to docker to manage.
 
 .. note::
-    To learn more about docker compose, please visit https://docs.docker.com/compose/.
+   To learn more about docker compose, please visit https://docs.docker.com/compose/.
+
 
 Prerequisites
 *************
 
-Before using docker compose commands, it is required to install the following tools.
+It is required to install the following tools.
 
     * **docker** Can be downloaded installed as explained in https://docs.docker.com/get-docker/
 
@@ -25,8 +31,8 @@ Before using docker compose commands, it is required to install the following to
     At the time of writing this, all registry components were successfully tested with the docker compose version v2.2.3.
     The registry components should work with later versions of docker compose too.
 
-Download and Configure the Registry Components
-**********************************************
+Download and Configure the PDS Registry Application
+****************************************************
 
 The latest release of the Registry can be downloaded and configured as follows.
 
@@ -42,9 +48,8 @@ On Linux you can use the following command::
 
 3. Open a terminal and change the working directory to `<REGISTRY_ROOT>/docker` directory.
 
-4. Open the `<REGISTRY_ROOT>/docker/.env` file using a text editor such as vi or vim editor. ::
 
-    vi .env
+4. Open the `<REGISTRY_ROOT>/docker/.env` file using a text editor
 
 5. Edit the `.env` file and set the following environment variables. ::
 
@@ -54,9 +59,6 @@ On Linux you can use the following command::
     # Also, this `HARVEST_DATA_DIR` location should be accessible from the docker containers of the Registry Harvest Service
     # and Registry Crawler Service.
     HARVEST_DATA_DIR=./test-data/registry-harvest-data
-
-    # Absolute path of the Harvest job file in the host machine (E.g.: ./default-config/harvest-job-config.xml)
-    HARVEST_JOB_CONFIG_FILE=./default-config/harvest-job-config.xml
 
 .. note::
     The `HARVEST_DATA_DIR` specified above should have the directories of the data to be harvested.
@@ -83,14 +85,12 @@ On Linux you can use the following command::
 
         cd ..
 
-Docker Compose Profile Names
+Deployment Profiles
 ****************************
 
-All the required Registry components (such as OpenSearch, RabbitMQ, Registry API) are defined as services in
-the `<REGISTRY_ROOT>/docker/docker-compose.yml` file. In this file, each and every service (components) is tagged with a profile name.
-There are multiple services associated with a single profile.
+Deployment profiles are defined to parameterize your deployment, either you only want to run the server side core components of the registry (OpenSearch and web API) or run an harvest standalone job, or run the scalable harvest services...
 
-Using a profile name, you can start only the required components of the Registry as follows. ::
+Using a profile name, you can start the required components of the Registry as follows. ::
 
     docker compose --profile=<DOCKER_COMPOSE_PROFILE_NAME> up --detach
 
@@ -103,76 +103,59 @@ command::
 
     docker compose --profile=<DOCKER_COMPOSE_PROFILE_NAME> down
 
-Server-side Profiles
-~~~~~~~~~~~~~~~~~~~~
-
-The following table contains commonly used and production ready server-side profiles and descriptions.
+The following table contains commonly used server-side profiles and descriptions.
 
 ====================== ==================================================== ==============================================
  Profile Name           Description                                          Prerequisites
-
+ 
                                                                              (profiles to start before this)
 
 ====================== ==================================================== ==============================================
  pds-core-registry      Starts only the OpenSearch and Registry API          None
  pds-loader-services    Starts the Scalable Harvest server-side components   The `pds-core-registry` profile
-                                                                             should be up and running
-====================== ==================================================== ==============================================
-
-The `pds-core-registry` profile can be started as follows::
-
-    docker compose --profile=pds-core-registry  up --detach
-
-The `pds-loader-services` profile can be started as follows (make sure to start the
-`pds-core-registry` profile, before starting this)::
-
-    docker compose --profile=pds-loader-services  up --detach
-
-Client-side Profiles
-~~~~~~~~~~~~~~~~~~~~
-
-The following table contains commonly used and production ready client-side profiles and descriptions.
-
-====================== ==================================================== ==============================================
- Profile Name           Description                                          Prerequisites
-
-                                                                             (profiles to start before this)
-
-====================== ==================================================== ==============================================
- pds-batch-loader       Executes the Standalone Harvest client-side tool.    The `pds-core-registry` server-side profile
-                        This tool is recommended for small data sets of      should be up and running
-                        up to 10,000 PDS4 labels.
- pds-service-loader     Executes the Scalable Harvest client-side tool.      The `pds-service-loader` server-side profile
-                        This tool is   recommended for larger data sets of   should be up and running
-                        over 10,000 PDS4 labels.
+                                                                             must be up and running
 ====================== ==================================================== ==============================================
 
 
-The `pds-batch-loader` profile can be started as follows (make sure to start the `pds-core-registry` profile, before
-starting this)::
-
-    docker compose --profile=pds-batch-loader up --detach
-
-The `pds-service-loader` profile can be started as follows (make sure to start the `pds-service-loader` profile, before
-starting this)::
-
-    docker compose --profile=pds-service-loader up --detach
-
-
-Deploying Standalone Harvest
+Client-side Operations
 ****************************
 
-As explained above, the Standalone Harvest is a simplified deployment, which is suitable to process smaller data sets of
+
+To trigger data ingestion in the registry, you need to run client side commands (which use docker compose as well internally)
+
+================================================ ==================================================== ==============================================
+ Command prototype                                 Description                                          Prerequisites
+
+                                                                                                        (profiles to start before this)
+
+================================================ ==================================================== ==============================================
+ pds-batch-loader.sh  <harvest job confg file>     Executes the Standalone Harvest client-side tool.    The `pds-core-registry` server-side profile
+                                                   This tool is recommended for small data sets of      must be up and running
+                                                   up to 10,000 PDS4 labels.
+ pds-service-loader.sh <harvest job confg file>    Executes the Scalable Harvest client-side tool.      The `pds-loader-services` server-side profile
+                                                   This tool is   recommended for larger data sets of   must be up and running
+                                                   over 10,000 PDS4 labels.
+================================================ ==================================================== ==============================================
+
+
+Common Deployment Scenarii
+****************************
+
+
+Core Registry with Standalone Harvest
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+As explained above, the Standalone Harvest simple batch tool, which is suitable to process small data sets of
 up to 10,000 PDS4 labels.
 
-You can execute the following instructions to deploy the server-side and client-side components of Standalone Harvest.
+You can execute the following instructions to deploy the registry and load small amount of data.
 
 Deploying the Sever-side Components of Standalone Harvest
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------------------------------
 
-1) Open a new terminal and change the current working directory to the `<REGISTRY_ROOT>/docker` directory.
+1) Open a new terminal and change the current working directory to the ``<REGISTRY_ROOT>/docker`` directory.
 
-2) Start the `pds-core-registry` components as follows. ::
+2) Start opensearch and the PDS search API as follows. ::
 
     docker compose --profile=pds-core-registry  up
 
@@ -187,48 +170,56 @@ Deploying the Sever-side Components of Standalone Harvest
     docker-registry-api-1        |  :: Spring Boot ::        (v2.3.1.RELEASE)
     docker-registry-api-1        |
 
-Deploying the Client-side Components of Standalone Harvest
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1) Open a new terminal and change the current working directory to the `<REGISTRY_ROOT>/docker` directory.
+Run Standalone Harvest to Load Some PDS4 Products
+-----------------------------------------------------------
 
-2) Start the `pds-core-registry` components as follows. ::
+1) Open a new terminal and change the current working directory to the ``<REGISTRY_ROOT>/docker/scripts`` directory.
 
-    docker compose --profile=pds-batch-loader  up
+2) Define a harvest job configuration as specified in :doc:`Harvest Job Configuration<../user/harvest_job_configuration>`
 
-3) Wait for the following log messages in the terminal. ::
+3) Run the harvest command. ::
+
+    ./pds-batch-loader.sh  <harvest job confg file>
+
+This is using docker compose in the background so no need to install anything more.
+
+4) Wait for the following log messages in the terminal. ::
 
     docker-registry-loader-1 exited with code 0
 
-4) Visit the http://localhost:8080/swagger-ui.html#!/collections/getCollection of the Registry API.
+5) Visit the http://localhost:8080/swagger-ui.html#!/collections/getCollection of the Registry API.
 
-5) Click on the **Try it out!** button to see the Response Body.
+6) Click on the **Try it out!** button to see the Response Body.
 
 
 Clean-up the Deployment
-~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 
 The docker containers deployed above can be easily uninstalled and cleaned-up using the following
 commands::
 
     docker compose --profile=pds-core-registry down
 
-    docker compose --profile=pds-batch-loader down
 
 
-Deploying Scalable Harvest
-**************************
+Core Registry with Scalable Harvest
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 As explained above, the Scalable Harvest is suitable to process larger data sets of more than 10,000 PDS4 labels.
 
-You can execute the following instructions to deploy the server-side and client-side components of Scalable Harvest.
+You can execute the following instructions to deploy the server-side components of Registry with Scalable Harvest and load some data.
+
+.. note::
+  Docker Compose running on a single host, the scalability of this tool is not at its full potential yet, we will propose in the future a production ready deployment procedure (e.g. using kubernetes) to actually scale the ingestion.
+
 
 Deploying the Sever-side Components of Scalable Harvest
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------------------------------
 
-1) Open a new terminal and change the current working directory to the `<REGISTRY_ROOT>/docker` directory.
+1) Open a new terminal and change the current working directory to the ``<REGISTRY_ROOT>/docker`` directory.
 
-2) Start the `pds-core-registry` components as follows. ::
+2) Start opensearch and the PDS search API as follows. ::
 
     docker compose --profile=pds-core-registry  up
 
@@ -247,26 +238,29 @@ Deploying the Sever-side Components of Scalable Harvest
 
     docker compose --profile=pds-loader-services up
 
+Run Scalable Harvest Service Client to Load Some PDS4 Products
+----------------------------------------------------------------
 
-Deploying the Client-side Components of Standalone Harvest
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) Open a new terminal and change the current working directory to the ``<REGISTRY_ROOT>/docker/scripts/`` directory.
 
-1) Open a new terminal and change the current working directory to the `<REGISTRY_ROOT>/docker` directory.
+2) Define a harvest job configuration as specified in :doc:`Harvest Job Configuration<../user/harvest_job_configuration>`
 
-2) Start the `pds-service-loader` components as follows. ::
+3) Run the harvest command. ::
 
-    docker compose --profile=pds-service-loader up
+    ./pds-service-loader.sh  <harvest job confg file>
 
-3) Wait for the following log messages in the terminal. ::
+This is using docker compose in the background so no need to install anything more.
+
+4) Wait for the following log messages in the terminal. ::
 
     docker-registry-harvest-cli-1 exited with code 0
 
-4) Visit the http://localhost:8080/swagger-ui.html#!/collections/getCollection of the Registry API.
+5) Visit the http://localhost:8080/swagger-ui.html#!/collections/getCollection of the Registry API.
 
-5) Click on the **Try it out!** button to see the Response Body.
+6) Click on the **Try it out!** button to see the Response Body.
 
 Clean-up the Deployment
-~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 
 The docker containers deployed above can be easily uninstalled and cleaned-up using the following
 commands::
@@ -274,9 +268,6 @@ commands::
     docker compose --profile=pds-core-registry down
 
     docker compose --profile=pds-loader-services down
-
-    docker compose --profile=pds-service-loader down
-
 
 
 .. note::
