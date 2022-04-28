@@ -43,6 +43,7 @@ the Elastic Load Balancer (ELB). Cloudfront provides high-speed, low-latency
 access while also preventing from unintentional or malicious bulk download
 of data.
 
+
 The processing of data by Harvest and push to Elasticsearch by the
 Registry-manager are still performed on-premise, the latter connecting
 directly to Elasticsearch, access to which is controlled by authentication

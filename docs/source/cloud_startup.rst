@@ -52,6 +52,7 @@ Registry Tools
 
 Once the above setup is complete, the Registry Tools are used to process and ingest product
 metadata into the Registry. Details on how to run these tools are found in the :doc:`User
+
 Tasks Section</user/tasks>`
 
 The registry tools (i.e. Harvest - both standalone and scalable, Registry Manager) are deployed on premise, on a system that has been included in the Opensearch
