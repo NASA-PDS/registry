@@ -5,10 +5,10 @@ The Registry API Service Cloud Architecture
 On-Prem vs. Cloud
 *****************
 
-In a typical on-premise deployment, the PDS Registry Application is composed, server-side of
-a ReSTful API Server which queries Opensearch indices in response to
-user-submitted search requests - both components of which are highlighted
-below:
+In a typical on-premise deployment, the PDS Registry Application is composed, server-side, of
+a ReSTful API Server and an OpenSearch database. The users submit queries to the API which queries OpenSearch for building the responses.
+
+Both components of which are highlighted below:
 
 .. image:: /_static/images/registry-onprem.png
 
@@ -40,8 +40,9 @@ Systems Manager Parameter Store.
 
 Amazon's content delivery network, Cloudfront, is placed in front of
 the Elastic Load Balancer (ELB). Cloudfront provides high-speed, low-latency
-access while also ensuring unintention or malicious bulk downloading
-of data is avoided.
+access while also preventing from unintentional or malicious bulk download
+of data.
+
 
 The processing of data by Harvest and push to Elasticsearch by the
 Registry-manager are still performed on-premise, the latter connecting
