@@ -17,6 +17,7 @@ Therefore, the deployment procedures described here can be used to deploy server
 .. note::
    To learn more about docker compose, please visit https://docs.docker.com/compose/.
 
+
 Prerequisites
 *************
 
@@ -46,6 +47,7 @@ On Linux you can use the following command::
     The path of the extracted directory, is referred to as the `<REGISTRY_ROOT>` in the following instructions.
 
 3. Open a terminal and change the working directory to `<REGISTRY_ROOT>/docker` directory.
+
 
 4. Open the `<REGISTRY_ROOT>/docker/.env` file using a text editor
 
@@ -101,12 +103,11 @@ command::
 
     docker compose --profile=<DOCKER_COMPOSE_PROFILE_NAME> down
 
-
 The following table contains commonly used server-side profiles and descriptions.
 
 ====================== ==================================================== ==============================================
  Profile Name           Description                                          Prerequisites
-
+ 
                                                                              (profiles to start before this)
 
 ====================== ==================================================== ==============================================
@@ -169,6 +170,7 @@ Deploying the Sever-side Components of Standalone Harvest
     docker-registry-api-1        |  :: Spring Boot ::        (v2.3.1.RELEASE)
     docker-registry-api-1        |
 
+
 Run Standalone Harvest to Load Some PDS4 Products
 -----------------------------------------------------------
 
@@ -198,6 +200,7 @@ The docker containers deployed above can be easily uninstalled and cleaned-up us
 commands::
 
     docker compose --profile=pds-core-registry down
+
 
 
 Core Registry with Scalable Harvest
