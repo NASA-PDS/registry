@@ -28,7 +28,7 @@ One of the following values can be used:
   * **ROSCOSMOS** - Russian State Corporation for Space Activities
 
 
-This value is saved in "ops:Harvest_Info/ops:node_name" field in OpenSearch document:
+This value is saved in "ops:Harvest_Info/ops:node_name" field in the loaded OpenSearch documents:
 
 .. code-block:: javascript
 

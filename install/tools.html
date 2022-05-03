@@ -1,40 +1,79 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <title>Tools Installation &mdash; PDS Registry 1.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    <script src="../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Support" href="../support/support.html" />
-    <link rel="prev" title="Java Installation" href="java.html" /> 
+    <link rel="next" title="Docker Container Based Deployment" href="docker-compose.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> PDS Registry
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PDS Registry
+          
+
+          
+            
             <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 1.0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -42,15 +81,31 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../about.html">About PDS Registry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cloud_startup.html">Cloud Startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user/tasks.html">User Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../admin/tasks.html">Admin Tasks</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="install.html">Installation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="java.html">Java Installation</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Tools Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#test-if-java-is-already-installed">Test If Java Is Already Installed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#java-installation">Java Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#standalone-harvest">Standalone Harvest</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#harvest-client">Harvest Client</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#registry-manager">Registry Manager</a></li>
@@ -58,39 +113,79 @@
 <li class="toctree-l3"><a class="reference internal" href="#configure-your-environment">Configure your environment</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="docker-compose.html">Docker Container Based Deployment</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../support/support.html">Support</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">PDS Registry</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
+    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
           <li><a href="install.html">Installation</a> &raquo;</li>
+        
       <li>Tools Installation</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+            
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
-  <section id="tools-installation">
-<h1>Tools Installation<a class="headerlink" href="#tools-installation" title="Permalink to this headline"></a></h1>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
+            
+  <div class="section" id="tools-installation">
+<h1>Tools Installation<a class="headerlink" href="#tools-installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>This document describes how to install following PDS Registry tools (command-line applications):</p>
 <blockquote>
 <div><ul class="simple">
@@ -102,18 +197,58 @@ manage data and LDDs (data dictionaries).</p></li>
 <li><p><strong>Supplementer</strong> can be used to load supplemental metadata into PDS Registry.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="standalone-harvest">
-<h2>Standalone Harvest<a class="headerlink" href="#standalone-harvest" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>Java is required to run many Registry components and tools such as Harvest, Registry Manager,
+and API Server.</p>
+<p>Only <strong>Java 11</strong> is supported.
+Some applications, like Harvest or Registry Manager will not run with <strong>Java 1.8</strong>.</p>
+<div class="section" id="test-if-java-is-already-installed">
+<h3>Test If Java Is Already Installed<a class="headerlink" href="#test-if-java-is-already-installed" title="Permalink to this headline">¶</a></h3>
+<p>To test if Java is already installed on your system, run the following command in a terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">java</span> <span class="o">-</span><span class="n">version</span>
+</pre></div>
+</div>
+<p>If Java is already installed, you will see a message similar to this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">openjdk</span> <span class="n">version</span> <span class="s2">&quot;11.0.5&quot;</span> <span class="mi">2019</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">15</span>
+<span class="n">OpenJDK</span> <span class="n">Runtime</span> <span class="n">Environment</span> <span class="mf">18.9</span> <span class="p">(</span><span class="n">build</span> <span class="mf">11.0.5</span><span class="o">+</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">OpenJDK</span> <span class="mi">64</span><span class="o">-</span><span class="n">Bit</span> <span class="n">Server</span> <span class="n">VM</span> <span class="mf">18.9</span> <span class="p">(</span><span class="n">build</span> <span class="mf">11.0.5</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="n">mixed</span> <span class="n">mode</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Your system might have multiple versions of Java installed, for example, JDK 1.8 and JDK 11.
+If JDK 11 is not the default, then set <strong>JAVA_HOME</strong> environment variable to point to JDK 11 before running
+Harvest or Registry Manager.</p>
+</div>
+</div>
+<div class="section" id="java-installation">
+<h3>Java Installation<a class="headerlink" href="#java-installation" title="Permalink to this headline">¶</a></h3>
+<p>There are several distributions of Java:</p>
+<ul class="simple">
+<li><p><strong>Open JDK</strong> (Free) can be downloaded from different sites, for example,
+<a class="reference external" href="https://adoptopenjdk.net/">adoptopenjdk.net</a> or
+<a class="reference external" href="https://www.azul.com/downloads/zulu-community">azul.com</a>.
+Most Linux distributions have Open JDK in their standard repositories.</p></li>
+<li><p><strong>Oracle JDK</strong> (Commercial) can be downloaded from
+<a class="reference external" href="https://www.oracle.com/java/technologies/javase-jdk11-downloads.html">www.oracle.com</a>.
+You must register and accept a license to download.</p></li>
+</ul>
+<p>We recommend installing <strong>OpenJDK</strong>. Sites listed above have detailed installation instructions.</p>
+</div>
+</div>
+<div class="section" id="standalone-harvest">
+<h2>Standalone Harvest<a class="headerlink" href="#standalone-harvest" title="Permalink to this headline">¶</a></h2>
 <p>Download latest non-snapshot binary release (tar or zip) from <a class="reference external" href="https://github.com/NASA-PDS/harvest/releases">https://github.com/NASA-PDS/harvest/releases</a>.
 Extract the <strong>tar</strong> (Linux, Mac) or <strong>zip</strong> (Windows) to a directory without spaces, such as <em>/home/pds</em>.
 On Linux you can use the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">harvest</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span><span class="o">-</span><span class="nb">bin</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
 </pre></div>
 </div>
-</section>
-<section id="harvest-client">
-<h2>Harvest Client<a class="headerlink" href="#harvest-client" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="harvest-client">
+<h2>Harvest Client<a class="headerlink" href="#harvest-client" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Only install this if you plan to use Scalable Harvest server.</p>
@@ -124,18 +259,18 @@ On Linux you can use the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">registry</span><span class="o">-</span><span class="n">harvest</span><span class="o">-</span><span class="n">cli</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span><span class="o">-</span><span class="nb">bin</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
 </pre></div>
 </div>
-</section>
-<section id="registry-manager">
-<h2>Registry Manager<a class="headerlink" href="#registry-manager" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="registry-manager">
+<h2>Registry Manager<a class="headerlink" href="#registry-manager" title="Permalink to this headline">¶</a></h2>
 <p>Download latest non-snapshot binary release (tar or zip) from <a class="reference external" href="https://github.com/NASA-PDS/registry-mgr/releases">https://github.com/NASA-PDS/registry-mgr/releases</a>.
 Extract the <strong>tar</strong> (Linux, Mac) or <strong>zip</strong> (Windows) to a directory without spaces, such as <em>/home/pds</em>.
 On Linux you can use the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">registry</span><span class="o">-</span><span class="n">manager</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span><span class="o">-</span><span class="nb">bin</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
 </pre></div>
 </div>
-</section>
-<section id="supplementer">
-<h2>Supplementer<a class="headerlink" href="#supplementer" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="supplementer">
+<h2>Supplementer<a class="headerlink" href="#supplementer" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Only install this if you plan to load supplemental metadata.</p>
@@ -146,9 +281,9 @@ On Linux you can use the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">supplementer</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span><span class="o">-</span><span class="nb">bin</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
 </pre></div>
 </div>
-</section>
-<section id="configure-your-environment">
-<h2>Configure your environment<a class="headerlink" href="#configure-your-environment" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="configure-your-environment">
+<h2>Configure your environment<a class="headerlink" href="#configure-your-environment" title="Permalink to this headline">¶</a></h2>
 <p>Update PATH environment variable to be able to run registry tools from any directory.</p>
 <p><strong>Linux, Mac</strong></p>
 <p>For example, if you are using BASH, add the following to your <em>.bash_profile</em>:</p>
@@ -168,38 +303,63 @@ export PATH=${PATH}:$HARVEST_CLIENT_HOME/bin:$SUPPLEMENTER_HOME/bin:
 <img alt="../_images/win-env.png" src="../_images/win-env.png" />
 <p>“Environment Variables” dialog will open where you can edit “Path” variable.
 Add “bin” directory of Harvest, Registry Manager and other tools to “Path” variable.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="java.html" class="btn btn-neutral float-left" title="Java Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../support/support.html" class="btn btn-neutral float-right" title="Support" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="docker-compose.html" class="btn btn-neutral float-right" title="Docker Container Based Deployment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022 California Institute of Technology.</p>
-  </div>
+    <p>
+        
+        &copy; Copyright 2022 California Institute of Technology
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
