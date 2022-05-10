@@ -1,6 +1,14 @@
 # Changelog
 
-## [v1.0.0-SNAPSHOT](https://github.com/NASA-PDS/registry/tree/v1.0.0-SNAPSHOT) (2022-01-13)
+## [v1.0.0](https://github.com/NASA-PDS/registry/tree/v1.0.0) (2022-05-03)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.0-SNAPSHOT...v1.0.0)
+
+**Requirements:**
+
+- Upgrade the initialization of the ES/OS database following latest upgrade of components [\#31](https://github.com/NASA-PDS/registry/issues/31)
+
+## [v1.0.0-SNAPSHOT](https://github.com/NASA-PDS/registry/tree/v1.0.0-SNAPSHOT) (2022-01-20)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/1f4d45e5a395b8d05b58a0924066dcd3cd0b3565...v1.0.0-SNAPSHOT)
 
