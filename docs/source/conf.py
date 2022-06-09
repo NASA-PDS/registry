@@ -60,11 +60,31 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+# -- Read the docs config -------
 
 html_logo = '_static/images/PDS_Planets.png'
+
+html_context = {
+    'display_github': True,
+    "github_user": "pds-data-dictionaries",
+    "github_repo": "ldd-template",
+    "github_version": "main/docs/source/"
+}
 
 html_css_files = [
     'theme_overrides.css',
 ]
 
-html_show_sourcelink = False
+html_theme_options = {
+    'canonical_url': '',
+    'logo_only': False,
+    'display_version': True,
+    'prev_next_buttons_location': 'bottom',
+    'style_external_links': False,
+    # Toc options
+    'collapse_navigation': True,
+    'sticky_navigation': True,
+    'navigation_depth': 4,
+    'includehidden': True,
+    'titles_only': False
+}

@@ -1,5 +1,22 @@
 # Changelog
 
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2022-06-08)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.1...«unknown»)
+
+**Defects:**
+
+- docker compose int-registry-batch-loader failure [\#41](https://github.com/NASA-PDS/registry/issues/41) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
+
+**Other closed issues:**
+
+- Plan and strategize how to migrate to OpenSearch deployments [\#54](https://github.com/NASA-PDS/registry/issues/54)
+- Design the PDS4 definition for describing superseded LIDs via product metadata [\#57](https://github.com/NASA-PDS/registry/issues/57)
+
+## [v1.0.1](https://github.com/NASA-PDS/registry/tree/v1.0.1) (2022-05-03)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.0...v1.0.1)
+
 ## [v1.0.0](https://github.com/NASA-PDS/registry/tree/v1.0.0) (2022-05-03)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.0-SNAPSHOT...v1.0.0)
