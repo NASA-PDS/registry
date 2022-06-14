@@ -63,7 +63,7 @@ services:
 
   # Starts Elasticsearch
   elasticsearch:
-    profiles: ["dev-api", "pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]
+    profiles: ["dev-api", "dev-loader", "pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]
     image: ${ES_IMAGE}
     environment:
       - discovery.type=${ES_DISCOVERY_TYPE}
@@ -95,7 +95,7 @@ services:
 
   # Starts RabbitMQ
   rabbit-mq:
-    profiles: ["int-registry-service-loader", "pds-loader-services"]
+    profiles: ["dev-loader", "int-registry-service-loader", "pds-loader-services"]
     image: rabbitmq:3.9-management
     ports:
       - "15672:15672"
@@ -108,7 +108,7 @@ services:
 
   # Starts the Registry API
   registry-api:
-    profiles: ["pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]
+    profiles: ["dev-loader", "pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]
     image: ${REG_API_IMAGE}
     environment:
       - ES_URL=${ES_URL}
@@ -171,6 +171,17 @@ services:
       - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-job-config.xml
       - ${HARVEST_DATA_DIR}:/data
       - ${HARVEST_CLIENT_CONFIG_FILE}:/cfg/harvest-client.cfg
+    networks:
+      - pds
+
+  # Executes an nginx service to expose the PDS4 archive
+  registry-web-archive:
+    profiles: ["dev-loader", "dev-api", "int-registry-batch-loader", "int-registry-service-loader"]
+    image: nginx
+    ports:
+      - "81:80"
+    volumes:
+      - ${HARVEST_DATA_DIR}:/usr/share/nginx/html/archive
     networks:
       - pds
 
