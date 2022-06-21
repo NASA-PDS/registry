@@ -44,22 +44,20 @@ steps:
   #. In the pulldown menu which opens, select "Reset password". See figure below.
   #. In the pop-up window which opens, enter your current password, new password and confirmation of the new password. Click "Reset". (If the Reset button does not activate, it means the password and its confirmation do not match.)
 
-.. image:: /_static/images/kibana_password_reset.png
+.. image:: _static/images/kibana_password_reset.png
 
 
 Registry Tools
 **************
 
 Once the above setup is complete, the Registry Tools are used to process and ingest product
-metadata into the Registry. Details on how to run these tools are found in the :doc:`User
-
-Tasks Section</user/tasks>`
+metadata into the Registry. Details on how to run these tools are found in the :doc:`User Tasks Section</user/tasks>`
 
 The registry tools (i.e. Harvest - both standalone and scalable, Registry Manager) are deployed on premise, on a system that has been included in the Opensearch
-whitelist (see :ref:`Initial set-up<Initial set-up>`) following the procedures documented :doc:`here
+whitelist (see :ref:`Initial Set-up<Initial Set-up>`) following the procedures documented :doc:`here
 </install/tools>`.
 
-Configure the tools with the Opensearch URL and credential given to you in step :ref:`Initial set-up<Initial set-up>`
+Configure the tools with the Opensearch URL and credential given to you in step :ref:`Initial Set-up<Initial Set-up>`
 
 
 Registry API
