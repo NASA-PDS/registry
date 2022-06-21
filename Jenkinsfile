@@ -58,9 +58,6 @@ pipeline {
 
         // Hostname for certificate verification
         CERT_CN = "pds-expo.jpl.nasa.gov"
-
-        // `/expo` sub-page support
-        PROXY_REDIRECT = "http://registry-api:8080/ https://pds-dev.jpl.nasa.gov/expo/"
     }
 
     options {

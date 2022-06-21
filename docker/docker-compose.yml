@@ -192,7 +192,8 @@ services:
     image: ${PROXYCRYPT_IMAGE}
     environment:
       PROXY_URL: http://registry-api:8080/
-      PROXY_REDIRECT:
+      PROXY_REDIRECT: default
+      # This needs to be provided by the host environment (such as by Jenkins, for example):
       CERT_CN:
     ports:
       - "8443:443"
