@@ -22,6 +22,6 @@
   <autogenFields/>
   <fileInfo>
   <!-- UPDATE with your own local path and base url where pds4 archive is published -->
-  <fileRef replacePrefix="/data/" with="http://localhost/archive" />
+  <fileRef replacePrefix="/data/" with="http://localhost/archive/" />
 </fileInfo>
 </harvest>

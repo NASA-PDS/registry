@@ -181,6 +181,7 @@ services:
     ports:
       - "81:80"
     volumes:
+      - ./default-config/nginx-default.conf:/etc/nginx/conf.d/default.conf
       - ${HARVEST_DATA_DIR}:/usr/share/nginx/html/archive
     networks:
       - pds
