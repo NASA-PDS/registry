@@ -1,79 +1,39 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Update Archive Status &mdash; PDS Registry 1.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Delete Data" href="delete_data.html" />
-    <link rel="prev" title="Detailed harvest job configuration" href="harvest_job_configuration.html" /> 
+    <link rel="prev" title="Detailed Harvest Configuration" href="harvest_job_configuration.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PDS Registry
-          
-
-          
-            
+            <a href="../index.html" class="icon icon-home"> PDS Registry
             <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 1.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -81,25 +41,14 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../about.html">About PDS Registry</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cloud_startup.html">Cloud Startup</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="tasks.html">User Tasks</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="load1.html">Load Data - Standalone Harvest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="load2.html">Load Data - Scalable Harvest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html">Detailed harvest job configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html">Detailed Harvest Configuration</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Update Archive Status</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#registry-manager">Registry Manager</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
@@ -121,73 +70,35 @@
 <li class="toctree-l1"><a class="reference internal" href="../support/support.html">Support</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">PDS Registry</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="tasks.html">User Tasks</a> &raquo;</li>
-        
       <li>Update Archive Status</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
+              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/user/update_status.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="update-archive-status">
-<h1>Update Archive Status<a class="headerlink" href="#update-archive-status" title="Permalink to this headline">¶</a></h1>
+<h1>Update Archive Status<a class="headerlink" href="#update-archive-status" title="Permalink to this headline"></a></h1>
 <p>When a product is ingested into PDS Registry, its archive status is set to <em>“staged”</em>.</p>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ops:Tracking_Meta/ops:archive_status&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;staged&quot;</span><span class="w"></span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ops:Tracking_Meta/ops:archive_status&quot;</span><span class="o">:</span> <span class="s2">&quot;staged&quot;</span>
 </pre></div>
 </div>
 <p>You can change that value to any of the following:</p>
@@ -201,9 +112,9 @@
 </div></blockquote>
 <p>You can use either Registry Manager or Harvest Client (Scalable Harvest deployments only) for this task.</p>
 <div class="section" id="registry-manager">
-<h2>Registry Manager<a class="headerlink" href="#registry-manager" title="Permalink to this headline">¶</a></h2>
+<h2>Registry Manager<a class="headerlink" href="#registry-manager" title="Permalink to this headline"></a></h2>
 <div class="section" id="prerequisites">
-<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>OpenSearch server is <a class="reference external" href="https://opensearch.org/">running</a>.</p></li>
@@ -214,7 +125,7 @@
 </div></blockquote>
 </div>
 <div class="section" id="set-status">
-<h3>Set status<a class="headerlink" href="#set-status" title="Permalink to this headline">¶</a></h3>
+<h3>Set status<a class="headerlink" href="#set-status" title="Permalink to this headline"></a></h3>
 <p>To set product archive status, execute Registry Manager’s “set-archive-status” command.</p>
 <p>The following parameters are required:</p>
 <blockquote>
@@ -259,9 +170,9 @@ file and provide following parameters:</p>
 </div>
 </div>
 <div class="section" id="harvest-client-scalable-harvest-only">
-<h2>Harvest Client (Scalable Harvest only)<a class="headerlink" href="#harvest-client-scalable-harvest-only" title="Permalink to this headline">¶</a></h2>
+<h2>Harvest Client (Scalable Harvest only)<a class="headerlink" href="#harvest-client-scalable-harvest-only" title="Permalink to this headline"></a></h2>
 <div class="section" id="id1">
-<h3>Prerequisites<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<h3>Prerequisites<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>OpenSearch server is <a class="reference external" href="https://opensearch.org/">running</a>.</p></li>
@@ -273,7 +184,7 @@ file and provide following parameters:</p>
 </div></blockquote>
 </div>
 <div class="section" id="id6">
-<h3>Set status<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<h3>Set status<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h3>
 <p>To set product archive status, execute Harvest Client’s “set-archive-status” command.</p>
 <p>The following parameters are required:</p>
 <blockquote>
@@ -312,58 +223,33 @@ If the product is a bundle product, all bundle’s collections will be also upda
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="delete_data.html" class="btn btn-neutral float-right" title="Delete Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="harvest_job_configuration.html" class="btn btn-neutral float-left" title="Detailed harvest job configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="harvest_job_configuration.html" class="btn btn-neutral float-left" title="Detailed Harvest Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="delete_data.html" class="btn btn-neutral float-right" title="Delete Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2022 California Institute of Technology
-
-    </p>
+    <p>&#169; Copyright 2022 California Institute of Technology.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

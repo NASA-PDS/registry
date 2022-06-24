@@ -1,6 +1,6 @@
-===================================
-Detailed harvest job configuration
-===================================
+==============================
+Detailed Harvest Configuration
+==============================
 
 The following sections describe Harvest configuration file in more detail.
 

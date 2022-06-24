@@ -1,42 +1,21 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Docker Container Based Deployment &mdash; PDS Registry 1.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -44,36 +23,17 @@
     <link rel="prev" title="Tools Installation" href="tools.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PDS Registry
-          
-
-          
-            
+            <a href="../index.html" class="icon icon-home"> PDS Registry
             <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 1.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -81,18 +41,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../about.html">About PDS Registry</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cloud_startup.html">Cloud Startup</a></li>
@@ -118,73 +67,35 @@
 <li class="toctree-l1"><a class="reference internal" href="../support/support.html">Support</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">PDS Registry</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="install.html">Installation</a> &raquo;</li>
-        
       <li>Docker Container Based Deployment</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
+              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/install/docker-compose.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="docker-container-based-deployment">
-<h1>Docker Container Based Deployment<a class="headerlink" href="#docker-container-based-deployment" title="Permalink to this headline">¶</a></h1>
+<h1>Docker Container Based Deployment<a class="headerlink" href="#docker-container-based-deployment" title="Permalink to this headline"></a></h1>
 <div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
 <p>All the PDS Registry components are containerized as docker images and published in <a class="reference external" href="https://hub.docker.com/u/nasapds">https://hub.docker.com/u/nasapds</a>.</p>
 <p>The container based deployment of the PDS Registry components is orchestrated by Docker Compose, a tool for defining and running multi-container Docker applications.</p>
 <p>Therefore, the deployment procedures described here can be used to deploy server-side and/or client-side registry components, without having to install the individual components manually.</p>
@@ -198,7 +109,7 @@
 </div>
 </div>
 <div class="section" id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline"></a></h2>
 <p>It is required to install the following tools.</p>
 <blockquote>
 <div><ul class="simple">
@@ -213,7 +124,7 @@ The registry components should work with later versions of docker compose too.</
 </div>
 </div>
 <div class="section" id="download-and-configure-the-pds-registry-application">
-<h2>Download and Configure the PDS Registry Application<a class="headerlink" href="#download-and-configure-the-pds-registry-application" title="Permalink to this headline">¶</a></h2>
+<h2>Download and Configure the PDS Registry Application<a class="headerlink" href="#download-and-configure-the-pds-registry-application" title="Permalink to this headline"></a></h2>
 <p>The latest release of the Registry can be downloaded and configured as follows.</p>
 <ol class="arabic simple">
 <li><p>Download the sourcecode <cite>.zip</cite> file or <cite>.tar.gz</cite> file from the <a class="reference external" href="https://github.com/NASA-PDS/registry/releases">https://github.com/NASA-PDS/registry/releases</a>.</p></li>
@@ -275,7 +186,7 @@ can be obtained from the <cite>&lt;REGISTRY_ROOT&gt;/docker/default-config</cite
 </div></blockquote>
 </div>
 <div class="section" id="deployment-profiles">
-<h2>Deployment Profiles<a class="headerlink" href="#deployment-profiles" title="Permalink to this headline">¶</a></h2>
+<h2>Deployment Profiles<a class="headerlink" href="#deployment-profiles" title="Permalink to this headline"></a></h2>
 <p>Deployment profiles are defined to parameterize your deployment, either you only want to run the server side core components of the registry (OpenSearch and web API) or run an harvest standalone job, or run the scalable harvest services…</p>
 <p>Using a profile name, you can start the required components of the Registry as follows.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">--</span><span class="n">profile</span><span class="o">=&lt;</span><span class="n">DOCKER_COMPOSE_PROFILE_NAME</span><span class="o">&gt;</span> <span class="n">up</span> <span class="o">--</span><span class="n">detach</span>
@@ -320,7 +231,7 @@ must be up and running</p></td>
 </table>
 </div>
 <div class="section" id="client-side-operations">
-<h2>Client-side Operations<a class="headerlink" href="#client-side-operations" title="Permalink to this headline">¶</a></h2>
+<h2>Client-side Operations<a class="headerlink" href="#client-side-operations" title="Permalink to this headline"></a></h2>
 <p>To trigger data ingestion in the registry, you need to run client side commands (which use docker compose as well internally)</p>
 <table class="docutils align-default">
 <colgroup>
@@ -355,14 +266,14 @@ must be up and running</p></td>
 </table>
 </div>
 <div class="section" id="common-deployment-scenarii">
-<h2>Common Deployment Scenarii<a class="headerlink" href="#common-deployment-scenarii" title="Permalink to this headline">¶</a></h2>
+<h2>Common Deployment Scenarii<a class="headerlink" href="#common-deployment-scenarii" title="Permalink to this headline"></a></h2>
 <div class="section" id="core-registry-with-standalone-harvest">
-<h3>Core Registry with Standalone Harvest<a class="headerlink" href="#core-registry-with-standalone-harvest" title="Permalink to this headline">¶</a></h3>
+<h3>Core Registry with Standalone Harvest<a class="headerlink" href="#core-registry-with-standalone-harvest" title="Permalink to this headline"></a></h3>
 <p>As explained above, the Standalone Harvest simple batch tool, which is suitable to process small data sets of
 up to 10,000 PDS4 labels.</p>
 <p>You can execute the following instructions to deploy the registry and load small amount of data.</p>
 <div class="section" id="deploying-the-sever-side-components-of-standalone-harvest">
-<h4>Deploying the Sever-side Components of Standalone Harvest<a class="headerlink" href="#deploying-the-sever-side-components-of-standalone-harvest" title="Permalink to this headline">¶</a></h4>
+<h4>Deploying the Sever-side Components of Standalone Harvest<a class="headerlink" href="#deploying-the-sever-side-components-of-standalone-harvest" title="Permalink to this headline"></a></h4>
 <ol class="arabic">
 <li><p>Open a new terminal and change the current working directory to the <code class="docutils literal notranslate"><span class="pre">&lt;REGISTRY_ROOT&gt;/docker</span></code> directory.</p></li>
 <li><p>Start opensearch and the PDS search API as follows.</p>
@@ -385,7 +296,7 @@ docker-registry-api-1        |
 </ol>
 </div>
 <div class="section" id="run-standalone-harvest-to-load-some-pds4-products">
-<h4>Run Standalone Harvest to Load Some PDS4 Products<a class="headerlink" href="#run-standalone-harvest-to-load-some-pds4-products" title="Permalink to this headline">¶</a></h4>
+<h4>Run Standalone Harvest to Load Some PDS4 Products<a class="headerlink" href="#run-standalone-harvest-to-load-some-pds4-products" title="Permalink to this headline"></a></h4>
 <ol class="arabic">
 <li><p>Open a new terminal and change the current working directory to the <code class="docutils literal notranslate"><span class="pre">&lt;REGISTRY_ROOT&gt;/docker/scripts</span></code> directory.</p></li>
 <li><p>Define a harvest job configuration as specified in <a class="reference internal" href="../user/harvest_job_configuration.html"><span class="doc">Harvest Job Configuration</span></a></p></li>
@@ -407,7 +318,7 @@ docker-registry-api-1        |
 </ol>
 </div>
 <div class="section" id="clean-up-the-deployment">
-<h4>Clean-up the Deployment<a class="headerlink" href="#clean-up-the-deployment" title="Permalink to this headline">¶</a></h4>
+<h4>Clean-up the Deployment<a class="headerlink" href="#clean-up-the-deployment" title="Permalink to this headline"></a></h4>
 <p>The docker containers deployed above can be easily uninstalled and cleaned-up using the following
 commands:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">--</span><span class="n">profile</span><span class="o">=</span><span class="n">pds</span><span class="o">-</span><span class="n">core</span><span class="o">-</span><span class="n">registry</span> <span class="n">down</span>
@@ -416,7 +327,7 @@ commands:</p>
 </div>
 </div>
 <div class="section" id="core-registry-with-scalable-harvest">
-<h3>Core Registry with Scalable Harvest<a class="headerlink" href="#core-registry-with-scalable-harvest" title="Permalink to this headline">¶</a></h3>
+<h3>Core Registry with Scalable Harvest<a class="headerlink" href="#core-registry-with-scalable-harvest" title="Permalink to this headline"></a></h3>
 <p>As explained above, the Scalable Harvest is suitable to process larger data sets of more than 10,000 PDS4 labels.</p>
 <p>You can execute the following instructions to deploy the server-side components of Registry with Scalable Harvest and load some data.</p>
 <div class="admonition note">
@@ -424,7 +335,7 @@ commands:</p>
 <p>Docker Compose running on a single host, the scalability of this tool is not at its full potential yet, we will propose in the future a production ready deployment procedure (e.g. using kubernetes) to actually scale the ingestion.</p>
 </div>
 <div class="section" id="deploying-the-sever-side-components-of-scalable-harvest">
-<h4>Deploying the Sever-side Components of Scalable Harvest<a class="headerlink" href="#deploying-the-sever-side-components-of-scalable-harvest" title="Permalink to this headline">¶</a></h4>
+<h4>Deploying the Sever-side Components of Scalable Harvest<a class="headerlink" href="#deploying-the-sever-side-components-of-scalable-harvest" title="Permalink to this headline"></a></h4>
 <ol class="arabic">
 <li><p>Open a new terminal and change the current working directory to the <code class="docutils literal notranslate"><span class="pre">&lt;REGISTRY_ROOT&gt;/docker</span></code> directory.</p></li>
 <li><p>Start opensearch and the PDS search API as follows.</p>
@@ -452,7 +363,7 @@ docker-registry-api-1        |
 </ol>
 </div>
 <div class="section" id="run-scalable-harvest-service-client-to-load-some-pds4-products">
-<h4>Run Scalable Harvest Service Client to Load Some PDS4 Products<a class="headerlink" href="#run-scalable-harvest-service-client-to-load-some-pds4-products" title="Permalink to this headline">¶</a></h4>
+<h4>Run Scalable Harvest Service Client to Load Some PDS4 Products<a class="headerlink" href="#run-scalable-harvest-service-client-to-load-some-pds4-products" title="Permalink to this headline"></a></h4>
 <ol class="arabic">
 <li><p>Open a new terminal and change the current working directory to the <code class="docutils literal notranslate"><span class="pre">&lt;REGISTRY_ROOT&gt;/docker/scripts/</span></code> directory.</p></li>
 <li><p>Define a harvest job configuration as specified in <a class="reference internal" href="../user/harvest_job_configuration.html"><span class="doc">Harvest Job Configuration</span></a></p></li>
@@ -474,7 +385,7 @@ docker-registry-api-1        |
 </ol>
 </div>
 <div class="section" id="id1">
-<h4>Clean-up the Deployment<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<h4>Clean-up the Deployment<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h4>
 <p>The docker containers deployed above can be easily uninstalled and cleaned-up using the following
 commands:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">--</span><span class="n">profile</span><span class="o">=</span><span class="n">pds</span><span class="o">-</span><span class="n">core</span><span class="o">-</span><span class="n">registry</span> <span class="n">down</span>
@@ -496,58 +407,33 @@ docker compose profile that are used to setup the development environment and ex
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../support/support.html" class="btn btn-neutral float-right" title="Support" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="tools.html" class="btn btn-neutral float-left" title="Tools Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tools.html" class="btn btn-neutral float-left" title="Tools Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../support/support.html" class="btn btn-neutral float-right" title="Support" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2022 California Institute of Technology
-
-    </p>
+    <p>&#169; Copyright 2022 California Institute of Technology.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
