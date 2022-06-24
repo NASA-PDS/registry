@@ -7,12 +7,13 @@ Overview
 
 This document describes how to install following PDS Registry tools (command-line applications):
 
- * **Standalone Harvest** extracts metadata from PDS4 labels and loads extracted metadata into PDS Registry.
- * **Harvest Client** has to be used with Scalable Harvest server components to submit asynchronous jobs
-   to the server cluster.
  * **Registry Manager** is a tool to create Registry indices in OpenSearch and to
    manage data and LDDs (data dictionaries).
+ * *Standalone Harvest** extracts metadata from PDS4 labels and loads extracted metadata into PDS Registry.
+ * **Harvest Client** has to be used with Scalable Harvest server components to submit asynchronous jobs
+   to the server cluster.
  * **Supplementer** can be used to load supplemental metadata into PDS Registry.
+
 
 Prerequisites
 *************
@@ -61,9 +62,21 @@ There are several distributions of Java:
 
 We recommend installing **OpenJDK**. Sites listed above have detailed installation instructions.
 
+Tools
+*****
+
+Registry Manager
+~~~~~~~~~~~~~~~~~
+
+Download latest non-snapshot binary release (tar or zip) from https://github.com/NASA-PDS/registry-mgr/releases.
+Extract the **tar** (Linux, Mac) or **zip** (Windows) to a directory without spaces, such as */home/pds*.
+On Linux you can use the following command::
+
+  % tar -xzvf registry-manager-x.y.z-bin.tar.gz
+
 
 Standalone Harvest
-******************
+~~~~~~~~~~~~~~~~~~~
 
 Download latest non-snapshot binary release (tar or zip) from https://github.com/NASA-PDS/harvest/releases.
 Extract the **tar** (Linux, Mac) or **zip** (Windows) to a directory without spaces, such as */home/pds*.
@@ -72,8 +85,21 @@ On Linux you can use the following command::
   % tar -xzvf harvest-x.y.z-bin.tar.gz
 
 
+Supplementer
+~~~~~~~~~~~~~
+
+.. note::
+   Only install this if you plan to load supplemental metadata.
+
+Download latest non-snapshot binary release (tar or zip) from https://github.com/NASA-PDS/supplementer/releases.
+Extract the **tar** (Linux, Mac) or **zip** (Windows) to a directory without spaces, such as */home/pds*.
+On Linux you can use the following command::
+
+  % tar -xzvf supplementer-x.y.z-bin.tar.gz
+
+
 Harvest Client
-**************
+~~~~~~~~~~~~~~~
 
 .. note::
    Only install this if you plan to use Scalable Harvest server.
@@ -84,28 +110,6 @@ On Linux you can use the following command::
 
   % tar -xzvf registry-harvest-cli-x.y.z-bin.tar.gz
 
-
-Registry Manager
-****************
-
-Download latest non-snapshot binary release (tar or zip) from https://github.com/NASA-PDS/registry-mgr/releases.
-Extract the **tar** (Linux, Mac) or **zip** (Windows) to a directory without spaces, such as */home/pds*.
-On Linux you can use the following command::
-
-  % tar -xzvf registry-manager-x.y.z-bin.tar.gz
-
-
-Supplementer
-************
-
-.. note::
-   Only install this if you plan to load supplemental metadata.
-
-Download latest non-snapshot binary release (tar or zip) from https://github.com/NASA-PDS/supplementer/releases.
-Extract the **tar** (Linux, Mac) or **zip** (Windows) to a directory without spaces, such as */home/pds*.
-On Linux you can use the following command::
-
-  % tar -xzvf supplementer-x.y.z-bin.tar.gz
 
 
 Configure your environment
