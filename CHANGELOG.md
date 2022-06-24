@@ -1,8 +1,8 @@
 # Changelog
 
-## [v1.0.2-dev](https://github.com/NASA-PDS/registry/tree/v1.0.2-dev) (2022-06-21)
+## [v1.1.0.dev0-dev](https://github.com/NASA-PDS/registry/tree/v1.1.0.dev0-dev) (2022-06-24)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.1...v1.0.2-dev)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.1...v1.1.0.dev0-dev)
 
 **Defects:**
 
