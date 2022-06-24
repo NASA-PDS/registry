@@ -75,6 +75,13 @@ On Linux you can use the following command::
   % tar -xzvf registry-manager-x.y.z-bin.tar.gz
 
 
+Set your environment variables ``REGISTRY_HOME`` and ``PATH`` as described in :ref:`Configure Your Environment`
+
+Test by running::
+
+  % registry-manager --help
+
+
 Standalone Harvest
 ~~~~~~~~~~~~~~~~~~~
 
@@ -83,6 +90,12 @@ Extract the **tar** (Linux, Mac) or **zip** (Windows) to a directory without spa
 On Linux you can use the following command::
 
   % tar -xzvf harvest-x.y.z-bin.tar.gz
+
+Set your environment variables ``HARVEST_HOME`` and ``PATH`` as described in :ref:`Configure Your Environment`
+
+Test by running::
+
+    % harvest --help
 
 
 Supplementer
@@ -112,7 +125,7 @@ On Linux you can use the following command::
 
 
 
-Configure your environment
+Configure Your Environment
 **************************
 
 Update PATH environment variable to be able to run registry tools from any directory.
