@@ -36,11 +36,15 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
-## As a PDS EN administrator, I want to a central managed directory to used for the openarch authentication ([#66](https://github.com/NASA-PDS/registry/issues/66)) 
+## As a PDS EN administrator, I want to a central managed directory to used for the opensearch authentication ([#66](https://github.com/NASA-PDS/registry/issues/66)) 
 
 
 This requirement is not impacted by the current version
 ## As a registry node user from JPL, I want to use my JPL login to access the Registry's OpenSearch ([#67](https://github.com/NASA-PDS/registry/issues/67)) 
+
+
+This requirement is not impacted by the current version
+## As a user, I want to view more detailed documentation on the Registry schema ([#75](https://github.com/NASA-PDS/registry/issues/75)) 
 
 
 This requirement is not impacted by the current version
