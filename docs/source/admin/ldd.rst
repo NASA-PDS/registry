@@ -68,3 +68,22 @@ To load standard PDS4 data dictionary JSON file, for example, *orex_ldd_OREX_130
 run the following command::
 
   registry-manager load-dd -dd /home/pds/schema/orex_ldd_OREX_1300.JSON
+
+
+Upgrade Data Dictionary
+***********************
+
+Data dictionaries can change between major releases of the registry and/or its tools and APIs, necessitating an
+upgrade. To perform this, run the following command::
+
+  registry-manager upgrade-dd
+
+The above command will replace entries in the data dictionary on a document by document basis (i.e. those in the
+data dictionary having the same _id's as the incoming documents). This is relevant if you have loaded your own data 
+dictionary files (see 'load-dd' above), in which case the upgrade will retain those additional documents.
+
+If you wish to replace the entire data dictionary, add the '-r' (recreate) command line switch::
+
+  registry-manager upgrade-dd -r
+
+This ensures that legacy documents that are no longer applicable are removed.
