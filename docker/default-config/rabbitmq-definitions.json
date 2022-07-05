@@ -8,6 +8,11 @@
       "tags": "administrator"
     }
   ],
+  "vhosts": [
+    {
+     "name": "/"
+    }
+  ],
   "permissions": [
     {
       "user": "harvest",
