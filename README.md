@@ -1,12 +1,13 @@
 
 # 🪐 NASA PDS Registry repository
 
-This repository contains the PDS registry application.
-
-It contains:
+This repository contains PDS registry application resources:
 
 - the source for the user/administrator documentation, see `docs` folder
 - docker compose script to start the full application with its required components, see https://github.com/NASA-PDS/registry/blob/main/docker/README.md for details. This also includes integration tests.
+
+
+Users and administrator should use the documentation published on nasa-pds.github.io/registry
 
 
 ## Code of Conduct
