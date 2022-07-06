@@ -1,30 +1,20 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2022-07-05)
-
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.0.dev0-dev...«unknown»)
-
-**Defects:**
-
-- when docker compose starts, registry-api docker is missing curl [\#69](https://github.com/NASA-PDS/registry/issues/69) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
-
-**Other closed issues:**
-
-- Develop script to update existing registry metadata per B12.1 metadata modifications [\#43](https://github.com/NASA-PDS/registry/issues/43)
-- Add supersede / update product version functionality in Registry Manager [\#56](https://github.com/NASA-PDS/registry/issues/56)
-- Add new "alternate\_ids" field to Elasticsearch schema [\#59](https://github.com/NASA-PDS/registry/issues/59)
-
-## [v1.1.0.dev0-dev](https://github.com/NASA-PDS/registry/tree/v1.1.0.dev0-dev) (2022-06-25)
+## [v1.1.0.dev0-dev](https://github.com/NASA-PDS/registry/tree/v1.1.0.dev0-dev) (2022-07-05)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.1...v1.1.0.dev0-dev)
 
 **Defects:**
 
+- when docker compose starts, registry-api docker is missing curl [\#69](https://github.com/NASA-PDS/registry/issues/69) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - docker compose int-registry-batch-loader failure [\#41](https://github.com/NASA-PDS/registry/issues/41) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 
 **Other closed issues:**
 
+- Develop script to update existing registry metadata per B12.1 metadata modifications [\#43](https://github.com/NASA-PDS/registry/issues/43)
 - Plan and strategize how to migrate to OpenSearch deployments [\#54](https://github.com/NASA-PDS/registry/issues/54)
+- Add supersede / update product version functionality in Registry Manager [\#56](https://github.com/NASA-PDS/registry/issues/56)
+- Add new "alternate\_ids" field to Elasticsearch schema [\#59](https://github.com/NASA-PDS/registry/issues/59)
 - Design the PDS4 definition for describing superseded LIDs via product metadata [\#57](https://github.com/NASA-PDS/registry/issues/57)
 
 ## [v1.0.1](https://github.com/NASA-PDS/registry/tree/v1.0.1) (2022-05-03)
