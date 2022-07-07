@@ -1,5 +1,21 @@
 # Changelog
 
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2022-07-07)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.0.dev0-dev...«unknown»)
+
+**Requirements:**
+
+- As a registry node user from JPL, I want to use my JPL login to access the Registry's OpenSearch [\#67](https://github.com/NASA-PDS/registry/issues/67)
+
+**Defects:**
+
+- Scalable Harvest does not replace file paths with the appropriate URL prefix [\#64](https://github.com/NASA-PDS/registry/issues/64) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+
+**Other closed issues:**
+
+- Update README to reflect best practices of other PDS repositories [\#53](https://github.com/NASA-PDS/registry/issues/53) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+
 ## [v1.1.0.dev0-dev](https://github.com/NASA-PDS/registry/tree/v1.1.0.dev0-dev) (2022-07-06)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.1...v1.1.0.dev0-dev)
