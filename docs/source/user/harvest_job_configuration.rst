@@ -273,7 +273,7 @@ Below are few examples:
  </harvest>
 
 .. Note::
-   In URL attribute, have always the port especially if the port is 443 (default HTTPS) or 80 (default HTTP) since otherwise harvest would make default port 9200, which is the default OpenSearch port.
+   In the URL attribute, always have a port specified in the URL. For PDS Registries, this port should be 443. If a port is not specified, it will default to OpenSearch default port of 9200, and the update of the registry will fail.
 
 **Remote OpenSearch instance (on-prem or cloud)**
 
@@ -281,7 +281,7 @@ Below are few examples:
 
  <harvest nodeName="PDS_SBN">
    ...
-   <registry url="https://es-server.mydomain.com:9999" index="registry" auth="/path/to/auth.cfg" />
+   <registry url="https://es-server.mydomain.com:443" index="registry" auth="/path/to/auth.cfg" />
    ...
  </harvest>
 
