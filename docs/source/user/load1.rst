@@ -42,7 +42,7 @@ Registry (OpenSearch) configuration:
   <registry url="http://localhost:9200" index="registry" auth="/path/to/auth.cfg" />
 
 .. Note::
-   In URL attribute, have always the port especially if the port is 443 (default HTTPS) or 80 (default HTTP) since otherwise harvest would make default port 9200, which is the default OpenSearch port.
+   In the URL attribute, always have a port specified, which for PDS Registries in AWS, this port should be 443. If a port is not specified, it will default to the OpenSearch default port of 9200, and any attempted writes/updates of the registry will fail.
 
 The path to the data:
 
