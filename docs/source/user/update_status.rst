@@ -68,7 +68,7 @@ Update remote Registry / OpenSearch
        -auth /my/path/auth.cfg
 
 .. Note::
-   In the -es value, have always the port especially if the port is 443 (default HTTPS) or 80 (default HTTP) since harvest will believe default port is 9200 which is the default OpenSearch port.
+   In the -es value, have always the port especially if the port is 443 (default HTTPS) or 80 (default HTTP) since otherwise harvest would make default port 9200, which is the default OpenSearch port.
 
 If your OpenSearch server requires authentication, you have to create an authentication configuration
 file and provide following parameters:
