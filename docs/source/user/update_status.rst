@@ -64,8 +64,11 @@ Update remote Registry / OpenSearch
    registry-manager set-archive-status \
        -status archived
        -lidvid "urn:nasa:pds:kaguya_grs_spectra:document::1.0" \
-       -es https://my-host.my-domain:9999 \
+       -es https://my-host.my-domain:443 \
        -auth /my/path/auth.cfg
+
+.. Note::
+   In the -es option value, always have a port specified in the URL. For PDS Registries, this port should be 443. If a port is not specified, it will default to OpenSearch default port of 9200, and the update of the registry will fail.
 
 If your OpenSearch server requires authentication, you have to create an authentication configuration
 file and provide following parameters:
