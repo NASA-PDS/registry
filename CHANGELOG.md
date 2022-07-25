@@ -1,8 +1,8 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2022-07-07)
+## [v1.1.0.dev0-dev](https://github.com/NASA-PDS/registry/tree/v1.1.0.dev0-dev) (2022-07-07)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.0.dev0-dev...«unknown»)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.1...v1.1.0.dev0-dev)
 
 **Requirements:**
 
@@ -10,23 +10,13 @@
 
 **Defects:**
 
-- Scalable Harvest does not replace file paths with the appropriate URL prefix [\#64](https://github.com/NASA-PDS/registry/issues/64) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
-
-**Other closed issues:**
-
-- Update README to reflect best practices of other PDS repositories [\#53](https://github.com/NASA-PDS/registry/issues/53) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
-
-## [v1.1.0.dev0-dev](https://github.com/NASA-PDS/registry/tree/v1.1.0.dev0-dev) (2022-07-06)
-
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.1...v1.1.0.dev0-dev)
-
-**Defects:**
-
 - when docker compose starts, registry-api docker is missing curl [\#69](https://github.com/NASA-PDS/registry/issues/69) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+- Scalable Harvest does not replace file paths with the appropriate URL prefix [\#64](https://github.com/NASA-PDS/registry/issues/64) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - docker compose int-registry-batch-loader failure [\#41](https://github.com/NASA-PDS/registry/issues/41) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 
 **Other closed issues:**
 
+- Update README to reflect best practices of other PDS repositories [\#53](https://github.com/NASA-PDS/registry/issues/53) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Develop script to update existing registry metadata per B12.1 metadata modifications [\#43](https://github.com/NASA-PDS/registry/issues/43)
 - Plan and strategize how to migrate to OpenSearch deployments [\#54](https://github.com/NASA-PDS/registry/issues/54)
 - Add supersede / update product version functionality in Registry Manager [\#56](https://github.com/NASA-PDS/registry/issues/56)
