@@ -273,7 +273,7 @@ Below are few examples:
  </harvest>
 
 .. Note::
-   In the URL attribute, always have a port specified in the URL. For PDS Registries, this port should be 443. If a port is not specified, it will default to OpenSearch default port of 9200, and the update of the registry will fail.
+   In the URL attribute, always have a port specified, which for PDS Registries in AWS, this port should be 443. If a port is not specified, it will default to the OpenSearch default port of 9200, and any attempted writes/updates of the registry will fail.
 
 **Remote OpenSearch instance (on-prem or cloud)**
 
