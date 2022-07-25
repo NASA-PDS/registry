@@ -41,12 +41,12 @@ Examples
 
   registry-manager delete-data \
       -lidvid urn:nasa:pds:context:target:asteroid.4_vesta::1.1 \
-      -es https://my-server.my-domain.com:9999 \
+      -es https://my-server.my-domain.com:443 \
       -index registry \
       -auth path/to/auth.cfg
 
 .. Note::
-   In the -es option value, have always the port especially if the port is 443 (default HTTPS) or 80 (default HTTP) since otherwise harvest would make default port is 9200, which is the default OpenSearch port.
+   In the -es option value, always have a port specified in the URL. For PDS Registries, this port should be 443. If a port is not specified, it will default to OpenSearch default port of 9200, and the update of the registry will fail.
 
 If your OpenSearch server requires authentication, you have to create an authentication configuration file
 and provide following parameters:
