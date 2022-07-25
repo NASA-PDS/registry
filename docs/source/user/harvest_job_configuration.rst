@@ -272,6 +272,9 @@ Below are few examples:
    ...
  </harvest>
 
+.. Note::
+   In URL attribute, have always the port especially if the port is 443 (default HTTPS) or 80 (default HTTP) since harvest will believe default port is 9200 which is the default OpenSearch port.
+
 **Remote OpenSearch instance (on-prem or cloud)**
 
 .. code-block:: xml

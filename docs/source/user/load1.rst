@@ -41,6 +41,9 @@ Registry (OpenSearch) configuration:
 
   <registry url="http://localhost:9200" index="registry" auth="/path/to/auth.cfg" />
 
+.. Note::
+   In URL attribute, have always the port especially if the port is 443 (default HTTPS) or 80 (default HTTP) since harvest will believe default port is 9200 which is the default OpenSearch port.
+
 The path to the data:
 
 .. code-block:: xml
