@@ -50,7 +50,7 @@ Java Installation
 
 There are several distributions of Java:
 
-* **Open JDK** (Free) can be downloaded from different sites, for example,
+* **OpenJDK** (Free) can be downloaded from different sites, for example,
   `adoptopenjdk.net <https://adoptopenjdk.net/>`_ or
   `azul.com <https://www.azul.com/downloads/zulu-community>`_.
   Most Linux distributions have Open JDK in their standard repositories.
@@ -68,7 +68,7 @@ Tools
 Registry Manager
 ~~~~~~~~~~~~~~~~~
 
-Download latest non-snapshot binary release (tar or zip) from https://github.com/NASA-PDS/registry-mgr/releases.
+Download latest stable release (tar or zip) from https://github.com/NASA-PDS/registry-mgr/releases/latest.
 Extract the **tar** (Linux, Mac) or **zip** (Windows) to a directory without spaces, such as */home/pds*.
 On Linux you can use the following command::
 
@@ -85,7 +85,7 @@ Test by running::
 Standalone Harvest
 ~~~~~~~~~~~~~~~~~~~
 
-Download latest non-snapshot binary release (tar or zip) from https://github.com/NASA-PDS/harvest/releases.
+Download latest stable release (tar or zip) from https://github.com/NASA-PDS/harvest/releases/latest.
 Extract the **tar** (Linux, Mac) or **zip** (Windows) to a directory without spaces, such as */home/pds*.
 On Linux you can use the following command::
 
@@ -104,7 +104,7 @@ Supplementer
 .. note::
    Only install this if you plan to load supplemental metadata.
 
-Download latest non-snapshot binary release (tar or zip) from https://github.com/NASA-PDS/supplementer/releases.
+Download latest stable release (tar or zip) from https://github.com/NASA-PDS/supplementer/releases/latest.
 Extract the **tar** (Linux, Mac) or **zip** (Windows) to a directory without spaces, such as */home/pds*.
 On Linux you can use the following command::
 
@@ -117,7 +117,7 @@ Harvest Client
 .. note::
    Only install this if you plan to use Scalable Harvest server.
 
-Download latest non-snapshot binary release (tar or zip) from https://github.com/NASA-PDS/registry-harvest-cli/releases.
+Download latest stable release (tar or zip) from https://github.com/NASA-PDS/registry-harvest-cli/releases/latest.
 Extract the **tar** (Linux, Mac) or **zip** (Windows) to a directory without spaces, such as */home/pds*.
 On Linux you can use the following command::
 
@@ -127,6 +127,10 @@ On Linux you can use the following command::
 
 Configure Your Environment
 **************************
+
+.. note::
+   Optional: Configuring your environment is preferred, but not required. You can always run any of the command-line tools from 
+   the ``bin/`` directory of the appropriate downloaded package.
 
 Update PATH environment variable to be able to run registry tools from any directory.
 
@@ -143,6 +147,8 @@ For example, if you are using BASH, add the following to your *.bash_profile*::
 
   export PATH=${PATH}:$HARVEST_HOME/bin:$REGISTRY_HOME/bin
   export PATH=${PATH}:$HARVEST_CLIENT_HOME/bin:$SUPPLEMENTER_HOME/bin:
+
+For users not using BASH, see your appropriate shell documentation for setting environment variables.
 
 **Windows**
 

@@ -1,21 +1,43 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <title>Data Dictionary &mdash; PDS Registry 1.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-    <script src="../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -23,17 +45,36 @@
     <link rel="prev" title="Create / Delete Registry" href="create_reg.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> PDS Registry
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PDS Registry
+          
+
+          
+            
             <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 1.0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -41,7 +82,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../about.html">About PDS Registry</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cloud_startup.html">Cloud Startup</a></li>
@@ -53,6 +105,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#list-installed-data-dictionaries">List Installed Data Dictionaries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#load-pds-data-dictionary-files">Load PDS Data Dictionary Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#upgrade-data-dictionary">Upgrade Data Dictionary</a></li>
 </ul>
 </li>
 </ul>
@@ -61,35 +114,77 @@
 <li class="toctree-l1"><a class="reference internal" href="../support/support.html">Support</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">PDS Registry</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
+    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
           <li><a href="tasks.html">Admin Tasks</a> &raquo;</li>
+        
       <li>Data Dictionary</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+            
+            
               <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/admin/ldd.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <div class="section" id="data-dictionary">
-<h1>Data Dictionary<a class="headerlink" href="#data-dictionary" title="Permalink to this headline"></a></h1>
+<h1>Data Dictionary<a class="headerlink" href="#data-dictionary" title="Permalink to this heading">¶</a></h1>
 <div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
 <p>Data Dictionary provides field definitions for all metadata fields which can be stored in PDS Registry.
 Data type information is required to properly parse date and numeric fields.</p>
 <p>When a registry is created, the registry data dictionary is populated with PDS common and few discipline dictionaries.
@@ -112,7 +207,7 @@ attribute:</p>
 <p>Usually you don’t need to load data dictionaries manually if they are listed in PDS4 label’s <strong>xsi:schemaLocation</strong> attribute.</p>
 </div>
 <div class="section" id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline"></a></h2>
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>OpenSearch server is <a class="reference external" href="https://opensearch.org/">running</a>.</p></li>
@@ -121,7 +216,7 @@ attribute:</p>
 </div></blockquote>
 </div>
 <div class="section" id="list-installed-data-dictionaries">
-<h2>List Installed Data Dictionaries<a class="headerlink" href="#list-installed-data-dictionaries" title="Permalink to this headline"></a></h2>
+<h2>List Installed Data Dictionaries<a class="headerlink" href="#list-installed-data-dictionaries" title="Permalink to this heading">¶</a></h2>
 <p>To list all data dictionaries in the Registry run the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">registry</span><span class="o">-</span><span class="n">manager</span> <span class="nb">list</span><span class="o">-</span><span class="n">dd</span>
 </pre></div>
@@ -145,44 +240,85 @@ attribute:</p>
 </div>
 </div>
 <div class="section" id="load-pds-data-dictionary-files">
-<h2>Load PDS Data Dictionary Files<a class="headerlink" href="#load-pds-data-dictionary-files" title="Permalink to this headline"></a></h2>
+<h2>Load PDS Data Dictionary Files<a class="headerlink" href="#load-pds-data-dictionary-files" title="Permalink to this heading">¶</a></h2>
 <p>To load standard PDS4 data dictionary JSON file, for example, <em>orex_ldd_OREX_1300.JSON</em>,
 run the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">registry</span><span class="o">-</span><span class="n">manager</span> <span class="n">load</span><span class="o">-</span><span class="n">dd</span> <span class="o">-</span><span class="n">dd</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">pds</span><span class="o">/</span><span class="n">schema</span><span class="o">/</span><span class="n">orex_ldd_OREX_1300</span><span class="o">.</span><span class="n">JSON</span>
 </pre></div>
 </div>
 </div>
+<div class="section" id="upgrade-data-dictionary">
+<h2>Upgrade Data Dictionary<a class="headerlink" href="#upgrade-data-dictionary" title="Permalink to this heading">¶</a></h2>
+<p>Data dictionaries can change between major releases of the registry and/or its tools and APIs, necessitating an
+upgrade. To perform this, run the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">registry</span><span class="o">-</span><span class="n">manager</span> <span class="n">upgrade</span><span class="o">-</span><span class="n">dd</span>
+</pre></div>
+</div>
+<p>The above command will replace entries in the data dictionary on a document by document basis (i.e. those in the
+data dictionary having the same _id’s as the incoming documents). This is relevant if you have loaded your own data
+dictionary files (see ‘load-dd’ above), in which case the upgrade will retain those additional documents.</p>
+<p>If you wish to replace the entire data dictionary, add the ‘-r’ (recreate) command line switch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">registry</span><span class="o">-</span><span class="n">manager</span> <span class="n">upgrade</span><span class="o">-</span><span class="n">dd</span> <span class="o">-</span><span class="n">r</span>
+</pre></div>
+</div>
+<p>This ensures that legacy documents that are no longer applicable are removed.</p>
+</div>
 </div>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="create_reg.html" class="btn btn-neutral float-left" title="Create / Delete Registry" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../install/install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../install/install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="create_reg.html" class="btn btn-neutral float-left" title="Create / Delete Registry" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022 California Institute of Technology.</p>
-  </div>
+    <p>
+        
+        &copy; Copyright 2022 California Institute of Technology
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

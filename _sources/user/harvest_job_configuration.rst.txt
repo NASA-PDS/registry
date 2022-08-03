@@ -272,13 +272,16 @@ Below are few examples:
    ...
  </harvest>
 
+.. Note::
+   In the URL attribute, always have a port specified, which for PDS Registries in AWS, this port should be 443. If a port is not specified, it will default to the OpenSearch default port of 9200, and any attempted writes/updates of the registry will fail.
+
 **Remote OpenSearch instance (on-prem or cloud)**
 
 .. code-block:: xml
 
  <harvest nodeName="PDS_SBN">
    ...
-   <registry url="https://es-server.mydomain.com:9999" index="registry" auth="/path/to/auth.cfg" />
+   <registry url="https://es-server.mydomain.com:443" index="registry" auth="/path/to/auth.cfg" />
    ...
  </harvest>
 
