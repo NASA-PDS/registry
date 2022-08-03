@@ -480,6 +480,17 @@
 																	"    pm.expect(responseJson.meta[\"ops:Tracking_Meta\"]['ops:archive_status']).to.eql('archived');",
 																	"});",
 																	"",
+																	"pm.test(\"ops:file_ref value is a reachable URL\", () => {",
+																	"    const responseJson = pm.response.json();",
+																	"    const url = responseJson.meta[\"ops:Label_File_Info\"]['ops:file_ref'];",
+																	"    pm.sendRequest(url, (error, response) => {",
+																	"      //console.log(response);",
+																	"      pm.expect(response['code']).to.eql(200);",
+																	"    });",
+																	"    ",
+																	"});",
+																	"",
+																	"",
 																	""
 																],
 																"type": "text/javascript"
