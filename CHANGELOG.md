@@ -1,8 +1,16 @@
 # Changelog
 
-## [v1.1.0.dev0-dev](https://github.com/NASA-PDS/registry/tree/v1.1.0.dev0-dev) (2022-08-02)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2022-09-06)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.1...v1.1.0.dev0-dev)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.2...«unknown»)
+
+**Defects:**
+
+- Missing INSIGHT LDD v1600 [\#84](https://github.com/NASA-PDS/registry/issues/84) [[s.low](https://github.com/NASA-PDS/registry/labels/s.low)]
+
+## [v1.0.2](https://github.com/NASA-PDS/registry/tree/v1.0.2) (2022-08-03)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.1...v1.0.2)
 
 **Requirements:**
 
