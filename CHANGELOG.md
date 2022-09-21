@@ -1,8 +1,12 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2022-09-06)
+## [release/1.1.0](https://github.com/NASA-PDS/registry/tree/release/1.1.0) (2022-09-06)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.2...«unknown»)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.0-dev...release/1.1.0)
+
+## [v1.1.0-dev](https://github.com/NASA-PDS/registry/tree/v1.1.0-dev) (2022-09-06)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.2...v1.1.0-dev)
 
 **Defects:**
 
