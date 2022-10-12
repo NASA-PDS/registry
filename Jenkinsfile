@@ -93,11 +93,18 @@ pipeline {
             steps {
                 dir("${env.WORKSPACE}/docker") {
                     sh "$compose down --remove-orphans --timeout ${shutdown_timeout} --volumes ||:"
-                    // 🔮 TODO: Include --no-color? 
-                    sh "$compose up --detach --quiet-pull --timeout ${shutdown_timeout}"
+                }
+                dir("${env.WORKSPACE}/docker/certs") {
+                    // Now re-generate some certificates:
+                    sh "./generate-certs.sh"
+                }
+                dir("${env.WORKSPACE}/docker") {
+                    // Get the latest and greatest
+                    sh "$compose pull --quiet"
+                    // Make a bunch of containers and launch 'em; 🔮 TODO: Include --no-color? 
+                    sh "$compose up --detach --timeout ${shutdown_timeout}"
                 }
             }
-
             // 🔮 TODO: Include a `post {…}` block to do post-deployment test queries?
         }
     }
