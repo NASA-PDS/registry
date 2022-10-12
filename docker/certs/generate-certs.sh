@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 # ----------------------------------------------------------------------------------------------------------------
 #
@@ -8,6 +8,10 @@
 # Read more information at: https://opensearch.org/docs/latest/security-plugin/configuration/generate-certificates/
 #
 # ----------------------------------------------------------------------------------------------------------------
+
+# Sometimes—and for reasons we can't yet fathom—these get generated as _directories_ from earlier
+# runs. So let's make sure they're _gone_ before we try anything:
+rm -rf node1-key.pem node1.pem root-ca-key.pem root-ca.pem root-ca.srl
 
 # Root CA
 openssl genrsa -out root-ca-key.pem 2048
@@ -20,5 +24,6 @@ openssl req -new -key node1-key.pem -subj "/C=CA/ST=CALIFORNIA/L=LA/O=ORG/OU=PDS
 openssl x509 -req -in node1.csr -CA root-ca.pem -CAkey root-ca-key.pem -CAcreateserial -sha256 -out node1.pem -days 730
 
 # Cleanup
-rm node1-key-temp.pem
-rm node1.csr
+# Note: you normally don't want your private keys world-readable, but this makes Docker happy.
+chmod a+r node1-key.pem node1.pem root-ca-key.pem root-ca.pem root-ca.srl
+rm node1-key-temp.pem node1.csr
