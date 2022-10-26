@@ -34,6 +34,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -240,13 +241,13 @@ Registry queries are based on the following endpoint pattern:</p>
 across all DN registries), the <cite>&lt;search-endpoint&gt;</cite> is simply <cite>search</cite>. To direct a query to
 a specific DN registry, <cite>search</cite> is replaced with <cite>search-&lt;DN-abbr&gt;</cite> where <cite>&lt;DN-abbr&gt;</cite> is
 the particular DN abbreviation such as ‘GEO’, ‘ATM’, ‘SBNUMB’, etc.</p>
-<p><cite>&lt;version&gt;</cite> is the API version, which is currently <cite>0.4</cite>. So to query for the first 10
+<p><cite>&lt;version&gt;</cite> is the API version, which is currently <cite>1.1</cite>. So to query for the first 10
 products from the EN registry, the following API request is used:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>https://pds.nasa.gov/api/search/0.4/products?limit<span class="o">=</span><span class="m">10</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>https://pds.nasa.gov/api/search/1.1/products?limit<span class="o">=</span><span class="m">10</span>
 </pre></div>
 </div>
 <p>Similarly, to directly access the RMS registry:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>https://pds.nasa.gov/api/search-rms/0.4/products?limit<span class="o">=</span><span class="m">10</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>https://pds.nasa.gov/api/search-rms/1.1/products?limit<span class="o">=</span><span class="m">10</span>
 </pre></div>
 </div>
 </div>

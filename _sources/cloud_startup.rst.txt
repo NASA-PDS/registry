@@ -75,15 +75,15 @@ across all DN registries), the `<search-endpoint>` is simply `search`. To direct
 a specific DN registry, `search` is replaced with `search-<DN-abbr>` where `<DN-abbr>` is
 the particular DN abbreviation such as 'GEO', 'ATM', 'SBNUMB', etc.
 
-`<version>` is the API version, which is currently `0.4`. So to query for the first 10
+`<version>` is the API version, which is currently `1.1`. So to query for the first 10
 products from the EN registry, the following API request is used:
 
 .. code-block:: bash
 
-  https://pds.nasa.gov/api/search/0.4/products?limit=10
+  https://pds.nasa.gov/api/search/1.1/products?limit=10
 
 Similarly, to directly access the RMS registry:
 
 .. code-block:: bash
 
-  https://pds.nasa.gov/api/search-rms/0.4/products?limit=10
+  https://pds.nasa.gov/api/search-rms/1.1/products?limit=10
