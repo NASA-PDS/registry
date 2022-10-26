@@ -1,12 +1,24 @@
 # Changelog
 
+## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2022-10-26)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.1.1...v1.2.0-dev)
+
+**Defects:**
+
+- Continuous Delivery not working with OpenSearch [\#120](https://github.com/NASA-PDS/registry/issues/120)
+
+## [release/1.1.1](https://github.com/NASA-PDS/registry/tree/release/1.1.1) (2022-09-29)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.0...release/1.1.1)
+
+## [v1.1.0](https://github.com/NASA-PDS/registry/tree/v1.1.0) (2022-09-21)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.1.0...v1.1.0)
+
 ## [release/1.1.0](https://github.com/NASA-PDS/registry/tree/release/1.1.0) (2022-09-06)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.0-dev...release/1.1.0)
-
-## [v1.1.0-dev](https://github.com/NASA-PDS/registry/tree/v1.1.0-dev) (2022-09-06)
-
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.2...v1.1.0-dev)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.2...release/1.1.0)
 
 **Defects:**
 
@@ -15,10 +27,6 @@
 ## [v1.0.2](https://github.com/NASA-PDS/registry/tree/v1.0.2) (2022-08-03)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.1...v1.0.2)
-
-**Requirements:**
-
-- As a registry node user from JPL, I want to use my JPL login to access the Registry's OpenSearch [\#67](https://github.com/NASA-PDS/registry/issues/67)
 
 **Defects:**
 
@@ -46,10 +54,23 @@
 **Requirements:**
 
 - Upgrade the initialization of the ES/OS database following latest upgrade of components [\#31](https://github.com/NASA-PDS/registry/issues/31)
+- As a user, I want to switch a bundle and it's associated collections and products from a protected status to operational. [\#105](https://github.com/NASA-PDS/registry/issues/105)
+- As a user, I want to change the archive status for a collection and it's associated products [\#115](https://github.com/NASA-PDS/registry/issues/115)
 
 ## [v1.0.0-SNAPSHOT](https://github.com/NASA-PDS/registry/tree/v1.0.0-SNAPSHOT) (2022-01-20)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/1f4d45e5a395b8d05b58a0924066dcd3cd0b3565...v1.0.0-SNAPSHOT)
+
+**Requirements:**
+
+- As a node operator, I want the the registry schema to update autonomously when new data is ingested. [\#113](https://github.com/NASA-PDS/registry/issues/113)
+- As a developer, I want to include supplemental file data sizes in the registry [\#112](https://github.com/NASA-PDS/registry/issues/112)
+- As a node operator, I want to ingest metadata regarding secondary collections that belong to a bundle. [\#109](https://github.com/NASA-PDS/registry/issues/109)
+- As a node operator, I want to ingest metadata regarding secondary products that belong to a collection. [\#108](https://github.com/NASA-PDS/registry/issues/108)
+- As a node operator, I want actionable, user-friendly error messages for registry schema failures [\#110](https://github.com/NASA-PDS/registry/issues/110)
+- The service shall allow deletion of registered artifacts [\#103](https://github.com/NASA-PDS/registry/issues/103)
+- The service shall provide a means identifying relationships between artifact registrations [\#104](https://github.com/NASA-PDS/registry/issues/104)
+- As a registry user, I want to ingest supplemental metadata from Product\_Metadata\_Supplemental. [\#121](https://github.com/NASA-PDS/registry/issues/121)
 
 
 
