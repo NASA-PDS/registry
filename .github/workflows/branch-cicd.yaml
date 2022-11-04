@@ -33,7 +33,7 @@ jobs:
         steps:
             -
                 name: 💳 Checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@v3
                 with:
                     lfs: true
                     fetch-depth: 0
@@ -45,7 +45,7 @@ jobs:
                     python-version: '3.9'
             -
                 name: 💵 Python Cache
-                uses: actions/cache@v2
+                uses: actions/cache@v3
                 with:
                     path: ~/.cache/pip
                     # The "key" used to indicate a set of cached files is the operating system runner
