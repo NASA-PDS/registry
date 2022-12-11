@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "af8591fc-01af-41a4-ae1a-d8ff0e56dc19",
+		"_postman_id": "8264807d-79e5-4ec2-9895-aadd666cca4f",
 		"name": "Planetary Data System API Reference Tests",
 		"description": "Federated PDS API which provides actionable end points standardized\nbetween the different nodes.\n\n\nContact Support:\n Email: pds-operator@jpl.nasa.gov",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -479,17 +479,6 @@
 																	"    const responseJson = pm.response.json();",
 																	"    pm.expect(responseJson.meta[\"ops:Tracking_Meta\"]['ops:archive_status']).to.eql('archived');",
 																	"});",
-																	"",
-																	"pm.test(\"ops:file_ref value is a reachable URL\", () => {",
-																	"    const responseJson = pm.response.json();",
-																	"    const url = responseJson.meta[\"ops:Label_File_Info\"]['ops:file_ref'];",
-																	"    pm.sendRequest(url, (error, response) => {",
-																	"      //console.log(response);",
-																	"      pm.expect(response['code']).to.eql(200);",
-																	"    });",
-																	"    ",
-																	"});",
-																	"",
 																	"",
 																	""
 																],
@@ -2588,12 +2577,13 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/products?limit=10",
+									"raw": "{{baseUrl}}/classes/observationals?limit=10",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"products"
+										"classes",
+										"observationals"
 									],
 									"query": [
 										{
@@ -2746,18 +2736,18 @@
 								"header": [
 									{
 										"key": "Accept",
-										"value": "text/csv",
-										"type": "text",
-										"disabled": true
+										"value": "application/json",
+										"type": "text"
 									}
 								],
 								"url": {
-									"raw": "{{baseUrl}}/products?limit=10&q=title eq \"InSight HP3 *\"&fields=pds:Identification_Area.pds:title",
+									"raw": "{{baseUrl}}/classes/observationals?limit=10&q=title eq \"InSight HP3 *\"",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"products"
+										"classes",
+										"observationals"
 									],
 									"query": [
 										{
@@ -2768,10 +2758,6 @@
 										{
 											"key": "q",
 											"value": "title eq \"InSight HP3 *\""
-										},
-										{
-											"key": "fields",
-											"value": "pds:Identification_Area.pds:title"
 										}
 									]
 								}
@@ -2918,18 +2904,18 @@
 								"header": [
 									{
 										"key": "Accept",
-										"value": "text/csv",
-										"type": "text",
-										"disabled": true
+										"value": "application/json",
+										"type": "text"
 									}
 								],
 								"url": {
-									"raw": "{{baseUrl}}/products?limit=10&q=title eq \"InSight HP3 Radiometer Experiment Derived Product:hp3_rad_der_00014_20181211_073042\"&fields=title",
+									"raw": "{{baseUrl}}/classes/observationals?limit=10&q=pds:Identification_Area.pds:title eq \"InSight HP3 Radiometer Experiment Derived Product:hp3_rad_der_00014_20181211_073042\"&fields=title,lid",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"products"
+										"classes",
+										"observationals"
 									],
 									"query": [
 										{
@@ -2939,11 +2925,11 @@
 										},
 										{
 											"key": "q",
-											"value": "title eq \"InSight HP3 Radiometer Experiment Derived Product:hp3_rad_der_00014_20181211_073042\""
+											"value": "pds:Identification_Area.pds:title eq \"InSight HP3 Radiometer Experiment Derived Product:hp3_rad_der_00014_20181211_073042\""
 										},
 										{
 											"key": "fields",
-											"value": "title"
+											"value": "title,lid"
 										}
 									]
 								}
@@ -3095,12 +3081,13 @@
 									}
 								],
 								"url": {
-									"raw": "{{baseUrl}}/products?limit=10&q=pds:Identification_Area.pds:title eq \"InSight HP3 Radiometer Experiment Derived Product:hp3_rad_der_00014_20181211_073042\"&fields=title",
+									"raw": "{{baseUrl}}/classes/observationals?limit=10&q=pds:Identification_Area.pds:title eq \"InSight HP3 Radiometer Experiment Derived Product:hp3_rad_der_00014_20181211_073042\"&fields=title",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"products"
+										"classes",
+										"observationals"
 									],
 									"query": [
 										{
@@ -3269,12 +3256,13 @@
 									}
 								],
 								"url": {
-									"raw": "{{baseUrl}}/products?limit=100&q=pds:Identification_Area.pds:title ne \"InSight HP3 Radiometer Experiment Derived Product:hp3_rad_der_00014_20181211_073042\"&fields=title",
+									"raw": "{{baseUrl}}/classes/observationals?limit=100&q=pds:Identification_Area.pds:title ne \"InSight HP3 Radiometer Experiment Derived Product:hp3_rad_der_00014_20181211_073042\"&fields=title",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"products"
+										"classes",
+										"observationals"
 									],
 									"query": [
 										{
@@ -3440,12 +3428,13 @@
 									}
 								],
 								"url": {
-									"raw": "{{baseUrl}}/products?limit=10&q=pds:Identification_Area.pds:title like \"InSight HP3 Rad*\"&fields=title",
+									"raw": "{{baseUrl}}/classes/observationals?limit=10&q=pds:Identification_Area.pds:title like \"InSight HP3 Rad*\"&fields=title",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"products"
+										"classes",
+										"observationals"
 									],
 									"query": [
 										{
@@ -4451,38 +4440,7 @@
 									"variable": [
 										{
 											"key": "lidvid",
-											"value": "urn:nasa:pds:insight_rad:data_derived::7.0"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "collection's products summary-only",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/collections/:lidvid/products?summary-only=true",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"collections",
-										":lidvid",
-										"products"
-									],
-									"query": [
-										{
-											"key": "summary-only",
-											"value": "true"
-										}
-									],
-									"variable": [
-										{
-											"key": "lidvid",
-											"value": "urn:nasa:pds:insight_rad:data_derived::7.0"
+											"value": null
 										}
 									]
 								}
