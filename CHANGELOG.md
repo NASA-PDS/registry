@@ -1,12 +1,21 @@
 # Changelog
 
-## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2022-11-10)
+## [1.1.1](https://github.com/NASA-PDS/registry/tree/1.1.1) (2022-12-13)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.1.2...v1.2.0-dev)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.2...1.1.1)
 
-## [release/1.1.2](https://github.com/NASA-PDS/registry/tree/release/1.1.2) (2022-11-10)
+**Improvements:**
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.1...release/1.1.2)
+- Propose a solution for set-archive-status on a docker compose deployment [\#34](https://github.com/NASA-PDS/registry/issues/34)
+
+**Defects:**
+
+- follow on to \#118, registry-manager still unable to change archive status on bundle contents [\#136](https://github.com/NASA-PDS/registry/issues/136) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+- archive status value was not changed on bundle's contents [\#118](https://github.com/NASA-PDS/registry/issues/118) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+
+## [v1.1.2](https://github.com/NASA-PDS/registry/tree/v1.1.2) (2022-11-10)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.1...v1.1.2)
 
 ## [v1.1.1](https://github.com/NASA-PDS/registry/tree/v1.1.1) (2022-10-26)
 
