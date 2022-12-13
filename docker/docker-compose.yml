@@ -115,7 +115,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ${REG_API_APP_PROPERTIES_FILE}:/usr/local/registry-api-service/application.properties
+      # make volume match how the spring-boot plugin deploys in docker 
+      - ${REG_API_APP_PROPERTIES_FILE}:/workspace/BOOT-INF/classes/application.properties
       - ./scripts/registry-api-waits-for-elasticsearch.sh:/usr/local/registry-api-service/registry-api-waits-for-elasticsearch.sh
     networks:
       - pds
