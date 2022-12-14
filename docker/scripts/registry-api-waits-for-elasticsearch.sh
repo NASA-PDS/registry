@@ -53,5 +53,5 @@ sleep 60
 echo "Starting Registry API service..."  1>&2
 java -cp /usr/local/registry-api-service \
      -jar /usr/local/registry-api-service/registry-api-service.jar \
-     --spring.config.location=file:///usr/local/registry-api-service/application.properties \
+     --spring.config.location=file:///workspace/BOOT-INF/classes/application.properties \
      gov.nasa.pds.api.engineering.SpringBootMain

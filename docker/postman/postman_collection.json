@@ -4083,7 +4083,19 @@
 							"name": "product's collection",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/classes/collections/urn:nasa:pds:insight_rad:data_derived::7.0/members",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"classes",
+										"collections",
+										"urn:nasa:pds:insight_rad:data_derived::7.0",
+										"members"
+									]
+								}
 							},
 							"response": []
 						},
@@ -4091,7 +4103,19 @@
 							"name": "product's bundle",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/classes/bundles/urn:nasa:pds:insight_rad:data_derived::7.0/members",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"classes",
+										"bundles",
+										"urn:nasa:pds:insight_rad:data_derived::7.0",
+										"members"
+									]
+								}
 							},
 							"response": []
 						}
