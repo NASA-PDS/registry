@@ -56,7 +56,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
-## As a user, I want to ingest legacy PDS3 data sets ([#62](https://github.com/NASA-PDS/registry/issues/62)) 
+## As a user, I want to ingest legacy PDS3 data sets from EN legacy registry ([#62](https://github.com/NASA-PDS/registry/issues/62)) 
 
 
 This requirement is not impacted by the current version
@@ -152,11 +152,11 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
-## As a Node Registry Admin I want to view dashboard report of bundles with archive status and additional data ([#130](https://github.com/NASA-PDS/registry/issues/130)) 
+## As a Node Operator, I want to view dashboard report of bundles with archive status and other tracking information ([#130](https://github.com/NASA-PDS/registry/issues/130)) 
 
 
 This requirement is not impacted by the current version
-## As a Node Registry Admin I want to be able to update bundle archive status by package id ([#131](https://github.com/NASA-PDS/registry/issues/131)) 
+## As a Node Operator, I want to be able to update bundle archive status by package id ([#131](https://github.com/NASA-PDS/registry/issues/131)) 
 
 
 This requirement is not impacted by the current version
