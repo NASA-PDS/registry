@@ -1,8 +1,12 @@
 # Changelog
 
-## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2022-12-13)
+## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2022-12-14)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.2...v1.2.0-dev)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.1.3...v1.2.0-dev)
+
+## [release/1.1.3](https://github.com/NASA-PDS/registry/tree/release/1.1.3) (2022-12-14)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.2...release/1.1.3)
 
 **Improvements:**
 
@@ -19,23 +23,15 @@
 
 ## [v1.1.1](https://github.com/NASA-PDS/registry/tree/v1.1.1) (2022-10-26)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.1.1...v1.1.1)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.0...v1.1.1)
 
 **Defects:**
 
 - Continuous Delivery not working with OpenSearch [\#120](https://github.com/NASA-PDS/registry/issues/120)
 
-## [release/1.1.1](https://github.com/NASA-PDS/registry/tree/release/1.1.1) (2022-09-29)
-
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.0...release/1.1.1)
-
 ## [v1.1.0](https://github.com/NASA-PDS/registry/tree/v1.1.0) (2022-09-21)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.1.0...v1.1.0)
-
-## [release/1.1.0](https://github.com/NASA-PDS/registry/tree/release/1.1.0) (2022-09-06)
-
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.2...release/1.1.0)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.2...v1.1.0)
 
 **Defects:**
 
