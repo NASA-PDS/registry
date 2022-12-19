@@ -1,4 +1,5 @@
 Contact Us
 ==========
 
-Feel free to contact us the `PDS Operator <mailto:pds-operator@jpl.nasa.gov>`_ for any additional questions, comments or concerns.
+
+Feel free to post a question on the `Discussion Board <https://github.com/NASA-PDS/registry/discussions>`_ or submit a request to the `PDS Help Desk <https://pds.nasa.gov/?feedback=true>`_ for any additional questions, comments or concerns.
