@@ -9,6 +9,11 @@
 #
 # ----------------------------------------------------------------------------------------------------------------
 
+# Clean slate: if you started the containers before generating the certificates, Docker "helpfully"
+# creates the mapped volumes on the host as directories instead of files. Here, we get rid of those
+# directories if they happen to exist.
+rm -rf node1* root-ca.pem
+
 # Root CA
 openssl genrsa -out root-ca-key.pem 2048
 openssl req -new -x509 -sha256 -key root-ca-key.pem -subj "/C=CA/ST=CALIFORNIA/L=LA/O=ORG/OU=PDS/CN=elasticsearch" -out root-ca.pem -days 730
