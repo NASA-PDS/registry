@@ -160,3 +160,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a developer, I want a minimally-populated deployment profile  ([#145](https://github.com/NASA-PDS/registry/issues/145)) 
+
+
+This requirement is not impacted by the current version
