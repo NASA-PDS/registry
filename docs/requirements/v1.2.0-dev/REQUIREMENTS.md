@@ -152,7 +152,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
-## As a Node Operator, I want to view dashboard report of bundles with archive status and other tracking information ([#130](https://github.com/NASA-PDS/registry/issues/130)) 
+## As a user, I want to view dashboard report of bundles with archive status and other tracking information ([#130](https://github.com/NASA-PDS/registry/issues/130)) 
 
 
 This requirement is not impacted by the current version
