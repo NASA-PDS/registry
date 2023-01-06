@@ -1,17 +1,13 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-01-03)
+## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2023-01-03)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0-dev...«unknown»)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...v1.2.0-dev)
 
 **Defects:**
 
 - Harvest is throwing errors of "Forbidden index write" [\#132](https://github.com/NASA-PDS/registry/issues/132) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - registry-manager won't set archive-status on some collections [\#97](https://github.com/NASA-PDS/registry/issues/97) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
-
-## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2022-12-19)
-
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...v1.2.0-dev)
 
 ## [v1.1.3](https://github.com/NASA-PDS/registry/tree/v1.1.3) (2022-12-14)
 
