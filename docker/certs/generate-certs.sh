@@ -24,6 +24,9 @@ openssl pkcs8 -inform PEM -outform PEM -in node1-key-temp.pem -topk8 -nocrypt -v
 openssl req -new -key node1-key.pem -subj "/C=CA/ST=CALIFORNIA/L=LA/O=ORG/OU=PDS/CN=elasticsearch" -out node1.csr
 openssl x509 -req -in node1.csr -CA root-ca.pem -CAkey root-ca-key.pem -CAcreateserial -sha256 -out node1.pem -days 730
 
+# Make these readable inside of containers
+chmod a+r *.pem
+
 # Cleanup
 rm node1-key-temp.pem
 rm node1.csr
