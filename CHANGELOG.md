@@ -1,6 +1,15 @@
 # Changelog
 
-## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2023-01-03)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-01-10)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0-dev...«unknown»)
+
+**Defects:**
+
+- Expo Registry fails to start [\#149](https://github.com/NASA-PDS/registry/issues/149)
+- OpenSearch service of Registry won't start on Linux [\#146](https://github.com/NASA-PDS/registry/issues/146) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+
+## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2023-01-06)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...v1.2.0-dev)
 
