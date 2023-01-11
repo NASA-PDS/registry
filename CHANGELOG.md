@@ -1,20 +1,21 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-01-10)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-01-11)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0-dev...«unknown»)
 
 **Defects:**
 
-- Expo Registry fails to start [\#149](https://github.com/NASA-PDS/registry/issues/149)
-- OpenSearch service of Registry won't start on Linux [\#146](https://github.com/NASA-PDS/registry/issues/146) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+- TLS termination listening on wrong port [\#150](https://github.com/NASA-PDS/registry/issues/150) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 
-## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2023-01-06)
+## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2023-01-10)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...v1.2.0-dev)
 
 **Defects:**
 
+- Expo Registry fails to start [\#149](https://github.com/NASA-PDS/registry/issues/149) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
+- OpenSearch service of Registry won't start on Linux [\#146](https://github.com/NASA-PDS/registry/issues/146) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Harvest is throwing errors of "Forbidden index write" [\#132](https://github.com/NASA-PDS/registry/issues/132) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - registry-manager won't set archive-status on some collections [\#97](https://github.com/NASA-PDS/registry/issues/97) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 
