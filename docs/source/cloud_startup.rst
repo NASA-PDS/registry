@@ -63,7 +63,7 @@ Configure the tools with the Opensearch URL and credential given to you in step 
 Registry API
 ************
 Once data has been ingested using the Registry Tools, queries can be submitted using the Registry
-API which is `documented here <https://nasa-pds.github.io/pds-api/search-api-user-guide.html>`_.
+API which is `documented here <https://nasa-pds.github.io/pds-api/guides/search.html>`_.
 Registry queries are based on the following endpoint pattern:
 
 .. code-block:: bash
