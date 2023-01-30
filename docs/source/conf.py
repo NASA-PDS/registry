@@ -20,8 +20,8 @@
 project = 'PDS Registry'
 copyright = '2022 California Institute of Technology'
 author = 'NASA Planetary Data System'
-release = '1.0'
-version = '1.0'
+release = '1.1'
+version = '1.1'
 
 
 # -- General configuration ---------------------------------------------------
