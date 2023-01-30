@@ -1,19 +1,20 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-01-11)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-01-30)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0-dev...«unknown»)
 
-**Defects:**
+**Requirements:**
 
-- TLS termination listening on wrong port [\#150](https://github.com/NASA-PDS/registry/issues/150) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
+- As a user, I want to view dashboard report of bundles with archive status and other tracking information [\#130](https://github.com/NASA-PDS/registry/issues/130)
 
-## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2023-01-10)
+## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2023-01-11)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...v1.2.0-dev)
 
 **Defects:**
 
+- TLS termination listening on wrong port [\#150](https://github.com/NASA-PDS/registry/issues/150) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - Expo Registry fails to start [\#149](https://github.com/NASA-PDS/registry/issues/149) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - OpenSearch service of Registry won't start on Linux [\#146](https://github.com/NASA-PDS/registry/issues/146) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Harvest is throwing errors of "Forbidden index write" [\#132](https://github.com/NASA-PDS/registry/issues/132) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
@@ -42,7 +43,7 @@
 
 **Defects:**
 
-- Continuous Delivery not working with OpenSearch [\#120](https://github.com/NASA-PDS/registry/issues/120)
+- Continuous Delivery not working with OpenSearch [\#120](https://github.com/NASA-PDS/registry/issues/120) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 
 ## [v1.1.0](https://github.com/NASA-PDS/registry/tree/v1.1.0) (2022-09-21)
 
