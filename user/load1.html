@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Load Data - Standalone Harvest &mdash; PDS Registry 1.0 documentation</title>
+  <title>Load Data - Standalone Harvest &mdash; PDS Registry 1.1 documentation</title>
   
 
   
@@ -32,9 +33,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -70,7 +69,7 @@
             
             
               <div class="version">
-                1.0
+                1.1
               </div>
             
           
@@ -183,18 +182,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="load-data-standalone-harvest">
-<h1>Load Data - Standalone Harvest<a class="headerlink" href="#load-data-standalone-harvest" title="Permalink to this heading">¶</a></h1>
-<div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
+  <section id="load-data-standalone-harvest">
+<h1>Load Data - Standalone Harvest<a class="headerlink" href="#load-data-standalone-harvest" title="Permalink to this headline">¶</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>To load PDS4 data into Registry you have to use Harvest software. There are two versions of Harvest:
 a simple standalone command-line tool and a scalable Harvest which can process big data sets in parallel thanks to distributed components comminucating through a message broker.
 Both versions extract metadata from PDS4 products (labels) and load extracted
 metadata into OpenSearch database.</p>
 <p>This document describes how to load data with Standalone Harvest command-line tool.</p>
-</div>
-<div class="section" id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>OpenSearch server is <a class="reference external" href="https://opensearch.org/">running</a>.</p></li>
@@ -202,9 +201,9 @@ metadata into OpenSearch database.</p>
 <li><p>Standalone Harvest command-line tool is <a class="reference external" href="../install/tools.html#standalone-harvest">installed</a>.</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="standalone-harvest-quick-start">
-<h2>Standalone Harvest Quick Start<a class="headerlink" href="#standalone-harvest-quick-start" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="standalone-harvest-quick-start">
+<h2>Standalone Harvest Quick Start<a class="headerlink" href="#standalone-harvest-quick-start" title="Permalink to this headline">¶</a></h2>
 <p>To run Harvest you need a job configuration file (XML).
 The configuration file has several sections such as Registry (OpenSearch) configuration
 and the path to the data. Example configuration files are located in <em>&lt;INSTALL_DIR&gt;/conf/examples</em>.</p>
@@ -228,7 +227,7 @@ and the path to the data. Example configuration files are located in <em>&lt;INS
 </div>
 <p>And the URL prefix for the data:</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;fileInfo&gt;</span>
-  <span class="cm">&lt;!-- UPDATE with your own local path and base url where pds4 archive is published --&gt;</span>
+  <span class="c">&lt;!-- UPDATE with your own local path and base url where pds4 archive is published --&gt;</span>
   <span class="nt">&lt;fileRef</span> <span class="na">replacePrefix=</span><span class="s">&quot;/data/geo/&quot;</span> <span class="na">with=</span><span class="s">&quot;https://pds-geosciences.wustl.edu/lunar/&quot;</span> <span class="nt">/&gt;</span>
 <span class="nt">&lt;/fileInfo&gt;</span>
 </pre></div>
@@ -270,8 +269,8 @@ or in a web browser. For example,</p>
 </pre></div>
 </div>
 <p>This <a class="reference external" href="./harvest_job_configuration.html">page</a> describes the job configuration file in detail.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

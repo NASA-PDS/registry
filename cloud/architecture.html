@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>The Registry API Service Cloud Architecture &mdash; PDS Registry 1.0 documentation</title>
+  <title>The Registry API Service Cloud Architecture &mdash; PDS Registry 1.1 documentation</title>
   
 
   
@@ -32,9 +33,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -68,7 +67,7 @@
             
             
               <div class="version">
-                1.0
+                1.1
               </div>
             
           
@@ -167,10 +166,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="the-registry-api-service-cloud-architecture">
-<h1>The Registry API Service Cloud Architecture<a class="headerlink" href="#the-registry-api-service-cloud-architecture" title="Permalink to this heading">¶</a></h1>
-<div class="section" id="on-prem-vs-cloud">
-<h2>On-Prem vs. Cloud<a class="headerlink" href="#on-prem-vs-cloud" title="Permalink to this heading">¶</a></h2>
+  <section id="the-registry-api-service-cloud-architecture">
+<h1>The Registry API Service Cloud Architecture<a class="headerlink" href="#the-registry-api-service-cloud-architecture" title="Permalink to this headline">¶</a></h1>
+<section id="on-prem-vs-cloud">
+<h2>On-Prem vs. Cloud<a class="headerlink" href="#on-prem-vs-cloud" title="Permalink to this headline">¶</a></h2>
 <p>In a typical on-premise deployment, the PDS Registry Application is composed, server-side, of
 a ReSTful API Server and an OpenSearch database. The users submit queries to the API which queries OpenSearch for building the responses.</p>
 <p>Both components of which are highlighted below:</p>
@@ -205,9 +204,9 @@ of data.</p>
 Registry-manager are still performed on-premise, the latter connecting
 directly to Elasticsearch, access to which is controlled by authentication
 and IP whitelisting.</p>
-</div>
-<div class="section" id="en-s-centralized-registry-api-service">
-<h2>EN’s Centralized Registry API Service<a class="headerlink" href="#en-s-centralized-registry-api-service" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="en-s-centralized-registry-api-service">
+<h2>EN’s Centralized Registry API Service<a class="headerlink" href="#en-s-centralized-registry-api-service" title="Permalink to this headline">¶</a></h2>
 <p>The Engineering Node’s Registry API Service is the central point from
 which received search requests are disseminated to all discipline nodes
 (DNs) to provide aggregated, global results. This strategy leverages
@@ -219,8 +218,8 @@ been designated as remotes. See figure below.</p>
 specifying the DN’s abbreviated name (e.g. ‘GEO’) as the value of the
 HTTP header ‘x-request-node’ along with the request. If this header is
 not specified, the request is routed to the EN registry.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

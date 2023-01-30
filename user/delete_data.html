@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Delete Data &mdash; PDS Registry 1.0 documentation</title>
+  <title>Delete Data &mdash; PDS Registry 1.1 documentation</title>
   
 
   
@@ -32,9 +33,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -70,7 +69,7 @@
             
             
               <div class="version">
-                1.0
+                1.1
               </div>
             
           
@@ -185,23 +184,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="delete-data">
-<h1>Delete Data<a class="headerlink" href="#delete-data" title="Permalink to this heading">¶</a></h1>
-<div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
+  <section id="delete-data">
+<h1>Delete Data<a class="headerlink" href="#delete-data" title="Permalink to this headline">¶</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>You can delete data from PDS Registry (OpenSearch) with Registry Manager command-line tool.</p>
-</div>
-<div class="section" id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>OpenSearch server is running.</p></li>
 <li><p>Registry Manager command-line tool is installed.</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="id1">
-<h2>Delete Data<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="id1">
+<h2>Delete Data<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>To delete data, run Registry Manager’s “delete-data” command.</p>
 <p>You have to pass one of the following parameters:</p>
 <blockquote>
@@ -220,9 +219,9 @@
 <li><p><strong>-auth &lt;file&gt;</strong> - OpenSearch authentication configuration file. See example below.</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p><strong>Delete by LIDVID</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager delete-data <span class="se">\</span>
     -lidvid urn:nasa:pds:context:target:asteroid.4_vesta::1.1 <span class="se">\</span>
@@ -258,9 +257,9 @@ and provide following parameters:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager delete-data -all -index test1
 </pre></div>
 </div>
-</div>
-<div class="section" id="opensearch-api">
-<h2>OpenSearch API<a class="headerlink" href="#opensearch-api" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="opensearch-api">
+<h2>OpenSearch API<a class="headerlink" href="#opensearch-api" title="Permalink to this headline">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Only use this if you really know what you are doing and how to do it.</p>
@@ -268,8 +267,8 @@ and provide following parameters:</p>
 <p>You can also use OpenSearch
 <a class="reference external" href="https://opensearch.org/docs/latest/opensearch/rest-api/document-apis/delete-by-query/">delete by query API</a>
 to delete documents from the Registry / OpenSearch.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

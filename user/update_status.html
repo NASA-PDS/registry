@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Update Archive Status &mdash; PDS Registry 1.0 documentation</title>
+  <title>Update Archive Status &mdash; PDS Registry 1.1 documentation</title>
   
 
   
@@ -32,9 +33,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -70,7 +69,7 @@
             
             
               <div class="version">
-                1.0
+                1.1
               </div>
             
           
@@ -190,10 +189,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="update-archive-status">
-<h1>Update Archive Status<a class="headerlink" href="#update-archive-status" title="Permalink to this heading">¶</a></h1>
+  <section id="update-archive-status">
+<h1>Update Archive Status<a class="headerlink" href="#update-archive-status" title="Permalink to this headline">¶</a></h1>
 <p>When a product is ingested into PDS Registry, its archive status is set to <em>“staged”</em>.</p>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ops:Tracking_Meta/ops:archive_status&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;staged&quot;</span><span class="w"></span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ops:Tracking_Meta/ops:archive_status&quot;</span><span class="o">:</span> <span class="s2">&quot;staged&quot;</span>
 </pre></div>
 </div>
 <p>You can change that value to any of the following:</p>
@@ -206,10 +205,10 @@
 </ul>
 </div></blockquote>
 <p>You can use either Registry Manager or Harvest Client (Scalable Harvest deployments only) for this task.</p>
-<div class="section" id="registry-manager">
-<h2>Registry Manager<a class="headerlink" href="#registry-manager" title="Permalink to this heading">¶</a></h2>
-<div class="section" id="prerequisites">
-<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h3>
+<section id="registry-manager">
+<h2>Registry Manager<a class="headerlink" href="#registry-manager" title="Permalink to this headline">¶</a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>OpenSearch server is <a class="reference external" href="https://opensearch.org/">running</a>.</p></li>
@@ -218,9 +217,9 @@
 <li><p>Registry Manager command-line tool is <a class="reference external" href="../install/tools.html#registry-manager">installed</a>.</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="set-status">
-<h3>Set status<a class="headerlink" href="#set-status" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="set-status">
+<h3>Set status<a class="headerlink" href="#set-status" title="Permalink to this headline">¶</a></h3>
 <p>To set product archive status, execute Registry Manager’s “set-archive-status” command.</p>
 <p>The following parameters are required:</p>
 <blockquote>
@@ -266,12 +265,12 @@ file and provide following parameters:</p>
 <span class="n">password</span> <span class="o">=</span> <span class="n">mypassword</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="harvest-client-scalable-harvest-only">
-<h2>Harvest Client (Scalable Harvest only)<a class="headerlink" href="#harvest-client-scalable-harvest-only" title="Permalink to this heading">¶</a></h2>
-<div class="section" id="id1">
-<h3>Prerequisites<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+</section>
+</section>
+<section id="harvest-client-scalable-harvest-only">
+<h2>Harvest Client (Scalable Harvest only)<a class="headerlink" href="#harvest-client-scalable-harvest-only" title="Permalink to this headline">¶</a></h2>
+<section id="id1">
+<h3>Prerequisites<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>OpenSearch server is <a class="reference external" href="https://opensearch.org/">running</a>.</p></li>
@@ -281,9 +280,9 @@ file and provide following parameters:</p>
 <li><p>Harvest Client command-line tool is <a class="reference external" href="../install/tools.html#harvest-client">installed</a>.</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="id6">
-<h3>Set status<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id6">
+<h3>Set status<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <p>To set product archive status, execute Harvest Client’s “set-archive-status” command.</p>
 <p>The following parameters are required:</p>
 <blockquote>
@@ -316,9 +315,9 @@ If the product is a bundle product, all bundle’s collections will be also upda
     -lidvid <span class="s2">&quot;urn:nasa:pds:kaguya_grs_spectra:document::1.0&quot;</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
