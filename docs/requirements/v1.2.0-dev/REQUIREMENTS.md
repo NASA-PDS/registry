@@ -128,10 +128,6 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
-## As a user, I want to flush the API cache after archive status has been changed ([#119](https://github.com/NASA-PDS/registry/issues/119)) 
-
-
-This requirement is not impacted by the current version
 ## As a user, I want to load invalid PDS4 labels ([#123](https://github.com/NASA-PDS/registry/issues/123)) 
 
 
@@ -161,6 +157,10 @@ This requirement is not impacted by the current version
 
 This requirement is not impacted by the current version
 ## As a developer, I want a minimally-populated deployment profile  ([#145](https://github.com/NASA-PDS/registry/issues/145)) 
+
+
+This requirement is not impacted by the current version
+## As a user, I want to all metadata attributes to be searchable ([#153](https://github.com/NASA-PDS/registry/issues/153)) 
 
 
 This requirement is not impacted by the current version
