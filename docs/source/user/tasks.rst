@@ -10,3 +10,4 @@ User tasks describes the everyday processes such as load data, change data statu
    harvest_job_configuration
    update_status
    delete_data
+   dashboards
