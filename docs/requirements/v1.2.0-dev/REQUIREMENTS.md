@@ -152,7 +152,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
-## As a Node Operator, I want to be able to update bundle archive status by package id ([#131](https://github.com/NASA-PDS/registry/issues/131)) 
+## As a user, I want to be able to update bundle archive status by package id ([#131](https://github.com/NASA-PDS/registry/issues/131)) 
 
 
 This requirement is not impacted by the current version
@@ -161,6 +161,10 @@ This requirement is not impacted by the current version
 
 This requirement is not impacted by the current version
 ## As a user, I want to all metadata attributes to be searchable ([#153](https://github.com/NASA-PDS/registry/issues/153)) 
+
+
+This requirement is not impacted by the current version
+## As a user, I want to track the deep archive status for a product ([#158](https://github.com/NASA-PDS/registry/issues/158)) 
 
 
 This requirement is not impacted by the current version
