@@ -1,5 +1,5 @@
 ===========
-Dashbaords
+Dashboards
 ===========
 
 Overview
