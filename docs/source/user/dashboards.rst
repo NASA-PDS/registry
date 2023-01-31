@@ -24,13 +24,13 @@ View the dashboards
 
 #. Click on the menu on the upper-left
 
-#. In `OpnSearch Dashboards` section, select `Dashboard`
+#. In `OpenSearch Dashboards` section, select `Dashboard`
 
 #. You are getting a list of default dashbaords provided to you (see table below)
 
-#. Optionally: You can update the dashbaord and see the underlying OpenSearch requests by clicking the wheel on the top right of each dashboard
+#. Optionally: You can update the dashboard and see the underlying OpenSearch requests by clicking the wheel on the top right of each dashboard
 
-#. Optionally: You can request for new dashboard or any update by creating a ticket in this repository https://github.com/NASA-PDS/archive-analytics/issues
+#. Optionally: You can request a new dashboard or any update by creating a ticket in this repository https://github.com/NASA-PDS/archive-analytics/issues
 
 .. list-table:: List of dashboard available by default
    :widths: 25 50
