@@ -107,4 +107,6 @@ or in a web browser. For example,
 
 This `page <./harvest_job_configuration.html>`_ describes the job configuration file in detail.
 
-**Next steps: When ready for public release, you need to `update the archive status <update_status.html>`_**
+Next Steps
+**********
+When ready for public release, you need to `update the archive status <update_status.html>`_
