@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-01-31)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-02-03)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0-dev...«unknown»)
 
@@ -8,7 +8,11 @@
 
 - Update documentation to include explicit example of how to query staged data [\#100](https://github.com/NASA-PDS/registry/issues/100)
 
-## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2023-01-30)
+**Improvements:**
+
+- Update docs to be more clear that there is a required next step after data ingestion [\#139](https://github.com/NASA-PDS/registry/issues/139)
+
+## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2023-01-31)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...v1.2.0-dev)
 
