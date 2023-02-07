@@ -41,4 +41,4 @@
 # -----------------------------------------------------------------------------------------------------
 
 # Execute Postman integration tests with docker compose
-docker compose run reg-api-integration-test
+docker compose run --rm reg-api-integration-test
