@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022, California Institute of Technology ("Caltech").
+ * Copyright © 2022–2023, California Institute of Technology ("Caltech").
  * U.S. Government sponsorship acknowledged.
  * 
  * All rights reserved.
