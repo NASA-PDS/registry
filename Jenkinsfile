@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022, California Institute of Technology ("Caltech").
+ * Copyright © 2022–2023, California Institute of Technology ("Caltech").
  * U.S. Government sponsorship acknowledged.
  * 
  * All rights reserved.
@@ -81,11 +81,11 @@ pipeline {
                 // a custom application.properties file and/or `docker-compose.yaml` file.
             }
         }
-        stage('🩺 Test') {
-            // The repository's upstream projects have already tested everything—there's nothing that needs
-            // to be done; However, we include the stage for reporting purposes (all pipelines should have a
-            // test stage.
+        stage('🩺 Unit Test') {
             steps {
+                // The repository's upstream projects have already tested everything—there's nothing that needs
+                // to be done; However, we include the stage for reporting purposes (all pipelines should have a
+                // unit test stage.
                 echo 'No-op test step: ✓'
             }
         }
@@ -102,6 +102,21 @@ pipeline {
             }
 
             // 🔮 TODO: Include a `post {…}` block to do post-deployment test queries?
+        }
+        stage('🏃 Integration Test') {
+            steps {
+                dir("${env.WORKSPACE}/docker") {
+                    // 🔮 TODO: It'd be better if the Docker Composition could also indicate it's completed
+                    // setup. Maybe add yet another quasi-service to it that waits for all the other
+                    // services?
+                    //
+                    // For now, we wait:
+                    sleep(time: 5, unit: "MINUTES");
+
+                    // Then test:
+                    sh "$compose run --rm reg-api-integration-test"
+                }
+            }
         }
     }
 }
