@@ -219,6 +219,7 @@ services:
     environment:
       - PROXY_URL=http://registry-api:8080/
       - PROXY_PATH=/api/search/1/
+      - PROXY_PORT=8443
     ports:
       - "8443:443"
     networks:
