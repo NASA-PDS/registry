@@ -1,24 +1,17 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-02-03)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-02-21)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0-dev...«unknown»)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...«unknown»)
 
 **Requirements:**
 
+- As a user, I want to view dashboard report of bundles with archive status and other tracking information [\#130](https://github.com/NASA-PDS/registry/issues/130)
 - Update documentation to include explicit example of how to query staged data [\#100](https://github.com/NASA-PDS/registry/issues/100)
 
 **Improvements:**
 
 - Update docs to be more clear that there is a required next step after data ingestion [\#139](https://github.com/NASA-PDS/registry/issues/139)
-
-## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2023-01-31)
-
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...v1.2.0-dev)
-
-**Requirements:**
-
-- As a user, I want to view dashboard report of bundles with archive status and other tracking information [\#130](https://github.com/NASA-PDS/registry/issues/130)
 
 **Defects:**
 
