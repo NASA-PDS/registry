@@ -17,7 +17,8 @@ docker-compose \
     --profile int-registry-batch-loader \
     --project-name registry \
     --file ${WORKSPACE}/docker/docker-compose.yml \
-    --rm
+    run \
+    --rm \
     reg-api-integration-test
 status=$?
 
