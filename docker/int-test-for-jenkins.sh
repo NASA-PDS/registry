@@ -14,12 +14,15 @@ for i in 5 4 3 2 1; do
 done
 
 docker-compose \
+    --ansi never \
     --profile int-registry-batch-loader \
     --project-name registry \
     --file ${WORKSPACE}/docker/docker-compose.yml \
     run \
     --rm \
-    reg-api-integration-test
+    --no-TTY \
+    reg-api-integration-test \
+    </dev/null
 status=$?
 
 echo ""
