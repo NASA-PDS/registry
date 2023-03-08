@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-02-21)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-03-08)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...«unknown»)
 
@@ -15,11 +15,17 @@
 
 **Defects:**
 
+- ref\_collection\_lidvid field in some node registries populated using older versions of registry loader tools create string fields in the schema vs. the expected list types [\#159](https://github.com/NASA-PDS/registry/issues/159) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - TLS termination listening on wrong port [\#150](https://github.com/NASA-PDS/registry/issues/150) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - Expo Registry fails to start [\#149](https://github.com/NASA-PDS/registry/issues/149) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - OpenSearch service of Registry won't start on Linux [\#146](https://github.com/NASA-PDS/registry/issues/146) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Harvest is throwing errors of "Forbidden index write" [\#132](https://github.com/NASA-PDS/registry/issues/132) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - registry-manager won't set archive-status on some collections [\#97](https://github.com/NASA-PDS/registry/issues/97) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+
+**Other closed issues:**
+
+- Schedule provenance script [\#160](https://github.com/NASA-PDS/registry/issues/160)
+- Integrate new `provenance.py` script into operational deployment to tag products with Provenance information [\#141](https://github.com/NASA-PDS/registry/issues/141)
 
 ## [v1.1.3](https://github.com/NASA-PDS/registry/tree/v1.1.3) (2022-12-14)
 
