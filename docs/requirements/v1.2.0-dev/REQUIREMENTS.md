@@ -168,3 +168,11 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a developer, I want to know when the CI pipeline fails ([#165](https://github.com/NASA-PDS/registry/issues/165)) 
+
+
+This requirement is not impacted by the current version
+## As a manager, I want to see the progress of ingestion in the registry ([#168](https://github.com/NASA-PDS/registry/issues/168)) 
+
+
+This requirement is not impacted by the current version
