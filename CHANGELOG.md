@@ -1,20 +1,31 @@
 # Changelog
 
-## [v1.2.0-dev](https://github.com/NASA-PDS/registry/tree/v1.2.0-dev) (2023-01-30)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-03-08)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...v1.2.0-dev)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...«unknown»)
 
 **Requirements:**
 
 - As a user, I want to view dashboard report of bundles with archive status and other tracking information [\#130](https://github.com/NASA-PDS/registry/issues/130)
+- Update documentation to include explicit example of how to query staged data [\#100](https://github.com/NASA-PDS/registry/issues/100)
+
+**Improvements:**
+
+- Update docs to be more clear that there is a required next step after data ingestion [\#139](https://github.com/NASA-PDS/registry/issues/139)
 
 **Defects:**
 
+- ref\_collection\_lidvid field in some node registries populated using older versions of registry loader tools create string fields in the schema vs. the expected list types [\#159](https://github.com/NASA-PDS/registry/issues/159) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - TLS termination listening on wrong port [\#150](https://github.com/NASA-PDS/registry/issues/150) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - Expo Registry fails to start [\#149](https://github.com/NASA-PDS/registry/issues/149) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - OpenSearch service of Registry won't start on Linux [\#146](https://github.com/NASA-PDS/registry/issues/146) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Harvest is throwing errors of "Forbidden index write" [\#132](https://github.com/NASA-PDS/registry/issues/132) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - registry-manager won't set archive-status on some collections [\#97](https://github.com/NASA-PDS/registry/issues/97) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+
+**Other closed issues:**
+
+- Schedule provenance script [\#160](https://github.com/NASA-PDS/registry/issues/160)
+- Integrate new `provenance.py` script into operational deployment to tag products with Provenance information [\#141](https://github.com/NASA-PDS/registry/issues/141)
 
 ## [v1.1.3](https://github.com/NASA-PDS/registry/tree/v1.1.3) (2022-12-14)
 

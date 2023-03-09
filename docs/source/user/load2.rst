@@ -110,3 +110,8 @@ After submitting a job, you can monitor progress by querying OpenSearch::
    For backward compatibility, job ID field is called "_package_id" in OpenSearch.
 
 This `page <./harvest_job_configuration.html>`_ describes the job configuration file in detail.
+
+
+Next Steps
+**********
+When ready for public release, you need to `update the archive status <update_status.html>`_

@@ -106,3 +106,7 @@ or in a web browser. For example,
    curl "http://localhost:9200/registry/_search?q=product_class:Product_Collection&amp;pretty"
 
 This `page <./harvest_job_configuration.html>`_ describes the job configuration file in detail.
+
+Next Steps
+**********
+When ready for public release, you need to `update the archive status <update_status.html>`_

@@ -201,7 +201,13 @@ services:
 
   # Executes Registry API integration test as a Postman collection with test data (after waiting for data to be loaded)
   reg-api-integration-test-with-wait:
-    profiles: ["int-registry-batch-loader", "int-registry-service-loader"]
+    # For deep-archive#138, @nutjob4life writes:
+    #    I'm changing this to no profiles, because I'm not sure if it's actually useful to run any
+    #    tests at this point. The two profiles `int-registry-batch-loader` and `int-registry-service-loader`
+    #    are typically run with `--detach` and so any exit codes they might have to show pass/fail
+    #    status of the tests are lost. We can always run the tests with `./int-tests.sh`.
+    # profiles: ["int-registry-batch-loader", "int-registry-service-loader"]
+    profiles: []
     image: ${POSTMAN_NEWMAN_IMAGE}
     environment:
       - REG_API_URL=${REG_API_URL}
