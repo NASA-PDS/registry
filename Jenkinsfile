@@ -114,7 +114,7 @@ pipeline {
                     sleep(time: 5, unit: "MINUTES");
 
                     // Then test:
-                    sh "$compose run --rm reg-api-integration-test"
+                    sh "./int-test-for-jenkins.sh"
                 }
             }
         }
