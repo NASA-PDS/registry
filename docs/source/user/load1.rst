@@ -41,6 +41,8 @@ Registry (OpenSearch) configuration:
 
   <registry url="http://localhost:9200" index="registry" auth="/path/to/auth.cfg" />
 
+For details on the registry configuration, see :ref:`Registry Integration <Registry Integration>`.
+
 .. Note::
    In the URL attribute, always have a port specified, which for PDS Registries in AWS, this port should be 443. If a port is not specified, it will default to the OpenSearch default port of 9200, and any attempted writes/updates of the registry will fail.
 
