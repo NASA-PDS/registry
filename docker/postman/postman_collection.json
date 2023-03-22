@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "8264807d-79e5-4ec2-9895-aadd666cca4f",
-		"name": "Planetary Data System API Reference Tests",
+		"_postman_id": "54822971-94d8-45c6-9400-32b19a6e1997",
+		"name": "Planetary Data System API Reference Tests Copy",
 		"description": "Federated PDS API which provides actionable end points standardized\nbetween the different nodes.\n\n\nContact Support:\n Email: pds-operator@jpl.nasa.gov",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11337552"
