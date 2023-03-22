@@ -172,7 +172,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
-## As a manager, I want to see the progress of ingestion in the registry ([#168](https://github.com/NASA-PDS/registry/issues/168)) 
+## As a manager, I want to see the progress of data sets ingested into registry vs. legacy registry ([#168](https://github.com/NASA-PDS/registry/issues/168)) 
 
 
 This requirement is not impacted by the current version
