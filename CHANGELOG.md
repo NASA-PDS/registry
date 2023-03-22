@@ -1,11 +1,12 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-03-09)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-03-22)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...«unknown»)
 
 **Requirements:**
 
+- As a user, I want to all metadata attributes to be searchable [\#153](https://github.com/NASA-PDS/registry/issues/153)
 - As a user, I want to view dashboard report of bundles with archive status and other tracking information [\#130](https://github.com/NASA-PDS/registry/issues/130)
 - Update documentation to include explicit example of how to query staged data [\#100](https://github.com/NASA-PDS/registry/issues/100)
 
