@@ -77,6 +77,9 @@ pipeline {
                 dir("${env.WORKSPACE}/docker/certs") {
                     sh "./generate-certs.sh"
                 }
+                dir("${env.WORKSPACE}/docker") {
+                    sh "$compose pull"
+                }
                 // Other ideas: try deploying to a different port from 8080 by using `sed` to generate
                 // a custom application.properties file and/or `docker-compose.yaml` file.
             }
