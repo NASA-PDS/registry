@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-03-22)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-03-28)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...«unknown»)
 
@@ -16,6 +16,7 @@
 
 **Defects:**
 
+- Expo system doesn't use latest images published to Docker Hub [\#175](https://github.com/NASA-PDS/registry/issues/175)
 - ref\_collection\_lidvid field in some node registries populated using older versions of registry loader tools create string fields in the schema vs. the expected list types [\#159](https://github.com/NASA-PDS/registry/issues/159) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - TLS termination listening on wrong port [\#150](https://github.com/NASA-PDS/registry/issues/150) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - Expo Registry fails to start [\#149](https://github.com/NASA-PDS/registry/issues/149) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
@@ -25,16 +26,13 @@
 
 **Other closed issues:**
 
+- Add documentation on the auth.cfg file for the registry tools users [\#170](https://github.com/NASA-PDS/registry/issues/170)
 - Schedule provenance script [\#160](https://github.com/NASA-PDS/registry/issues/160)
 - Integrate new `provenance.py` script into operational deployment to tag products with Provenance information [\#141](https://github.com/NASA-PDS/registry/issues/141)
 
 ## [v1.1.3](https://github.com/NASA-PDS/registry/tree/v1.1.3) (2022-12-14)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.2...v1.1.3)
-
-**Improvements:**
-
-- Propose a solution for set-archive-status on a docker compose deployment [\#34](https://github.com/NASA-PDS/registry/issues/34)
 
 **Defects:**
 
