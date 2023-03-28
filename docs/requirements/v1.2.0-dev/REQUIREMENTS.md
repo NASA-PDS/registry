@@ -176,3 +176,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a EN Operator, I want to the registry to be fault tolerant ([#176](https://github.com/NASA-PDS/registry/issues/176)) 
+
+
+This requirement is not impacted by the current version
