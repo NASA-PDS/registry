@@ -61,6 +61,22 @@ services:
       - pds
     entrypoint: /usr/local/bin/registry-loader-waits-for-elasticsearch.sh
 
+  # Runs provenance script
+  registry-sweepers:
+    profiles: ["dev-api", "int-registry-batch-loader"]
+    image: ${REG_SWEEPERS_IMAGE}
+    environment:
+      - PROV_ENDPOINT=${ES_URL}
+      - PROV_CREDENTIALS=${PROV_CREDENTIALS}
+    networks:
+      - pds
+    depends_on:
+      registry-loader-test-init:
+        condition: service_completed_successfully
+
+
+
+
   # Starts Elasticsearch
   elasticsearch:
     profiles: ["dev-api", "dev-loader", "pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]

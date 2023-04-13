@@ -1,195 +1,12 @@
 {
 	"info": {
-		"_postman_id": "54822971-94d8-45c6-9400-32b19a6e1997",
-		"name": "Planetary Data System API Reference Tests Copy",
+		"_postman_id": "8264807d-79e5-4ec2-9895-aadd666cca4f",
+		"name": "Planetary Data System API Reference Tests",
 		"description": "Federated PDS API which provides actionable end points standardized\nbetween the different nodes.\n\n\nContact Support:\n Email: pds-operator@jpl.nasa.gov",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11337552"
 	},
 	"item": [
-		{
-			"name": "requirements",
-			"item": [
-				{
-					"name": "NASA-PDS/pds-api#72",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", () => {",
-									"  pm.response.to.have.status(200);",
-									"});",
-									"",
-									"var data = pm.response.json().data;",
-									"",
-									"pm.test(\"Number of results is 1\", () => {",
-									"    pm.expect(data.length).to.equal(1); ",
-									"});",
-									"",
-									"pm.test(\"time found in range\", () => {",
-									"    pm.expect(data[0].start_date_time).to.eql(\"2018-05-05T00:00:00Z\"); ",
-									"});",
-									"",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/products?&q=((pds:Time_Coordinates.pds:start_date_time gt \"2018-05-04T00:00:00Z\") and (pds:Time_Coordinates.pds:start_date_time lt \"2018-05-06T00:00:00Z\"))",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products"
-							],
-							"query": [
-								{
-									"key": null,
-									"value": null
-								},
-								{
-									"key": "q",
-									"value": "((pds:Time_Coordinates.pds:start_date_time gt \"2018-05-04T00:00:00Z\") and (pds:Time_Coordinates.pds:start_date_time lt \"2018-05-06T00:00:00Z\"))"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "NASA-PDS/pds-api#99",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", () => {",
-									"  pm.response.to.have.status(200);",
-									"});",
-									"",
-									"var data = pm.response.json().data;",
-									"",
-									"pm.test(\"Number of results is 1\", () => {",
-									"    pm.expect(data.length).to.equal(1); ",
-									"});",
-									"",
-									"",
-									"pm.test(\"Title contains Insight\", () => {",
-									"    pm.expect(data[0].title).to.include(\"InSight\"); ",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/products?keywords=Insight&limit=1",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": "",
-									"disabled": true
-								},
-								{
-									"key": "keywords",
-									"value": "Insight"
-								},
-								{
-									"key": "limit",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "NASA-PDS/registry-api#80",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response takes less than 1s\", () => {",
-									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
-									"});",
-									"",
-									"pm.test(\"Status code is 200\", () => {",
-									"  pm.response.to.have.status(200);",
-									"});",
-									"",
-									"pm.test(\"Has lid\", () => {",
-									"    const responseJson = pm.response.json();",
-									"    pm.expect(responseJson).to.have.property('lid');",
-									"});",
-									"",
-									"pm.test(\"Has pds:Primary_Result_Summary.pds:purpose\", () => {",
-									"    const responseJson = pm.response.json();",
-									"    pm.expect(responseJson).to.have.property('pds:Primary_Result_Summary.pds:purpose');",
-									"});",
-									"",
-									"pm.test(\"Has not ref_lid_instrument\", () => {",
-									"    const responseJson = pm.response.json();",
-									"    pm.expect(responseJson).to.not.have.property('ref_lid_instrument');",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/kvp+json",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/products/:lidvid?fields=lid,pds:Primary_Result_Summary.pds:purpose",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products",
-								":lidvid"
-							],
-							"query": [
-								{
-									"key": "fields",
-									"value": "lid,pds:Primary_Result_Summary.pds:purpose"
-								}
-							],
-							"variable": [
-								{
-									"key": "lidvid",
-									"value": "urn:nasa:pds:insight_rad::2.1"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
 		{
 			"name": "products",
 			"item": [
@@ -519,22 +336,22 @@
 																	"",
 																	"pm.test(\"Has meta\", () => {",
 																	"    const responseJson = pm.response.json();",
-																	"    pm.expect(responseJson).to.have.property('metadata');",
+																	"    pm.expect(responseJson).to.have.property('meta');",
 																	"});",
 																	"",
 																	"pm.test(\"Meta has ops:Tracking_Meta\", () => {",
 																	"    const responseJson = pm.response.json();",
-																	"    pm.expect(responseJson.metadata).to.have.property('ops:Tracking_Meta');",
+																	"    pm.expect(responseJson.meta).to.have.property('ops:Tracking_Meta');",
 																	"});",
 																	"",
 																	"pm.test(\"Ops:Tracking_Meta has ops:archive_status\", () => {",
 																	"    const responseJson = pm.response.json();",
-																	"    pm.expect(responseJson.metadata[\"ops:Tracking_Meta\"]).to.have.property('ops:archive_status');",
+																	"    pm.expect(responseJson.meta[\"ops:Tracking_Meta\"]).to.have.property('ops:archive_status');",
 																	"});",
 																	"",
 																	"pm.test(\"Ops:archive_status value is archived\", () => {",
 																	"    const responseJson = pm.response.json();",
-																	"    pm.expect(responseJson.metadata[\"ops:Tracking_Meta\"]['ops:archive_status']).to.eql('archived');",
+																	"    pm.expect(responseJson.meta[\"ops:Tracking_Meta\"]['ops:archive_status']).to.eql('archived');",
 																	"});",
 																	"",
 																	""
@@ -544,7 +361,9 @@
 														}
 													],
 													"protocolProfileBehavior": {
-														"disabledSystemHeaders": {}
+														"disabledSystemHeaders": {
+															"accept": true
+														}
 													},
 													"request": {
 														"method": "GET",
@@ -853,7 +672,9 @@
 														}
 													],
 													"protocolProfileBehavior": {
-														"disabledSystemHeaders": {}
+														"disabledSystemHeaders": {
+															"accept": true
+														}
 													},
 													"request": {
 														"method": "GET",
@@ -2939,6 +2760,168 @@
 							]
 						},
 						{
+							"name": "all fields",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/classes/observationals?limit=10&fields=\"pds:Time_Coordinates/pds:start_date_time\"",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"classes",
+										"observationals"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10",
+											"description": "maximum number of matching results returned, for pagination"
+										},
+										{
+											"key": "fields",
+											"value": "\"pds:Time_Coordinates/pds:start_date_time\""
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Successful request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/collections?start=<integer>&limit=<integer>&q=<string>&fields=<string>&fields=<string>&sort=<string>&sort=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"collections"
+											],
+											"query": [
+												{
+													"key": "start",
+													"value": "<integer>"
+												},
+												{
+													"key": "limit",
+													"value": "<integer>"
+												},
+												{
+													"key": "q",
+													"value": "<string>"
+												},
+												{
+													"key": "fields",
+													"value": "<string>"
+												},
+												{
+													"key": "fields",
+													"value": "<string>"
+												},
+												{
+													"key": "sort",
+													"value": "<string>"
+												},
+												{
+													"key": "sort",
+													"value": "<string>"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Total-Count",
+											"value": "86952436",
+											"description": "Total number of records maching the request."
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"metadata\": {\n  \"q\": \"consectetur mollit magna dolor\",\n  \"start\": -27309082,\n  \"limit\": 85105165,\n  \"sort\": [\n   \"voluptate sint sit\",\n   \"fugiat irure\"\n  ]\n },\n \"data\": \"schema type not provided\"\n}"
+								},
+								{
+									"name": "Bad request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/collections?start=<integer>&limit=<integer>&q=<string>&fields=<string>&fields=<string>&sort=<string>&sort=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"collections"
+											],
+											"query": [
+												{
+													"key": "start",
+													"value": "<integer>"
+												},
+												{
+													"key": "limit",
+													"value": "<integer>"
+												},
+												{
+													"key": "q",
+													"value": "<string>"
+												},
+												{
+													"key": "fields",
+													"value": "<string>"
+												},
+												{
+													"key": "fields",
+													"value": "<string>"
+												},
+												{
+													"key": "sort",
+													"value": "<string>"
+												},
+												{
+													"key": "sort",
+													"value": "<string>"
+												}
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"url\": \"https://pds.nasa.gov/api/1.0/collections\",\n \"resource\": \"/collections\",\n \"query\": \"q=mission qt 12\",\n \"message\": \"query operator gt not supported on field mission\"\n}"
+								}
+							]
+						},
+						{
 							"name": "eq no result",
 							"event": [
 								{
@@ -4849,19 +4832,19 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/collections/:lidvid/products",
+									"raw": "{{baseUrl}}/products/:lidvid/members",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"collections",
+										"products",
 										":lidvid",
-										"products"
+										"members"
 									],
 									"variable": [
 										{
 											"key": "lidvid",
-											"value": null
+											"value": "urn:nasa:pds:insight_rad:data_derived::7.0"
 										}
 									]
 								}
@@ -5872,11 +5855,12 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "{{baseUrl}}/collections?q=\"\"",
+											"raw": "{{baseUrl}}/classes/collections?q=\"\"",
 											"host": [
 												"{{baseUrl}}"
 											],
 											"path": [
+												"classes",
 												"collections"
 											],
 											"query": [
@@ -8583,14 +8567,14 @@
 									}
 								],
 								"url": {
-									"raw": "{{baseUrl}}/bundles/:lidvid/collections",
+									"raw": "{{baseUrl}}/products/:lidvid/members",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"bundles",
+										"products",
 										":lidvid",
-										"collections"
+										"members"
 									],
 									"variable": [
 										{
@@ -8641,13 +8625,12 @@
 									}
 								],
 								"url": {
-									"raw": "{{baseUrl}}/classes/bundles/:lidvid/members/members",
+									"raw": "{{baseUrl}}/products/:lidvid/members/members",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"classes",
-										"bundles",
+										"products",
 										":lidvid",
 										"members",
 										"members"
@@ -8799,6 +8782,155 @@
 								{
 									"key": "q",
 									"value": "ref_lid_target eq \"urn:nasa:pds:context:target:planet.mars\""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "requirements",
+			"item": [
+				{
+					"name": "NASA-PDS/pds-api#99",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?keywords=insight",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "keywords",
+									"value": "insight"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/pds-api#72",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"Number of results is 1\", () => {",
+									"    pm.expect(data.length).to.equal(1); ",
+									"});",
+									"",
+									"pm.test(\"time found in range\", () => {",
+									"    pm.expect(data[0].start_date_time).to.eql(\"2018-05-05T00:00:00Z\"); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?&q=((pds:Time_Coordinates.pds:start_date_time gt \"2018-05-04T00:00:00Z\") and (pds:Time_Coordinates.pds:start_date_time lt \"2018-05-06T00:00:00Z\"))",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": ""
+								},
+								{
+									"key": "q",
+									"value": "((pds:Time_Coordinates.pds:start_date_time gt \"2018-05-04T00:00:00Z\") and (pds:Time_Coordinates.pds:start_date_time lt \"2018-05-06T00:00:00Z\"))"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#80",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Has lid\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('lid');",
+									"});",
+									"",
+									"pm.test(\"Has pds:Primary_Result_Summary.pds:purpose\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('pds:Primary_Result_Summary.pds:purpose');",
+									"});",
+									"",
+									"pm.test(\"Has not ref_lid_instrument\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.not.have.property('ref_lid_instrument');",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/kvp+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lidvid?fields=lid,pds:Primary_Result_Summary.pds:purpose",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lidvid"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "lid,pds:Primary_Result_Summary.pds:purpose"
+								}
+							],
+							"variable": [
+								{
+									"key": "lidvid",
+									"value": "urn:nasa:pds:insight_rad::2.1"
 								}
 							]
 						}
