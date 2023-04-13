@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" PDS Registry """
+"""PDS Registry."""
 import pkg_resources
 
 
