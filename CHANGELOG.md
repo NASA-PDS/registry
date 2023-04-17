@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-03-28)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-04-17)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...«unknown»)
 
@@ -9,6 +9,7 @@
 - As a user, I want to all metadata attributes to be searchable [\#153](https://github.com/NASA-PDS/registry/issues/153)
 - As a user, I want to view dashboard report of bundles with archive status and other tracking information [\#130](https://github.com/NASA-PDS/registry/issues/130)
 - Update documentation to include explicit example of how to query staged data [\#100](https://github.com/NASA-PDS/registry/issues/100)
+- As a user, I want to indicate a product has been superseded [\#52](https://github.com/NASA-PDS/registry/issues/52)
 
 **Improvements:**
 
@@ -26,9 +27,12 @@
 
 **Other closed issues:**
 
+- Update Terraform scripts to support multi-tenancy [\#188](https://github.com/NASA-PDS/registry/issues/188)
+- Check that none of the Opensearch servers, besides NAIF have archive\_status==null [\#183](https://github.com/NASA-PDS/registry/issues/183)
 - Add documentation on the auth.cfg file for the registry tools users [\#170](https://github.com/NASA-PDS/registry/issues/170)
 - Schedule provenance script [\#160](https://github.com/NASA-PDS/registry/issues/160)
 - Integrate new `provenance.py` script into operational deployment to tag products with Provenance information [\#141](https://github.com/NASA-PDS/registry/issues/141)
+- Integrate new `provenance.py` script into integration tests to tag products with Provenance information [\#140](https://github.com/NASA-PDS/registry/issues/140)
 
 ## [v1.1.3](https://github.com/NASA-PDS/registry/tree/v1.1.3) (2022-12-14)
 
