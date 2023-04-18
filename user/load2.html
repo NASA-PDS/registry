@@ -4,7 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -14,8 +14,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -30,10 +28,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -107,11 +105,13 @@
 <li class="toctree-l4"><a class="reference internal" href="#submit-a-job">Submit a Job</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html">Detailed Harvest Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="update_status.html">Update Archive Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="delete_data.html">Delete Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboards.html">Dashboards</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../admin/tasks.html">Admin Tasks</a></li>
@@ -239,23 +239,23 @@ Default configuration file, <em>&lt;INSTALL_DIR&gt;/conf/harvest-client.cfg</em>
 An example configuration file is available in the installation directory:
 <em>&lt;INSTALL_DIR&gt;/examples/directories.xml</em>.</p>
 <p>You will need to update the nodeName:</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_GEO&quot;</span><span class="nt">&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_GEO&quot;</span><span class="nt">&gt;</span>
 </pre></div>
 </div>
 <p>The path to the data.</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;directories&gt;</span>
-  <span class="nt">&lt;path&gt;</span>/data/geo/urn-nasa-pds-kaguya_grs_spectra<span class="nt">&lt;/path&gt;</span>
+<span class="w">  </span><span class="nt">&lt;path&gt;</span>/data/geo/urn-nasa-pds-kaguya_grs_spectra<span class="nt">&lt;/path&gt;</span>
 <span class="nt">&lt;/directories&gt;</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Crawler and Harvest servers should be able to read this path.</p>
-</div>
+</aside>
 <p>And the URL prefix for the data:</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;fileInfo&gt;</span>
-  <span class="c">&lt;!-- UPDATE with your own local path and base url where pds4 archive is published --&gt;</span>
-  <span class="nt">&lt;fileRef</span> <span class="na">replacePrefix=</span><span class="s">&quot;/data/geo/&quot;</span> <span class="na">with=</span><span class="s">&quot;https://pds-geosciences.wustl.edu/lunar/&quot;</span> <span class="nt">/&gt;</span>
+<span class="w">  </span><span class="cm">&lt;!-- UPDATE with your own local path and base url where pds4 archive is published --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;fileRef</span><span class="w"> </span><span class="na">replacePrefix=</span><span class="s">&quot;/data/geo/&quot;</span><span class="w"> </span><span class="na">with=</span><span class="s">&quot;https://pds-geosciences.wustl.edu/lunar/&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/fileInfo&gt;</span>
 </pre></div>
 </div>
@@ -278,9 +278,13 @@ An example configuration file is available in the installation directory:
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For backward compatibility, job ID field is called “_package_id” in OpenSearch.</p>
-</div>
+</aside>
 <p>This <a class="reference external" href="./harvest_job_configuration.html">page</a> describes the job configuration file in detail.</p>
 </section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
+<p>When ready for public release, you need to <a class="reference external" href="update_status.html">update the archive status</a></p>
 </section>
 </section>
 

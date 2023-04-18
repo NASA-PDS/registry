@@ -4,7 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -14,8 +14,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -30,10 +28,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -196,11 +194,11 @@
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>These deployment are not intended for production given that 1. docker compose works on a single host and 2. permanent storage is left to docker to manage.</p>
-</div>
+</aside>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>To learn more about docker compose, please visit <a class="reference external" href="https://docs.docker.com/compose/">https://docs.docker.com/compose/</a>.</p>
-</div>
+</aside>
 </section>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
@@ -215,7 +213,7 @@
 <p class="admonition-title">Note</p>
 <p>At the time of writing this, all registry components were successfully tested with the docker compose version v2.2.3.
 The registry components should work with later versions of docker compose too.</p>
-</div>
+</aside>
 </section>
 <section id="download-and-configure-the-pds-registry-application">
 <h2>Download and Configure the PDS Registry Application<a class="headerlink" href="#download-and-configure-the-pds-registry-application" title="Permalink to this headline">¶</a></h2>
@@ -231,7 +229,7 @@ On Linux you can use the following command:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The path of the extracted directory, is referred to as the <cite>&lt;REGISTRY_ROOT&gt;</cite> in the following instructions.</p>
-</div>
+</aside>
 <ol class="arabic" start="3">
 <li><p>Open a terminal and change the working directory to <cite>&lt;REGISTRY_ROOT&gt;/docker</cite> directory.</p></li>
 <li><p>Open the <cite>&lt;REGISTRY_ROOT&gt;/docker/.env</cite> file using a text editor</p></li>
@@ -251,14 +249,14 @@ On Linux you can use the following command:</p>
 <p>The <cite>HARVEST_DATA_DIR</cite> specified above should have the directories of the data to be harvested.</p>
 <p>An example of a <cite>harvest-job-config.xml</cite> file (to set as <cite>HARVEST_JOB_CONFIG_FILE</cite> in the above configurations)
 can be obtained from the <cite>&lt;REGISTRY_ROOT&gt;/docker/default-config</cite> directory.</p>
-</div>
+</aside>
 <ol class="arabic simple" start="5">
 <li><p>Generate the self-signed certificates as follows.</p></li>
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Certificates are required for OpenSearch to enable https.</p>
-</div>
+</aside>
 <blockquote>
 <div><ol class="loweralpha">
 <li><p>Change the current working directory to <cite>&lt;REGISTRY_ROOT&gt;/docker/certs</cite> directory.</p>
@@ -290,7 +288,7 @@ can be obtained from the <cite>&lt;REGISTRY_ROOT&gt;/docker/default-config</cite
 <p class="admonition-title">Note</p>
 <p>The next section explains the possible profile names that can be used for the <cite>&lt;DOCKER_COMPOSE_PROFILE_NAME&gt;</cite> in the
 docker compose command above.</p>
-</div>
+</aside>
 <p>The docker containers deployed using a docker compose profile can be easily uninstalled and cleaned-up using the following
 command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">--</span><span class="n">profile</span><span class="o">=&lt;</span><span class="n">DOCKER_COMPOSE_PROFILE_NAME</span><span class="o">&gt;</span> <span class="n">down</span>
@@ -298,11 +296,6 @@ command:</p>
 </div>
 <p>The following table contains commonly used server-side profiles and descriptions.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 18%" />
-<col style="width: 43%" />
-<col style="width: 38%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Profile Name</p></th>
 <th class="head"><p>Description</p></th>
@@ -328,11 +321,6 @@ must be up and running</p></td>
 <h2>Client-side Operations<a class="headerlink" href="#client-side-operations" title="Permalink to this headline">¶</a></h2>
 <p>To trigger data ingestion in the registry, you need to run client side commands (which use docker compose as well internally)</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 33%" />
-<col style="width: 35%" />
-<col style="width: 32%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Command prototype</p></th>
 <th class="head"><p>Description</p></th>
@@ -427,7 +415,7 @@ commands:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Docker Compose running on a single host, the scalability of this tool is not at its full potential yet, we will propose in the future a production ready deployment procedure (e.g. using kubernetes) to actually scale the ingestion.</p>
-</div>
+</aside>
 <section id="deploying-the-sever-side-components-of-scalable-harvest">
 <h4>Deploying the Sever-side Components of Scalable Harvest<a class="headerlink" href="#deploying-the-sever-side-components-of-scalable-harvest" title="Permalink to this headline">¶</a></h4>
 <ol class="arabic">
@@ -478,8 +466,8 @@ docker-registry-api-1        |
 <li><p>Click on the <strong>Try it out!</strong> button to see the Response Body.</p></li>
 </ol>
 </section>
-<section id="id1">
-<h4>Clean-up the Deployment<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<section id="clean-up-the-deployment-1">
+<h4>Clean-up the Deployment<a class="headerlink" href="#clean-up-the-deployment-1" title="Permalink to this headline">¶</a></h4>
 <p>The docker containers deployed above can be easily uninstalled and cleaned-up using the following
 commands:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">--</span><span class="n">profile</span><span class="o">=</span><span class="n">pds</span><span class="o">-</span><span class="n">core</span><span class="o">-</span><span class="n">registry</span> <span class="n">down</span>
@@ -493,7 +481,7 @@ commands:</p>
 docker compose profile that are used to setup the development environment and execute integration tests.</p>
 <p>More information about all currently available docker compose profiles are available at
 <a class="reference external" href="https://github.com/NASA-PDS/registry/tree/main/docker#-docker-compose-for-registry-components">https://github.com/NASA-PDS/registry/tree/main/docker#-docker-compose-for-registry-components</a>.</p>
-</div>
+</aside>
 </section>
 </section>
 </section>

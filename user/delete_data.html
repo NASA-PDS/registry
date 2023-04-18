@@ -4,7 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -14,8 +14,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -30,10 +28,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -41,7 +39,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Admin Tasks" href="../admin/tasks.html" />
+    <link rel="next" title="Dashboards" href="dashboards.html" />
     <link rel="prev" title="Update Archive Status" href="update_status.html" /> 
 </head>
 
@@ -105,11 +103,12 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Delete Data</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Delete Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#delete-data-1">Delete Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#opensearch-api">OpenSearch API</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="dashboards.html">Dashboards</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../admin/tasks.html">Admin Tasks</a></li>
@@ -199,8 +198,8 @@
 </ul>
 </div></blockquote>
 </section>
-<section id="id1">
-<h2>Delete Data<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<section id="delete-data-1">
+<h2>Delete Data<a class="headerlink" href="#delete-data-1" title="Permalink to this headline">¶</a></h2>
 <p>To delete data, run Registry Manager’s “delete-data” command.</p>
 <p>You have to pass one of the following parameters:</p>
 <blockquote>
@@ -223,17 +222,17 @@
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p><strong>Delete by LIDVID</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager delete-data <span class="se">\</span>
-    -lidvid urn:nasa:pds:context:target:asteroid.4_vesta::1.1 <span class="se">\</span>
-    -es https://my-server.my-domain.com:443 <span class="se">\</span>
-    -index registry <span class="se">\</span>
-    -auth path/to/auth.cfg
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>delete-data<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-lidvid<span class="w"> </span>urn:nasa:pds:context:target:asteroid.4_vesta::1.1<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-es<span class="w"> </span>https://my-server.my-domain.com:443<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-index<span class="w"> </span>registry<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-auth<span class="w"> </span>path/to/auth.cfg
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In the -es option value, always have a port specified in the URL. For PDS Registries, this port should be 443. If a port is not specified, it will default to OpenSearch default port of 9200, and the update of the registry will fail.</p>
-</div>
+</aside>
 <p>If your OpenSearch server requires authentication, you have to create an authentication configuration file
 and provide following parameters:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># true - trust self-signed certificates; false - don&#39;t trust.</span>
@@ -243,18 +242,18 @@ and provide following parameters:</p>
 </pre></div>
 </div>
 <p><strong>Delete by LID</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager delete-data <span class="se">\</span>
-    -lid urn:nasa:pds:context:target:asteroid.4_vesta
-    -es http://localhost:9200
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>delete-data<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-lid<span class="w"> </span>urn:nasa:pds:context:target:asteroid.4_vesta
+<span class="w">    </span>-es<span class="w"> </span>http://localhost:9200
 </pre></div>
 </div>
 <p><strong>Delete by Package / Job ID</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager delete-data <span class="se">\</span>
-    -packageId 8d8ae96d-044e-473d-a278-62635b1c5977
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>delete-data<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-packageId<span class="w"> </span>8d8ae96d-044e-473d-a278-62635b1c5977
 </pre></div>
 </div>
 <p><strong>Delete all Data</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager delete-data -all -index test1
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>delete-data<span class="w"> </span>-all<span class="w"> </span>-index<span class="w"> </span>test1
 </pre></div>
 </div>
 </section>
@@ -263,7 +262,7 @@ and provide following parameters:</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Only use this if you really know what you are doing and how to do it.</p>
-</div>
+</aside>
 <p>You can also use OpenSearch
 <a class="reference external" href="https://opensearch.org/docs/latest/opensearch/rest-api/document-apis/delete-by-query/">delete by query API</a>
 to delete documents from the Registry / OpenSearch.</p>
@@ -278,7 +277,7 @@ to delete documents from the Registry / OpenSearch.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../admin/tasks.html" class="btn btn-neutral float-right" title="Admin Tasks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="dashboards.html" class="btn btn-neutral float-right" title="Dashboards" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="update_status.html" class="btn btn-neutral float-left" title="Update Archive Status" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

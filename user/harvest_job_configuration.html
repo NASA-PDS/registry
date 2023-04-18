@@ -4,7 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -14,8 +14,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -30,10 +28,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -125,6 +123,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="update_status.html">Update Archive Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="delete_data.html">Delete Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboards.html">Dashboards</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../admin/tasks.html">Admin Tasks</a></li>
@@ -205,7 +204,7 @@
 <section id="node-name">
 <h2>Node Name<a class="headerlink" href="#node-name" title="Permalink to this headline">¶</a></h2>
 <p>Node name is a required parameter which is used to tag ingested data with the node it is ingested by.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
 ...
 </pre></div>
 </div>
@@ -227,7 +226,7 @@
 <p>This value is saved in “ops:Harvest_Info/ops:node_name” field in the loaded OpenSearch documents:</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="p">...</span>
-  <span class="s2">&quot;ops:Harvest_Info/ops:node_name&quot;</span><span class="o">:</span> <span class="s2">&quot;PDS_SBN&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;ops:Harvest_Info/ops:node_name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;PDS_SBN&quot;</span><span class="p">,</span>
 <span class="p">...</span>
 <span class="p">}</span>
 </pre></div>
@@ -238,20 +237,20 @@
 <section id="process-directories">
 <h3>Process Directories<a class="headerlink" href="#process-directories" title="Permalink to this headline">¶</a></h3>
 <p>To process products from one or more directories, add the following section in Harvest configuration file:</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
-  ...
-  <span class="nt">&lt;directories&gt;</span>
-    <span class="nt">&lt;path&gt;</span>/some-directory/sub-dir-1/<span class="nt">&lt;/path&gt;</span>
-    <span class="nt">&lt;path&gt;</span>/some-directory/sub-dir-2/<span class="nt">&lt;/path&gt;</span>
-  <span class="nt">&lt;/directories&gt;</span>
-  ...
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span>...
+<span class="w">  </span><span class="nt">&lt;directories&gt;</span>
+<span class="w">    </span><span class="nt">&lt;path&gt;</span>/some-directory/sub-dir-1/<span class="nt">&lt;/path&gt;</span>
+<span class="w">    </span><span class="nt">&lt;path&gt;</span>/some-directory/sub-dir-2/<span class="nt">&lt;/path&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/directories&gt;</span>
+<span class="w">  </span>...
 <span class="nt">&lt;/harvest&gt;</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You could not have both &lt;directories&gt; and &lt;bundles&gt; sections at the same time.</p>
-</div>
+</aside>
 </section>
 <section id="process-a-list-of-files">
 <h3>Process a List of Files<a class="headerlink" href="#process-a-list-of-files" title="Permalink to this headline">¶</a></h3>
@@ -262,12 +261,12 @@
 </pre></div>
 </div>
 <p>Next, add the following section in Harvest configuration file:</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
-  ...
-  <span class="nt">&lt;files&gt;</span>
-    <span class="nt">&lt;manifest&gt;</span>/some-directory/manifest.txt<span class="nt">&lt;/manifest&gt;</span>
-  <span class="nt">&lt;/files&gt;</span>
-  ...
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span>...
+<span class="w">  </span><span class="nt">&lt;files&gt;</span>
+<span class="w">    </span><span class="nt">&lt;manifest&gt;</span>/some-directory/manifest.txt<span class="nt">&lt;/manifest&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/files&gt;</span>
+<span class="w">  </span>...
 <span class="nt">&lt;/harvest&gt;</span>
 </pre></div>
 </div>
@@ -276,70 +275,70 @@
 <h3>Filtering Products by Class<a class="headerlink" href="#filtering-products-by-class" title="Permalink to this headline">¶</a></h3>
 <p>You can include or exclude products of a particular class. For example, to only process documents, add following
 product filter in Harvest configuration file:</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
-  ...
-  <span class="nt">&lt;productFilter&gt;</span>
-    <span class="nt">&lt;includeClass&gt;</span>Product_Document<span class="nt">&lt;/includeClass&gt;</span>
-  <span class="nt">&lt;/productFilter&gt;</span>
-  ...
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span>...
+<span class="w">  </span><span class="nt">&lt;productFilter&gt;</span>
+<span class="w">    </span><span class="nt">&lt;includeClass&gt;</span>Product_Document<span class="nt">&lt;/includeClass&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/productFilter&gt;</span>
+<span class="w">  </span>...
 <span class="nt">&lt;/harvest&gt;</span>
 </pre></div>
 </div>
 <p>To exclude documents, add following product filter:</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
-  ...
-  <span class="nt">&lt;productFilter&gt;</span>
-    <span class="nt">&lt;excludeClass&gt;</span>Product_Document<span class="nt">&lt;/excludeClass&gt;</span>
-  <span class="nt">&lt;/productFilter&gt;</span>
-  ...
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span>...
+<span class="w">  </span><span class="nt">&lt;productFilter&gt;</span>
+<span class="w">    </span><span class="nt">&lt;excludeClass&gt;</span>Product_Document<span class="nt">&lt;/excludeClass&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/productFilter&gt;</span>
+<span class="w">  </span>...
 <span class="nt">&lt;/harvest&gt;</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You could not have both include and exclude filters at the same time.</p>
-</div>
+</aside>
 </section>
 <section id="process-bundles">
 <h3>Process Bundles<a class="headerlink" href="#process-bundles" title="Permalink to this headline">¶</a></h3>
 <p>(only applies to <strong>command line harvest</strong>)</p>
 <p>To process products from one or more bundles, add the following section in Harvest configuration file:</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
-  ...
-  <span class="nt">&lt;bundles&gt;</span>
-    <span class="nt">&lt;bundle</span> <span class="na">dir=</span><span class="s">&quot;/data/geo/urn-nasa-pds-kaguya_grs_spectra&quot;</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;bundle</span> <span class="na">dir=</span><span class="s">&quot;/data/geo/urn-nasa-pds-trang2020_moon_space_weathering&quot;</span> <span class="nt">/&gt;</span>
-  <span class="nt">&lt;/bundles&gt;</span>
-  ...
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span>...
+<span class="w">  </span><span class="nt">&lt;bundles&gt;</span>
+<span class="w">    </span><span class="nt">&lt;bundle</span><span class="w"> </span><span class="na">dir=</span><span class="s">&quot;/data/geo/urn-nasa-pds-kaguya_grs_spectra&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;bundle</span><span class="w"> </span><span class="na">dir=</span><span class="s">&quot;/data/geo/urn-nasa-pds-trang2020_moon_space_weathering&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/bundles&gt;</span>
+<span class="w">  </span>...
 <span class="nt">&lt;/harvest&gt;</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You could not have both &lt;directories&gt; and &lt;bundles&gt; sections at the same time.</p>
-</div>
+</aside>
 </section>
 <section id="filtering-bundle-versions">
 <h3>Filtering Bundle Versions<a class="headerlink" href="#filtering-bundle-versions" title="Permalink to this headline">¶</a></h3>
 <p>(only applies to <strong>command line harvest</strong>)</p>
 <p>Use “versions” attribute of the &lt;bundle&gt; tag to list versions of bundles to process.
 You can separate versions by comma, semicolon or space.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
-  ...
-  <span class="nt">&lt;bundles&gt;</span>
-    <span class="nt">&lt;bundle</span> <span class="na">dir=</span><span class="s">&quot;/data/OREX/orex_spice&quot;</span> <span class="na">versions=</span><span class="s">&quot;7.0;8.0&quot;</span> <span class="nt">/&gt;</span>
-  <span class="nt">&lt;/bundles&gt;</span>
-  ...
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span>...
+<span class="w">  </span><span class="nt">&lt;bundles&gt;</span>
+<span class="w">    </span><span class="nt">&lt;bundle</span><span class="w"> </span><span class="na">dir=</span><span class="s">&quot;/data/OREX/orex_spice&quot;</span><span class="w"> </span><span class="na">versions=</span><span class="s">&quot;7.0;8.0&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/bundles&gt;</span>
+<span class="w">  </span>...
 <span class="nt">&lt;/harvest&gt;</span>
 </pre></div>
 </div>
 <p>To process all versions you can use either versions=”all” or no versions attribute at all.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
-  ...
-  <span class="nt">&lt;bundles&gt;</span>
-    <span class="nt">&lt;bundle</span> <span class="na">dir=</span><span class="s">&quot;/data/OREX/orex_spice&quot;</span> <span class="na">versions=</span><span class="s">&quot;all&quot;</span> <span class="nt">/&gt;</span>
-  <span class="nt">&lt;/bundles&gt;</span>
-  ...
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span>...
+<span class="w">  </span><span class="nt">&lt;bundles&gt;</span>
+<span class="w">    </span><span class="nt">&lt;bundle</span><span class="w"> </span><span class="na">dir=</span><span class="s">&quot;/data/OREX/orex_spice&quot;</span><span class="w"> </span><span class="na">versions=</span><span class="s">&quot;all&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/bundles&gt;</span>
+<span class="w">  </span>...
 <span class="nt">&lt;/harvest&gt;</span>
 </pre></div>
 </div>
@@ -350,15 +349,15 @@ You can separate versions by comma, semicolon or space.</p>
 <p>By default Harvest will process all collections listed in &lt;Bundle_Member_Entry&gt;
 section of a bundle. To process a subset of collections you can provide a list of
 lids or lidvids as shown below.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="c">&lt;!-- Filter by collection LID --&gt;</span>
-<span class="nt">&lt;bundle</span> <span class="na">dir=</span><span class="s">&quot;/data/OREX/orex_spice&quot;</span> <span class="na">versions=</span><span class="s">&quot;8.0&quot;</span> <span class="nt">&gt;</span>
-    <span class="nt">&lt;collection</span> <span class="na">lid=</span><span class="s">&quot;urn:nasa:pds:orex.spice:spice_kernels&quot;</span> <span class="nt">/&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="cm">&lt;!-- Filter by collection LID --&gt;</span>
+<span class="nt">&lt;bundle</span><span class="w"> </span><span class="na">dir=</span><span class="s">&quot;/data/OREX/orex_spice&quot;</span><span class="w"> </span><span class="na">versions=</span><span class="s">&quot;8.0&quot;</span><span class="w"> </span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;collection</span><span class="w"> </span><span class="na">lid=</span><span class="s">&quot;urn:nasa:pds:orex.spice:spice_kernels&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/bundle&gt;</span>
 
-<span class="c">&lt;!-- Filter by collection LIDVID --&gt;</span>
-<span class="nt">&lt;bundle</span> <span class="na">dir=</span><span class="s">&quot;/data/OREX/orex_spice&quot;</span> <span class="na">versions=</span><span class="s">&quot;8.0;7.0&quot;</span> <span class="nt">&gt;</span>
-    <span class="nt">&lt;collection</span> <span class="na">lidvid=</span><span class="s">&quot;urn:nasa:pds:orex.spice:spice_kernels::8.0&quot;</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;collection</span> <span class="na">lidvid=</span><span class="s">&quot;urn:nasa:pds:orex.spice:spice_kernels::7.0&quot;</span> <span class="nt">/&gt;</span>
+<span class="cm">&lt;!-- Filter by collection LIDVID --&gt;</span>
+<span class="nt">&lt;bundle</span><span class="w"> </span><span class="na">dir=</span><span class="s">&quot;/data/OREX/orex_spice&quot;</span><span class="w"> </span><span class="na">versions=</span><span class="s">&quot;8.0;7.0&quot;</span><span class="w"> </span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;collection</span><span class="w"> </span><span class="na">lidvid=</span><span class="s">&quot;urn:nasa:pds:orex.spice:spice_kernels::8.0&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;collection</span><span class="w"> </span><span class="na">lidvid=</span><span class="s">&quot;urn:nasa:pds:orex.spice:spice_kernels::7.0&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/bundle&gt;</span>
 </pre></div>
 </div>
@@ -368,9 +367,9 @@ lids or lidvids as shown below.</p>
 <p>(only applies to <strong>command line harvest</strong>)</p>
 <p>By default Harvest will process all products listed in the collection inventory file.
 To process a subset of products you can provide a list of directories.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;bundle</span> <span class="na">dir=</span><span class="s">&quot;/data/OREX/orex_spice&quot;</span> <span class="na">versions=</span><span class="s">&quot;8.0&quot;</span> <span class="nt">&gt;</span>
-    <span class="c">&lt;!-- Specify a substring in a relative (to the bundle root) directory name.  --&gt;</span>
-    <span class="nt">&lt;product</span> <span class="na">dir=</span><span class="s">&quot;/fk/&quot;</span> <span class="nt">/&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;bundle</span><span class="w"> </span><span class="na">dir=</span><span class="s">&quot;/data/OREX/orex_spice&quot;</span><span class="w"> </span><span class="na">versions=</span><span class="s">&quot;8.0&quot;</span><span class="w"> </span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="cm">&lt;!-- Specify a substring in a relative (to the bundle root) directory name.  --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;product</span><span class="w"> </span><span class="na">dir=</span><span class="s">&quot;/fk/&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/bundle&gt;</span>
 </pre></div>
 </div>
@@ -389,14 +388,14 @@ To process a subset of products you can provide a list of directories.</p>
 </div>
 <p>To replace a file path prefix with another value, such as a URL, add &lt;fileRef/&gt; tag in Harvest configuration file:</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;fileInfo&gt;</span>
-  <span class="nt">&lt;fileRef</span> <span class="na">replacePrefix=</span><span class="s">&quot;/C:/tmp/d4/&quot;</span>
-           <span class="na">with=</span><span class="s">&quot;https://naif.jpl.nasa.gov/pub/naif/pds/pds4/orex/orex_spice/&quot;</span> <span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;fileRef</span><span class="w"> </span><span class="na">replacePrefix=</span><span class="s">&quot;/C:/tmp/d4/&quot;</span>
+<span class="w">           </span><span class="na">with=</span><span class="s">&quot;https://naif.jpl.nasa.gov/pub/naif/pds/pds4/orex/orex_spice/&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/fileInfo&gt;</span>
 </pre></div>
 </div>
 <p>After running Harvest, you should get different <em>file_ref</em> value:</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ops:Label_File_Info/ops:file_ref&quot;</span><span class="o">:</span>
-    <span class="s2">&quot;https://naif.jpl.nasa.gov/pub/naif/pds/pds4/orex/orex_spice/bundle_orex_spice_v009.xml&quot;</span>
+<span class="w">    </span><span class="s2">&quot;https://naif.jpl.nasa.gov/pub/naif/pds/pds4/orex/orex_spice/bundle_orex_spice_v009.xml&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -412,22 +411,22 @@ You have to configure following OpenSearch parameters:</p>
 </ul>
 <p>Below are few examples:</p>
 <p><strong>Local OpenSearch instance (localhost)</strong></p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
-  ...
-  <span class="nt">&lt;registry</span> <span class="na">url=</span><span class="s">&quot;http://localhost:9200&quot;</span> <span class="na">index=</span><span class="s">&quot;registry&quot;</span> <span class="nt">/&gt;</span>
-  ...
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span>...
+<span class="w">  </span><span class="nt">&lt;registry</span><span class="w"> </span><span class="na">url=</span><span class="s">&quot;http://localhost:9200&quot;</span><span class="w"> </span><span class="na">index=</span><span class="s">&quot;registry&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span>...
 <span class="nt">&lt;/harvest&gt;</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In the URL attribute, always have a port specified, which for PDS Registries in AWS, this port should be 443. If a port is not specified, it will default to the OpenSearch default port of 9200, and any attempted writes/updates of the registry will fail.</p>
-</div>
+</aside>
 <p><strong>Remote OpenSearch instance (on-prem or cloud)</strong></p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
-  ...
-  <span class="nt">&lt;registry</span> <span class="na">url=</span><span class="s">&quot;https://es-server.mydomain.com:443&quot;</span> <span class="na">index=</span><span class="s">&quot;registry&quot;</span> <span class="na">auth=</span><span class="s">&quot;/path/to/auth.cfg&quot;</span> <span class="nt">/&gt;</span>
-  ...
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span>...
+<span class="w">  </span><span class="nt">&lt;registry</span><span class="w"> </span><span class="na">url=</span><span class="s">&quot;https://es-server.mydomain.com:443&quot;</span><span class="w"> </span><span class="na">index=</span><span class="s">&quot;registry&quot;</span><span class="w"> </span><span class="na">auth=</span><span class="s">&quot;/path/to/auth.cfg&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span>...
 <span class="nt">&lt;/harvest&gt;</span>
 </pre></div>
 </div>
@@ -462,7 +461,7 @@ configuration file and provide following parameters:</p>
 </pre></div>
 </div>
 <p>If you don’t want to process data files, add the following flag in Harvest configuration file.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;fileInfo</span> <span class="na">processDataFiles=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;fileInfo</span><span class="w"> </span><span class="na">processDataFiles=</span><span class="s">&quot;false&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 </pre></div>
 </div>
 </section>
@@ -482,7 +481,7 @@ For smaller files, such as collection labels, compression rate is about 350% (5.
 </pre></div>
 </div>
 <p>To disable BLOB storage, modify <em>fileInfo</em> section in Harvest configuration file.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;fileInfo</span> <span class="na">storeLabels=</span><span class="s">&quot;false&quot;</span> <span class="na">storeJsonLabels=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;fileInfo</span><span class="w"> </span><span class="na">storeLabels=</span><span class="s">&quot;false&quot;</span><span class="w"> </span><span class="na">storeJsonLabels=</span><span class="s">&quot;false&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 </pre></div>
 </div>
 </section>
@@ -491,12 +490,12 @@ For smaller files, such as collection labels, compression rate is about 350% (5.
 <p>(only applies to <strong>command line harvest</strong>)</p>
 <p>To extract metadata by XPath, you have to create one or more mapping files and list them
 in Harvest configuration file as shown below.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
 ...
-  <span class="nt">&lt;xpathMaps</span> <span class="na">baseDir=</span><span class="s">&quot;/home/pds/harvest/conf&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;xpathMap</span> <span class="na">filePath=</span><span class="s">&quot;common.xml&quot;</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;xpathMap</span> <span class="na">rootElement=</span><span class="s">&quot;Product_Observational&quot;</span> <span class="na">filePath=</span><span class="s">&quot;observational.xml&quot;</span> <span class="nt">/&gt;</span>
-  <span class="nt">&lt;/xpathMaps&gt;</span>
+<span class="w">  </span><span class="nt">&lt;xpathMaps</span><span class="w"> </span><span class="na">baseDir=</span><span class="s">&quot;/home/pds/harvest/conf&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;xpathMap</span><span class="w"> </span><span class="na">filePath=</span><span class="s">&quot;common.xml&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;xpathMap</span><span class="w"> </span><span class="na">rootElement=</span><span class="s">&quot;Product_Observational&quot;</span><span class="w"> </span><span class="na">filePath=</span><span class="s">&quot;observational.xml&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/xpathMaps&gt;</span>
 <span class="nt">&lt;/harvest&gt;</span>
 </pre></div>
 </div>
@@ -505,9 +504,9 @@ pointing to a mapping file. A path can be either absolute or relative to the <em
 of the <em>xpathMaps</em> tag. The <em>baseDir</em> attribute is optional. The same example with absolute paths
 is shown below.</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;xpathMaps&gt;</span>
-  <span class="nt">&lt;xpathMap</span> <span class="na">filePath=</span><span class="s">&quot;/home/pds/harvest/conf/common.xml&quot;</span> <span class="nt">/&gt;</span>
-  <span class="nt">&lt;xpathMap</span> <span class="na">rootElement=</span><span class="s">&quot;Product_Observational&quot;</span>
-            <span class="na">filePath=</span><span class="s">&quot;/home/pds/harvest/conf/observational.xml&quot;</span> <span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;xpathMap</span><span class="w"> </span><span class="na">filePath=</span><span class="s">&quot;/home/pds/harvest/conf/common.xml&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;xpathMap</span><span class="w"> </span><span class="na">rootElement=</span><span class="s">&quot;Product_Observational&quot;</span>
+<span class="w">            </span><span class="na">filePath=</span><span class="s">&quot;/home/pds/harvest/conf/observational.xml&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/xpathMaps&gt;</span>
 </pre></div>
 </div>
@@ -522,8 +521,8 @@ For example, to extract <em>start_date_time</em> and <em>stop_date_time</em> fro
 you can use the following file.</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;xpaths&gt;</span>
-  <span class="nt">&lt;xpath</span> <span class="na">fieldName=</span><span class="s">&quot;start_date_time&quot;</span><span class="nt">&gt;</span>/Product_Observational/Observation_Area/Time_Coordinates/start_date_time<span class="nt">&lt;/xpath&gt;</span>
-  <span class="nt">&lt;xpath</span> <span class="na">fieldName=</span><span class="s">&quot;stop_date_time&quot;</span><span class="nt">&gt;</span>/Product_Observational/Observation_Area/Time_Coordinates/stop_date_time<span class="nt">&lt;/xpath&gt;</span>
+<span class="w">  </span><span class="nt">&lt;xpath</span><span class="w"> </span><span class="na">fieldName=</span><span class="s">&quot;start_date_time&quot;</span><span class="nt">&gt;</span>/Product_Observational/Observation_Area/Time_Coordinates/start_date_time<span class="nt">&lt;/xpath&gt;</span>
+<span class="w">  </span><span class="nt">&lt;xpath</span><span class="w"> </span><span class="na">fieldName=</span><span class="s">&quot;stop_date_time&quot;</span><span class="nt">&gt;</span>/Product_Observational/Observation_Area/Time_Coordinates/stop_date_time<span class="nt">&lt;/xpath&gt;</span>
 <span class="nt">&lt;/xpaths&gt;</span>
 <span class="nt">&lt;/source&gt;</span>
 </pre></div>
@@ -531,10 +530,10 @@ you can use the following file.</p>
 <p>You can use optional <em>dataType=”date”</em> attribute to convert valid PDS dates to
 ISO-8601 “instant” format (e.g., “2013-10-24T00:49:37.457Z”).</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;xpaths&gt;</span>
-  <span class="nt">&lt;xpath</span> <span class="na">fieldName=</span><span class="s">&quot;start_date_time&quot;</span>
-         <span class="na">dataType=</span><span class="s">&quot;date&quot;</span><span class="nt">&gt;</span>/Product_Observational/Observation_Area/Time_Coordinates/start_date_time<span class="nt">&lt;/xpath&gt;</span>
-  <span class="nt">&lt;xpath</span> <span class="na">fieldName=</span><span class="s">&quot;stop_date_time&quot;</span>
-         <span class="na">dataType=</span><span class="s">&quot;date&quot;</span><span class="nt">&gt;</span>/Product_Observational/Observation_Area/Time_Coordinates/stop_date_time<span class="nt">&lt;/xpath&gt;</span>
+<span class="w">  </span><span class="nt">&lt;xpath</span><span class="w"> </span><span class="na">fieldName=</span><span class="s">&quot;start_date_time&quot;</span>
+<span class="w">         </span><span class="na">dataType=</span><span class="s">&quot;date&quot;</span><span class="nt">&gt;</span>/Product_Observational/Observation_Area/Time_Coordinates/start_date_time<span class="nt">&lt;/xpath&gt;</span>
+<span class="w">  </span><span class="nt">&lt;xpath</span><span class="w"> </span><span class="na">fieldName=</span><span class="s">&quot;stop_date_time&quot;</span>
+<span class="w">         </span><span class="na">dataType=</span><span class="s">&quot;date&quot;</span><span class="nt">&gt;</span>/Product_Observational/Observation_Area/Time_Coordinates/stop_date_time<span class="nt">&lt;/xpath&gt;</span>
 <span class="nt">&lt;/xpaths&gt;</span>
 </pre></div>
 </div>
@@ -544,16 +543,16 @@ ISO-8601 “instant” format (e.g., “2013-10-24T00:49:37.457Z”).</p>
 <p>Harvest ignores namespaces when extracting metadata by XPath.
 Below is a fragment of LADEE UVS product label which uses “ladee” namespace for mission area fields.</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;Observation_Area&gt;</span>
-  <span class="nt">&lt;Mission_Area&gt;</span>
-    <span class="nt">&lt;ladee:latitude&gt;</span>17.2367925372247<span class="nt">&lt;/ladee:latitude&gt;</span>
-    <span class="nt">&lt;ladee:longitude&gt;</span>194.054477731391<span class="nt">&lt;/ladee:longitude&gt;</span>
-    ...
+<span class="w">  </span><span class="nt">&lt;Mission_Area&gt;</span>
+<span class="w">    </span><span class="nt">&lt;ladee:latitude&gt;</span>17.2367925372247<span class="nt">&lt;/ladee:latitude&gt;</span>
+<span class="w">    </span><span class="nt">&lt;ladee:longitude&gt;</span>194.054477731391<span class="nt">&lt;/ladee:longitude&gt;</span>
+<span class="w">    </span>...
 </pre></div>
 </div>
 <p>To extract latitude and longitude you can use the following XPaths without namespaces.</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;xpaths&gt;</span>
-  <span class="nt">&lt;xpath</span> <span class="na">fieldName=</span><span class="s">&quot;latitude&quot;</span><span class="nt">&gt;</span>//Mission_Area/latitude<span class="nt">&lt;/xpath&gt;</span>
-  <span class="nt">&lt;xpath</span> <span class="na">fieldName=</span><span class="s">&quot;longitude&quot;</span><span class="nt">&gt;</span>//Mission_Area/longitude<span class="nt">&lt;/xpath&gt;</span>
+<span class="w">  </span><span class="nt">&lt;xpath</span><span class="w"> </span><span class="na">fieldName=</span><span class="s">&quot;latitude&quot;</span><span class="nt">&gt;</span>//Mission_Area/latitude<span class="nt">&lt;/xpath&gt;</span>
+<span class="w">  </span><span class="nt">&lt;xpath</span><span class="w"> </span><span class="na">fieldName=</span><span class="s">&quot;longitude&quot;</span><span class="nt">&gt;</span>//Mission_Area/longitude<span class="nt">&lt;/xpath&gt;</span>
 <span class="nt">&lt;/xpaths&gt;</span>
 </pre></div>
 </div>

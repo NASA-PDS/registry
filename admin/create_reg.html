@@ -4,7 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -14,8 +14,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -30,10 +28,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -108,7 +106,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#delete-registry">Delete Registry</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id1">Examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples-1">Examples</a></li>
 </ul>
 </li>
 </ul>
@@ -231,7 +229,7 @@ You can pass the following optional parameters:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Default number of shards and replicas is not recommended for production.</p>
-</div>
+</aside>
 <section id="examples">
 <h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 <p>Create Registry indices in local OpenSearch (<a class="reference external" href="http://localhost:9200">http://localhost:9200</a>) with default number of shards and replicas.</p>
@@ -260,14 +258,14 @@ file and provide following parameters:</p>
 <p>To check that registry indices were created, call the following OpenSearch REST API:
 <a class="reference external" href="http://localhost:9200/_cat/indices?v">http://localhost:9200/_cat/indices?v</a></p>
 <p>Update OpenSearch URL and pass user name and password if needed.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl <span class="s2">&quot;http://localhost:9200/_cat/indices?v&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="s2">&quot;http://localhost:9200/_cat/indices?v&quot;</span>
 </pre></div>
 </div>
 <p>The response should look similar to this. Make sure that each index health is “green”.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>health status index         uuid                   pri rep docs.count docs.deleted store.size pri.store.size
-green  open   registry      PY6ObzELRlSx9gHOWbR8dw   <span class="m">1</span>   <span class="m">0</span>          <span class="m">0</span>            <span class="m">0</span>       208b           208b
-green  open   registry-dd   CuJ-nqg1SbKI9hejHrISWA   <span class="m">1</span>   <span class="m">0</span>       <span class="m">2505</span>            <span class="m">0</span>      625kb          625kb
-green  open   registry-refs 1cJLc-9cQj2D_MAYo7gOpw   <span class="m">1</span>   <span class="m">0</span>          <span class="m">0</span>            <span class="m">0</span>       208b           208b
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>health<span class="w"> </span>status<span class="w"> </span>index<span class="w">         </span>uuid<span class="w">                   </span>pri<span class="w"> </span>rep<span class="w"> </span>docs.count<span class="w"> </span>docs.deleted<span class="w"> </span>store.size<span class="w"> </span>pri.store.size
+green<span class="w">  </span>open<span class="w">   </span>registry<span class="w">      </span>PY6ObzELRlSx9gHOWbR8dw<span class="w">   </span><span class="m">1</span><span class="w">   </span><span class="m">0</span><span class="w">          </span><span class="m">0</span><span class="w">            </span><span class="m">0</span><span class="w">       </span>208b<span class="w">           </span>208b
+green<span class="w">  </span>open<span class="w">   </span>registry-dd<span class="w">   </span>CuJ-nqg1SbKI9hejHrISWA<span class="w">   </span><span class="m">1</span><span class="w">   </span><span class="m">0</span><span class="w">       </span><span class="m">2505</span><span class="w">            </span><span class="m">0</span><span class="w">      </span>625kb<span class="w">          </span>625kb
+green<span class="w">  </span>open<span class="w">   </span>registry-refs<span class="w"> </span>1cJLc-9cQj2D_MAYo7gOpw<span class="w">   </span><span class="m">1</span><span class="w">   </span><span class="m">0</span><span class="w">          </span><span class="m">0</span><span class="w">            </span><span class="m">0</span><span class="w">       </span>208b<span class="w">           </span>208b
 </pre></div>
 </div>
 </section>
@@ -283,8 +281,8 @@ You can pass the following optional parameters:</p>
 <li><p><strong>-auth &lt;file&gt;</strong> - OpenSearch authentication configuration file.</p></li>
 </ul>
 </div></blockquote>
-<section id="id1">
-<h3>Examples<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<section id="examples-1">
+<h3>Examples<a class="headerlink" href="#examples-1" title="Permalink to this headline">¶</a></h3>
 <p>Delete registry indices from local OpenSearch (<a class="reference external" href="http://localhost:9200">http://localhost:9200</a>)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">registry</span><span class="o">-</span><span class="n">manager</span> <span class="n">delete</span><span class="o">-</span><span class="n">registry</span>
 </pre></div>
