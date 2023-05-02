@@ -1,8 +1,17 @@
 # Changelog
 
-## [release/1.2.0](https://github.com/NASA-PDS/registry/tree/release/1.2.0) (2023-04-17)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-05-02)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...release/1.2.0)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0...«unknown»)
+
+**Other closed issues:**
+
+- Run registry-manager to set all archive status to archived on all the collections for ATM and NAIF node [\#182](https://github.com/NASA-PDS/registry/issues/182)
+- Add CloudWatch event for monitoring provenance script failure [\#167](https://github.com/NASA-PDS/registry/issues/167)
+
+## [v1.2.0](https://github.com/NASA-PDS/registry/tree/v1.2.0) (2023-04-18)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.1.3...v1.2.0)
 
 **Requirements:**
 
