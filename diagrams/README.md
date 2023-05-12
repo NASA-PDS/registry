@@ -39,20 +39,24 @@ This is an attempt to use [Diagram as Code](https://diagrams.mingrammer.com/) to
 1. Change directory to your Git folder (if you have one, or wherever you store your git code locally) and create a new working directory for diagrams. Example below :
 
     ```
-        cd git/
-        mkdir diagrams
-        cd diagrams/
+    cd git/
+    mkdir diagrams
+    cd diagrams/
     ```
 
 2. Install Graphviz
 
     MacOS \ Linux users: 
 
-    ``` brew install graphviz ```
+    ```shell 
+    brew install graphviz
+    ```
 
     Windows users :
 
-    ``` choco install graphviz ```
+    ```shell
+    choco install graphviz 
+    ```
 
 3. Install Diagrams
 
@@ -63,7 +67,9 @@ This is an attempt to use [Diagram as Code](https://diagrams.mingrammer.com/) to
 
 4. Create a new file within your diagrams directory
 
-    ``` touch diagrams.py ```
+    ```shell
+    touch diagrams.py
+    ```
 
 5. Here is a **Quick Start** example to get familiar with using Diagrams
 
@@ -80,7 +86,9 @@ This is an attempt to use [Diagram as Code](https://diagrams.mingrammer.com/) to
 
 5. Running below command will generate the diagram
 
-    ``` python diagram.py ```
+    ``` shell
+    python diagram.py
+    ```
 
 6. There are several additional [examples](https://diagrams.mingrammer.com/docs/getting-started/examples) provided on their website that will guide you through the whole process of creating a architecture diagram from scratch using a provider of your choice.
 
