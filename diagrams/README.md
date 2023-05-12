@@ -1,7 +1,5 @@
 # Diagram as Code for Registry
 
->  NOTE: This document is still Work In Progress...
-
 This is an attempt to use [Diagram as Code](https://diagrams.mingrammer.com/) to design an architecture diagram for NASA PDS Registry Service.
 
 **Diagrams** tool utilizes [Graphviz](https://www.graphviz.org/) to render the diagram and lets you draw cloud system architecture in **Python Code**
@@ -10,7 +8,11 @@ This is an attempt to use [Diagram as Code](https://diagrams.mingrammer.com/) to
 
 ## Pre-requisites
 
-- Python 3.6.8 or higher
+- Brew (for MacOS/Linux users)
+- Chocolatey (for Windows users)
+- Python 3.9.0 or higher
+
+> At the time of writing this document, Python 3.9 is the required version for everyone on PDS. Please confirm with project leads to ensure you're using the latest Python version.
 
 ## Providers
 
@@ -34,8 +36,53 @@ This is an attempt to use [Diagram as Code](https://diagrams.mingrammer.com/) to
 
 ## Getting Started
 
-1. Follow the [installation guide](https://diagrams.mingrammer.com/docs/getting-started/installation) on Diagrams webpage.
-2. There are several [examples](https://diagrams.mingrammer.com/docs/getting-started/examples) provided on their website that will guide you through the whole process of creating a architecture diagram from scratch using a provider of your choice.
+1. Change directory to your Git folder (if you have one, or wherever you store your git code locally) and create a new working directory for diagrams. Example below :
+
+    ```
+        cd git/
+        mkdir diagrams
+        cd diagrams/
+    ```
+
+2. Install Graphviz
+
+    MacOS \ Linux users: 
+
+    ``` brew install graphviz ```
+
+    Windows users :
+
+    ``` choco install graphviz ```
+
+3. Install Diagrams
+
+    ```shell
+    # using pip (pip3)
+    $ pip install diagrams
+    ```
+
+4. Create a new file within your diagrams directory
+
+    ``` touch diagrams.py ```
+
+5. Here is a **Quick Start** example to get familiar with using Diagrams
+
+    ```shell
+    # diagram.py
+    from diagrams import Diagram
+    from diagrams.aws.compute import EC2
+    from diagrams.aws.database import RDS
+    from diagrams.aws.network import ELB
+
+    with Diagram("Web Service", show=False):
+        ELB("lb") >> EC2("web") >> RDS("userdb")
+    ```
+
+5. Running below command will generate the diagram
+
+    ``` python diagram.py ```
+
+6. There are several additional [examples](https://diagrams.mingrammer.com/docs/getting-started/examples) provided on their website that will guide you through the whole process of creating a architecture diagram from scratch using a provider of your choice.
 
 >  NOTE: In most cases, you will likely end using multiple providers.
 
