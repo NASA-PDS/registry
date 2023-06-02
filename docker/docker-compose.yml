@@ -222,6 +222,7 @@ services:
     environment:
       TESTRAIL_DOMAIN: cae-testrail.jpl.nasa.gov/testrail
       TESTRAIL_PROJECTID: 168
+      TESTRAIL_SUITEID: 12824
       TESTRAIL_TITLE: Registry API Newman tests via Jenkins
       # Empty values here inherit from the host environment, which must provide these:
       TESTRAIL_USERNAME:
