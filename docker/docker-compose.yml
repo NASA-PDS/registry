@@ -217,7 +217,7 @@ services:
 
   # Executes Registry API integration tests as a Postman collection and reports the results into JPL TestRail
   testrail-reporting-test:
-    profiles: []
+    profiles: ["testrail-reporting"]
     image: nasapds/newman-with-testrail-reporter
     environment:
       TESTRAIL_DOMAIN: cae-testrail.jpl.nasa.gov/testrail
