@@ -21,7 +21,7 @@ docker-compose \
     run \
     --rm \
     --no-TTY \
-    reg-api-integration-test \
+    testrail-reporting-test \
     </dev/null
 status=$?
 
