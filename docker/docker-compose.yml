@@ -55,6 +55,7 @@ services:
       - TEST_DATA_URL=${TEST_DATA_URL}
       - TEST_DATA_LIDVID=${TEST_DATA_LIDVID}
     volumes:
+      - ${HARVEST_DATA_DIR}:${CONTAINER_HARVEST_DATA_DIR}
       - ./scripts/registry-loader-waits-for-elasticsearch.sh:/usr/local/bin/registry-loader-waits-for-elasticsearch.sh
       - ./default-config/es-auth.cfg:/etc/es-auth.cfg
     networks:
