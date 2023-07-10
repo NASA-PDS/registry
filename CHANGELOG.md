@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-06-07)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-07-10)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0...«unknown»)
 
@@ -10,6 +10,10 @@
 
 **Other closed issues:**
 
+- Use Richard's test dataset for the integrated postman tests in docker compose [\#198](https://github.com/NASA-PDS/registry/issues/198)
+- incorporate registry-sweepers as dependency in the docker compose deployment script [\#197](https://github.com/NASA-PDS/registry/issues/197)
+- Harvest OREX dataset from SBN-PSI web  [\#196](https://github.com/NASA-PDS/registry/issues/196)
+- Add provenance script to the lucidchart AWS deployment diagram [\#195](https://github.com/NASA-PDS/registry/issues/195)
 - Update cloud-front / ELB configuration to forward request headers to registry-api [\#191](https://github.com/NASA-PDS/registry/issues/191)
 - Rework Registry+API Architecture Diagram in LucidChart [\#189](https://github.com/NASA-PDS/registry/issues/189)
 - Run registry-manager to set all archive status to archived on all the collections for ATM and NAIF node [\#182](https://github.com/NASA-PDS/registry/issues/182)
