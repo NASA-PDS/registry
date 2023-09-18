@@ -15,7 +15,7 @@ diff -ruN v11400/dph_example_archive/bundle_izenberg_pdart14_meap.xml v11400.pat
          <product_class>Product_Bundle</product_class>
 @@ -89,12 +89,7 @@
      </Bundle>
- 
+
      <Bundle_Member_Entry>
 -        <lid_reference>urn:nasa:pds:izenberg_pdart14_meap:data_imagecube::1.0</lid_reference>
 -        <member_status>Primary</member_status>
@@ -104,7 +104,7 @@ diff -ruN v11400/dph_example_archive/data_imagecube/collection_imagecube_invento
 -            </Modification_Detail>
 -        </Modification_History>
 -    </Identification_Area>
--    <Context_Area>        
+-    <Context_Area>
 -        <Time_Coordinates>
 -            <start_date_time>2004-08-13Z</start_date_time>
 -            <stop_date_time>2015-04-30Z</stop_date_time>
@@ -112,7 +112,7 @@ diff -ruN v11400/dph_example_archive/data_imagecube/collection_imagecube_invento
 -        <Primary_Result_Summary>
 -            <purpose>Science</purpose>
 -            <processing_level>Derived</processing_level>
--            <description>The VIRS Spectral Cube of Mercury is a 105-band global spectral cube of 
+-            <description>The VIRS Spectral Cube of Mercury is a 105-band global spectral cube of
 -                Mercury, divided into 54 latitude-longitude tiles, derived from the Visible and
 -                Infrared Spectrograph (VIRS) component of the Mercury Atmosphere and Surface
 -                Composition Spectrometer (MASCS). </description>
@@ -193,10 +193,10 @@ diff -ruN v11400/dph_example_archive/data_imagecube/virs/H01/virs_cube_64ppd_h01
 +++ v11400.patched/dph_example_archive/data_imagecube/virs/H01/virs_cube_64ppd_h01np.xml	2021-06-09 15:22:43.000000000 -0700
 @@ -81,25 +81,19 @@
              </disp:Display_Settings>
- 
+
              <sp:Spectral_Characteristics>
 -                <sp:bin_width_desc>Bin width is a straightforward average of several
--                    spectral pixels of VIRS DDR (4 pixels for VIS detector, six for         
+-                    spectral pixels of VIRS DDR (4 pixels for VIS detector, six for
 -                    NIR, resulting in spectral bins about 9.4 nm across for VIS
 -                    detector, and about 14 nm across for the NIR detector. For the bin
 -                    width info of each spectral pixel, see the VIRS CDR/DDR/DAP SIS.
@@ -226,7 +226,7 @@ diff -ruN v11400/dph_example_archive/data_imagecube/virs/H01/virs_cube_64ppd_h01
 +                    </Internal_Reference>
                  </sp:Spectral_Lookup>
              </sp:Spectral_Characteristics>
-             
+
 @@ -117,11 +111,6 @@
                          <cart:Planar>
                              <cart:Map_Projection>
@@ -242,7 +242,7 @@ diff -ruN v11400/dph_example_archive/data_imagecube/virs/H01/virs_cube_64ppd_h01
 @@ -420,4 +409,4 @@
          </Stream_Text>
      </File_Area_Observational_Supplemental>
-     
+
 -</Product_Observational>
 \ No newline at end of file
 +</Product_Observational>
@@ -253,7 +253,7 @@ diff -ruN v11400/dph_example_products/Product_Observational/Table_Character_draf
 -<?xml version="1.0" encoding="UTF-8"?>
 -<Product_Observational xmlns="http://pds.nasa.gov/pds4/pds/v1"
 -    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
--    xsi:schemaLocation="http://pds.nasa.gov/pds4/pds/v1 
+-    xsi:schemaLocation="http://pds.nasa.gov/pds4/pds/v1
 -                     https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1E00.xsd">
 -    <Identification_Area>
 -        <logical_identifier/>
@@ -2293,7 +2293,7 @@ diff -ruN v11400/dph_example_products/Product_Observational/a0708_p242914_02_02v
 +++ v11400.patched/dph_example_products/Product_Observational/a0708_p242914_02_02v01.xml	2021-06-10 13:16:54.000000000 -0700
 @@ -75,56 +75,15 @@
        </disp:Display_Settings>
- 
+
        <sp:Spectral_Characteristics>
 -        <sp:bin_width_desc>Band shapes are approximately Gaussian.</sp:bin_width_desc>
 -        <sp:Local_Internal_Reference>

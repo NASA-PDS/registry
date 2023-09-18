@@ -33,7 +33,7 @@ The project uses [Sphinx](https://www.sphinx-doc.org/en/master/) to build its do
 
     cd docs
     make html
-    
+
 The generated documnentation can be found in directory docs/build/html
 
 

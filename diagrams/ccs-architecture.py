@@ -32,4 +32,3 @@ with Diagram("ccs-architecture", show=False, direction="TB"):
         geo = [ecs_geo,fargate_geo] >> ES("EN Node")
     en >> Edge(style="bold", color="black") >> geo
     alb >> Edge(style="dashed") >> fargate_geo
-        

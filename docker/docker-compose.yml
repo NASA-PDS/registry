@@ -69,6 +69,8 @@ services:
     environment:
       - PROV_ENDPOINT=${ES_URL}
       - PROV_CREDENTIALS=${PROV_CREDENTIALS}
+      - LOGLEVEL=DEBUG
+      - DEV_MODE=1  
     networks:
       - pds
     depends_on:
@@ -132,7 +134,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      # make volume match how the spring-boot plugin deploys in docker 
+      # make volume match how the spring-boot plugin deploys in docker
       - ${REG_API_APP_PROPERTIES_FILE}:/workspace/BOOT-INF/classes/application.properties
       - ./scripts/registry-api-waits-for-elasticsearch.sh:/usr/local/registry-api-service/registry-api-waits-for-elasticsearch.sh
     networks:

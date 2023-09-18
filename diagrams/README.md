@@ -46,16 +46,16 @@ This is an attempt to use [Diagram as Code](https://diagrams.mingrammer.com/) to
 
 2. Install Graphviz
 
-    MacOS \ Linux users: 
+    MacOS \ Linux users:
 
-    ```shell 
+    ```shell
     brew install graphviz
     ```
 
     Windows users :
 
     ```shell
-    choco install graphviz 
+    choco install graphviz
     ```
 
 3. Install Diagrams
