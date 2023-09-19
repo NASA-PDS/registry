@@ -12,12 +12,188 @@
 			"name": "cookbook examples",
 			"item": [
 				{
-					"name": "Search by reference",
+					"name": "Latest lidvid for a given lid (no suffix))",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C2488906 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C2488906 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var product = pm.response.json();",
+									"",
+									"pm.test(\"C2488906 id is the latest lidvid available\", () => {",
+									"    pm.expect(product.id).to.eql(\"urn:nasa:pds:mars2020.spice::3.0\"); ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products?q=((pds:Internal_Reference.pds:lid_reference eq \"urn:nasa:pds:context:investigation:mission.orex\") or (pds:Internal_Reference.pds:lid_reference like \"urn:nasa:pds:context:investigation:mission.orex::*\"))&limit=200",
+							"raw": "{{baseUrl}}/products/:lid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lid"
+							],
+							"variable": [
+								{
+									"key": "lid",
+									"value": "urn:nasa:pds:mars2020.spice"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Latest lidvid for a given lid (latest suffix)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C2488906 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C2488906 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var product = pm.response.json();",
+									"",
+									"pm.test(\"C2488906 id is the latest lidvid available\", () => {",
+									"    pm.expect(product.id).to.eql(\"urn:nasa:pds:mars2020.spice::3.0\"); ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lid/latest",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lid",
+								"latest"
+							],
+							"variable": [
+								{
+									"key": "lid",
+									"value": "urn:nasa:pds:mars2020.spice"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All lidvid for a given lid (all suffix)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C2488907 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C2488907 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C2488907 3 products are found\", () => {",
+									"    pm.expect(data.length).to.equal(3); ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lid/all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lid",
+								"all"
+							],
+							"variable": [
+								{
+									"key": "lid",
+									"value": "urn:nasa:pds:mars2020.spice"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search by processing level",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"C2488908",
+									"pm.test(\"C2488908 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"C2488908 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C2488851 Number of results is 10\", () => {",
+									"    pm.expect(data.length).to.equal(10); ",
+									"});",
+									"",
+									"pm.test(\"C2488851 time found in range\", () => {",
+									"    pm.expect(data[0][\"pds:Primary_Result_Summary.pds:processing_level\"].to.eql(\"Derived\")); ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(pds:Primary_Result_Summary.pds:processing_level eq \"Derived\")&limit=10",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -27,7 +203,121 @@
 							"query": [
 								{
 									"key": "q",
-									"value": "((pds:Internal_Reference.pds:lid_reference eq \"urn:nasa:pds:context:investigation:mission.orex\") or (pds:Internal_Reference.pds:lid_reference like \"urn:nasa:pds:context:investigation:mission.orex::*\"))"
+									"value": "(pds:Primary_Result_Summary.pds:processing_level eq \"Derived\")"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search by target",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"C2488910 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"C2488910 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C2488910 Number of results is 10\", () => {",
+									"    pm.expect(data.length).to.equal(10); ",
+									"});",
+									"",
+									"",
+									"pm.test(\"C2488910 target is mars\", () => {",
+									"    pm.expect(data[0][\"properties\"][\"ref_lid_target\"][0])",
+									"    .to.eql(\"urn:nasa:pds:context:target:planet.mars\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(ref_lid_target eq \"urn:nasa:pds:context:target:planet.mars\")&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(ref_lid_target eq \"urn:nasa:pds:context:target:planet.mars\")"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search by reference",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"C2488911 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C2488911 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"// skip, because of bug https://github.com/NASA-PDS/registry-api/issues/351",
+									"/*",
+									"pm.test(\"C2488911 3 products are found\", () => {",
+									"    pm.expect(data.length).to.equal(3); ",
+									"});",
+									"*/",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=((pds:Internal_Reference.pds:lid_reference eq \"urn:nasa:pds:context:investigation:mission.mars2020\") or (pds:Internal_Reference.pds:lid_reference like \"urn:nasa:pds:context:investigation:mission.mars2020::*\"))&limit=200",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "((pds:Internal_Reference.pds:lid_reference eq \"urn:nasa:pds:context:investigation:mission.mars2020\") or (pds:Internal_Reference.pds:lid_reference like \"urn:nasa:pds:context:investigation:mission.mars2020::*\"))"
 								},
 								{
 									"key": "limit",
@@ -39,28 +329,132 @@
 					"response": []
 				},
 				{
-					"name": "Search Observational Products",
+					"name": "search for collection of an observtional product, kvp response",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C2488912 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C2488912 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C2488912 Has pds:Citation_Information.pds:doi\", () => {",
+									"    pm.expect(data[0]).to.have.property('pds:Citation_Information.pds:doi');",
+									"});",
+									"",
+									"pm.test(\"C2488912 Collection DOI is [10.17189/1517568]\", () => {",
+									"    pm.expect(data[0][\"pds:Citation_Information.pds:doi\"]).to.equal(\"[10.17189/1517568]\"); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/kvp+json",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "{{baseUrl}}/classes/observationals?q=ref_lid_target eq \"urn:nasa:pds:context:target:planet.mars\"",
+							"raw": "{{baseUrl}}/products/:lidvid/member-of?fields=pds:Citation_Information.pds:doi",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"classes",
-								"observationals"
+								"products",
+								":lidvid",
+								"member-of"
 							],
 							"query": [
 								{
-									"key": "limit",
-									"value": "200",
-									"disabled": true
-								},
+									"key": "fields",
+									"value": "pds:Citation_Information.pds:doi"
+								}
+							],
+							"variable": [
+								{
+									"key": "lidvid",
+									"value": "urn:nasa:pds:insight_rad:data_calibrated:hp3_rad_cal_00014_20181211_073042::1.0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search for a product knowing its DOI",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C2552353 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C2552353 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C2552353 number of results is 2\", () => {",
+									"    pm.expect(data.length).to.eql(2);",
+									"});",
+									"",
+									"pm.test(\"C2488912 product DOI is [10.17189/1517568]\", () => {",
+									"    pm.expect(data[0][\"properties\"][\"pds:Citation_Information.pds:doi\"][0]).to.equal(\"10.17189/1517568\"); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(pds:Citation_Information.pds:doi eq \"10.17189/1517568\")",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
 								{
 									"key": "q",
-									"value": "ref_lid_target eq \"urn:nasa:pds:context:target:planet.mars\""
+									"value": "(pds:Citation_Information.pds:doi eq \"10.17189/1517568\")"
 								}
 							]
 						}
@@ -72,6 +466,58 @@
 		{
 			"name": "requirements",
 			"item": [
+				{
+					"name": "NASA-PDS/pds-api#72 search by a temporal range as an ISO-8601 time interval",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C2488851 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C2488851 Number of results is 1\", () => {",
+									"    pm.expect(data.length).to.equal(1); ",
+									"});",
+									"",
+									"pm.test(\"C2488851 time found in range\", () => {",
+									"    pm.expect(data[0].start_date_time).to.eql(\"2021-03-03T01:36:46.542Z\"); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?=&q=((pds:Time_Coordinates.pds:start_date_time gt \"2021-03-03T01:36:00.000Z\") and (pds:Time_Coordinates.pds:start_date_time lt \"2021-03-03T02:36:46.542Z\"))",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": ""
+								},
+								{
+									"key": "q",
+									"value": "((pds:Time_Coordinates.pds:start_date_time gt \"2021-03-03T01:36:00.000Z\") and (pds:Time_Coordinates.pds:start_date_time lt \"2021-03-03T02:36:46.542Z\"))"
+								}
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "NASA-PDS/pds-api#99 free text search",
 					"event": [
@@ -119,58 +565,6 @@
 								{
 									"key": "keywords",
 									"value": "Perseverance"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "NASA-PDS/pds-api#72 search by a temporal range as an ISO-8601 time interval",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"C2488851 Status code is 200\", () => {",
-									"  pm.response.to.have.status(200);",
-									"});",
-									"",
-									"var data = pm.response.json().data;",
-									"",
-									"pm.test(\"C2488851 Number of results is 1\", () => {",
-									"    pm.expect(data.length).to.equal(1); ",
-									"});",
-									"",
-									"pm.test(\"C2488851 time found in range\", () => {",
-									"    pm.expect(data[0].start_date_time).to.eql(\"2021-03-03T01:36:46.542Z\"); ",
-									"});",
-									"",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/products?=&q=((pds:Time_Coordinates.pds:start_date_time gt \"2021-03-03T01:36:00.000Z\") and (pds:Time_Coordinates.pds:start_date_time lt \"2021-03-03T02:36:46.542Z\"))",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": ""
-								},
-								{
-									"key": "q",
-									"value": "((pds:Time_Coordinates.pds:start_date_time gt \"2021-03-03T01:36:00.000Z\") and (pds:Time_Coordinates.pds:start_date_time lt \"2021-03-03T02:36:46.542Z\"))"
 								}
 							]
 						}
@@ -299,49 +693,6 @@
 			"name": "other tickets",
 			"item": [
 				{
-					"name": "NASA-PDS/registry-api#326 list product classes",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"C2488845 Status code is 200\", () => {",
-									"  pm.response.to.have.status(200);",
-									"});",
-									"",
-									"pm.test(\"C2488845 Returns correct values\", () => {",
-									"    const responseJson = pm.response.json();",
-									"    const values = new Set(responseJson);",
-									"    const expectedValues = new Set([\"any\",\"bundles\",\"collections\",\"documents\",\"observationals\"]);",
-									"    pm.expect(Array.from(values).every(val => expectedValues.has(val)) && Array.from(expectedValues).every(val => values.has(val))).true;",
-									"})"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/kvp+json",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/classes",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"classes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "NASA-PDS/registry-api#277 /properties endpoint",
 					"event": [
 						{
@@ -392,6 +743,49 @@
 							],
 							"path": [
 								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#326 list product classes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C2488845 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C2488845 Returns correct values\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    const values = new Set(responseJson);",
+									"    const expectedValues = new Set([\"any\",\"bundles\",\"collections\",\"documents\",\"observationals\"]);",
+									"    pm.expect(Array.from(values).every(val => expectedValues.has(val)) && Array.from(expectedValues).every(val => values.has(val))).true;",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/kvp+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/classes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"classes"
 							]
 						}
 					},
