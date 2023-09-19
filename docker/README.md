@@ -84,9 +84,9 @@ docker compose --profile=int-registry-service-loader up
 ```
 Note: This may take several minutes, including data loading  delays between components.
 
-6) To clean the deployment, execute the following command.
+6) To clean the deployment, including the data volumes, execute the following command.
 ```
-docker compose --profile=int-registry-service-loader down
+docker compose --profile=int-registry-service-loader down --volume
 ```
 
 

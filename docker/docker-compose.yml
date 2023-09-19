@@ -40,7 +40,7 @@ services:
       - ES_URL=${ES_URL}
     volumes:
       - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-config.xml
-      - ${HARVEST_DATA_DIR}:${CONTAINER_HARVEST_DATA_DIR}
+      - data-volume:${CONTAINER_HARVEST_data-volume}
       - ./default-config/es-auth.cfg:/etc/es-auth.cfg
     networks:
       - pds
@@ -55,7 +55,7 @@ services:
       - TEST_DATA_URL=${TEST_DATA_URL}
       - TEST_DATA_LIDVID=${TEST_DATA_LIDVID}
     volumes:
-      - ${HARVEST_DATA_DIR}:${CONTAINER_HARVEST_DATA_DIR}
+      - data-volume:${CONTAINER_HARVEST_DATA_DIR}
       - ./scripts/registry-loader-waits-for-elasticsearch.sh:/usr/local/bin/registry-loader-waits-for-elasticsearch.sh
       - ./default-config/es-auth.cfg:/etc/es-auth.cfg
     networks:
@@ -70,7 +70,7 @@ services:
       - PROV_ENDPOINT=${ES_URL}
       - PROV_CREDENTIALS=${PROV_CREDENTIALS}
       - LOGLEVEL=DEBUG
-      - DEV_MODE=1  
+      - DEV_MODE=1
     networks:
       - pds
     depends_on:
@@ -151,7 +151,7 @@ services:
       - "8005:8005"
     volumes:
       - ${HARVEST_SERVER_CONFIG_FILE}:/cfg/harvest-server.cfg
-      - ${HARVEST_DATA_DIR}:${CONTAINER_HARVEST_DATA_DIR}
+      - data-volume:${CONTAINER_HARVEST_DATA_DIR}
       - ./default-config/es-auth.cfg:/etc/es-auth.cfg
     networks:
       - pds
@@ -164,7 +164,7 @@ services:
       - "8001:8001"
     volumes:
       - $CRAWLER_SERVER_CONFIG_FILE:/cfg/crawler-server.cfg
-      - ${HARVEST_DATA_DIR}:${CONTAINER_HARVEST_DATA_DIR}
+      - data-volume:${CONTAINER_HARVEST_DATA_DIR}
     networks:
       - pds
 
@@ -174,7 +174,7 @@ services:
     image: ${REGISTRY_HARVEST_CLI_IMAGE}
     volumes:
       - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-job-config.xml
-      - ${HARVEST_DATA_DIR}:${CONTAINER_HARVEST_DATA_DIR}
+      - data-volume:${CONTAINER_HARVEST_DATA_DIR}
       - ${HARVEST_CLIENT_CONFIG_FILE}:/cfg/harvest-client.cfg
     networks:
       - pds
@@ -189,7 +189,7 @@ services:
       - TEST_DATA_LIDVID=${TEST_DATA_LIDVID}
     volumes:
       - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-job-config.xml
-      - ${HARVEST_DATA_DIR}:${CONTAINER_HARVEST_DATA_DIR}
+      - data-volume:${CONTAINER_HARVEST_DATA_DIR}
       - ${HARVEST_CLIENT_CONFIG_FILE}:/cfg/harvest-client.cfg
     networks:
       - pds
@@ -202,7 +202,7 @@ services:
       - "81:80"
     volumes:
       - ./default-config/registry-nginx.conf:/etc/nginx/conf.d/default.conf
-      - ${HARVEST_DATA_DIR}:/usr/share/nginx/html/archive
+      - data-volume:/usr/share/nginx/html/archive
     networks:
       - pds
 
@@ -268,6 +268,8 @@ services:
     networks:
       - pds
 
+volumes:
+  data-volume:
 
 networks:
   pds:
