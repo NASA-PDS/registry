@@ -1,13 +1,21 @@
 
 # 🪐 NASA PDS Registry repository
 
-This repository contains PDS registry application resources:
+This repository is an umbrella for the PDS registry application. The application is composed of multiple sub-components, each of them managed in their own repository and integrated here:
 
-- the source for the user/administrator documentation, see `docs` folder
-- docker compose script to start the full application with its required components, see https://github.com/NASA-PDS/registry/blob/main/docker/README.md for details. This also includes integration tests.
+- registry-loader: tools to load PDD4 producs to the registry
+- opensearch: the famoua data store and search engine which performaces we praise.s 
+- registry-sweepers: suite of script consolidating the PDS4 product descriptions in OpenSearch.
+- registry-api: the PDS Search API service.
+- registry-ref-data: some reference datsets that we use for our application integration tests.
 
 
 Users and administrator should use the documentation published on http://nasa-pds.github.io/registry
+
+This repository specifically contains these PDS registry application resources:
+
+- the source for the user/administrator documentation, see `docs` folder
+- docker compose script to start/test the full application with its required components, see https://github.com/NASA-PDS/registry/blob/main/docker/README.md for details. This also includes integration tests (in `docker/postman`). The integration test datasets are maintained in NASA-PDS/registry-ref-data repository.
 
 
 ## Code of Conduct
