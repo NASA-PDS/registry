@@ -1,15 +1,24 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-07-11)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-09-20)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0...«unknown»)
 
+**Requirements:**
+
+- As a system, I can support up to 25 simultaneous writes from Harvest [\#226](https://github.com/NASA-PDS/registry/issues/226)
+- As an operator, I want to be notified of when Registry storage capacity exceeds 75% capacity. [\#211](https://github.com/NASA-PDS/registry/issues/211)
+- As a manager, I want to see the progress of data sets ingested into registry vs. legacy registry [\#168](https://github.com/NASA-PDS/registry/issues/168)
+
 **Defects:**
 
+- Increase disk space for ATM opensearch [\#213](https://github.com/NASA-PDS/registry/issues/213) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - Provenance script failing on production registry [\#180](https://github.com/NASA-PDS/registry/issues/180) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 
 **Other closed issues:**
 
+- Improve test automation with postman [\#228](https://github.com/NASA-PDS/registry/issues/228)
+- Create a new login for IMG Tariq [\#216](https://github.com/NASA-PDS/registry/issues/216)
 - Use Richard's test dataset for the integrated postman tests in docker compose [\#198](https://github.com/NASA-PDS/registry/issues/198)
 - incorporate registry-sweepers as dependency in the docker compose deployment script [\#197](https://github.com/NASA-PDS/registry/issues/197)
 - Harvest OREX dataset from SBN-PSI web  [\#196](https://github.com/NASA-PDS/registry/issues/196)
