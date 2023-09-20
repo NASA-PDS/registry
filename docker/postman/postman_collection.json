@@ -164,7 +164,6 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"C2488908",
 									"pm.test(\"C2488908 Status code is 200\", () => {",
 									"  pm.response.to.have.status(200);",
 									"});",
@@ -176,12 +175,12 @@
 									"",
 									"var data = pm.response.json().data;",
 									"",
-									"pm.test(\"C2488851 Number of results is 10\", () => {",
+									"pm.test(\"C2488908 Number of results is 10\", () => {",
 									"    pm.expect(data.length).to.equal(10); ",
 									"});",
 									"",
-									"pm.test(\"C2488851 time found in range\", () => {",
-									"    pm.expect(data[0][\"pds:Primary_Result_Summary.pds:processing_level\"].to.eql(\"Derived\")); ",
+									"pm.test(\"C2488908 processing level is derived\", () => {",
+									"    pm.expect(data[0][\"properties\"][\"pds:Primary_Result_Summary.pds:processing_level\"][0]).to.eql(\"Derived\"); ",
 									"});",
 									""
 								],
@@ -535,8 +534,8 @@
 									"",
 									"var data = pm.response.json().data;",
 									"",
-									"pm.test(\"C2488859 Number of results is 6\", () => {",
-									"    pm.expect(data.length).to.equal(6); ",
+									"pm.test(\"C2488859 Number of results is 2\", () => {",
+									"    pm.expect(data.length).to.equal(2); ",
 									"});",
 									"",
 									"pm.test(\"C2488859 title contains Perseverance\", () => {",
@@ -657,8 +656,8 @@
 									"    pm.expect(data.length).to.equal(1); ",
 									"});",
 									"",
-									"pm.test(\"C2488821 checksum value is eb8339b9dc7b6ea1934a3e19bc4ad9b9\", () => {",
-									"    pm.expect(data[0][\"properties\"][\"ops:Label_File_Info.ops:md5_checksum\"][0]).to.eql(\"eb8339b9dc7b6ea1934a3e19bc4ad9b9\"); ",
+									"pm.test(\"C2488821 checksum value is 5c955dae449823ffc9e3e1eba1c474de\", () => {",
+									"    pm.expect(data[0][\"properties\"][\"ops:Label_File_Info.ops:md5_checksum\"][0]).to.eql(\"5c955dae449823ffc9e3e1eba1c474de\"); ",
 									"});",
 									""
 								],
@@ -670,7 +669,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products?q=(ops:Label_File_Info.ops:md5_checksum eq \"eb8339b9dc7b6ea1934a3e19bc4ad9b9\")",
+							"raw": "{{baseUrl}}/products?q=(ops:Label_File_Info.ops:md5_checksum eq \"5c955dae449823ffc9e3e1eba1c474de\")",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -680,7 +679,7 @@
 							"query": [
 								{
 									"key": "q",
-									"value": "(ops:Label_File_Info.ops:md5_checksum eq \"eb8339b9dc7b6ea1934a3e19bc4ad9b9\")"
+									"value": "(ops:Label_File_Info.ops:md5_checksum eq \"5c955dae449823ffc9e3e1eba1c474de\")"
 								}
 							]
 						}
@@ -709,7 +708,7 @@
 									"",
 									"pm.test(\"C2488844 Response contains same number of properties\", () => {",
 									"    const responseJson = pm.response.json();",
-									"    pm.expect(responseJson.length).to.be.eql(98);",
+									"    pm.expect(responseJson.length).to.be.eql(140);",
 									"});",
 									"",
 									"pm.test(\"C2488844 Response property objects follow expected schema\", () => {",
