@@ -99,7 +99,7 @@ pipeline {
             steps {
                 dir("${env.WORKSPACE}/docker") {
                     sh "$compose down --remove-orphans --timeout ${shutdown_timeout} --volumes ||:"
-                    // 🔮 TODO: Include --no-color? 
+                    // 🔮 TODO: Include --no-color?
                     sh "$compose up --detach --quiet-pull --timeout ${shutdown_timeout}"
                 }
             }

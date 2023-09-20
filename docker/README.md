@@ -53,7 +53,7 @@ some docker compose services.
 This quick start guide is a quick way to start all Registry Components, load test data and run tests with a Postman
 collection. This quick start steps use default configurations such as default username and password.
 
-PLEASE DO NOT use the quick start with default configurations in any environment other than your local machine. Make sure 
+PLEASE DO NOT use the quick start with default configurations in any environment other than your local machine. Make sure
 to replace the default passwords with your own passwords as explained in the following section:
 **Steps to configure registry components to be executed with docker compose** to ensure security.
 
@@ -84,9 +84,9 @@ docker compose --profile=int-registry-service-loader up
 ```
 Note: This may take several minutes, including data loading  delays between components.
 
-6) To clean the deployment, execute the following command.
+6) To clean the deployment, including the data volumes, execute the following command.
 ```
-docker compose --profile=int-registry-service-loader down
+docker compose --profile=int-registry-service-loader down --volume
 ```
 
 
@@ -101,7 +101,7 @@ docker compose --profile=int-registry-service-loader down
 | ES_IMAGE              | Docker image of Elasticsearch. Make sure this docker image is available. |
 | ES_DISCOVERY_TYPE     | Elasticsearch discovery mode |
 
-```    
+```
 # --------------------------------------------------------------------
 # Elasticsearch
 # --------------------------------------------------------------------
@@ -134,7 +134,7 @@ elasticSearch.host=elasticsearch:9200
 | REG_API_IMAGE                 | Docker image of the Registry API. Make sure this docker image is available. |
 | REG_API_APP_PROPERTIES_FILE   | Absolute path of the `application.properties` file to be used for the Registry API |
 
-```    
+```
 # Docker image of Registry API
 REG_API_IMAGE=pds/registry-api-service:0.4.0-SNAPSHOT
 
@@ -167,7 +167,7 @@ REG_API_APP_PROPERTIES_FILE=./default-config/application.properties
 | HARVEST_DATA_DIR              | Absolute path of the Harvest data directory in the host machine (E.g.: `/tmp/registry-harvest-data`). If the Registry Harvest CLI is executed with the option to download test data, then this directory will be cleaned-up and populated with test data |
 | HARVEST_JOB_CONFIG_FILE       | Absolute path of the Harvest configuration file in the host machine (E.g.: `./default-config/harvest-job-config.xml`) |
 
-```    
+```
 # Docker image of the Registry Loader
 REG_LOADER_IMAGE=nasapds/registry-loader
 
@@ -325,7 +325,7 @@ HARVEST_DATA_DIR=./test-data/registry-harvest-data
 | BIG_DATA_HARVEST_SERVER_IMAGE | Docker image of the Registry Harvest Service. Make sure this docker image is available. |
 | HARVEST_SERVER_CONFIG_FILE    | Absolute path of the Registry Harvest Service configuration file in the host machine (E.g.: `./default-config/harvest-server.cfg`) |
 
-```    
+```
 # --------------------------------------------------------------------
 # Registry Harvest Service
 # --------------------------------------------------------------------
@@ -352,7 +352,7 @@ HARVEST_SERVER_CONFIG_FILE=./default-config/harvest-server.cfg
 | REGISTRY_CRAWLER_SERVICE_IMAGE | Docker image of the Registry Crawler Service. Make sure this docker image is available. |
 | CRAWLER_SERVER_CONFIG_FILE     | Absolute path of the Registry Crawler Service configuration file in the host machine (`E.g.: ./default-config/crawler-server.cfg`) |
 
-```    
+```
 # --------------------------------------------------------------------
 # Registry Crawler Service
 # --------------------------------------------------------------------
@@ -386,7 +386,7 @@ CRAWLER_SERVER_CONFIG_FILE=./default-config/crawler-server.cfg
 | HARVEST_CLIENT_CONFIG_FILE    | Absolute path of the Registry Harvest CLI configuration file in the host machine (E.g.: `./default-config/harvest-client.cfg`) |
 | HARVEST_JOB_CONFIG_FILE       | Absolute path of the Harvest job file in the host machine (E.g.: `./default-config/harvest-job-config.xml`) |
 
-```    
+```
 # --------------------------------------------------------------------
 # Registry Harvest CLI
 # --------------------------------------------------------------------
@@ -410,9 +410,9 @@ HARVEST_JOB_CONFIG_FILE=./default-config/harvest-job-config.xml
 The RabbitMQ can be configured by using the `rabbitmq-definitions.json` file available at the `registry/docker/config` directory.
 
 * Open the `rabbitmq-definitions.json` file.
-* Locate the definition for the user `harvest` under the `users`. 
-* The password of the user `harvest` should be specified as a RabbitMQ `password_hash`. Generate a password hash using 
-the `rabbit_password_hashing_sha256` algorithm (The Python script available at the https://stackoverflow.com/questions/41306350/how-to-generate-password-hash-for-rabbitmq-management-http-api/53016240#53016240 
+* Locate the definition for the user `harvest` under the `users`.
+* The password of the user `harvest` should be specified as a RabbitMQ `password_hash`. Generate a password hash using
+the `rabbit_password_hashing_sha256` algorithm (The Python script available at the https://stackoverflow.com/questions/41306350/how-to-generate-password-hash-for-rabbitmq-management-http-api/53016240#53016240
 can be used to generate a password hash for a new password hash).
 * Update the `password_hash` of the `harvest` user with the newly generated password hash.
 
@@ -423,7 +423,7 @@ can be used to generate a password hash for a new password hash).
 | POSTMAN_NEWMAN_IMAGE          | Docker image of Newman (a command-line collection runner for Postman) |
 | POSTMAN_COLLECTION_FILE       | Absolute path of the Postman collection to be executed with the test data (E.g.: ./postman/postman_collection.json) |
 
-```    
+```
 # --------------------------------------------------------------------
 # Registry Harvest CLI
 # --------------------------------------------------------------------

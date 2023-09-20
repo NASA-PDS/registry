@@ -31,8 +31,8 @@ with Diagram("Registry-API", show=False, direction="TB", curvestyle="curved"):
         fargate = Fargate("Fargate")
         alb >> ecs
         with Cluster("Task Execution"):
-            task_execution = [[ssm,secrets] >> APIService("Registry-API"), 
-                              APIService("Registry-API"), 
+            task_execution = [[ssm,secrets] >> APIService("Registry-API"),
+                              APIService("Registry-API"),
                               APIService("Registry-API")]
         ecr >> ecs
 
@@ -52,5 +52,5 @@ with Diagram("Registry-API", show=False, direction="TB", curvestyle="curved"):
             name = "Registry Manager",
             technology="Manage Registry-API"
         )
-    
+
     reistry_mgr >> opensearch_cluster[0]
