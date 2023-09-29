@@ -108,7 +108,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
-## As a user, I want to harvest and register compressed files with different filenames ([#86](https://github.com/NASA-PDS/registry/issues/86)) 
+## As a user, I want to harvest and register alternate data file paths ([#86](https://github.com/NASA-PDS/registry/issues/86)) 
 
 
 This requirement is not impacted by the current version
@@ -176,7 +176,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
-## As a user, I want the registry to have 99.999% uptime ([#176](https://github.com/NASA-PDS/registry/issues/176)) 
+## As a user, I want the registry to have 99.9999999% uptime ([#176](https://github.com/NASA-PDS/registry/issues/176)) 
 
 
 This requirement is not impacted by the current version
@@ -189,6 +189,10 @@ This requirement is not impacted by the current version
 
 This requirement is not impacted by the current version
 ## As a system, I can support up to 25 simultaneous writes from Harvest ([#226](https://github.com/NASA-PDS/registry/issues/226)) 
+
+
+This requirement is not impacted by the current version
+## As a Archivist, I want to manually add licensing information to data sets ([#232](https://github.com/NASA-PDS/registry/issues/232)) 
 
 
 This requirement is not impacted by the current version
