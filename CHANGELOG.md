@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-09-20)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-09-29)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0...«unknown»)
 
@@ -18,6 +18,7 @@
 **Other closed issues:**
 
 - Improve test automation with postman [\#228](https://github.com/NASA-PDS/registry/issues/228)
+- Fix lambda filters for registry-sweepers and registry-api [\#227](https://github.com/NASA-PDS/registry/issues/227)
 - Create a new login for IMG Tariq [\#216](https://github.com/NASA-PDS/registry/issues/216)
 - Use Richard's test dataset for the integrated postman tests in docker compose [\#198](https://github.com/NASA-PDS/registry/issues/198)
 - incorporate registry-sweepers as dependency in the docker compose deployment script [\#197](https://github.com/NASA-PDS/registry/issues/197)
