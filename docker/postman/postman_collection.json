@@ -349,7 +349,7 @@
 									"});",
 									"",
 									"pm.test(\"C2488912 Collection DOI is [10.17189/1517568]\", () => {",
-									"    pm.expect(data[0][\"pds:Citation_Information.pds:doi\"]).to.equal(\"[10.17189/1517568]\"); ",
+									"    pm.expect(data[0][\"pds:Citation_Information.pds:doi\"]).to.equal(\"10.17189/1517568\"); ",
 									"});",
 									"",
 									""
