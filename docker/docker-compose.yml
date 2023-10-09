@@ -71,6 +71,7 @@ services:
       - PROV_CREDENTIALS=${PROV_CREDENTIALS}
       - LOGLEVEL=DEBUG
       - DEV_MODE=1
+    command: ["/usr/local/bin/sweepers_driver.py", "--legacy-sync"]
     networks:
       - pds
     depends_on:
