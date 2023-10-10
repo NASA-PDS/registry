@@ -4,7 +4,7 @@
 This repository is an umbrella for the PDS registry application. The application is composed of multiple sub-components, each of them managed in their own repository and integrated here:
 
 - registry-loader: tools to load PDD4 producs to the registry
-- opensearch: the famoua data store and search engine which performaces we praise.s 
+- opensearch: the famoua data store and search engine which performaces we praise.s
 - registry-sweepers: suite of script consolidating the PDS4 product descriptions in OpenSearch.
 - registry-api: the PDS Search API service.
 - registry-ref-data: some reference datsets that we use for our application integration tests.
