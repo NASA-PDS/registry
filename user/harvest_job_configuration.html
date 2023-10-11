@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Detailed Harvest Configuration &mdash; PDS Registry 1.1 documentation</title>
@@ -184,7 +183,7 @@
         
             
             
-              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/user/harvest_job_configuration.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/user/harvest_job_configuration.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -198,10 +197,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="detailed-harvest-configuration">
+  <div class="section" id="detailed-harvest-configuration">
 <h1>Detailed Harvest Configuration<a class="headerlink" href="#detailed-harvest-configuration" title="Permalink to this headline">¶</a></h1>
 <p>The following sections describe Harvest configuration file in more detail.</p>
-<section id="node-name">
+<div class="section" id="node-name">
 <h2>Node Name<a class="headerlink" href="#node-name" title="Permalink to this headline">¶</a></h2>
 <p>Node name is a required parameter which is used to tag ingested data with the node it is ingested by.</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
@@ -231,10 +230,10 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="input-directories-and-filters">
+</div>
+<div class="section" id="input-directories-and-filters">
 <h2>Input Directories and Filters<a class="headerlink" href="#input-directories-and-filters" title="Permalink to this headline">¶</a></h2>
-<section id="process-directories">
+<div class="section" id="process-directories">
 <h3>Process Directories<a class="headerlink" href="#process-directories" title="Permalink to this headline">¶</a></h3>
 <p>To process products from one or more directories, add the following section in Harvest configuration file:</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
@@ -250,9 +249,9 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You could not have both &lt;directories&gt; and &lt;bundles&gt; sections at the same time.</p>
-</aside>
-</section>
-<section id="process-a-list-of-files">
+</div>
+</div>
+<div class="section" id="process-a-list-of-files">
 <h3>Process a List of Files<a class="headerlink" href="#process-a-list-of-files" title="Permalink to this headline">¶</a></h3>
 <p>First, create a manifest file and list all files you want to process. One file path per line.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">d1</span><span class="o">/</span><span class="n">CCF_0088_0674757853_190FDR_N0040048CACH00100_0A10LLJ05</span><span class="o">.</span><span class="n">xml</span>
@@ -270,8 +269,8 @@
 <span class="nt">&lt;/harvest&gt;</span>
 </pre></div>
 </div>
-</section>
-<section id="filtering-products-by-class">
+</div>
+<div class="section" id="filtering-products-by-class">
 <h3>Filtering Products by Class<a class="headerlink" href="#filtering-products-by-class" title="Permalink to this headline">¶</a></h3>
 <p>You can include or exclude products of a particular class. For example, to only process documents, add following
 product filter in Harvest configuration file:</p>
@@ -297,9 +296,9 @@ product filter in Harvest configuration file:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You could not have both include and exclude filters at the same time.</p>
-</aside>
-</section>
-<section id="process-bundles">
+</div>
+</div>
+<div class="section" id="process-bundles">
 <h3>Process Bundles<a class="headerlink" href="#process-bundles" title="Permalink to this headline">¶</a></h3>
 <p>(only applies to <strong>command line harvest</strong>)</p>
 <p>To process products from one or more bundles, add the following section in Harvest configuration file:</p>
@@ -316,9 +315,9 @@ product filter in Harvest configuration file:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You could not have both &lt;directories&gt; and &lt;bundles&gt; sections at the same time.</p>
-</aside>
-</section>
-<section id="filtering-bundle-versions">
+</div>
+</div>
+<div class="section" id="filtering-bundle-versions">
 <h3>Filtering Bundle Versions<a class="headerlink" href="#filtering-bundle-versions" title="Permalink to this headline">¶</a></h3>
 <p>(only applies to <strong>command line harvest</strong>)</p>
 <p>Use “versions” attribute of the &lt;bundle&gt; tag to list versions of bundles to process.
@@ -342,8 +341,8 @@ You can separate versions by comma, semicolon or space.</p>
 <span class="nt">&lt;/harvest&gt;</span>
 </pre></div>
 </div>
-</section>
-<section id="filtering-bundle-s-collections">
+</div>
+<div class="section" id="filtering-bundle-s-collections">
 <h3>Filtering Bundle’s Collections<a class="headerlink" href="#filtering-bundle-s-collections" title="Permalink to this headline">¶</a></h3>
 <p>(only applies to <strong>command line harvest</strong>)</p>
 <p>By default Harvest will process all collections listed in &lt;Bundle_Member_Entry&gt;
@@ -361,8 +360,8 @@ lids or lidvids as shown below.</p>
 <span class="nt">&lt;/bundle&gt;</span>
 </pre></div>
 </div>
-</section>
-<section id="filtering-bundle-s-product-directories">
+</div>
+<div class="section" id="filtering-bundle-s-product-directories">
 <h3>Filtering Bundle’s Product Directories<a class="headerlink" href="#filtering-bundle-s-product-directories" title="Permalink to this headline">¶</a></h3>
 <p>(only applies to <strong>command line harvest</strong>)</p>
 <p>By default Harvest will process all products listed in the collection inventory file.
@@ -373,9 +372,9 @@ To process a subset of products you can provide a list of directories.</p>
 <span class="nt">&lt;/bundle&gt;</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="file-reference-access-url">
+</div>
+</div>
+<div class="section" id="file-reference-access-url">
 <h2>File Reference / Access URL<a class="headerlink" href="#file-reference-access-url" title="Permalink to this headline">¶</a></h2>
 <p>Harvest extracts absolute paths of product and label files, such as</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ops:Label_File_Info/ops:file_ref&quot;</span><span class="o">:</span><span class="s2">&quot;/tmp/d5/naif0012.xml&quot;</span><span class="p">,</span>
@@ -398,8 +397,8 @@ To process a subset of products you can provide a list of directories.</p>
 <span class="w">    </span><span class="s2">&quot;https://naif.jpl.nasa.gov/pub/naif/pds/pds4/orex/orex_spice/bundle_orex_spice_v009.xml&quot;</span>
 </pre></div>
 </div>
-</section>
-<section id="registry-integration">
+</div>
+<div class="section" id="registry-integration">
 <h2>Registry Integration<a class="headerlink" href="#registry-integration" title="Permalink to this headline">¶</a></h2>
 <p>(only applies to <strong>command line harvest</strong>)</p>
 <p>Standalone Harvest tool loads extracted PDS4 metadata into OpenSearch database.
@@ -421,7 +420,7 @@ You have to configure following OpenSearch parameters:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In the URL attribute, always have a port specified, which for PDS Registries in AWS, this port should be 443. If a port is not specified, it will default to the OpenSearch default port of 9200, and any attempted writes/updates of the registry will fail.</p>
-</aside>
+</div>
 <p><strong>Remote OpenSearch instance (on-prem or cloud)</strong></p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_SBN&quot;</span><span class="nt">&gt;</span>
 <span class="w">  </span>...
@@ -438,8 +437,8 @@ configuration file and provide following parameters:</p>
 <span class="n">password</span> <span class="o">=</span> <span class="n">mypassword</span>
 </pre></div>
 </div>
-</section>
-<section id="label-and-data-file-information">
+</div>
+<div class="section" id="label-and-data-file-information">
 <h2>Label and Data File Information<a class="headerlink" href="#label-and-data-file-information" title="Permalink to this headline">¶</a></h2>
 <p>(only applies to <strong>command line harvest</strong>)</p>
 <p>By default, Harvest extracts label and data file information, such as file name, mime type, size, and MD5 hash.</p>
@@ -464,8 +463,8 @@ configuration file and provide following parameters:</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;fileInfo</span><span class="w"> </span><span class="na">processDataFiles=</span><span class="s">&quot;false&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 </pre></div>
 </div>
-</section>
-<section id="blob-storage">
+</div>
+<div class="section" id="blob-storage">
 <h2>BLOB Storage<a class="headerlink" href="#blob-storage" title="Permalink to this headline">¶</a></h2>
 <p>(only applies to <strong>command line harvest</strong>)</p>
 <p>By default, Harvest stores PDS product labels as BLOBs (Binary Large OBjects).
@@ -484,8 +483,8 @@ For smaller files, such as collection labels, compression rate is about 350% (5.
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;fileInfo</span><span class="w"> </span><span class="na">storeLabels=</span><span class="s">&quot;false&quot;</span><span class="w"> </span><span class="na">storeJsonLabels=</span><span class="s">&quot;false&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 </pre></div>
 </div>
-</section>
-<section id="extract-metadata-by-xpath">
+</div>
+<div class="section" id="extract-metadata-by-xpath">
 <h2>Extract Metadata by XPath<a class="headerlink" href="#extract-metadata-by-xpath" title="Permalink to this headline">¶</a></h2>
 <p>(only applies to <strong>command line harvest</strong>)</p>
 <p>To extract metadata by XPath, you have to create one or more mapping files and list them
@@ -514,7 +513,7 @@ is shown below.</p>
 Without this attribute, XPaths queries defined in a mapping file (<em>common.xml</em>),
 will run against every XML document processed by Harvest.
 With <em>rootElement</em> attribute, only XMLs with that root element will be processed.</p>
-<section id="mapping-files">
+<div class="section" id="mapping-files">
 <h3>Mapping Files<a class="headerlink" href="#mapping-files" title="Permalink to this headline">¶</a></h3>
 <p>A mapping file has one or more entries which map an output field name to an XPath query.
 For example, to extract <em>start_date_time</em> and <em>stop_date_time</em> from observational products,
@@ -537,8 +536,8 @@ ISO-8601 “instant” format (e.g., “2013-10-24T00:49:37.457Z”).</p>
 <span class="nt">&lt;/xpaths&gt;</span>
 </pre></div>
 </div>
-</section>
-<section id="xml-name-spaces">
+</div>
+<div class="section" id="xml-name-spaces">
 <h3>XML Name Spaces<a class="headerlink" href="#xml-name-spaces" title="Permalink to this headline">¶</a></h3>
 <p>Harvest ignores namespaces when extracting metadata by XPath.
 Below is a fragment of LADEE UVS product label which uses “ladee” namespace for mission area fields.</p>
@@ -556,9 +555,9 @@ Below is a fragment of LADEE UVS product label which uses “ladee” namespace 
 <span class="nt">&lt;/xpaths&gt;</span>
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

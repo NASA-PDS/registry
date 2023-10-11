@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Data Dictionary &mdash; PDS Registry 1.1 documentation</title>
@@ -165,7 +164,7 @@
         
             
             
-              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/admin/ldd.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/admin/ldd.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -179,9 +178,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="data-dictionary">
+  <div class="section" id="data-dictionary">
 <h1>Data Dictionary<a class="headerlink" href="#data-dictionary" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Data Dictionary provides field definitions for all metadata fields which can be stored in PDS Registry.
 Data type information is required to properly parse date and numeric fields.</p>
@@ -203,8 +202,8 @@ attribute:</p>
 </pre></div>
 </div>
 <p>Usually you don’t need to load data dictionaries manually if they are listed in PDS4 label’s <strong>xsi:schemaLocation</strong> attribute.</p>
-</section>
-<section id="prerequisites">
+</div>
+<div class="section" id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
@@ -212,8 +211,8 @@ attribute:</p>
 <li><p>Registry Manager command-line tool is <a class="reference external" href="../install/tools.html#registry-manager">installed</a>.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="list-installed-data-dictionaries">
+</div>
+<div class="section" id="list-installed-data-dictionaries">
 <h2>List Installed Data Dictionaries<a class="headerlink" href="#list-installed-data-dictionaries" title="Permalink to this headline">¶</a></h2>
 <p>To list all data dictionaries in the Registry run the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">registry</span><span class="o">-</span><span class="n">manager</span> <span class="nb">list</span><span class="o">-</span><span class="n">dd</span>
@@ -236,16 +235,16 @@ attribute:</p>
 <span class="n">sp</span>                   <span class="n">PDS4_SP_1F00_1300</span><span class="o">.</span><span class="n">JSON</span>                     <span class="mf">1.15.0.0</span>   <span class="mi">2020</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">03</span><span class="n">T19</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">46</span><span class="n">Z</span>
 </pre></div>
 </div>
-</section>
-<section id="load-pds-data-dictionary-files">
+</div>
+<div class="section" id="load-pds-data-dictionary-files">
 <h2>Load PDS Data Dictionary Files<a class="headerlink" href="#load-pds-data-dictionary-files" title="Permalink to this headline">¶</a></h2>
 <p>To load standard PDS4 data dictionary JSON file, for example, <em>orex_ldd_OREX_1300.JSON</em>,
 run the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">registry</span><span class="o">-</span><span class="n">manager</span> <span class="n">load</span><span class="o">-</span><span class="n">dd</span> <span class="o">-</span><span class="n">dd</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">pds</span><span class="o">/</span><span class="n">schema</span><span class="o">/</span><span class="n">orex_ldd_OREX_1300</span><span class="o">.</span><span class="n">JSON</span>
 </pre></div>
 </div>
-</section>
-<section id="upgrade-data-dictionary">
+</div>
+<div class="section" id="upgrade-data-dictionary">
 <h2>Upgrade Data Dictionary<a class="headerlink" href="#upgrade-data-dictionary" title="Permalink to this headline">¶</a></h2>
 <p>Data dictionaries can change between major releases of the registry and/or its tools and APIs, necessitating an
 upgrade. To perform this, run the following command:</p>
@@ -260,8 +259,8 @@ dictionary files (see ‘load-dd’ above), in which case the upgrade will retai
 </pre></div>
 </div>
 <p>This ensures that legacy documents that are no longer applicable are removed.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

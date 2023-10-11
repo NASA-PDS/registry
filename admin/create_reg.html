@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Create / Delete Registry &mdash; PDS Registry 1.1 documentation</title>
@@ -106,7 +105,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#delete-registry">Delete Registry</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#examples-1">Examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Examples</a></li>
 </ul>
 </li>
 </ul>
@@ -171,7 +170,7 @@
         
             
             
-              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/admin/create_reg.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/admin/create_reg.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -185,9 +184,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="create-delete-registry">
+  <div class="section" id="create-delete-registry">
 <h1>Create / Delete Registry<a class="headerlink" href="#create-delete-registry" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Indices must be created in OpenSearch, before running the registry.</p>
 <p>The indices used by the registry are:</p>
@@ -203,8 +202,8 @@ There could be 1 or more ES documents per inventory file.</p></li>
 </ul>
 </div></blockquote>
 <p>The indices are created with Registry Manager command-line tool.</p>
-</section>
-<section id="prerequisites">
+</div>
+<div class="section" id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
@@ -212,8 +211,8 @@ There could be 1 or more ES documents per inventory file.</p></li>
 <li><p>Registry Manager command-line tool is <a class="reference external" href="../install/tools.html#registry-manager">installed</a>.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="create-registry">
+</div>
+<div class="section" id="create-registry">
 <h2>Create Registry<a class="headerlink" href="#create-registry" title="Permalink to this headline">¶</a></h2>
 <p>To create registry indices run Registry Manager’s “create-registry” command.
 You can pass the following optional parameters:</p>
@@ -229,8 +228,8 @@ You can pass the following optional parameters:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Default number of shards and replicas is not recommended for production.</p>
-</aside>
-<section id="examples">
+</div>
+<div class="section" id="examples">
 <h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 <p>Create Registry indices in local OpenSearch (<a class="reference external" href="http://localhost:9200">http://localhost:9200</a>) with default number of shards and replicas.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">registry</span><span class="o">-</span><span class="n">manager</span> <span class="n">create</span><span class="o">-</span><span class="n">registry</span>
@@ -252,8 +251,8 @@ file and provide following parameters:</p>
 <span class="n">password</span> <span class="o">=</span> <span class="n">mypassword</span>
 </pre></div>
 </div>
-</section>
-<section id="check-that-indices-were-created">
+</div>
+<div class="section" id="check-that-indices-were-created">
 <h3>Check that indices were created<a class="headerlink" href="#check-that-indices-were-created" title="Permalink to this headline">¶</a></h3>
 <p>To check that registry indices were created, call the following OpenSearch REST API:
 <a class="reference external" href="http://localhost:9200/_cat/indices?v">http://localhost:9200/_cat/indices?v</a></p>
@@ -268,9 +267,9 @@ green<span class="w">  </span>open<span class="w">   </span>registry-dd<span cla
 green<span class="w">  </span>open<span class="w">   </span>registry-refs<span class="w"> </span>1cJLc-9cQj2D_MAYo7gOpw<span class="w">   </span><span class="m">1</span><span class="w">   </span><span class="m">0</span><span class="w">          </span><span class="m">0</span><span class="w">            </span><span class="m">0</span><span class="w">       </span>208b<span class="w">           </span>208b
 </pre></div>
 </div>
-</section>
-</section>
-<section id="delete-registry">
+</div>
+</div>
+<div class="section" id="delete-registry">
 <h2>Delete Registry<a class="headerlink" href="#delete-registry" title="Permalink to this headline">¶</a></h2>
 <p>To delete registry indices, run Registry Manager’s “delete-registry” command.
 You can pass the following optional parameters:</p>
@@ -281,15 +280,15 @@ You can pass the following optional parameters:</p>
 <li><p><strong>-auth &lt;file&gt;</strong> - OpenSearch authentication configuration file.</p></li>
 </ul>
 </div></blockquote>
-<section id="examples-1">
-<h3>Examples<a class="headerlink" href="#examples-1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h3>Examples<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>Delete registry indices from local OpenSearch (<a class="reference external" href="http://localhost:9200">http://localhost:9200</a>)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">registry</span><span class="o">-</span><span class="n">manager</span> <span class="n">delete</span><span class="o">-</span><span class="n">registry</span>
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Cloud Startup &mdash; PDS Registry 1.1 documentation</title>
@@ -159,7 +158,7 @@
         
             
             
-              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/cloud_startup.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/cloud_startup.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -173,15 +172,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="cloud-startup">
+  <div class="section" id="cloud-startup">
 <h1>Cloud Startup<a class="headerlink" href="#cloud-startup" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>This page provides the steps necessary to get going with data ingestion and
 querying of the PDS Registry Service on the cloud from the perspective of a Discipline
 Node (DN).</p>
-</section>
-<section id="initial-set-up">
+</div>
+<div class="section" id="initial-set-up">
 <h2>Initial Set-up<a class="headerlink" href="#initial-set-up" title="Permalink to this headline">¶</a></h2>
 <p>To get things going, you should have provided the EN contact with the following:</p>
 <blockquote>
@@ -195,8 +194,8 @@ password will be sent to them via JPL Large File Transfer (LFT) which provides s
 transit of the credentials. The IP addresses are added to the Opensearch access whitelist.</p>
 <p>Along with your Opensearch user credentials you will receive the URL which points to your Opensearch
 instance - we will refer to this as the Opensearch URL.</p>
-</section>
-<section id="changing-your-opensearch-password">
+</div>
+<div class="section" id="changing-your-opensearch-password">
 <h2>Changing Your Opensearch Password<a class="headerlink" href="#changing-your-opensearch-password" title="Permalink to this headline">¶</a></h2>
 <p>Note: One limitation of AWS Opensearch is the inability to change user
 passwords through any means other than the Kibana console.</p>
@@ -217,16 +216,16 @@ steps:</p>
 </ol>
 </div></blockquote>
 <img alt="_images/kibana_password_reset.png" src="_images/kibana_password_reset.png" />
-</section>
-<section id="registry-tools">
+</div>
+<div class="section" id="registry-tools">
 <h2>Registry Tools<a class="headerlink" href="#registry-tools" title="Permalink to this headline">¶</a></h2>
 <p>Once the above setup is complete, the Registry Tools are used to process and ingest product
 metadata into the Registry. Details on how to run these tools are found in the <a class="reference internal" href="user/tasks.html"><span class="doc">User Tasks Section</span></a></p>
 <p>The registry tools (i.e. Harvest - both standalone and scalable, Registry Manager) are deployed on premise, on a system that has been included in the Opensearch
 whitelist (see <a class="reference internal" href="#initial-set-up"><span class="std std-ref">Initial Set-up</span></a>) following the procedures documented <a class="reference internal" href="install/tools.html"><span class="doc">here</span></a>.</p>
 <p>Configure the tools with the Opensearch URL and credential given to you in step <a class="reference internal" href="#initial-set-up"><span class="std std-ref">Initial Set-up</span></a></p>
-</section>
-<section id="registry-api">
+</div>
+<div class="section" id="registry-api">
 <h2>Registry API<a class="headerlink" href="#registry-api" title="Permalink to this headline">¶</a></h2>
 <p>Once data has been ingested using the Registry Tools, queries can be submitted using the Registry
 API which is <a class="reference external" href="https://nasa-pds.github.io/pds-api/guides/search.html">documented here</a>.
@@ -247,8 +246,8 @@ products from the EN registry, the following API request is used:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>https://pds.nasa.gov/api/search-rms/1.1/products?limit<span class="o">=</span><span class="m">10</span>
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

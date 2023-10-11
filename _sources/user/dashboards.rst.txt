@@ -48,7 +48,3 @@ View the dashboards
      - Bundles and Collections listed by status (staged, archived)
    * - Product Count Metrics
      - Products counts by references (e.g. target, investigation, instruments...)
-
-
-
-

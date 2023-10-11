@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>About PDS Registry &mdash; PDS Registry 1.1 documentation</title>
@@ -97,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#the-pds-registry-service">The PDS Registry Service</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-pds-registry-application">The PDS Registry Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#api">API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#opensearch-1">OpenSearch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">OpenSearch</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#harvest">Harvest</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#registry-manager">Registry Manager</a></li>
 </ul>
@@ -162,7 +161,7 @@
         
             
             
-              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/about.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/about.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -176,9 +175,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="about-pds-registry">
+  <div class="section" id="about-pds-registry">
 <h1>About PDS Registry<a class="headerlink" href="#about-pds-registry" title="Permalink to this headline">¶</a></h1>
-<section id="the-pds-registry-service">
+<div class="section" id="the-pds-registry-service">
 <h2>The PDS Registry Service<a class="headerlink" href="#the-pds-registry-service" title="Permalink to this headline">¶</a></h2>
 <p>PDS Registry Service enables tracking, searching, auditing, locating, and maintaining artifacts within the system.
 These artifacts can range from data files and label files, schemas, dictionary definitions for objects and elements, services, etc…</p>
@@ -187,24 +186,24 @@ These artifacts can range from data files and label files, schemas, dictionary d
 <img alt="_images/registry_service.png" src="_images/registry_service.png" />
 <p>Details on the deployment on AWS are given in the <a class="reference internal" href="cloud/architecture.html"><span class="doc">cloud architecture page</span></a>.</p>
 <p>The PDS Registry Application is the software which implements the components of the PDS Registry Service.</p>
-</section>
-<section id="the-pds-registry-application">
+</div>
+<div class="section" id="the-pds-registry-application">
 <h2>The PDS Registry Application<a class="headerlink" href="#the-pds-registry-application" title="Permalink to this headline">¶</a></h2>
 <p>The core functionality for the PDS Registry Application is satisfied by <a class="reference external" href="https://opensearch.org/">OpenSearch</a>.</p>
 <p>The high level architecture of PDS Registry Application and its main components is shown below.</p>
 <img alt="_images/registry-arc.png" src="_images/registry-arc.png" />
-<section id="api">
+<div class="section" id="api">
 <h3>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h3>
 <p>Provides read-only REST APIs to search and access PDS data. You can call REST APIs directly or
 use Python or Java clients.  More information about PDS API clients is available
 <a class="reference external" href="https://nasa-pds.github.io/pds-api-client/">here</a>.</p>
-</section>
-<section id="opensearch-1">
-<h3>OpenSearch<a class="headerlink" href="#opensearch-1" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="id1">
+<h3>OpenSearch<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="https://opensearch.org/">OpenSearch</a> is a NoSQL database based on Apache Lucene project,
 optimized for text search. All metadata extracted from PDS4 labels is stored in OpenSearch database.</p>
-</section>
-<section id="harvest">
+</div>
+<div class="section" id="harvest">
 <h3>Harvest<a class="headerlink" href="#harvest" title="Permalink to this headline">¶</a></h3>
 <p>Harvest is a software to crawl and extract metadata from PDS4 labels and to load
 extracted information into OpenSearch. There are two versions of Harvest:</p>
@@ -223,8 +222,8 @@ These components can be deployed in the cloud or on-prem. Also there is a Harves
 to server components asynchronously.
 This setup is recommended if you want to process big data sets in parallel.</p>
 <img alt="_images/scalable-harvest.png" src="_images/scalable-harvest.png" />
-</section>
-<section id="registry-manager">
+</div>
+<div class="section" id="registry-manager">
 <h3>Registry Manager<a class="headerlink" href="#registry-manager" title="Permalink to this headline">¶</a></h3>
 <p>A command-line tool to perform admin tasks on a Registry, such as:</p>
 <blockquote>
@@ -234,9 +233,9 @@ This setup is recommended if you want to process big data sets in parallel.</p>
 <li><p>Update product archive status.</p></li>
 </ul>
 </div></blockquote>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

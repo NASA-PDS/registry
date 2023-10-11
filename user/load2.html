@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Load Data - Scalable Harvest &mdash; PDS Registry 1.1 documentation</title>
@@ -172,7 +171,7 @@
         
             
             
-              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/user/load2.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/user/load2.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -186,9 +185,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="load-data-scalable-harvest">
+  <div class="section" id="load-data-scalable-harvest">
 <h1>Load Data - Scalable Harvest<a class="headerlink" href="#load-data-scalable-harvest" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>To load PDS4 data into Registry you have to use Harvest software. There are two versions of Harvest:
 a simple standalone command-line tool and a scalable Harvest consisting of several server and and
@@ -196,8 +195,8 @@ client components. Scalable Harvest can process big data sets in parallel.
 Both versions extract metadata from PDS4 products (labels) and load extracted
 metadata into OpenSearch database.</p>
 <p>This document describes how to use Harvest Client command-line tool to submit jobs to Scalable Harvest Server cluster.</p>
-</section>
-<section id="prerequisites">
+</div>
+<div class="section" id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>OpenSearch server is <a class="reference external" href="https://opensearch.org/">running</a>.</p></li>
@@ -205,12 +204,12 @@ metadata into OpenSearch database.</p>
 <li><p>All server components - RabbitMQ, Crawler Server, Harvest Server - are deployed and running on-prem or in the cloud.</p></li>
 <li><p>Harvest Client command-line tool is installed.</p></li>
 </ul>
-</section>
-<section id="scalable-harvest-quick-start">
+</div>
+<div class="section" id="scalable-harvest-quick-start">
 <h2>Scalable Harvest Quick Start<a class="headerlink" href="#scalable-harvest-quick-start" title="Permalink to this headline">¶</a></h2>
 <p>Scalable Harvest consists of several server components: RabbitMQ, Crawler and Harvest servers.
 To load data you have to use Harvest Client command-line tool to submit a job to Harvest server cluster.</p>
-<section id="configuration-file">
+<div class="section" id="configuration-file">
 <h3>Configuration File<a class="headerlink" href="#configuration-file" title="Permalink to this headline">¶</a></h3>
 <p>Harvest Client requires message broker (RabbitMQ) connection to submit jobs to the Harvest server cluster.
 Default configuration file, <em>&lt;INSTALL_DIR&gt;/conf/harvest-client.cfg</em>, has the following parameters:</p>
@@ -232,8 +231,8 @@ Default configuration file, <em>&lt;INSTALL_DIR&gt;/conf/harvest-client.cfg</em>
 </pre></div>
 </div>
 <p>You can either edit default configuration file, or create another file and pass it to Harvest Client CLI as a parameter.</p>
-</section>
-<section id="submit-a-job">
+</div>
+<div class="section" id="submit-a-job">
 <h3>Submit a Job<a class="headerlink" href="#submit-a-job" title="Permalink to this headline">¶</a></h3>
 <p>To submit a job to the harvest server cluster you need a job configuration file.
 An example configuration file is available in the installation directory:
@@ -251,7 +250,7 @@ An example configuration file is available in the installation directory:
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Crawler and Harvest servers should be able to read this path.</p>
-</aside>
+</div>
 <p>And the URL prefix for the data:</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;fileInfo&gt;</span>
 <span class="w">  </span><span class="cm">&lt;!-- UPDATE with your own local path and base url where pds4 archive is published --&gt;</span>
@@ -278,15 +277,15 @@ An example configuration file is available in the installation directory:
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For backward compatibility, job ID field is called “_package_id” in OpenSearch.</p>
-</aside>
+</div>
 <p>This <a class="reference external" href="./harvest_job_configuration.html">page</a> describes the job configuration file in detail.</p>
-</section>
-</section>
-<section id="next-steps">
+</div>
+</div>
+<div class="section" id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
 <p>When ready for public release, you need to <a class="reference external" href="update_status.html">update the archive status</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

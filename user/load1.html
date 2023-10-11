@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Load Data - Standalone Harvest &mdash; PDS Registry 1.1 documentation</title>
@@ -168,7 +167,7 @@
         
             
             
-              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/user/load1.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/user/load1.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -182,17 +181,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="load-data-standalone-harvest">
+  <div class="section" id="load-data-standalone-harvest">
 <h1>Load Data - Standalone Harvest<a class="headerlink" href="#load-data-standalone-harvest" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>To load PDS4 data into Registry you have to use Harvest software. There are two versions of Harvest:
 a simple standalone command-line tool and a scalable Harvest which can process big data sets in parallel thanks to distributed components comminucating through a message broker.
 Both versions extract metadata from PDS4 products (labels) and load extracted
 metadata into OpenSearch database.</p>
 <p>This document describes how to load data with Standalone Harvest command-line tool.</p>
-</section>
-<section id="prerequisites">
+</div>
+<div class="section" id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
@@ -201,8 +200,8 @@ metadata into OpenSearch database.</p>
 <li><p>Standalone Harvest command-line tool is <a class="reference external" href="../install/tools.html#standalone-harvest">installed</a>.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="standalone-harvest-quick-start">
+</div>
+<div class="section" id="standalone-harvest-quick-start">
 <h2>Standalone Harvest Quick Start<a class="headerlink" href="#standalone-harvest-quick-start" title="Permalink to this headline">¶</a></h2>
 <p>To run Harvest you need a job configuration file (XML).
 The configuration file has several sections such as Registry (OpenSearch) configuration
@@ -219,7 +218,7 @@ and the path to the data. Example configuration files are located in <em>&lt;INS
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In the URL attribute, always have a port specified, which for PDS Registries in AWS, this port should be 443. If a port is not specified, it will default to the OpenSearch default port of 9200, and any attempted writes/updates of the registry will fail.</p>
-</aside>
+</div>
 <p>The path to the data:</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;directories&gt;</span>
 <span class="w">  </span><span class="nt">&lt;path&gt;</span>/data/geo/urn-nasa-pds-kaguya_grs_spectra<span class="nt">&lt;/path&gt;</span>
@@ -270,12 +269,12 @@ or in a web browser. For example,</p>
 </pre></div>
 </div>
 <p>This <a class="reference external" href="./harvest_job_configuration.html">page</a> describes the job configuration file in detail.</p>
-</section>
-<section id="next-steps">
+</div>
+<div class="section" id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
 <p>When ready for public release, you need to <a class="reference external" href="update_status.html">update the archive status</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

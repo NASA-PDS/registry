@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Delete Data &mdash; PDS Registry 1.1 documentation</title>
@@ -103,7 +102,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Delete Data</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#delete-data-1">Delete Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Delete Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#opensearch-api">OpenSearch API</a></li>
 </ul>
@@ -169,7 +168,7 @@
         
             
             
-              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/user/delete_data.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/user/delete_data.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -183,13 +182,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="delete-data">
+  <div class="section" id="delete-data">
 <h1>Delete Data<a class="headerlink" href="#delete-data" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>You can delete data from PDS Registry (OpenSearch) with Registry Manager command-line tool.</p>
-</section>
-<section id="prerequisites">
+</div>
+<div class="section" id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
@@ -197,9 +196,9 @@
 <li><p>Registry Manager command-line tool is installed.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="delete-data-1">
-<h2>Delete Data<a class="headerlink" href="#delete-data-1" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="id1">
+<h2>Delete Data<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>To delete data, run Registry Manager’s “delete-data” command.</p>
 <p>You have to pass one of the following parameters:</p>
 <blockquote>
@@ -218,8 +217,8 @@
 <li><p><strong>-auth &lt;file&gt;</strong> - OpenSearch authentication configuration file. See example below.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="examples">
+</div>
+<div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p><strong>Delete by LIDVID</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>delete-data<span class="w"> </span><span class="se">\</span>
@@ -232,7 +231,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In the -es option value, always have a port specified in the URL. For PDS Registries, this port should be 443. If a port is not specified, it will default to OpenSearch default port of 9200, and the update of the registry will fail.</p>
-</aside>
+</div>
 <p>If your OpenSearch server requires authentication, you have to create an authentication configuration file
 and provide following parameters:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># true - trust self-signed certificates; false - don&#39;t trust.</span>
@@ -256,18 +255,18 @@ and provide following parameters:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>delete-data<span class="w"> </span>-all<span class="w"> </span>-index<span class="w"> </span>test1
 </pre></div>
 </div>
-</section>
-<section id="opensearch-api">
+</div>
+<div class="section" id="opensearch-api">
 <h2>OpenSearch API<a class="headerlink" href="#opensearch-api" title="Permalink to this headline">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Only use this if you really know what you are doing and how to do it.</p>
-</aside>
+</div>
 <p>You can also use OpenSearch
 <a class="reference external" href="https://opensearch.org/docs/latest/opensearch/rest-api/document-apis/delete-by-query/">delete by query API</a>
 to delete documents from the Registry / OpenSearch.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

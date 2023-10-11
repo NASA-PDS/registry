@@ -107,7 +107,7 @@ The following table contains commonly used server-side profiles and descriptions
 
 ====================== ==================================================== ==============================================
  Profile Name           Description                                          Prerequisites
- 
+
                                                                              (profiles to start before this)
 
 ====================== ==================================================== ==============================================

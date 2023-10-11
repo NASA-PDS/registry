@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Docker Container Based Deployment &mdash; PDS Registry 1.1 documentation</title>
@@ -170,7 +169,7 @@
         
             
             
-              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/install/docker-compose.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/install/docker-compose.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -184,9 +183,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="docker-container-based-deployment">
+  <div class="section" id="docker-container-based-deployment">
 <h1>Docker Container Based Deployment<a class="headerlink" href="#docker-container-based-deployment" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>All the PDS Registry components are containerized as docker images and published in <a class="reference external" href="https://hub.docker.com/u/nasapds">https://hub.docker.com/u/nasapds</a>.</p>
 <p>The container based deployment of the PDS Registry components is orchestrated by Docker Compose, a tool for defining and running multi-container Docker applications.</p>
@@ -194,13 +193,13 @@
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>These deployment are not intended for production given that 1. docker compose works on a single host and 2. permanent storage is left to docker to manage.</p>
-</aside>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>To learn more about docker compose, please visit <a class="reference external" href="https://docs.docker.com/compose/">https://docs.docker.com/compose/</a>.</p>
-</aside>
-</section>
-<section id="prerequisites">
+</div>
+</div>
+<div class="section" id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <p>It is required to install the following tools.</p>
 <blockquote>
@@ -213,9 +212,9 @@
 <p class="admonition-title">Note</p>
 <p>At the time of writing this, all registry components were successfully tested with the docker compose version v2.2.3.
 The registry components should work with later versions of docker compose too.</p>
-</aside>
-</section>
-<section id="download-and-configure-the-pds-registry-application">
+</div>
+</div>
+<div class="section" id="download-and-configure-the-pds-registry-application">
 <h2>Download and Configure the PDS Registry Application<a class="headerlink" href="#download-and-configure-the-pds-registry-application" title="Permalink to this headline">¶</a></h2>
 <p>The latest release of the Registry can be downloaded and configured as follows.</p>
 <ol class="arabic simple">
@@ -229,7 +228,7 @@ On Linux you can use the following command:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The path of the extracted directory, is referred to as the <cite>&lt;REGISTRY_ROOT&gt;</cite> in the following instructions.</p>
-</aside>
+</div>
 <ol class="arabic" start="3">
 <li><p>Open a terminal and change the working directory to <cite>&lt;REGISTRY_ROOT&gt;/docker</cite> directory.</p></li>
 <li><p>Open the <cite>&lt;REGISTRY_ROOT&gt;/docker/.env</cite> file using a text editor</p></li>
@@ -249,14 +248,14 @@ On Linux you can use the following command:</p>
 <p>The <cite>HARVEST_DATA_DIR</cite> specified above should have the directories of the data to be harvested.</p>
 <p>An example of a <cite>harvest-job-config.xml</cite> file (to set as <cite>HARVEST_JOB_CONFIG_FILE</cite> in the above configurations)
 can be obtained from the <cite>&lt;REGISTRY_ROOT&gt;/docker/default-config</cite> directory.</p>
-</aside>
+</div>
 <ol class="arabic simple" start="5">
 <li><p>Generate the self-signed certificates as follows.</p></li>
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Certificates are required for OpenSearch to enable https.</p>
-</aside>
+</div>
 <blockquote>
 <div><ol class="loweralpha">
 <li><p>Change the current working directory to <cite>&lt;REGISTRY_ROOT&gt;/docker/certs</cite> directory.</p>
@@ -276,8 +275,8 @@ can be obtained from the <cite>&lt;REGISTRY_ROOT&gt;/docker/default-config</cite
 </li>
 </ol>
 </div></blockquote>
-</section>
-<section id="deployment-profiles">
+</div>
+<div class="section" id="deployment-profiles">
 <h2>Deployment Profiles<a class="headerlink" href="#deployment-profiles" title="Permalink to this headline">¶</a></h2>
 <p>Deployment profiles are defined to parameterize your deployment, either you only want to run the server side core components of the registry (OpenSearch and web API) or run an harvest standalone job, or run the scalable harvest services…</p>
 <p>Using a profile name, you can start the required components of the Registry as follows.</p>
@@ -288,7 +287,7 @@ can be obtained from the <cite>&lt;REGISTRY_ROOT&gt;/docker/default-config</cite
 <p class="admonition-title">Note</p>
 <p>The next section explains the possible profile names that can be used for the <cite>&lt;DOCKER_COMPOSE_PROFILE_NAME&gt;</cite> in the
 docker compose command above.</p>
-</aside>
+</div>
 <p>The docker containers deployed using a docker compose profile can be easily uninstalled and cleaned-up using the following
 command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">--</span><span class="n">profile</span><span class="o">=&lt;</span><span class="n">DOCKER_COMPOSE_PROFILE_NAME</span><span class="o">&gt;</span> <span class="n">down</span>
@@ -296,6 +295,11 @@ command:</p>
 </div>
 <p>The following table contains commonly used server-side profiles and descriptions.</p>
 <table class="docutils align-default">
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 43%" />
+<col style="width: 38%" />
+</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Profile Name</p></th>
 <th class="head"><p>Description</p></th>
@@ -316,11 +320,16 @@ must be up and running</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="client-side-operations">
+</div>
+<div class="section" id="client-side-operations">
 <h2>Client-side Operations<a class="headerlink" href="#client-side-operations" title="Permalink to this headline">¶</a></h2>
 <p>To trigger data ingestion in the registry, you need to run client side commands (which use docker compose as well internally)</p>
 <table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 35%" />
+<col style="width: 32%" />
+</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Command prototype</p></th>
 <th class="head"><p>Description</p></th>
@@ -346,15 +355,15 @@ must be up and running</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="common-deployment-scenarii">
+</div>
+<div class="section" id="common-deployment-scenarii">
 <h2>Common Deployment Scenarii<a class="headerlink" href="#common-deployment-scenarii" title="Permalink to this headline">¶</a></h2>
-<section id="core-registry-with-standalone-harvest">
+<div class="section" id="core-registry-with-standalone-harvest">
 <h3>Core Registry with Standalone Harvest<a class="headerlink" href="#core-registry-with-standalone-harvest" title="Permalink to this headline">¶</a></h3>
 <p>As explained above, the Standalone Harvest simple batch tool, which is suitable to process small data sets of
 up to 10,000 PDS4 labels.</p>
 <p>You can execute the following instructions to deploy the registry and load small amount of data.</p>
-<section id="deploying-the-sever-side-components-of-standalone-harvest">
+<div class="section" id="deploying-the-sever-side-components-of-standalone-harvest">
 <h4>Deploying the Sever-side Components of Standalone Harvest<a class="headerlink" href="#deploying-the-sever-side-components-of-standalone-harvest" title="Permalink to this headline">¶</a></h4>
 <ol class="arabic">
 <li><p>Open a new terminal and change the current working directory to the <code class="docutils literal notranslate"><span class="pre">&lt;REGISTRY_ROOT&gt;/docker</span></code> directory.</p></li>
@@ -376,8 +385,8 @@ docker-registry-api-1        |
 </div>
 </li>
 </ol>
-</section>
-<section id="run-standalone-harvest-to-load-some-pds4-products">
+</div>
+<div class="section" id="run-standalone-harvest-to-load-some-pds4-products">
 <h4>Run Standalone Harvest to Load Some PDS4 Products<a class="headerlink" href="#run-standalone-harvest-to-load-some-pds4-products" title="Permalink to this headline">¶</a></h4>
 <ol class="arabic">
 <li><p>Open a new terminal and change the current working directory to the <code class="docutils literal notranslate"><span class="pre">&lt;REGISTRY_ROOT&gt;/docker/scripts</span></code> directory.</p></li>
@@ -398,25 +407,25 @@ docker-registry-api-1        |
 <li><p>Visit the <a class="reference external" href="http://localhost:8080/swagger-ui.html#!/collections/getCollection">http://localhost:8080/swagger-ui.html#!/collections/getCollection</a> of the Registry API.</p></li>
 <li><p>Click on the <strong>Try it out!</strong> button to see the Response Body.</p></li>
 </ol>
-</section>
-<section id="clean-up-the-deployment">
+</div>
+<div class="section" id="clean-up-the-deployment">
 <h4>Clean-up the Deployment<a class="headerlink" href="#clean-up-the-deployment" title="Permalink to this headline">¶</a></h4>
 <p>The docker containers deployed above can be easily uninstalled and cleaned-up using the following
 commands:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">--</span><span class="n">profile</span><span class="o">=</span><span class="n">pds</span><span class="o">-</span><span class="n">core</span><span class="o">-</span><span class="n">registry</span> <span class="n">down</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="core-registry-with-scalable-harvest">
+</div>
+</div>
+<div class="section" id="core-registry-with-scalable-harvest">
 <h3>Core Registry with Scalable Harvest<a class="headerlink" href="#core-registry-with-scalable-harvest" title="Permalink to this headline">¶</a></h3>
 <p>As explained above, the Scalable Harvest is suitable to process larger data sets of more than 10,000 PDS4 labels.</p>
 <p>You can execute the following instructions to deploy the server-side components of Registry with Scalable Harvest and load some data.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Docker Compose running on a single host, the scalability of this tool is not at its full potential yet, we will propose in the future a production ready deployment procedure (e.g. using kubernetes) to actually scale the ingestion.</p>
-</aside>
-<section id="deploying-the-sever-side-components-of-scalable-harvest">
+</div>
+<div class="section" id="deploying-the-sever-side-components-of-scalable-harvest">
 <h4>Deploying the Sever-side Components of Scalable Harvest<a class="headerlink" href="#deploying-the-sever-side-components-of-scalable-harvest" title="Permalink to this headline">¶</a></h4>
 <ol class="arabic">
 <li><p>Open a new terminal and change the current working directory to the <code class="docutils literal notranslate"><span class="pre">&lt;REGISTRY_ROOT&gt;/docker</span></code> directory.</p></li>
@@ -443,8 +452,8 @@ docker-registry-api-1        |
 </div>
 </li>
 </ol>
-</section>
-<section id="run-scalable-harvest-service-client-to-load-some-pds4-products">
+</div>
+<div class="section" id="run-scalable-harvest-service-client-to-load-some-pds4-products">
 <h4>Run Scalable Harvest Service Client to Load Some PDS4 Products<a class="headerlink" href="#run-scalable-harvest-service-client-to-load-some-pds4-products" title="Permalink to this headline">¶</a></h4>
 <ol class="arabic">
 <li><p>Open a new terminal and change the current working directory to the <code class="docutils literal notranslate"><span class="pre">&lt;REGISTRY_ROOT&gt;/docker/scripts/</span></code> directory.</p></li>
@@ -465,9 +474,9 @@ docker-registry-api-1        |
 <li><p>Visit the <a class="reference external" href="http://localhost:8080/swagger-ui.html#!/collections/getCollection">http://localhost:8080/swagger-ui.html#!/collections/getCollection</a> of the Registry API.</p></li>
 <li><p>Click on the <strong>Try it out!</strong> button to see the Response Body.</p></li>
 </ol>
-</section>
-<section id="clean-up-the-deployment-1">
-<h4>Clean-up the Deployment<a class="headerlink" href="#clean-up-the-deployment-1" title="Permalink to this headline">¶</a></h4>
+</div>
+<div class="section" id="id1">
+<h4>Clean-up the Deployment<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
 <p>The docker containers deployed above can be easily uninstalled and cleaned-up using the following
 commands:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">--</span><span class="n">profile</span><span class="o">=</span><span class="n">pds</span><span class="o">-</span><span class="n">core</span><span class="o">-</span><span class="n">registry</span> <span class="n">down</span>
@@ -481,11 +490,11 @@ commands:</p>
 docker compose profile that are used to setup the development environment and execute integration tests.</p>
 <p>More information about all currently available docker compose profiles are available at
 <a class="reference external" href="https://github.com/NASA-PDS/registry/tree/main/docker#-docker-compose-for-registry-components">https://github.com/NASA-PDS/registry/tree/main/docker#-docker-compose-for-registry-components</a>.</p>
-</aside>
-</section>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
+</div>
+</div>
 
 
            </div>

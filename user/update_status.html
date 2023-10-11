@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Update Archive Status &mdash; PDS Registry 1.1 documentation</title>
@@ -106,8 +105,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#harvest-client-scalable-harvest-only">Harvest Client (Scalable Harvest only)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#prerequisites-1">Prerequisites</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#set-status-1">Set status</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">Set status</a></li>
 </ul>
 </li>
 </ul>
@@ -174,7 +173,7 @@
         
             
             
-              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/user/update_status.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/user/update_status.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -188,7 +187,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="update-archive-status">
+  <div class="section" id="update-archive-status">
 <h1>Update Archive Status<a class="headerlink" href="#update-archive-status" title="Permalink to this headline">¶</a></h1>
 <p>When a product is ingested into PDS Registry, its archive status is set to <em>“staged”</em>.</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ops:Tracking_Meta/ops:archive_status&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;staged&quot;</span>
@@ -204,9 +203,9 @@
 </ul>
 </div></blockquote>
 <p>You can use either Registry Manager or Harvest Client (Scalable Harvest deployments only) for this task.</p>
-<section id="registry-manager">
+<div class="section" id="registry-manager">
 <h2>Registry Manager<a class="headerlink" href="#registry-manager" title="Permalink to this headline">¶</a></h2>
-<section id="prerequisites">
+<div class="section" id="prerequisites">
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -216,8 +215,8 @@
 <li><p>Registry Manager command-line tool is <a class="reference external" href="../install/tools.html#registry-manager">installed</a>.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="set-status">
+</div>
+<div class="section" id="set-status">
 <h3>Set status<a class="headerlink" href="#set-status" title="Permalink to this headline">¶</a></h3>
 <p>To set product archive status, execute Registry Manager’s “set-archive-status” command.</p>
 <p>The following parameters are required:</p>
@@ -255,7 +254,7 @@ If the product is a bundle product, all bundle’s collections will be also upda
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In the -es option value, always have a port specified in the URL. For PDS Registries, this port should be 443. If a port is not specified, it will default to OpenSearch default port of 9200, and the update of the registry will fail.</p>
-</aside>
+</div>
 <p>If your OpenSearch server requires authentication, you have to create an authentication configuration
 file and provide following parameters:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># true - trust self-signed certificates; false - don&#39;t trust.</span>
@@ -264,12 +263,12 @@ file and provide following parameters:</p>
 <span class="n">password</span> <span class="o">=</span> <span class="n">mypassword</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="harvest-client-scalable-harvest-only">
+</div>
+</div>
+<div class="section" id="harvest-client-scalable-harvest-only">
 <h2>Harvest Client (Scalable Harvest only)<a class="headerlink" href="#harvest-client-scalable-harvest-only" title="Permalink to this headline">¶</a></h2>
-<section id="prerequisites-1">
-<h3>Prerequisites<a class="headerlink" href="#prerequisites-1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h3>Prerequisites<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>OpenSearch server is <a class="reference external" href="https://opensearch.org/">running</a>.</p></li>
@@ -279,9 +278,9 @@ file and provide following parameters:</p>
 <li><p>Harvest Client command-line tool is <a class="reference external" href="../install/tools.html#harvest-client">installed</a>.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="set-status-1">
-<h3>Set status<a class="headerlink" href="#set-status-1" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="id6">
+<h3>Set status<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <p>To set product archive status, execute Harvest Client’s “set-archive-status” command.</p>
 <p>The following parameters are required:</p>
 <blockquote>
@@ -314,9 +313,9 @@ If the product is a bundle product, all bundle’s collections will be also upda
 <span class="w">    </span>-lidvid<span class="w"> </span><span class="s2">&quot;urn:nasa:pds:kaguya_grs_spectra:document::1.0&quot;</span>
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

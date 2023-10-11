@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>The Registry API Service Cloud Architecture &mdash; PDS Registry 1.1 documentation</title>
@@ -150,7 +149,7 @@
         
             
             
-              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/cloud/architecture.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/cloud/architecture.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -164,9 +163,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-registry-api-service-cloud-architecture">
+  <div class="section" id="the-registry-api-service-cloud-architecture">
 <h1>The Registry API Service Cloud Architecture<a class="headerlink" href="#the-registry-api-service-cloud-architecture" title="Permalink to this headline">¶</a></h1>
-<section id="on-prem-vs-cloud">
+<div class="section" id="on-prem-vs-cloud">
 <h2>On-Prem vs. Cloud<a class="headerlink" href="#on-prem-vs-cloud" title="Permalink to this headline">¶</a></h2>
 <p>In a typical on-premise deployment, the PDS Registry Application is composed, server-side, of
 a ReSTful API Server and an OpenSearch database. The users submit queries to the API which queries OpenSearch for building the responses.</p>
@@ -202,8 +201,8 @@ of data.</p>
 Registry-manager are still performed on-premise, the latter connecting
 directly to Elasticsearch, access to which is controlled by authentication
 and IP whitelisting.</p>
-</section>
-<section id="en-s-centralized-registry-api-service">
+</div>
+<div class="section" id="en-s-centralized-registry-api-service">
 <h2>EN’s Centralized Registry API Service<a class="headerlink" href="#en-s-centralized-registry-api-service" title="Permalink to this headline">¶</a></h2>
 <p>The Engineering Node’s Registry API Service is the central point from
 which received search requests are disseminated to all discipline nodes
@@ -216,8 +215,8 @@ been designated as remotes. See figure below.</p>
 specifying the DN’s abbreviated name (e.g. ‘GEO’) as the value of the
 HTTP header ‘x-request-node’ along with the request. If this header is
 not specified, the request is routed to the EN registry.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
