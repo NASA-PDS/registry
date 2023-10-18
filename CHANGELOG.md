@@ -1,8 +1,8 @@
 # Changelog
 
-## [release/1.3.0](https://github.com/NASA-PDS/registry/tree/release/1.3.0) (2023-10-10)
+## [v1.3.0](https://github.com/NASA-PDS/registry/tree/v1.3.0) (2023-10-11)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0...release/1.3.0)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0...v1.3.0)
 
 **Requirements:**
 
