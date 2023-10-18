@@ -807,7 +807,7 @@
 									"",
 									"var resp = pm.response.json();",
 									"",
-									"pm.test(\"C2723037 file size value does have brackets\", () => {",
+									"pm.test(\"C2723037 file size value doesn't have brackets\", () => {",
 									"    pm.expect(resp[\"pds:File.pds:file_size\"]).to.equal(\"1365\"); ",
 									"});",
 									"",
@@ -855,58 +855,61 @@
 		},
 		{
 			"name": "opensearch requests",
-			"event": [
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"C2723010 legacy_registry index exists\", () => {",
-							"  pm.response.to.have.status(200);",
-							"});",
-							"",
-							"var resp = pm.response.json();",
-							"",
-							"pm.test(\"C2723010 more than 10000 synchronized products\", () => {",
-							"    pm.expect(resp.hits.total.value).to.eql(10000); ",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
+					"name": "legacy_registry",
+					"event": [
 						{
-							"key": "password",
-							"value": "admin",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "admin",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C2723010 legacy_registry index exists\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var resp = pm.response.json();",
+									"",
+									"pm.test(\"C2723010 more than 10000 synchronized products\", () => {",
+									"    pm.expect(resp.hits.total.value).to.eql(10000); ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:9200/legacy_registry/_search",
-					"protocol": "https",
-					"host": [
-						"localhost"
 					],
-					"port": "9200",
-					"path": [
-						"legacy_registry",
-						"_search"
-					]
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{opensearchUrl}}/legacy_registry/_search",
+							"host": [
+								"{{opensearchUrl}}"
+							],
+							"path": [
+								"legacy_registry",
+								"_search"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	],
 	"event": [
