@@ -4,7 +4,7 @@
 This script is used to run a stress test Harvest
 
 To stress test Harvest with 25 simultaneous writes, run the following command:
-python harvest_stress_test.py "harvest_command_here" 25
+python harvest_stress_test.py --command "harvest_command_here" --runs 25
 """
 
 import argparse
@@ -12,8 +12,10 @@ import concurrent.futures
 import subprocess
 
 
-# Function to run the subprocess command
 def run_command(command):
+    """
+    Runs the provided command as a subprocess and returns the result
+    """
     try:
         result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         return f"Command: {command}\nStdout: {result.stdout}\nStderr: {result.stderr}"
@@ -22,20 +24,22 @@ def run_command(command):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run stress tests with user-provided command and number of simultaneous runs.")
-    parser.add_argument("command", help="The command to run (use 'YOUR_COMMAND_HERE' as a placeholder)")
-    parser.add_argument("num_processes", type=int, help="The number of processes to run")
+    parser = argparse.ArgumentParser(description="Stress test Harvest with user-provided simultaneous runs.")
+    parser.add_argument("command", help="The command to run")
+    parser.add_argument("runs", type=int, help="The number of times to run Harvest simultaneously")
 
     args = parser.parse_args()
 
     command = args.command
-    num_processes = args.num_processes
+    runs = args.runs
 
     # List of commands
-    commands = [command.replace("YOUR_COMMAND_HERE", f"your_actual_command_{i}") for i in range(num_processes)]
+    # use command.replace if you want to alter part of the command string for each process
+    # commands = [command.replace("part to replace", "replace with this") for i in range(runs)]
+    commands = [command for i in range(runs)]
 
     # Create a ThreadPoolExecutor with the desired number of workers
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_processes) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=runs) as executor:
         # Submit the commands for execution
         futures = [executor.submit(run_command, command) for command in commands]
 
