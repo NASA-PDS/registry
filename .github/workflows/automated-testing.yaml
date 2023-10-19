@@ -15,4 +15,4 @@ jobs:
             - uses: isbang/compose-action@v1.5.1
               with:
                 compose-file: "./docker/docker-compose.yml"
-                compose-flags: "--profile int-registry-service-loader"
+                compose-flags: "--profile=int-registry-service-loader"
