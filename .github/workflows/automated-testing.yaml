@@ -1,0 +1,18 @@
+on:
+    push:
+        branches:
+            -   'automated-testing'
+            -   '!main'
+    workflow_dispatch:
+
+jobs:
+    automated-testing:
+        name: Registry Automated Testing
+        runs-on: ubuntu-latest
+        steps:
+            # need checkout before using compose-action
+            - uses: actions/checkout@v3
+            - uses: isbang/compose-action@v1.5.1
+              with:
+                compose-file: "./docker/docker-compose.yml"
+                compose-flags: "--profile int-registry-service-loader"
