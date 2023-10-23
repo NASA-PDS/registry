@@ -19,4 +19,6 @@ jobs:
                     cd $GITHUB_WORKSPACE/docker/certs
                     ./generate-certs.sh
                     cd ..
-                    docker compose --profile int-registry-batch-loader up
+                    docker compose \
+                        --ansi never --profile int-registry-batch-loader up --detach --quiet-pull
+                    
