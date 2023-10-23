@@ -235,7 +235,7 @@ services:
       - ${POSTMAN_COLLECTION_FILE}:/postman/postman-collection.json
     networks:
       - pds
-    command: "run /postman/postman-collection.json --env-var baseUrl=${REG_API_URL} --env-var opensearchUrl=${ES_URL} --reporters cli,testrail"
+    command: "run /postman/postman-collection.json --insecure --env-var baseUrl=${REG_API_URL} --env-var opensearchUrl=${ES_URL} --reporters cli,testrail"
 
   # Executes Registry API integration test as a Postman collection with test data (after waiting for data to be loaded)
   reg-api-integration-test-with-wait:
