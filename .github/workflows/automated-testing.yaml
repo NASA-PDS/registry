@@ -10,9 +10,13 @@ jobs:
         name: Registry Automated Testing
         runs-on: ubuntu-latest
         steps:
-            # need checkout before using compose-action
-            - uses: actions/checkout@v3
-            - uses: isbang/compose-action@v1.5.1
-              with:
-                compose-file: "./docker/docker-compose.yml"
-                compose-flags: "--profile=int-registry-service-loader"
+            -
+                name: Checkout Repository
+                uses: actions/checkout@v4
+            -
+                name: Run Automated Testing
+                run: |
+                    cd docker/certs
+                    ./generate.sh
+                    cd ..
+                    docker compose --profile int-registry-batch-loader up
