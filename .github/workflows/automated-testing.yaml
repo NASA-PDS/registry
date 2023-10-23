@@ -21,4 +21,4 @@ jobs:
                     cd ..
                     docker compose \
                         --ansi never --profile int-registry-batch-loader up --detach --quiet-pull
-                    
+                    curl --get localhost:8080/products
