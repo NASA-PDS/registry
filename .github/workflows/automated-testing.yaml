@@ -16,7 +16,7 @@ jobs:
             -
                 name: Run Automated Testing
                 run: |
-                    cd docker/certs
+                    cd $GITHUB_WORKSPACE/docker/certs
                     ./generate.sh
                     cd ..
                     docker compose --profile int-registry-batch-loader up
