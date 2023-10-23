@@ -21,4 +21,21 @@ jobs:
                     cd ..
                     docker compose \
                         --ansi never --profile int-registry-batch-loader up --detach --quiet-pull
-                    curl --get localhost:8080/products
+                    
+                    # registry-api#296 API crashes with JVM memory error on data sets with very large labels (>1MB)
+                    # run the query 20 times, there should not be any errors if there is enough memory allocated.
+                    for i in {1..20}; do
+                        curl --GET "localhost:8080/products?q=lidvid%20like%20%22urn:nasa:pds:mars2020_sherloc*%22"
+                        if [[ $? -ne 0 ]]; then
+                            echo "registry-api#296 failed"
+                            exit 1
+                        fi
+                    done
+
+                    curl --GET "localhost:8080/products?q=lidvid%20like%20%22urn:nasa:pds:mars2020_sherloc*%22"
+
+                    # registry-api#305 API not returning value for NAIF bundles
+                    curl "localhost:8080/products/urn:nasa:pds:maven.spice::5.0"
+                    curl "localhost:8080/products/urn:nasa:pds:mars2020.spice::6.0"
+                    curl "localhost:8080/products/urn:nasa:pds:insight.spice::15.0"
+                    curl "localhost:8080/products/urn:esa:psa:em16_spice::6.0"
