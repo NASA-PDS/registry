@@ -1,5 +1,13 @@
 # Changelog
 
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-10-24)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...«unknown»)
+
+**Other closed issues:**
+
+- Assist with DUM infra setup in MCP [\#238](https://github.com/NASA-PDS/registry/issues/238)
+
 ## [v1.3.0](https://github.com/NASA-PDS/registry/tree/v1.3.0) (2023-10-11)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0...v1.3.0)
