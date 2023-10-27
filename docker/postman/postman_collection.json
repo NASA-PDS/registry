@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "478f45c4-7b67-4c79-829b-18373bc14aba",
-		"name": "Planetary Data System API Reference Tests",
+		"_postman_id": "23f6b1ba-f2d6-4126-9385-1cb78121b18c",
+		"name": "Planetary Data System API Reference Tests Copy 2",
 		"description": "Federated PDS API which provides actionable end points standardized\nbetween the different nodes.\n\n\nContact Support:\n Email: pds-operator@jpl.nasa.gov",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11337552",
-		"_collection_link": "https://interstellar-satellite-406261.postman.co/workspace/My-Workspace~2ee1fece-93c6-4f38-806d-fa321e2e92d5/collection/11337552-478f45c4-7b67-4c79-829b-18373bc14aba?action=share&source=collection_link&creator=11337552"
+		"_collection_link": "https://interstellar-satellite-406261.postman.co/workspace/My-Workspace~2ee1fece-93c6-4f38-806d-fa321e2e92d5/collection/11337552-23f6b1ba-f2d6-4126-9385-1cb78121b18c?action=share&source=collection_link&creator=11337552"
 	},
 	"item": [
 		{
@@ -708,7 +708,7 @@
 									"",
 									"pm.test(\"C2488844 Response contains same number of properties\", () => {",
 									"    const responseJson = pm.response.json();",
-									"    pm.expect(responseJson.length).to.be.eql(140);",
+									"    pm.expect(responseJson.length).to.be.eql(141);",
 									"});",
 									"",
 									"pm.test(\"C2488844 Response property objects follow expected schema\", () => {",
@@ -785,6 +785,125 @@
 							],
 							"path": [
 								"classes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#375 csv response, use | as inner list separator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C2723037 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C2723037 Response takes less than 100ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var resp = pm.response.json();",
+									"",
+									"pm.test(\"C2723037 file size value doesn't have brackets\", () => {",
+									"    pm.expect(resp[\"pds:File.pds:file_size\"]).to.equal(\"1365\"); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/kvp+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lidvid?fields=lid,pds:File.pds:file_size",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lidvid"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "lid,pds:File.pds:file_size"
+								}
+							],
+							"variable": [
+								{
+									"key": "lidvid",
+									"value": "urn:nasa:pds:mars2020.spice::1.0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "opensearch requests",
+			"item": [
+				{
+					"name": "legacy_registry",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C2723010 legacy_registry index exists\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var resp = pm.response.json();",
+									"",
+									"pm.test(\"C2723010 more than 10000 synchronized products\", () => {",
+									"    pm.expect(resp.hits.total.value).to.eql(10000); ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{opensearchUrl}}/legacy_registry/_search",
+							"host": [
+								"{{opensearchUrl}}"
+							],
+							"path": [
+								"legacy_registry",
+								"_search"
 							]
 						}
 					},
