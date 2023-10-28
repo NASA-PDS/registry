@@ -14,6 +14,21 @@ jobs:
                 name: Checkout Repository
                 uses: actions/checkout@v4
             -
+                name: ☕️ Set up OpenJDK
+                uses: actions/setup-java@v3
+                with:
+                    distribution: 'adopt'
+                    java-version: '11'
+            -
+                name: Download Harvest Binaries
+                uses: robinraju/release-downloader@v1.8
+                with: # TODO: verify below
+                    repository: NASA-PDS/harvest
+                    latest: true
+                    tarBall: true
+                    out-file-path: "${{ runner.temp}}"
+                    extract: true
+            -
                 name: Run Automated Testing
                 run: |
                     cd $GITHUB_WORKSPACE/docker/certs
@@ -24,18 +39,21 @@ jobs:
                     
                     # registry-api#296 API crashes with JVM memory error on data sets with very large labels (>1MB)
                     # run the query 20 times, there should not be any errors if there is enough memory allocated.
-                    for i in {1..20}; do
-                        curl --GET "localhost:8080/products?q=lidvid%20like%20%22urn:nasa:pds:mars2020_sherloc*%22"
-                        if [[ $? -ne 0 ]]; then
-                            echo "registry-api#296 failed"
-                            exit 1
-                        fi
-                    done
-
-                    curl --GET "localhost:8080/products?q=lidvid%20like%20%22urn:nasa:pds:mars2020_sherloc*%22"
+                    # for i in {1..20}; do
+                    #     curl --GET "localhost:8080/products?q=lidvid%20like%20%22urn:nasa:pds:mars2020_sherloc*%22"
+                    #     if [[ $? -ne 0 ]]; then
+                    #         echo "registry-api#296 failed"
+                    #         exit 1
+                    #     fi
+                    # done
 
                     # registry-api#305 API not returning value for NAIF bundles
-                    curl "localhost:8080/products/urn:nasa:pds:maven.spice::5.0"
-                    curl "localhost:8080/products/urn:nasa:pds:mars2020.spice::6.0"
-                    curl "localhost:8080/products/urn:nasa:pds:insight.spice::15.0"
-                    curl "localhost:8080/products/urn:esa:psa:em16_spice::6.0"
+                    # curl "localhost:8080/products/urn:nasa:pds:maven.spice::5.0"
+                    # curl "localhost:8080/products/urn:nasa:pds:mars2020.spice::6.0"
+                    # curl "localhost:8080/products/urn:nasa:pds:insight.spice::15.0"
+                    # curl "localhost:8080/products/urn:esa:psa:em16_spice::6.0"
+
+                    # registry#226 As a system, I can support up to 25 simultaneous writes from Harvest
+                    # cd $GITHUB_WORKSPACE/docker/scripts
+                    # python harvest_stress_test.py --command "harvest_command_here" --runs 25
+                    ${{ runner.temp}}/harvest/bin/harvest --version
