@@ -21,6 +21,7 @@ jobs:
                     java-version: '11'
             -
                 name: Download Harvest Binaries
+                id: harvest
                 uses: robinraju/release-downloader@v1.8
                 with: # TODO: verify below
                     repository: NASA-PDS/harvest
@@ -54,10 +55,9 @@ jobs:
                     # curl "localhost:8080/products/urn:esa:psa:em16_spice::6.0"
             -
                 name: Harvest Testing
-                id: harvest
                 run: |
                     # registry#226 As a system, I can support up to 25 simultaneous writes from Harvest
                     # cd $GITHUB_WORKSPACE/docker/scripts
                     # python harvest_stress_test.py --command "harvest_command_here" --runs 25
-                    echo tag_name: "${{ steps.harvest.outputs.tag_name}}"
+                    echo tag_name: ${{ steps.harvest.outputs.tag_name}}
                     ${{ runner.temp}}/harvest-3.8.0/bin/harvest --version
