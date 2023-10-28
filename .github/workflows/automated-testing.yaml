@@ -31,11 +31,11 @@ jobs:
             -
                 name: Run Automated Testing
                 run: |
-                    cd $GITHUB_WORKSPACE/docker/certs
-                    ./generate-certs.sh
-                    cd ..
-                    docker compose \
-                        --ansi never --profile int-registry-batch-loader up --detach --quiet-pull
+                    # cd $GITHUB_WORKSPACE/docker/certs
+                    # ./generate-certs.sh
+                    # cd ..
+                    # docker compose \
+                    #     --ansi never --profile int-registry-batch-loader up --detach --quiet-pull
                     
                     # registry-api#296 API crashes with JVM memory error on data sets with very large labels (>1MB)
                     # run the query 20 times, there should not be any errors if there is enough memory allocated.
@@ -56,4 +56,4 @@ jobs:
                     # registry#226 As a system, I can support up to 25 simultaneous writes from Harvest
                     # cd $GITHUB_WORKSPACE/docker/scripts
                     # python harvest_stress_test.py --command "harvest_command_here" --runs 25
-                    ${{ runner.temp}}/harvest/bin/harvest --version
+                    ${{ runner.temp}}/harvest-3.8.0/bin/harvest --version
