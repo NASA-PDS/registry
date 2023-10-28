@@ -61,5 +61,5 @@ jobs:
                     # python harvest_stress_test.py --command "harvest_command_here" --runs 25
                     tag_name="${{ steps.harvest.outputs.tag_name}}"
                     tag_name="${tag_name#v}"
-                    echo tag_name: ${{ steps.harvest.outputs.tag_name}}
+                    echo tag_name: ${tag_name}
                     ${{ runner.temp }}/harvest-$tag_name/bin/harvest --version
