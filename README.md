@@ -1,6 +1,8 @@
 
 # 🪐 NASA PDS Registry repository
 
+[![DOI](https://zenodo.org/badge/419869439.svg)](https://zenodo.org/doi/10.5281/zenodo.6724814) [![🤪 Unstable integration & delivery](https://github.com/NASA-PDS/registry/actions/workflows/unstable-cicd.yaml/badge.svg)](https://github.com/NASA-PDS/registry/actions/workflows/unstable-cicd.yaml) [![😌 Stable integration & delivery](https://github.com/NASA-PDS/registry/actions/workflows/stable-cicd.yaml/badge.svg)](https://github.com/NASA-PDS/registry/actions/workflows/stable-cicd.yaml)
+
 This repository is an umbrella for the PDS registry application. The application is composed of multiple sub-components, each of them managed in their own repository and integrated here:
 
 - registry-loader: tools to load PDD4 producs to the registry
