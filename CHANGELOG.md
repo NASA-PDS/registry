@@ -1,8 +1,12 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-11-02)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-11-10)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...«unknown»)
+
+**Requirements:**
+
+- As a user, I want the registry to have 99.9999999% uptime [\#176](https://github.com/NASA-PDS/registry/issues/176)
 
 **Other closed issues:**
 
