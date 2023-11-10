@@ -196,3 +196,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a user, I want to register data product(s) that is mirrored across 2 or more organizations ([#245](https://github.com/NASA-PDS/registry/issues/245)) 
+
+
+This requirement is not impacted by the current version
