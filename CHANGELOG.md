@@ -1,8 +1,8 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-11-16)
+## [release/1.3.1](https://github.com/NASA-PDS/registry/tree/release/1.3.1) (2023-11-16)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...«unknown»)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...release/1.3.1)
 
 **Requirements:**
 
