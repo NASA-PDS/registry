@@ -1,5 +1,19 @@
 # Changelog
 
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-11-10)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...«unknown»)
+
+**Requirements:**
+
+- As a user, I want the registry to have 99.9999999% uptime [\#176](https://github.com/NASA-PDS/registry/issues/176)
+
+**Other closed issues:**
+
+- Assist with DUM infra setup in MCP [\#238](https://github.com/NASA-PDS/registry/issues/238)
+- Write documentation and Training for Registry monitoring [\#224](https://github.com/NASA-PDS/registry/issues/224)
+- Setup OIDC Authentication for MCP [\#222](https://github.com/NASA-PDS/registry/issues/222)
+
 ## [v1.3.0](https://github.com/NASA-PDS/registry/tree/v1.3.0) (2023-10-11)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.2.0...v1.3.0)
