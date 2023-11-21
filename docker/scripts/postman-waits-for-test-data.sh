@@ -44,5 +44,5 @@ echo "Waiting for test data to be available in the Registry-API, before starting
 sleep 240
 
 echo "Starting Postman tests..."  1>&2
-newman run /postman/postman-collection.json --env-var baseUrl="$REG_API_URL --env-var opensearchUrl=${ES_URL}
+newman run /postman/postman-collection.json --env-var baseUrl=${REG_API_URL} --env-var opensearchUrl=${ES_URL}
 
