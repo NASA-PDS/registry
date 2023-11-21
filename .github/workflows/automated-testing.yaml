@@ -42,7 +42,9 @@ jobs:
                     docker compose \
                         --ansi never --profile int-registry-batch-loader up --detach --quiet-pull
                     # Run tests
-                    ./int-test.sh
+                    docker compose \
+                        --ansi never --profile int-registry-batch-loader \
+                        run --rm --no-TTY reg-api-integration-test-with-wait
             -
                 name: Harvest Testing
                 run: |
