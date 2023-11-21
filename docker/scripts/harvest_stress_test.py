@@ -3,8 +3,8 @@
 """
 This script is used to run a stress test Harvest
 
-To stress test Harvest with 25 simultaneous writes, run the following command:
-python harvest_stress_test.py --command "harvest_command_here" --runs 25
+To stress test Harvest with x simultaneous writes, run the following command:
+python harvest_stress_test.py --command "harvest_command_here" --runs "num of runs"
 """
 
 import argparse
@@ -25,8 +25,8 @@ def run_command(command):
 
 def main():
     parser = argparse.ArgumentParser(description="Stress test Harvest with user-provided simultaneous runs.")
-    parser.add_argument("command", help="The command to run")
-    parser.add_argument("runs", type=int, help="The number of times to run Harvest simultaneously")
+    parser.add_argument("--command", help="The command to run")
+    parser.add_argument("--runs", type=int, help="The number of times to run Harvest simultaneously")
 
     args = parser.parse_args()
 
@@ -44,6 +44,7 @@ def main():
         futures = [executor.submit(run_command, command) for command in commands]
 
         # Wait for all the commands to complete and retrieve the results
+        # TODO: add timestamps to the results
         results = [future.result() for future in concurrent.futures.as_completed(futures)]
 
     # Print the results

@@ -85,3 +85,6 @@ build/
 
 # Generated during Jenkins Pipelines
 test-data/
+
+# Python virtual environment
+venv/
