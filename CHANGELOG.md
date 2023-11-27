@@ -1,5 +1,17 @@
 # Changelog
 
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-11-27)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
+
+**Defects:**
+
+- Missing NAIF from Legacy Dashboard [\#234](https://github.com/NASA-PDS/registry/issues/234) [[s.low](https://github.com/NASA-PDS/registry/labels/s.low)]
+
+**Other closed issues:**
+
+- Setup monitoring for Domain Notifications for all OpenSearch Domains in AWS [\#233](https://github.com/NASA-PDS/registry/issues/233)
+
 ## [v1.3.1](https://github.com/NASA-PDS/registry/tree/v1.3.1) (2023-11-16)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...v1.3.1)
