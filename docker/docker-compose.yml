@@ -249,6 +249,7 @@ services:
     image: ${POSTMAN_NEWMAN_IMAGE}
     environment:
       - REG_API_URL=${REG_API_URL}
+      - ES_URL=${ES_URL}
     volumes:
       - ${POSTMAN_COLLECTION_FILE}:/postman/postman-collection.json
       - ./scripts/postman-waits-for-test-data.sh:/usr/local/bin/postman-waits-for-test-data.sh
