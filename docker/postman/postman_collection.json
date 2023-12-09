@@ -930,7 +930,7 @@
 					"response": []
 				},
 				{
-					"name": "NASA-PDS/registry-api#296",
+					"name": "NASA-PDS/registry-api#296 API crashes with JVM memory error on data sets with very large labels (>1MB)",
 					"event": [
 						{
 							"listen": "test",
@@ -965,6 +965,25 @@
 									"key": "q",
 									"value": "lidvid%20like%20%22urn:nasa:pds:mars2020_sherloc*%22"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#305 API not returning value for NAIF bundles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products//urn:nasa:pds:mars2020.spice::6.0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"",
+								"urn:nasa:pds:mars2020.spice::6.0"
 							]
 						}
 					},
@@ -1057,6 +1076,11 @@
 		{
 			"key": "baseUrl",
 			"value": "http://registry-api:8080"
+		},
+		{
+			"key": "opensearchUrl",
+			"value": "https://elasticsearch:9200",
+			"type": "string"
 		}
 	]
 }

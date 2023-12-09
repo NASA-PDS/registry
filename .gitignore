@@ -88,3 +88,9 @@ test-data/
 
 # Python virtual environment
 venv/
+
+# Certificate files
+*.pem
+
+# SRL files
+*.srl

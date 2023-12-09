@@ -34,9 +34,15 @@
 # This script is used to wait for test data to be available in the Registry-API, before starting the Postman tests.
 # ------------------------------------------------------------------------------------------------------------------
 
-# Check if the ES_URL environment variable is set
+# Check if the REG_API_URL environment variable is set
 if [ -z "$REG_API_URL" ]; then
     echo "Error: '$REG_API_URL' (Registry API URL) environment variable is not set. Use docker's -e option." 1>&2
+    exit 1
+fi
+
+# Check if the ES_URL environment variable is set
+if [ -z "$ES_URL" ]; then
+    echo "Error: '$ES_URL' (OpenSearch URL) environment variable is not set. Use docker's -e option." 1>&2
     exit 1
 fi
 
@@ -44,5 +50,5 @@ echo "Waiting for test data to be available in the Registry-API, before starting
 sleep 240
 
 echo "Starting Postman tests..."  1>&2
-newman run /postman/postman-collection.json --env-var baseUrl=${REG_API_URL} --env-var opensearchUrl=${ES_URL}
+newman run /postman/postman-collection.json --insecure --env-var baseUrl=${REG_API_URL} --env-var opensearchUrl=${ES_URL}
 
