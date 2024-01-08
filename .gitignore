@@ -85,6 +85,8 @@ build/
 
 # Generated during Jenkins Pipelines
 test-data/
+.venv
+*.egg-info
 
 # Python virtual environment
 venv/
