@@ -763,6 +763,36 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#336 As a PDS operator, I want to know the health of the registry API service",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/healthcheck",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"healthcheck"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -971,19 +1001,132 @@
 					"response": []
 				},
 				{
-					"name": "NASA-PDS/registry-api#305 API not returning value for NAIF bundles",
+					"name": "NASA-PDS/registry-api#356 Accept:* response not defaulting to valid application/json",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products//urn:nasa:pds:mars2020.spice::6.0",
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020_sherloc::1.0",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"products",
-								"",
-								"urn:nasa:pds:mars2020.spice::6.0"
+								"urn:nasa:pds:mars2020_sherloc::1.0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#262 the request url in the error message does not make sense",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/classes/collections?q=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"classes",
+								"collections"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#341 members of a bundle does not work on new test dataset",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice::3.0/members",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"urn:nasa:pds:mars2020.spice::3.0",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#355 api does not return information that OpenSearch says is public",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"urn:nasa:pds:mars2020.spice",
+								"members"
 							]
 						}
 					},
