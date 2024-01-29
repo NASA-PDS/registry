@@ -1,10 +1,11 @@
 {
 	"info": {
-		"_postman_id": "2c190a3f-684a-440a-903f-c34f795695c5",
-		"name": "Planetary Data System API Reference Tests Copy 2",
+		"_postman_id": "bcdda625-da14-4466-bec4-3e9bf8c9af6c",
+		"name": "Planetary Data System API Reference Tests Copy 3",
 		"description": "Federated PDS API which provides actionable end points standardized\nbetween the different nodes.\n\n\nContact Support:\n Email: pds-operator@jpl.nasa.gov",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "1634405"
+		"_exporter_id": "11337552",
+		"_collection_link": "https://interstellar-satellite-406261.postman.co/workspace/My-Workspace~2ee1fece-93c6-4f38-806d-fa321e2e92d5/collection/11337552-bcdda625-da14-4466-bec4-3e9bf8c9af6c?action=share&source=collection_link&creator=11337552"
 	},
 	"item": [
 		{
@@ -179,7 +180,7 @@
 									"});",
 									"",
 									"pm.test(\"C2488908 processing level is derived\", () => {",
-									"    pm.expect(data[0][\"properties\"][\"pds:Primary_Result_Summary.pds:processing_level\"][0]).to.eql(\"Derived\"); ",
+									"    pm.expect(data[0][\"properties\"][\"pds:Primary_Result_Summary.pds:processing_level\"]).to.include(\"Derived\"); ",
 									"});",
 									""
 								],
@@ -793,6 +794,126 @@
 						}
 					},
 					"response": []
+				},
+                {
+					"name": "pagination 1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?sort=ops:Harvest_Info.ops:harvest_date_time&limit=2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "ops:Harvest_Info.ops:harvest_date_time"
+								},
+								{
+									"key": "limit",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "pagination 2",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?sort=ops:Harvest_Info.ops:harvest_date_time&limit=2&search-after=2024-01-23T22:53:30.402453Z",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "ops:Harvest_Info.ops:harvest_date_time"
+								},
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "search-after",
+									"value": "2024-01-23T22:53:30.402453Z"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "pagination members 1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:insight_rad:data_calibrated::7.0/members?sort=ops:Harvest_Info.ops:harvest_date_time&limit=2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"urn:nasa:pds:insight_rad:data_calibrated::7.0",
+								"members"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "ops:Harvest_Info.ops:harvest_date_time"
+								},
+								{
+									"key": "limit",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "pagination members 2",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:insight_rad:data_calibrated::7.0/members?sort=ops:Harvest_Info.ops:harvest_date_time&limit=2&search-after=2024-01-23T22:53:30.402453Z",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"urn:nasa:pds:insight_rad:data_calibrated::7.0",
+								"members"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "ops:Harvest_Info.ops:harvest_date_time"
+								},
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "search-after",
+									"value": "2024-01-23T22:53:30.402453Z"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -816,7 +937,7 @@
 									"",
 									"pm.test(\"C2488844 Response contains same number of properties\", () => {",
 									"    const responseJson = pm.response.json();",
-									"    pm.expect(responseJson.length).to.be.eql(141);",
+									"    pm.expect(responseJson.length).to.be.eql(143);",
 									"});",
 									"",
 									"pm.test(\"C2488844 Response property objects follow expected schema\", () => {",

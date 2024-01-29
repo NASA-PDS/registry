@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2023-12-25)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-01-24)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -12,6 +12,7 @@
 
 - Setup monitoring for Domain Notifications for all OpenSearch Domains in AWS [\#233](https://github.com/NASA-PDS/registry/issues/233)
 - Initial OpenSearch Serverless Setup and Deployment in MCP [\#223](https://github.com/NASA-PDS/registry/issues/223)
+- Add registry costs to the PDS EN Cloud spreadsheet [\#218](https://github.com/NASA-PDS/registry/issues/218)
 - Design authorization handshake with Cognito, API Gateway, and Lambda for multi-tenancy approach [\#179](https://github.com/NASA-PDS/registry/issues/179)
 
 ## [v1.3.1](https://github.com/NASA-PDS/registry/tree/v1.3.1) (2023-11-16)
