@@ -796,7 +796,7 @@
 					"response": []
 				},
                 {
-					"name": "pagination 1",
+					"name": "NASA-PDS/registry-api/352 pagination step 1",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -823,7 +823,7 @@
 					"response": []
 				},
 				{
-					"name": "pagination 2",
+					"name": "NASA-PDS/registry-api/352 pagination step 2",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -854,7 +854,7 @@
 					"response": []
 				},
 				{
-					"name": "pagination members 1",
+					"name": "NASA-PDS/registry-api/352 members pagination step 1",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -883,7 +883,7 @@
 					"response": []
 				},
 				{
-					"name": "pagination members 2",
+					"name": "NASA-PDS/registry-api/352 members pagination step 2",
 					"request": {
 						"method": "GET",
 						"header": [],
