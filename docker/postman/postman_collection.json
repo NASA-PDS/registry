@@ -687,7 +687,7 @@
 					"response": []
 				},
 				{
-					"name": "NASA-PDS/registry-api#349",
+					"name": "NASA-PDS/registry-api#349 Request for json+pds4 response fails in production",
 					"event": [
 						{
 							"listen": "test",
@@ -722,44 +722,6 @@
 							],
 							"path": [
 								"products"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "NASA-PDS/registry-api#262",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 400\", () => {",
-									"  pm.response.to.have.status(400);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/classes/collections?q=\"\"",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"",
-								"classes",
-								"collections"
-							],
-							"query": [
-								{
-									"key": "q",
-									"value": "\"\""
-								}
 							]
 						}
 					},
@@ -1130,6 +1092,12 @@
 								"exec": [
 									"pm.test(\"Status code is 200\", () => {",
 									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type should be 'application/json'\", () => {",
+									"    let expectedContentType = \"application/json\";",
+									"    let actualContentType = pm.response.headers.get(\"Content-Type\");",
+									"    pm.expect(actualContentType).to.include(expectedContentType);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1140,13 +1108,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020_sherloc::1.0",
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice::1.0",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"products",
-								"urn:nasa:pds:mars2020_sherloc::1.0"
+								"urn:nasa:pds:mars2020.spice::1.0"
 							]
 						}
 					},
@@ -1159,8 +1127,8 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", () => {",
-									"  pm.response.to.have.status(200);",
+									"pm.test(\"Status code is 404\", () => {",
+									"  pm.response.to.have.status(404);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1171,18 +1139,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/classes/collections?q=",
+							"raw": "{{baseUrl}}/classes//collections?q=\"\"",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"classes",
+								"",
 								"collections"
 							],
 							"query": [
 								{
 									"key": "q",
-									"value": ""
+									"value": "\"\""
 								}
 							]
 						}
@@ -1248,6 +1217,55 @@
 								"products",
 								"urn:nasa:pds:mars2020.spice",
 								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#343 API falsely reports 10000 hits for hits>10000",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Hits are less than 10,000\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.hits).to.be.below(10000);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?limit=100&q=product_class%20eq%20\"Product_Observational\"&start=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "q",
+									"value": "product_class%20eq%20\"Product_Observational\""
+								},
+								{
+									"key": "start",
+									"value": "0"
+								}
 							]
 						}
 					},
