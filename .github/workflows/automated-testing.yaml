@@ -45,13 +45,3 @@ jobs:
                     docker compose \
                         --ansi never --profile int-registry-batch-loader \
                         run --rm --no-TTY reg-api-integration-test-with-wait
-            -
-                name: Harvest Testing
-                run: |
-                    tag_name="${{ steps.harvest.outputs.tag_name }}"
-                    tag_name="${tag_name#v}"
-                    ${{ runner.temp }}/harvest-$tag_name/bin/harvest --version
-                    
-                    # registry#226 As a system, I can support up to 25 simultaneous writes from Harvest
-                    # cd $GITHUB_WORKSPACE/docker/scripts
-                    # python harvest_stress_test.py --command "harvest_command_here" --runs 25
