@@ -22,17 +22,6 @@ jobs:
                     distribution: 'adopt'
                     java-version: '11'
             -
-                name: Download Harvest Binaries
-                id: harvest
-                uses: robinraju/release-downloader@v1.8
-                with:
-                    repository: NASA-PDS/harvest
-                    latest: true
-                    tarBall: true
-                    out-file-path: "${{ runner.temp }}"
-                    extract: true
-                    # TODO: set fileName to harvest-$tag_name-bin.targ.gz so we only download this file
-            -
                 name: Registry API Testing
                 run: |
                     cd $GITHUB_WORKSPACE/docker/certs
