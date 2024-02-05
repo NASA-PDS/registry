@@ -1,0 +1,36 @@
+name: I&T Automated Testing
+
+on:
+    push:
+        branches:
+            -   'automated-testing'
+            -   '!main'
+    workflow_dispatch:
+
+jobs:
+    automated-testing:
+        name: Registry Automated Testing
+        runs-on: ubuntu-latest
+        steps:
+            -
+                name: Checkout Repository
+                uses: actions/checkout@v4
+            -
+                name: ☕️ Set up OpenJDK
+                uses: actions/setup-java@v3
+                with:
+                    distribution: 'adopt'
+                    java-version: '11'
+            -
+                name: Registry API Testing
+                run: |
+                    cd $GITHUB_WORKSPACE/docker/certs
+                    ./generate-certs.sh
+                    cd ..
+                    # Build container
+                    docker compose \
+                        --ansi never --profile int-registry-batch-loader up --detach --quiet-pull
+                    # Run tests
+                    docker compose \
+                        --ansi never --profile int-registry-batch-loader \
+                        run --rm --no-TTY reg-api-integration-test-with-wait

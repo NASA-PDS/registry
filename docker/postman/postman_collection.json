@@ -687,6 +687,77 @@
 					"response": []
 				},
 				{
+					"name": "NASA-PDS/registry-api#349 Request for json+pds4 response fails in production",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.nasa.pds.pds4+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#336 As a PDS operator, I want to know the health of the registry API service",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/healthcheck",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"healthcheck"
+							]
+						}
+					},
+					"response": []
+				},
+                {
 					"name": "NASA-PDS/registry-api/352 pagination step 1",
 					"request": {
 						"method": "GET",
@@ -970,6 +1041,235 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#296 API crashes with JVM memory error on data sets with very large labels (>1MB)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const numOfRequests = 20",
+									"",
+									"for (let i = 0; i < numOfRequests; i++) {",
+									"    let query = i + 1",
+									"    pm.test(\"Query \" + query + \": status code is 200\", () => {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=lidvid%20like%20%22urn:nasa:pds:mars2020_sherloc*%22",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "lidvid%20like%20%22urn:nasa:pds:mars2020_sherloc*%22"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#356 Accept:* response not defaulting to valid application/json",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type should be 'application/json'\", () => {",
+									"    let expectedContentType = \"application/json\";",
+									"    let actualContentType = pm.response.headers.get(\"Content-Type\");",
+									"    pm.expect(actualContentType).to.include(expectedContentType);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice::1.0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"urn:nasa:pds:mars2020.spice::1.0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#262 the request url in the error message does not make sense",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", () => {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/classes//collections?q=\"\"",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"classes",
+								"",
+								"collections"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "\"\""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#341 members of a bundle does not work on new test dataset",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice::3.0/members",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"urn:nasa:pds:mars2020.spice::3.0",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#355 api does not return information that OpenSearch says is public",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"urn:nasa:pds:mars2020.spice",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#343 API falsely reports 10000 hits for hits>10000",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Hits are less than 10,000\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.hits).to.be.below(10000);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?limit=100&q=product_class%20eq%20\"Product_Observational\"&start=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "q",
+									"value": "product_class%20eq%20\"Product_Observational\""
+								},
+								{
+									"key": "start",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1058,6 +1358,11 @@
 		{
 			"key": "baseUrl",
 			"value": "http://registry-api:8080"
+		},
+		{
+			"key": "opensearchUrl",
+			"value": "https://elasticsearch:9200",
+			"type": "string"
 		}
 	]
 }

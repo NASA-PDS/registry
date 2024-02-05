@@ -87,3 +87,12 @@ build/
 test-data/
 .venv
 *.egg-info
+
+# Python virtual environment
+venv/
+
+# Certificate files
+*.pem
+
+# SRL files
+*.srl
