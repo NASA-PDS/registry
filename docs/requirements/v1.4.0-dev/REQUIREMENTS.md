@@ -200,3 +200,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a manager, I want to know the uptime statistics for the registry ([#262](https://github.com/NASA-PDS/registry/issues/262)) 
+
+
+This requirement is not impacted by the current version
