@@ -15,6 +15,8 @@ You can change that value to any of the following:
  * restricted
  * staged
 
+Status *"archived"* and *"certified"* make the products visible to the public, currently through the PDS Web API.
+
 You can use either Registry Manager or Harvest Client (Scalable Harvest deployments only) for this task.
 
 Registry Manager
