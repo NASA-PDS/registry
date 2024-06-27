@@ -35,4 +35,5 @@ node.max_local_storage_nodes: 3
 
 #logger.level: DEBUG
 
+
 ######## End OpenSearch Security Demo Configuration ########
