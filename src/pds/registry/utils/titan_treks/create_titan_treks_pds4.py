@@ -51,7 +51,8 @@ def main():
                 if name == src:
                     src = os.path.abspath(os.path.join(root, name))
 
-        shutil.copy(src, dest)
+        if not os.path.exists(src):
+            shutil.copy(src, dest)
 
     # get json from url
     url = "https://trek.nasa.gov/titan/TrekServices/ws/index/eq/" + \

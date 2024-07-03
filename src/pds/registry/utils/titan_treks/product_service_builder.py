@@ -2,6 +2,9 @@
 import xml.etree.ElementTree as Et
 from datetime import date
 
+import requests
+from bs4 import BeautifulSoup
+
 #
 # This code is very specific to Titan Treks (ie hardcoded urls),
 # but should be able to be generalized easily to other Treks APIs.
@@ -71,7 +74,7 @@ def create_identification_area(data, verbose=False):
     :param data: Titan json data from Treks api
     :param verbose: display subtree when finished
 
-    :return: IdentificationArea section of pds4 xml, lidvid of file
+    :return: Identification_Area section of pds4 xml, lidvid of file
     """
     identification_area = Et.Element("Identification_Area")
 
@@ -111,7 +114,8 @@ def create_observation_area(data, verbose=False):
     """
     observation_area = Et.Element("Observation_Area")
 
-    # TODO: add time coordinates, they are not found in json
+    # Time_Coordinates subtree
+    observation_area.append(create_time_coordinates(data, verbose))
 
     # Investigation_Area subtree
     investigation_area = Et.SubElement(observation_area, "Investigation_Area")
@@ -159,13 +163,45 @@ def create_observation_area(data, verbose=False):
     return observation_area
 
 
+def create_time_coordinates(data, verbose=False):
+    """Creates Time_Coordinates association for Observation_Area.
+
+    :param data: Titan json data from Treks api
+    :param verbose: display subtree when finished
+
+    :return: Time_Coordinates section of pds4 xml
+    """
+    time_coordinates = Et.Element("Time_Coordinates")
+
+    # load in fgdc html
+    url = "https://trek.nasa.gov/titan/TrekWS/rest/cat/metadata/fgdc/html?label=" + data["productLabel"]
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content)
+
+    # get times from fgdc metadata
+    start = soup.find("meta", property="dc.coverage.t.min")
+    stop = soup.find("meta", property="dc.coverage.t.max")
+
+    # add in data
+    Et.SubElement(time_coordinates, "start_date_time").text = start
+    Et.SubElement(time_coordinates, "stop_date_time").text = stop
+
+    if verbose:
+        print("\n-----------------------------------------------------------------------------")
+        print("Created Time_Coordinates Tag:")
+        print(Et.tostring(time_coordinates))
+        print("-----------------------------------------------------------------------------\n")
+
+    return time_coordinates
+
+
 def create_discipline_area(data, verbose=False):
     """Creates Discipline_Area association for Observation_Area.
 
     :param data: Titan json data from Treks api
     :param verbose: display subtree when finished
 
-    :return: Observation_Area section of pds4 xml
+    :return: Discipline_Area section of pds4 xml
     """
     # many attributes/ associations missing in data that pds4 spec has a cardinality requirement for
     discipline_area = Et.Element("Discipline_Area")
@@ -234,9 +270,15 @@ def create_service(data, verbose=False):
 
     Et.SubElement(service, "name").text = data["title"]
     Et.SubElement(service, "abstract_desc").text = data["description"]
-    Et.SubElement(service, "url").text = "https://trek.nasa.gov/tiles/Titan/EQ/" + \
-        data["productLabel"] + \
-        "/1.0.0/WMTSCapabilities.xml"
+
+    # urls: wmts capabilities, fgdc, treks product
+    urls = [
+        "https://trek.nasa.gov/tiles/Titan/EQ/" + data["productLabel"] + "/1.0.0/WMTSCapabilities.xml",
+        "https://trek.nasa.gov/titan/TrekWS/rest/cat/metadata/stream?label=" + data["productLabel"]
+    ]
+    for url in urls:
+        Et.SubElement(service, "url").text = url
+
     Et.SubElement(service, "release_date").text = data["data_created_date"][:10]
     Et.SubElement(service, "service_type").text = "OGC WMTS"
     Et.SubElement(service, "category").text = "Visualization"
