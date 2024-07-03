@@ -3,6 +3,8 @@
 The layers are scraped using the Titan Treks API.
 """
 import argparse
+import os
+import shutil
 from pathlib import Path
 
 import requests
@@ -11,7 +13,7 @@ from . import product_service_builder as psb
 
 
 def main():
-    """Main function of script."""
+    """Generate PDS4 XML labels for Titan Treks OGC/WMTS GIS Service."""
     # set up command line args
     parser = argparse.ArgumentParser(description="Customize save pds4 xml labels created for Titan Treks",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -38,9 +40,18 @@ def main():
     dest = args.destination_directory
     verbose = args.verbose
 
-    # create destination path if it does not exist
     if save_xml:
+        # create destination path if it does not exist
         Path(dest).mkdir(parents=True, exist_ok=True)
+
+        # copy collection pds4 into the destination path
+        src = "titan-treks-api-collection.xml"
+        for root, _, files in os.walk("."):  # find path to src
+            for name in files:
+                if name == src:
+                    src = os.path.abspath(os.path.join(root, name))
+
+        shutil.copy(src, dest)
 
     # get json from url
     url = "https://trek.nasa.gov/titan/TrekServices/ws/index/eq/" + \
