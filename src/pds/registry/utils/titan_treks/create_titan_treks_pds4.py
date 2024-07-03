@@ -11,7 +11,7 @@ from . import product_service_builder as psb
 
 
 def main():
-    """Main function of script."""
+    """Generate PDS4 XML labels for Titan Treks OGC/WMTS GIS Service."""
     # set up command line args
     parser = argparse.ArgumentParser(description="Customize save pds4 xml labels created for Titan Treks",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
