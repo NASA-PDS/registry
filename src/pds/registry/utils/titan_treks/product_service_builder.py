@@ -12,7 +12,7 @@ from datetime import date
 def create_pds4_xml(data, save_xml=False, dest="xml_files", verbose=False):
     """Creates the pds4 xml labels for the given data.
 
-    :param data: data to fill the labels with
+    :param data: Titan json data from Treks api
     :param save_xml: True if files will be saved
     :param dest: directory path to save files in
     :param verbose: display tree when finished
@@ -68,7 +68,7 @@ def create_pds4_xml(data, save_xml=False, dest="xml_files", verbose=False):
 def create_identification_area(data, verbose=False):
     """Creates Identification_Area for pds4 label.
 
-    :param data: data to fill the labels with
+    :param data: Titan json data from Treks api
     :param verbose: display subtree when finished
 
     :return: IdentificationArea section of pds4 xml, lidvid of file
@@ -104,7 +104,7 @@ def create_identification_area(data, verbose=False):
 def create_observation_area(data, verbose=False):
     """Creates Observation_Area for pds4 label.
 
-    :param data: data to fill the labels with
+    :param data: Titan json data from Treks api
     :param verbose: display subtree when finished
 
     :return: Observation_Area section of pds4 xml
@@ -162,7 +162,7 @@ def create_observation_area(data, verbose=False):
 def create_discipline_area(data, verbose=False):
     """Creates Discipline_Area association for Observation_Area.
 
-    :param data: data to fill the labels with
+    :param data: Titan json data from Treks api
     :param verbose: display subtree when finished
 
     :return: Observation_Area section of pds4 xml
@@ -225,7 +225,7 @@ def create_discipline_area(data, verbose=False):
 def create_service(data, verbose=False):
     """Creates Service for pds4 label.
 
-    :param data: data to fill the labels with
+    :param data: Titan json data from Treks api
     :param verbose: display subtree when finished
 
     :return: Service section of pds4 xml
