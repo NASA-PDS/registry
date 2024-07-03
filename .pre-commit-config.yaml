@@ -1,6 +1,6 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.6.0
     hooks:
     -   id: trailing-whitespace
         exclude: REQUIREMENTS\.md$
@@ -13,7 +13,7 @@ repos:
         files: .*\.(yaml|yml)$
 
 -   repo: https://github.com/asottile/reorder_python_imports
-    rev: v2.6.0
+    rev: v3.13.0
     hooks:
     -   id: reorder-python-imports
         files: ^src/|tests/
@@ -54,7 +54,7 @@ repos:
 
 -   repo: https://github.com/NASA-AMMOS/slim-detect-secrets
     # using commit id for now, will change to tag when official version is released
-    rev: 91e097ad4559ae6ab785c883dc5ed989202c7fbe
+    rev: 62a56fb6f51b840bbd7bfa8bc5ae96dfe4fdfa01
     hooks:
       - id: detect-secrets
         args:

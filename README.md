@@ -25,6 +25,19 @@ This repository specifically contains these PDS registry application resources:
 All users and developers of the NASA-PDS software are expected to abide by our [Code of Conduct](https://github.com/NASA-PDS/.github/blob/main/CODE_OF_CONDUCT.md). Please read this to ensure you understand the expectations of our community.
 
 
+## Utilities
+* Titan Treks
+    * The Titan Treks utilities can be used to create pds4 labels for the layers given in the Titan Treks API
+    * From the `utils/titan_treks/` directory, run `create_titan_treks_pds4.py`:
+
+        ```python3 create_titan_treks_pds4.py -s```
+
+    * `create_titan_treks_pds4.py` has 3 paramaters to customize the script
+    `-d DEST, --destination-directory DEST` Destination to save the pds4 xml labels, default `xml_files/product_service`
+    `-s, --save-xml` Save the xml files to the destination folder, deafult `True`
+    `-v, --verbose` Verbose, default `False`
+
+
 ## Development
 
 To develop this project, use your favorite text editor, or an integrated development environment with Python support, such as [PyCharm](https://www.jetbrains.com/pycharm/).
@@ -33,7 +46,6 @@ To develop this project, use your favorite text editor, or an integrated develop
 ### Contributing
 
 For information on how to contribute to NASA-PDS codebases please take a look at our [Contributing guidelines](https://github.com/NASA-PDS/.github/blob/main/CONTRIBUTING.md).
-
 
 
 ### Documentation
