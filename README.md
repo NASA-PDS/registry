@@ -28,9 +28,9 @@ All users and developers of the NASA-PDS software are expected to abide by our [
 ## Utilities
 * Titan Treks
     * The Titan Treks utilities can be used to create pds4 labels for the layers given in the Titan Treks API
-    * From the `utils/titan_treks/` directory, run `create_titan_treks_pds4.py`:
+    * Run the command:
 
-        ```python3 create_titan_treks_pds4.py -s```
+        ```create-titan-treks-pds4```
 
     * `create_titan_treks_pds4.py` has 3 paramaters to customize the script
     `-d DEST, --destination-directory DEST` Destination to save the pds4 xml labels, default `xml_files/product_service`
