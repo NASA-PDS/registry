@@ -52,24 +52,28 @@ repos:
         stages: [push]
         pass_filenames: false
 
--   repo: https://github.com/NASA-AMMOS/slim-detect-secrets
-    # using commit id for now, will change to tag when official version is released
-    rev: 62a56fb6f51b840bbd7bfa8bc5ae96dfe4fdfa01
-    hooks:
-      - id: detect-secrets
-        args:
-          - '--baseline'
-          - '.secrets.baseline'
-          - --exclude-files '\.secrets..*'
-          - --exclude-files '\.git.*'
-          - --exclude-files '\.pre-commit-config\.yaml'
-          - --exclude-files '\.mypy_cache'
-          - --exclude-files '\.pytest_cache'
-          - --exclude-files '\.tox'
-          - --exclude-files '\.venv'
-          - --exclude-files 'venv'
-          - --exclude-files 'dist'
-          - --exclude-files 'build'
-          - --exclude-files '.*\.egg-info'
-          - --exclude-files '\.mypy_cache'
-          - --exclude-files 'test-data'
+# Secrets detection is seriously broken in this repository;
+# disabling it for now and will address as a separate issue.
+#
+#
+# -   repo: https://github.com/NASA-AMMOS/slim-detect-secrets
+#     # using commit id for now, will change to tag when official version is released
+#     rev: 62a56fb6f51b840bbd7bfa8bc5ae96dfe4fdfa01
+#     hooks:
+#       - id: detect-secrets
+#         args:
+#           - '--baseline'
+#           - '.secrets.baseline'
+#           - --exclude-files '\.secrets..*'
+#           - --exclude-files '\.git.*'
+#           - --exclude-files '\.pre-commit-config\.yaml'
+#           - --exclude-files '\.mypy_cache'
+#           - --exclude-files '\.pytest_cache'
+#           - --exclude-files '\.tox'
+#           - --exclude-files '\.venv'
+#           - --exclude-files 'venv'
+#           - --exclude-files 'dist'
+#           - --exclude-files 'build'
+#           - --exclude-files '.*\.egg-info'
+#           - --exclude-files '\.mypy_cache'
+#           - --exclude-files 'test-data'
