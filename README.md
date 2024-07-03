@@ -32,10 +32,12 @@ All users and developers of the NASA-PDS software are expected to abide by our [
 
         ```create-titan-treks-pds4```
 
-    * `create_titan_treks_pds4.py` has 3 paramaters to customize the script
+    * `create-titan-treks-pds4` has 3 paramaters to customize the script
     `-d DEST, --destination-directory DEST` Destination to save the pds4 xml labels, default `xml_files/product_service`
     `-s, --save-xml` Save the xml files to the destination folder, deafult `True`
     `-v, --verbose` Verbose, default `False`
+    * These can also be seen with the command:
+        ```create-titan-treks-pds4 --help```
 
 
 ## Development

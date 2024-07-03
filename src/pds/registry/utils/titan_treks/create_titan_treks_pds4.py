@@ -32,12 +32,11 @@ def main():
                         default=False)
 
     args = parser.parse_args()
-    config = vars(args)
 
     # parse args
-    save_xml = config['save_xml']
-    dest = config['destination_directory']
-    verbose = config['verbose']
+    save_xml = args.save_xml
+    dest = args.destination_directory
+    verbose = args.verbose
 
     # create destination path if it does not exist
     if save_xml:
