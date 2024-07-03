@@ -27,6 +27,11 @@ All users and developers of the NASA-PDS software are expected to abide by our [
 
 ## Utilities
 * Titan Treks
+    * To deploy the package run one of these commands from the root directory:
+        ```pip install .``` for users
+        ```pip install -e '.[dev]'``` for developers
+        * This package is also hosted on the "cheeseshop" and can be installed with
+            ```pip install pds.registry```
     * The Titan Treks utilities can be used to create pds4 labels for the layers given in the Titan Treks API
     * Run the command:
 
