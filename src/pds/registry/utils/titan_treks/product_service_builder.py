@@ -173,17 +173,17 @@ def create_time_coordinates(data, verbose=False):
     """
     time_coordinates = Et.Element("Time_Coordinates")
 
-    # load in fgdc html
-    url = "https://trek.nasa.gov/titan/TrekWS/rest/cat/metadata/fgdc/html?label=" + data["productLabel"]
+    # load in fgdc xml
+    url = "https://trek.nasa.gov/titan/TrekWS/rest/cat/metadata/stream?label=" + data["productLabel"]
     response = requests.get(url)
-    soup = BeautifulSoup(response.content, features='lxml')
+    soup = BeautifulSoup(response.content, features='xml')
 
     # get times from fgdc metadata
-    start = soup.find("meta", attrs={"name": "dc.coverage.t.min"})
+    start = soup.find("begdate")
 
     # ensure the metadata exists
     if start:
-        start = start["content"]
+        start = start.contents[0]
 
         # format dates
         y_start = start[:4]
@@ -195,9 +195,9 @@ def create_time_coordinates(data, verbose=False):
         Et.SubElement(time_coordinates, "start_date_time").text = start
 
     # repeat for stop time
-    stop = soup.find("meta", attrs={"name": "dc.coverage.t.max"})
+    stop = soup.find("enddate")
     if stop:
-        stop = stop["content"]
+        stop = stop.contents[0]
 
         y_stop = stop[:4]
         m_stop = stop[4:6]
@@ -292,6 +292,7 @@ def create_service(data, verbose=False):
     Et.SubElement(service, "abstract_desc").text = data["description"]
 
     # urls: wmts capabilities, fgdc, treks product
+    # & are not escaping and the encoding breaks the link for treks
     treks_url = "https://trek.nasa.gov/titan/#v=0.1&x=0&y=0&z=1&p=urn%3Aogc%3Adef%3Acrs%3AIAU2000%3A%3A60600&d=&l=" + \
         data["productLabel"] + "%2Ctrue%2C1"
     urls = [

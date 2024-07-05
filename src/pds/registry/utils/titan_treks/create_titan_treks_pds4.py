@@ -51,8 +51,10 @@ def main():
                 if name == src:
                     src = os.path.abspath(os.path.join(root, name))
 
-        if not os.path.exists(src):
-            shutil.copy(src, dest)
+        if os.path.exists(src):
+            # skip copy if file already exists
+            if not os.path.exists(dest + "/titan-treks-api-collection.xml"):
+                shutil.copy2(src, dest)
 
     # get json from url
     url = "https://trek.nasa.gov/titan/TrekServices/ws/index/eq/" + \
