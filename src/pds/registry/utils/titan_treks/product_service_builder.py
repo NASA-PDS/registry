@@ -176,15 +176,35 @@ def create_time_coordinates(data, verbose=False):
     # load in fgdc html
     url = "https://trek.nasa.gov/titan/TrekWS/rest/cat/metadata/fgdc/html?label=" + data["productLabel"]
     response = requests.get(url)
-    soup = BeautifulSoup(response.content)
+    soup = BeautifulSoup(response.content, features='lxml')
 
     # get times from fgdc metadata
-    start = soup.find("meta", property="dc.coverage.t.min")
-    stop = soup.find("meta", property="dc.coverage.t.max")
+    start = soup.find("meta", attrs={"name": "dc.coverage.t.min"})
 
-    # add in data
-    Et.SubElement(time_coordinates, "start_date_time").text = start
-    Et.SubElement(time_coordinates, "stop_date_time").text = stop
+    # ensure the metadata exists
+    if start:
+        start = start["content"]
+
+        # format dates
+        y_start = start[:4]
+        m_start = start[4:6]
+        d_start = start[6:]
+        start = y_start + '-' + m_start + '-' + d_start
+
+        # add in data
+        Et.SubElement(time_coordinates, "start_date_time").text = start
+
+    # repeat for stop time
+    stop = soup.find("meta", attrs={"name": "dc.coverage.t.max"})
+    if stop:
+        stop = stop["content"]
+
+        y_stop = stop[:4]
+        m_stop = stop[4:6]
+        d_stop = stop[6:]
+        stop = y_stop + '-' + m_stop + '-' + d_stop
+
+        Et.SubElement(time_coordinates, "stop_date_time").text = stop
 
     if verbose:
         print("\n-----------------------------------------------------------------------------")
@@ -272,9 +292,12 @@ def create_service(data, verbose=False):
     Et.SubElement(service, "abstract_desc").text = data["description"]
 
     # urls: wmts capabilities, fgdc, treks product
+    treks_url = "https://trek.nasa.gov/titan/#v=0.1&x=0&y=0&z=1&p=urn%3Aogc%3Adef%3Acrs%3AIAU2000%3A%3A60600&d=&l=" + \
+        data["productLabel"] + "%2Ctrue%2C1"
     urls = [
         "https://trek.nasa.gov/tiles/Titan/EQ/" + data["productLabel"] + "/1.0.0/WMTSCapabilities.xml",
-        "https://trek.nasa.gov/titan/TrekWS/rest/cat/metadata/stream?label=" + data["productLabel"]
+        "https://trek.nasa.gov/titan/TrekWS/rest/cat/metadata/stream?label=" + data["productLabel"],
+        treks_url
     ]
     for url in urls:
         Et.SubElement(service, "url").text = url
