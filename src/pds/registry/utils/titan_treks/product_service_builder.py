@@ -3,7 +3,6 @@ import xml.etree.ElementTree as Et
 from datetime import date
 
 import requests
-from bs4 import BeautifulSoup
 
 #
 # This code is very specific to Titan Treks (ie hardcoded urls),
@@ -176,14 +175,13 @@ def create_time_coordinates(data, verbose=False):
     # load in fgdc xml
     url = "https://trek.nasa.gov/titan/TrekWS/rest/cat/metadata/stream?label=" + data["productLabel"]
     response = requests.get(url)
-    soup = BeautifulSoup(response.content, features='xml')
+    fgdc_root = Et.fromstring(response.content)
 
     # get times from fgdc metadata
-    start = soup.find("begdate")
-
+    start = fgdc_root.find(".//begdate")
     # ensure the metadata exists
-    if start:
-        start = start.contents[0]
+    if start is not None:
+        start = start.text
 
         # format dates
         y_start = start[:4]
@@ -195,9 +193,9 @@ def create_time_coordinates(data, verbose=False):
         Et.SubElement(time_coordinates, "start_date_time").text = start
 
     # repeat for stop time
-    stop = soup.find("enddate")
-    if stop:
-        stop = stop.contents[0]
+    stop = fgdc_root.find(".//enddate")
+    if stop is not None:
+        stop = stop.text
 
         y_stop = stop[:4]
         m_stop = stop[4:6]
