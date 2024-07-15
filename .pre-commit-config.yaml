@@ -1,6 +1,6 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.6.0
     hooks:
     -   id: trailing-whitespace
         exclude: REQUIREMENTS\.md$
@@ -13,7 +13,7 @@ repos:
         files: .*\.(yaml|yml)$
 
 -   repo: https://github.com/asottile/reorder_python_imports
-    rev: v2.6.0
+    rev: v3.13.0
     hooks:
     -   id: reorder-python-imports
         files: ^src/|tests/
@@ -52,24 +52,28 @@ repos:
         stages: [push]
         pass_filenames: false
 
--   repo: https://github.com/NASA-AMMOS/slim-detect-secrets
-    # using commit id for now, will change to tag when official version is released
-    rev: 91e097ad4559ae6ab785c883dc5ed989202c7fbe
-    hooks:
-      - id: detect-secrets
-        args:
-          - '--baseline'
-          - '.secrets.baseline'
-          - --exclude-files '\.secrets..*'
-          - --exclude-files '\.git.*'
-          - --exclude-files '\.pre-commit-config\.yaml'
-          - --exclude-files '\.mypy_cache'
-          - --exclude-files '\.pytest_cache'
-          - --exclude-files '\.tox'
-          - --exclude-files '\.venv'
-          - --exclude-files 'venv'
-          - --exclude-files 'dist'
-          - --exclude-files 'build'
-          - --exclude-files '.*\.egg-info'
-          - --exclude-files '\.mypy_cache'
-          - --exclude-files 'test-data'
+# Secrets detection is seriously broken in this repository;
+# disabling it for now and will address as a separate issue.
+#
+#
+# -   repo: https://github.com/NASA-AMMOS/slim-detect-secrets
+#     # using commit id for now, will change to tag when official version is released
+#     rev: 62a56fb6f51b840bbd7bfa8bc5ae96dfe4fdfa01
+#     hooks:
+#       - id: detect-secrets
+#         args:
+#           - '--baseline'
+#           - '.secrets.baseline'
+#           - --exclude-files '\.secrets..*'
+#           - --exclude-files '\.git.*'
+#           - --exclude-files '\.pre-commit-config\.yaml'
+#           - --exclude-files '\.mypy_cache'
+#           - --exclude-files '\.pytest_cache'
+#           - --exclude-files '\.tox'
+#           - --exclude-files '\.venv'
+#           - --exclude-files 'venv'
+#           - --exclude-files 'dist'
+#           - --exclude-files 'build'
+#           - --exclude-files '.*\.egg-info'
+#           - --exclude-files '\.mypy_cache'
+#           - --exclude-files 'test-data'
