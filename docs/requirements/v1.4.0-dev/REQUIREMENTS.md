@@ -180,10 +180,6 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
-## As a user, I want to manually update a product's file location (file_ref) ([#209](https://github.com/NASA-PDS/registry/issues/209)) 
-
-
-This requirement is not impacted by the current version
 ## As an operator, I want to be notified of when Registry storage capacity exceeds 75% capacity. ([#211](https://github.com/NASA-PDS/registry/issues/211)) 
 
 
@@ -201,6 +197,10 @@ This requirement is not impacted by the current version
 
 This requirement is not impacted by the current version
 ## As a manager, I want to know the uptime statistics for the registry ([#262](https://github.com/NASA-PDS/registry/issues/262)) 
+
+
+This requirement is not impacted by the current version
+## As a data manager, I want to query OpenSearch Serverless from the command-line ([#273](https://github.com/NASA-PDS/registry/issues/273)) 
 
 
 This requirement is not impacted by the current version
