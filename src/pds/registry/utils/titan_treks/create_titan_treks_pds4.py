@@ -14,6 +14,23 @@ from . import product_service_builder as psb
 
 def main():
     """Generate PDS4 XML labels for Titan Treks OGC/WMTS GIS Service."""
+    # valid targets for treks
+    valid_targets = [
+        "bennu",
+        "ceres",
+        "europa",
+        "ganymede",
+        "icy moons",
+        "mars",
+        "mercury",
+        "moon",
+        "phobos",
+        "ryugu",
+        "titan",
+        "venus",
+        "vesta"
+    ]
+
     # set up command line args
     parser = argparse.ArgumentParser(description="Customize save pds4 xml labels created for Titan Treks",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -26,12 +43,16 @@ def main():
     parser.add_argument("-d",
                         "--destination-directory",
                         help="Directory to save pds4 xml files",
-                        default="xml_files/product_service")
+                        default="treks_xml/product_service")
     parser.add_argument("-v",
                         "--verbose",
                         action="store_true",
                         help="Verbosity of file creation",
                         default=False)
+    parser.add_argument("-t",
+                        "--target",
+                        help=f"Treks target to generate labels for: {valid_targets}",
+                        default="titan")
 
     args = parser.parse_args()
 
@@ -39,6 +60,12 @@ def main():
     save_xml = args.save_xml
     dest = args.destination_directory
     verbose = args.verbose
+    target = args.target.lower()
+
+    # check for valid target
+    if target not in valid_targets:
+        print("Invalid target. Must be one of:", valid_targets)
+        exit()
 
     if save_xml:
         # create destination path if it does not exist
@@ -57,7 +84,7 @@ def main():
                 shutil.copy2(src, dest)
 
     # get json from url
-    url = "https://trek.nasa.gov/titan/TrekServices/ws/index/eq/" + \
+    url = "https://trek.nasa.gov/" + target + "/TrekServices/ws/index/eq/" + \
         "listVisibleLayers?proj=urn:ogc:def:crs:EPSG::60620&start=0&rows=2147483647"
     response = requests.get(url)
     json_data = response.json()
@@ -74,7 +101,7 @@ def main():
             print("Creating pds4 xml for doc:", i)
 
         data = docs[i]
-        _, lidvid = psb.create_pds4_xml(data=data, save_xml=save_xml, dest=dest, verbose=verbose)
+        _, lidvid = psb.create_pds4_xml(data=data, target=target, save_xml=save_xml, dest=dest, verbose=verbose)
         entry = "P," + lidvid + "\n"
         inventory_entries.append(entry)
 

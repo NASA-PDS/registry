@@ -11,10 +11,11 @@ import requests
 #
 
 
-def create_pds4_xml(data, save_xml=False, dest="xml_files", verbose=False):
+def create_pds4_xml(data, target, save_xml=False, dest="xml_files", verbose=False):
     """Creates the pds4 xml labels for the given data.
 
-    :param data: Titan json data from Treks api
+    :param data: json data from Treks api
+    :param target: Treks target of the data
     :param save_xml: True if files will be saved
     :param dest: directory path to save files in
     :param verbose: display tree when finished
@@ -22,9 +23,9 @@ def create_pds4_xml(data, save_xml=False, dest="xml_files", verbose=False):
     :return: pds4 xml populated with the given data
     """
     # get necessary subtrees
-    identification_area, lidvid = create_identification_area(data, verbose)
-    observation_area = create_observation_area(data, verbose)
-    service = create_service(data, verbose)
+    identification_area, lidvid = create_identification_area(data, target, verbose)
+    observation_area = create_observation_area(data, target, verbose)
+    service = create_service(data, target, verbose)
     # TODO: add reference list?
 
     # create root
@@ -67,10 +68,11 @@ def create_pds4_xml(data, save_xml=False, dest="xml_files", verbose=False):
     return tree, lidvid
 
 
-def create_identification_area(data, verbose=False):
+def create_identification_area(data, target, verbose=False):
     """Creates Identification_Area for pds4 label.
 
-    :param data: Titan json data from Treks api
+    :param data: json data from Treks api
+    :param target: Treks target of the data
     :param verbose: display subtree when finished
 
     :return: Identification_Area section of pds4 xml, lidvid of file
@@ -78,7 +80,7 @@ def create_identification_area(data, verbose=False):
     identification_area = Et.Element("Identification_Area")
 
     # TODO: create bundleID and collectionID
-    logical_identifier = "urn:nasa:pds:treks:titan_treks_layers:" + data["productLabel"].lower()
+    logical_identifier = "urn:nasa:pds:treks:" + target + "_treks_layers:" + data["productLabel"].lower()
     version_id = str(1.0)
     lidvid = logical_identifier + "::" + version_id
     Et.SubElement(identification_area, "logical_identifier").text = logical_identifier  # productID needs to lowercase
@@ -103,10 +105,11 @@ def create_identification_area(data, verbose=False):
     return identification_area, lidvid
 
 
-def create_observation_area(data, verbose=False):
+def create_observation_area(data, target, verbose=False):
     """Creates Observation_Area for pds4 label.
 
     :param data: Titan json data from Treks api
+    :param target: Treks target of the data
     :param verbose: display subtree when finished
 
     :return: Observation_Area section of pds4 xml
@@ -114,11 +117,12 @@ def create_observation_area(data, verbose=False):
     observation_area = Et.Element("Observation_Area")
 
     # Time_Coordinates subtree
-    observation_area.append(create_time_coordinates(data, verbose))
+    observation_area.append(create_time_coordinates(data, target, verbose))
 
     # Investigation_Area subtree
     investigation_area = Et.SubElement(observation_area, "Investigation_Area")
 
+    # TODO: ADD MISSION DATA HERE OR REFER TO TREKS??
     Et.SubElement(investigation_area, "name").text = "Treks Open Geospatial Consortium Web Mapping Tile Service"
     Et.SubElement(investigation_area, "type").text = "OGC WMTS"
 
@@ -130,15 +134,15 @@ def create_observation_area(data, verbose=False):
     # Observing_System subtree
     observing_system = Et.SubElement(observation_area, "Observing_System")
 
-    # not all observations have "Spacecraft" key
     if "Spacecraft" in data:
         observing_system_component_spacecraft = Et.SubElement(observing_system, "Observing_System_Component")
         Et.SubElement(observing_system_component_spacecraft, "name").text = data["Spacecraft"]
         Et.SubElement(observing_system_component_spacecraft, "type").text = "Spacecraft"
 
-    observing_system_component_instrument = Et.SubElement(observing_system, "Observing_System_Component")
-    Et.SubElement(observing_system_component_instrument, "name").text = data["instrument"]
-    Et.SubElement(observing_system_component_instrument, "type").text = "Instrument"
+    if "instrument" in data:
+        observing_system_component_instrument = Et.SubElement(observing_system, "Observing_System_Component")
+        Et.SubElement(observing_system_component_instrument, "name").text = data["instrument"]
+        Et.SubElement(observing_system_component_instrument, "type").text = "Instrument"
 
     # Data object was not in Trent's xml but required according to pds4 documentation
     # Et.SubElement(observing_system, "data_object").text = "Physical_Object"
@@ -147,11 +151,12 @@ def create_observation_area(data, verbose=False):
     # Target_Identification subtree
     target_identification = Et.SubElement(observation_area, "Target_Identification")
 
-    Et.SubElement(target_identification, "name").text = "Titan"
-    Et.SubElement(target_identification, "type").text = "Satellite"
+    # TODO: GENERELAIZE THIS FIND IT IN THE FGDC OR IN THE JSON
+    Et.SubElement(target_identification, "name").text = target.capitalize()
+    # Et.SubElement(target_identification, "type").text = "Satellite"
 
     # Discipline_Area subtree
-    observation_area.append(create_discipline_area(data, verbose))
+    observation_area.append(create_discipline_area(data, target, verbose))
 
     if verbose:
         print("\n------------------------------------------------------------------------------")
@@ -162,10 +167,11 @@ def create_observation_area(data, verbose=False):
     return observation_area
 
 
-def create_time_coordinates(data, verbose=False):
+def create_time_coordinates(data, target, verbose=False):
     """Creates Time_Coordinates association for Observation_Area.
 
-    :param data: Titan json data from Treks api
+    :param data: json data from Treks api
+    :param target: Treks target of the data
     :param verbose: display subtree when finished
 
     :return: Time_Coordinates section of pds4 xml
@@ -173,9 +179,7 @@ def create_time_coordinates(data, verbose=False):
     time_coordinates = Et.Element("Time_Coordinates")
 
     # load in fgdc xml
-    url = "https://trek.nasa.gov/titan/TrekWS/rest/cat/metadata/stream?label=" + data["productLabel"]
-    response = requests.get(url)
-    fgdc_root = Et.fromstring(response.content)
+    fgdc_root = get_fgdc(data["productLabel"], target)
 
     # get times from fgdc metadata
     start = fgdc_root.find(".//begdate")
@@ -204,6 +208,24 @@ def create_time_coordinates(data, verbose=False):
 
         Et.SubElement(time_coordinates, "stop_date_time").text = stop
 
+    # check for single data
+    if stop is None and stop is None:
+        sngdate = fgdc_root.find(".//sngdate")
+
+        if sngdate is not None:
+            caldate = sngdate.find(".//caldate")
+
+            if caldate is not None and caldate.text is not None:
+                date = caldate.text
+
+                year = date[:4]
+                month = date[4:6]
+                day = date[6:]
+                date = year + '-' + month + '-' + day
+
+                Et.SubElement(time_coordinates, "start_date_time").text = date
+                Et.SubElement(time_coordinates, "stop_date_time").text = date
+
     if verbose:
         print("\n-----------------------------------------------------------------------------")
         print("Created Time_Coordinates Tag:")
@@ -213,10 +235,11 @@ def create_time_coordinates(data, verbose=False):
     return time_coordinates
 
 
-def create_discipline_area(data, verbose=False):
+def create_discipline_area(data, target, verbose=False):
     """Creates Discipline_Area association for Observation_Area.
 
-    :param data: Titan json data from Treks api
+    :param data: json data from Treks api
+    :param target: Treks target of the data
     :param verbose: display subtree when finished
 
     :return: Discipline_Area section of pds4 xml
@@ -231,41 +254,67 @@ def create_discipline_area(data, verbose=False):
 
     spatial_domain = Et.SubElement(cartography, "cart:Spatial_Domain")
     bounding_coordinates = Et.SubElement(spatial_domain, "cart:Bounding_Coordinates")
-    trek_bbox = data["trekBbox"].split(',')  # west, south, east, north
 
-    Et.SubElement(bounding_coordinates, "cart:west_bounding_coordinate", unit="deg").text = trek_bbox[0]
-    Et.SubElement(bounding_coordinates, "cart:south_bounding_coordinate", unit="deg").text = trek_bbox[1]
-    Et.SubElement(bounding_coordinates, "cart:east_bounding_coordinate", unit="deg").text = trek_bbox[2]
-    Et.SubElement(bounding_coordinates, "cart:north_bounding_coordinate", unit="deg").text = trek_bbox[3]
+    bbox = data["bbox"].split(',')  # west, south, east, north
+    Et.SubElement(bounding_coordinates, "cart:west_bounding_coordinate", unit="deg").text = bbox[0]
+    Et.SubElement(bounding_coordinates, "cart:south_bounding_coordinate", unit="deg").text = bbox[1]
+    Et.SubElement(bounding_coordinates, "cart:east_bounding_coordinate", unit="deg").text = bbox[2]
+    Et.SubElement(bounding_coordinates, "cart:north_bounding_coordinate", unit="deg").text = bbox[3]
 
     sri = Et.SubElement(cartography, "cart:Spatial_Reference_Information")
     hcsd = Et.SubElement(sri, "cart:Horizontal_Coordinate_System_Definition")
 
     geographic = Et.SubElement(hcsd, "cart:Geographic")
-    Et.SubElement(geographic, "cart:latitude_resolution", unit="arcsec").text = str(data["resolution"])
-    Et.SubElement(geographic, "cart:longitude_resolution", unit="arcsec").text = str(data["resolution"])
+
+    # get resolution from fgdc
+    fgdc_root = get_fgdc(data["productLabel"], target)
+    lat_res = fgdc_root.find(".//latres")
+    lon_res = fgdc_root.find(".//longres")
+    unit = fgdc_root.find(".//geogunit")
+
+    # get units in pds4 format
+    if unit is not None:
+        pds4_unit_map = {
+            "Decimal degrees": "deg",
+            "Decimal seconds": "arcsec"
+        }
+        unit = pds4_unit_map[unit.text]
+
+        # ensure resolutions exist
+        if lat_res is not None:
+            Et.SubElement(geographic, "cart:latitude_resolution", unit=unit).text = lat_res.text
+
+        if lon_res is not None:
+            Et.SubElement(geographic, "cart:longitude_resolution", unit=unit).text = lon_res.text
 
     geodetic_model = geographic = Et.SubElement(hcsd, "cart:Geodetic_Model")
-    Et.SubElement(geodetic_model, "cart:latitude_type").text = "Planetocentric"
-    Et.SubElement(geodetic_model, "cart:spheroid_name").text = "Titan (2015) - Sphere"
 
-    # hacky but works well to find radius, could use wkt parser
-    projection = data["projection"]
-    spheroid_i = projection.find("SPHEROID")                    # get spheroid projection header in ogc wmts data
-    spheroid = projection[spheroid_i:]
-    comma1 = spheroid.find(',')                                 # find value of spheroid header
-    comma2 = spheroid[comma1 + 1:].find(',')
-    axis_radius = spheroid[comma1 + 1:comma1 + comma2 + 1]            # get value of sphereoid header
-    float_i = axis_radius.find('.')                             # standardize data type, not all values are float
-    if float_i != -1:
-        axis_radius = axis_radius[:float_i]
+    # get geodetic model infro from fgdc
+    fgdc_root = get_fgdc(data["productLabel"], target)
+    geodetic = fgdc_root.find(".//geodetic")
 
-    axis_radius = int(axis_radius)                              # use int since it's the lowest precision used
+    # ensure geodertic info exists
+    if geodetic is not None:
+        # get name
+        ellips = geodetic.find(".//ellips")
 
-    Et.SubElement(geodetic_model, "cart:a_axis_radius", unit="m").text = str(axis_radius)
-    Et.SubElement(geodetic_model, "cart:b_axis_radius", unit="m").text = str(axis_radius)
-    Et.SubElement(geodetic_model, "cart:c_axis_radius", unit="m").text = str(axis_radius)
-    Et.SubElement(geodetic_model, "cart:longitude_direction").text = "Positive East"
+        if ellips is not None:
+            Et.SubElement(geodetic_model, "cart:spheroid_name").text = ellips.text
+
+        # TODO: FIND LATITUDE TYPE
+        # Et.SubElement(geodetic_model, "cart:latitude_type").text = "Planetocentric"
+
+        # get axis info
+        semiaxis = geodetic.find(".//semiaxis")
+
+        if semiaxis is not None:
+            Et.SubElement(geodetic_model, "cart:a_axis_radius", unit="m").text = semiaxis.text
+            Et.SubElement(geodetic_model, "cart:b_axis_radius", unit="m").text = semiaxis.text
+            Et.SubElement(geodetic_model, "cart:c_axis_radius", unit="m").text = semiaxis.text
+            # Do I need dewnominator of flattening ratio?
+
+        # TODO: FIND longitude direction (default positive east?)
+        Et.SubElement(geodetic_model, "cart:longitude_direction").text = "Positive East"
 
     if verbose:
         print("\n------------------------------------------------------------------------------")
@@ -276,10 +325,11 @@ def create_discipline_area(data, verbose=False):
     return discipline_area
 
 
-def create_service(data, verbose=False):
+def create_service(data, target, verbose=False):
     """Creates Service for pds4 label.
 
-    :param data: Titan json data from Treks api
+    :param data: json data from Treks api
+    :param target: Treks target of the data
     :param verbose: display subtree when finished
 
     :return: Service section of pds4 xml
@@ -287,15 +337,23 @@ def create_service(data, verbose=False):
     service = Et.Element("Service")
 
     Et.SubElement(service, "name").text = data["title"]
-    Et.SubElement(service, "abstract_desc").text = data["description"]
+
+    # get description from fgdc
+    fgdc_root = get_fgdc(data["productLabel"], target)
+    abstract = fgdc_root.find(".//abstract")
+
+    # ensure abstract exists
+    if abstract is not None:
+        Et.SubElement(service, "abstract_desc").text = abstract.text
 
     # urls: wmts capabilities, fgdc, treks product
     # & are not escaping and the encoding breaks the link for treks
-    treks_url = "https://trek.nasa.gov/titan/#v=0.1&x=0&y=0&z=1&p=urn%3Aogc%3Adef%3Acrs%3AIAU2000%3A%3A60600&d=&l=" + \
+    treks_url = "https://trek.nasa.gov/" + target + \
+        "/#v=0.1&x=0&y=0&z=1&p=urn%3Aogc%3Adef%3Acrs%3AIAU2000%3A%3A60600&d=&l=" + \
         data["productLabel"] + "%2Ctrue%2C1"
-    urls = [
-        "https://trek.nasa.gov/tiles/Titan/EQ/" + data["productLabel"] + "/1.0.0/WMTSCapabilities.xml",
-        "https://trek.nasa.gov/titan/TrekWS/rest/cat/metadata/stream?label=" + data["productLabel"],
+    urls = [  # capabilities url uses a capital first letter
+        "https://trek.nasa.gov/tiles/" + target.capitalize() + "/EQ/" + data["productLabel"] + "/1.0.0/WMTSCapabilities.xml",
+        "https://trek.nasa.gov/" + target + "/TrekWS/rest/cat/metadata/stream?label=" + data["productLabel"],
         treks_url
     ]
     for url in urls:
@@ -312,3 +370,16 @@ def create_service(data, verbose=False):
         print("-----------------------------------------------------------------------------\n")
 
     return service
+
+
+def get_fgdc(product, target):
+    """Utility function to get fgdc metadata xml.
+
+    :param product: product label from json data
+    :param target: Treks target of the data
+
+    :return: fgdc xml
+    """
+    url = "https://trek.nasa.gov/" + target + "/TrekWS/rest/cat/metadata/stream?label=" + product
+    response = requests.get(url)
+    return Et.fromstring(response.content)
