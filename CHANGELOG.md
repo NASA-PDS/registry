@@ -1,22 +1,39 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-03-07)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-07-15)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
+**Requirements:**
+
+- As a data manager, I want to query OpenSearch Serverless from the command-line [\#273](https://github.com/NASA-PDS/registry/issues/273) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+
 **Defects:**
 
+- Secret detection is broken on branch titan\_treks\_utility\_script [\#292](https://github.com/NASA-PDS/registry/issues/292) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - Missing NAIF from Legacy Dashboard [\#234](https://github.com/NASA-PDS/registry/issues/234) [[s.low](https://github.com/NASA-PDS/registry/labels/s.low)]
 
 **Other closed issues:**
 
+- Create the PDS4 service labels for the dataset served by GIS services [\#285](https://github.com/NASA-PDS/registry/issues/285)
+- Create GIS collection PDS4 label [\#284](https://github.com/NASA-PDS/registry/issues/284)
+- Create context product unique identifier [\#283](https://github.com/NASA-PDS/registry/issues/283)
+- Migrate and fix types mismatches in registry mappings from all node cluster to OpenSearch serverless [\#280](https://github.com/NASA-PDS/registry/issues/280)
+- The migrated documents on opensearch serverless have a generated \_id [\#270](https://github.com/NASA-PDS/registry/issues/270)
+- Setup API Gateway - OpenSearch Serverless Authentication [\#256](https://github.com/NASA-PDS/registry/issues/256)
+- Create Lambda Authorizer for Read Access - OpenSearch Serverless Authentication [\#255](https://github.com/NASA-PDS/registry/issues/255)
+- Create Lambda Authorizer for Write Access - OpenSearch Serverless Authentication [\#254](https://github.com/NASA-PDS/registry/issues/254)
 - Setup Cognito Identity Pool [\#253](https://github.com/NASA-PDS/registry/issues/253)
+- Create IAM Roles for OpenSearch Serverless Authentication [\#252](https://github.com/NASA-PDS/registry/issues/252)
 - Setup Cognito User Pool [\#251](https://github.com/NASA-PDS/registry/issues/251)
 - Setup monitoring for Domain Notifications for all OpenSearch Domains in AWS [\#233](https://github.com/NASA-PDS/registry/issues/233)
+- Registry-Sweepers Multiple Updates Statements Detected - NOT retry-related [\#225](https://github.com/NASA-PDS/registry/issues/225)
 - Initial OpenSearch Serverless Setup and Deployment in MCP [\#223](https://github.com/NASA-PDS/registry/issues/223)
 - Add registry costs to the PDS EN Cloud spreadsheet [\#218](https://github.com/NASA-PDS/registry/issues/218)
+- Design scalable, multi-tenant opensearch [\#212](https://github.com/NASA-PDS/registry/issues/212)
 - B14.0 Update postman test suite with bug fixes for current build [\#201](https://github.com/NASA-PDS/registry/issues/201)
 - B14.0 Update the postman test suite with all the requirement tests [\#200](https://github.com/NASA-PDS/registry/issues/200)
+- Enable I&T to use and update registry-api automated tests [\#199](https://github.com/NASA-PDS/registry/issues/199)
 - Design authorization handshake with Cognito, API Gateway, and Lambda for multi-tenancy approach [\#179](https://github.com/NASA-PDS/registry/issues/179)
 
 ## [v1.3.1](https://github.com/NASA-PDS/registry/tree/v1.3.1) (2023-11-16)
