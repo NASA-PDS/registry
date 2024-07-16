@@ -4,12 +4,6 @@ from datetime import date
 
 import requests
 
-#
-# This code is very specific to Titan Treks (ie hardcoded urls),
-# but should be able to be generalized easily to other Treks APIs.
-# Currently just a proof of concept for a tool
-#
-
 
 def create_pds4_xml(data, target, save_xml=False, dest="xml_files", verbose=False):
     """Creates the pds4 xml labels for the given data.
@@ -183,33 +177,37 @@ def create_time_coordinates(data, target, verbose=False):
 
     # get times from fgdc metadata
     start = fgdc_root.find(".//begdate")
+
     # ensure the metadata exists
     if start is not None:
         start = start.text
 
-        # format dates
-        y_start = start[:4]
-        m_start = start[4:6]
-        d_start = start[6:]
-        start = y_start + '-' + m_start + '-' + d_start
+        # ensure text exists
+        if start is not None:
+            # format dates
+            y_start = start[:4]
+            m_start = start[4:6]
+            d_start = start[6:]
+            start = y_start + '-' + m_start + '-' + d_start
 
-        # add in data
-        Et.SubElement(time_coordinates, "start_date_time").text = start
+            # add in data
+            Et.SubElement(time_coordinates, "start_date_time").text = start
 
     # repeat for stop time
     stop = fgdc_root.find(".//enddate")
     if stop is not None:
         stop = stop.text
 
-        y_stop = stop[:4]
-        m_stop = stop[4:6]
-        d_stop = stop[6:]
-        stop = y_stop + '-' + m_stop + '-' + d_stop
+        if stop is not None:
+            y_stop = stop[:4]
+            m_stop = stop[4:6]
+            d_stop = stop[6:]
+            stop = y_stop + '-' + m_stop + '-' + d_stop
 
-        Et.SubElement(time_coordinates, "stop_date_time").text = stop
+            Et.SubElement(time_coordinates, "stop_date_time").text = stop
 
     # check for single data
-    if stop is None and stop is None:
+    if start is None and stop is None:
         sngdate = fgdc_root.find(".//sngdate")
 
         if sngdate is not None:
@@ -218,13 +216,14 @@ def create_time_coordinates(data, target, verbose=False):
             if caldate is not None and caldate.text is not None:
                 date = caldate.text
 
-                year = date[:4]
-                month = date[4:6]
-                day = date[6:]
-                date = year + '-' + month + '-' + day
+                if date is not None:
+                    year = date[:4]
+                    month = date[4:6]
+                    day = date[6:]
+                    date = year + '-' + month + '-' + day
 
-                Et.SubElement(time_coordinates, "start_date_time").text = date
-                Et.SubElement(time_coordinates, "stop_date_time").text = date
+                    Et.SubElement(time_coordinates, "start_date_time").text = date
+                    Et.SubElement(time_coordinates, "stop_date_time").text = date
 
     if verbose:
         print("\n-----------------------------------------------------------------------------")
@@ -311,7 +310,7 @@ def create_discipline_area(data, target, verbose=False):
             Et.SubElement(geodetic_model, "cart:a_axis_radius", unit="m").text = semiaxis.text
             Et.SubElement(geodetic_model, "cart:b_axis_radius", unit="m").text = semiaxis.text
             Et.SubElement(geodetic_model, "cart:c_axis_radius", unit="m").text = semiaxis.text
-            # Do I need dewnominator of flattening ratio?
+            # Do I need denominator of flattening ratio?
 
         # TODO: FIND longitude direction (default positive east?)
         Et.SubElement(geodetic_model, "cart:longitude_direction").text = "Positive East"
@@ -345,6 +344,9 @@ def create_service(data, target, verbose=False):
     # ensure abstract exists
     if abstract is not None:
         Et.SubElement(service, "abstract_desc").text = abstract.text
+    else:  # else check if desceription is available
+        if "description" in data:
+            Et.SubElement(service, "abstract_desc").text = data["description"]
 
     # urls: wmts capabilities, fgdc, treks product
     # & are not escaping and the encoding breaks the link for treks
@@ -375,11 +377,17 @@ def create_service(data, target, verbose=False):
 def get_fgdc(product, target):
     """Utility function to get fgdc metadata xml.
 
+    Fgdc metadata does not always exist
+
     :param product: product label from json data
     :param target: Treks target of the data
 
-    :return: fgdc xml
+    :return: fgdc xml if it exists, empty element tree otherwise
     """
-    url = "https://trek.nasa.gov/" + target + "/TrekWS/rest/cat/metadata/stream?label=" + product
-    response = requests.get(url)
-    return Et.fromstring(response.content)
+    try:
+        url = "https://trek.nasa.gov/" + target + "/TrekWS/rest/cat/metadata/stream?label=" + product
+        response = requests.get(url, timeout=30)
+        return Et.fromstring(response.content)
+
+    except Exception:
+        return Et.Element("")
