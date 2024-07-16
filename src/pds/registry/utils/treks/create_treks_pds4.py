@@ -1,20 +1,20 @@
-"""Script to build pds4 xml for Titan Treks OGC WMTS layers.
+"""Script to build pds4 xml for Treks OGC WMTS layers.
 
-The layers are scraped using the Titan Treks API.
+The layers are scraped using the Treks API.
 """
 import argparse
-import os
 import time
 from pathlib import Path
 
 import requests
 
-from . import product_service_builder as psb
+from .product_service_builder import ProductServiceBuilder
+# import os
 # import shutil
 
 
 def main():
-    """Generate PDS4 XML labels for Titan Treks OGC/WMTS GIS Service."""
+    """Generate PDS4 XML labels for Treks OGC/WMTS GIS Service."""
     # valid targets for treks
     valid_targets = [
         # planets
@@ -43,7 +43,7 @@ def main():
     ]
 
     # set up command line args
-    parser = argparse.ArgumentParser(description="Customize save pds4 xml labels created for Titan Treks",
+    parser = argparse.ArgumentParser(description="Create and save pds4 xml labels created for Treks",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument("-s",
@@ -93,11 +93,11 @@ def main():
             Path(target_dest).mkdir(parents=True, exist_ok=True)
 
             # copy collection pds4 into the destination path
-            src = "titan-treks-api-collection.xml"
-            for root, _, files in os.walk("."):  # find path to src
-                for name in files:
-                    if name == src:
-                        src = os.path.abspath(os.path.join(root, name))
+            # src = "titan-treks-api-collection.xml"
+            # for root, _, files in os.walk("."):  # find path to src
+            #     for name in files:
+            #         if name == src:
+            #             src = os.path.abspath(os.path.join(root, name))
 
             # if os.path.exists(src):
             #     # skip copy if file already exists
@@ -125,7 +125,8 @@ def main():
             data = docs[i]
             label = data["productLabel"]
             print(f"[{i} / {len(docs) - 1}] | Creating PDS4 label for: {label}")
-            _, lidvid = psb.create_pds4_xml(data=data, target=target, save_xml=save_xml, dest=target_dest, verbose=verbose)
+            psb = ProductServiceBuilder(data=data, target=target, save_xml=save_xml, dest=target_dest, verbose=verbose)
+            _, lidvid = psb.create_pds4_xml()
             entry = "P," + lidvid + "\n"
             inventory_entries.append(entry)
 
@@ -135,7 +136,7 @@ def main():
 
         # create collection inventory file
         if save_xml:
-            with open(target_dest + "/titan_treks_layers_inventory.tab", "w") as f:
+            with open(target_dest + "/" + target + "_treks_layers_inventory.tab", "w") as f:
                 for entry in inventory_entries:
                     f.write(entry)
 
