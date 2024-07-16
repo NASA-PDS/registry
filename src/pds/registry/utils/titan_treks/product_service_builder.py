@@ -1,8 +1,12 @@
 """Utility for create_titan_treks.py to build pds4 xml."""
+import logging
 import xml.etree.ElementTree as Et
 from datetime import date
 
 import requests
+
+
+logger = logging.getLogger(__name__)
 
 
 def create_pds4_xml(data, target, save_xml=False, dest="xml_files", verbose=False):
@@ -132,11 +136,17 @@ def create_observation_area(data, target, verbose=False):
         observing_system_component_spacecraft = Et.SubElement(observing_system, "Observing_System_Component")
         Et.SubElement(observing_system_component_spacecraft, "name").text = data["Spacecraft"]
         Et.SubElement(observing_system_component_spacecraft, "type").text = "Spacecraft"
+    else:
+        label = data["productLabel"]
+        logger.error(f"Spacecraft not found in json for product label {label} of target {target}")
 
     if "instrument" in data:
         observing_system_component_instrument = Et.SubElement(observing_system, "Observing_System_Component")
         Et.SubElement(observing_system_component_instrument, "name").text = data["instrument"]
         Et.SubElement(observing_system_component_instrument, "type").text = "Instrument"
+    else:
+        label = data["productLabel"]
+        logger.error(f"instrument not found in json for product label {label} of target {target}")
 
     # Data object was not in Trent's xml but required according to pds4 documentation
     # Et.SubElement(observing_system, "data_object").text = "Physical_Object"
@@ -148,6 +158,8 @@ def create_observation_area(data, target, verbose=False):
     # TODO: GENERELAIZE THIS FIND IT IN THE FGDC OR IN THE JSON
     Et.SubElement(target_identification, "name").text = target.capitalize()
     # Et.SubElement(target_identification, "type").text = "Satellite"
+    label = data["productLabel"]
+    logger.error(f"Target identification type not found for product label {label} of target {target}")
 
     # Discipline_Area subtree
     observation_area.append(create_discipline_area(data, target, verbose))
@@ -193,6 +205,13 @@ def create_time_coordinates(data, target, verbose=False):
             # add in data
             Et.SubElement(time_coordinates, "start_date_time").text = start
 
+        else:
+            label = data["productLabel"]
+            logger.error(f"begdate tag empty in fgdc for product label {label} of target {target}")
+    else:
+        label = data["productLabel"]
+        logger.error(f"begdate tag not found in fgdc for product label {label} of target {target}")
+
     # repeat for stop time
     stop = fgdc_root.find(".//enddate")
     if stop is not None:
@@ -205,6 +224,13 @@ def create_time_coordinates(data, target, verbose=False):
             stop = y_stop + '-' + m_stop + '-' + d_stop
 
             Et.SubElement(time_coordinates, "stop_date_time").text = stop
+
+        else:
+            label = data["productLabel"]
+            logger.error(f"enddate tag not found in fgdc for product label {label} of target {target}")
+    else:
+        label = data["productLabel"]
+        logger.error(f"enddate tag not found in fgdc for product label {label} of target {target}")
 
     # check for single data
     if start is None and stop is None:
@@ -224,6 +250,16 @@ def create_time_coordinates(data, target, verbose=False):
 
                     Et.SubElement(time_coordinates, "start_date_time").text = date
                     Et.SubElement(time_coordinates, "stop_date_time").text = date
+
+                else:
+                    label = data["productLabel"]
+                    logger.error(f"caldate tag empty in fgdc for product label {label} of target {target}")
+            else:
+                label = data["productLabel"]
+                logger.error(f"caldate tag not found in fgdc for product label {label} of target {target}")
+        else:
+            label = data["productLabel"]
+            logger.error(f"sngdate tag not found in fgdc for product label {label} of target {target}")
 
     if verbose:
         print("\n-----------------------------------------------------------------------------")
@@ -282,9 +318,18 @@ def create_discipline_area(data, target, verbose=False):
         # ensure resolutions exist
         if lat_res is not None:
             Et.SubElement(geographic, "cart:latitude_resolution", unit=unit).text = lat_res.text
+        else:
+            label = data["productLabel"]
+            logger.error(f"latres tag not found in fgdc for product label {label} of target {target}")
 
         if lon_res is not None:
             Et.SubElement(geographic, "cart:longitude_resolution", unit=unit).text = lon_res.text
+        else:
+            label = data["productLabel"]
+            logger.error(f"longres tag not found in fgdc for product label {label} of target {target}")
+    else:
+        label = data["productLabel"]
+        logger.error(f"geounit tag not found in fgdc for product label {label} of target {target}")
 
     geodetic_model = geographic = Et.SubElement(hcsd, "cart:Geodetic_Model")
 
@@ -299,9 +344,14 @@ def create_discipline_area(data, target, verbose=False):
 
         if ellips is not None:
             Et.SubElement(geodetic_model, "cart:spheroid_name").text = ellips.text
+        else:
+            label = data["productLabel"]
+            logger.error(f"ellips tag not found in fgdc for product label {label} of target {target}")
 
         # TODO: FIND LATITUDE TYPE
         # Et.SubElement(geodetic_model, "cart:latitude_type").text = "Planetocentric"
+        label = data["productLabel"]
+        logger.error(f"Latitude type not found for product label {label} of target {target}")
 
         # get axis info
         semiaxis = geodetic.find(".//semiaxis")
@@ -311,9 +361,14 @@ def create_discipline_area(data, target, verbose=False):
             Et.SubElement(geodetic_model, "cart:b_axis_radius", unit="m").text = semiaxis.text
             Et.SubElement(geodetic_model, "cart:c_axis_radius", unit="m").text = semiaxis.text
             # Do I need denominator of flattening ratio?
+        else:
+            label = data["productLabel"]
+            logger.error(f"semiaxis/ axis radius not found in fgdc for product label {label} of target {target}")
 
         # TODO: FIND longitude direction (default positive east?)
-        Et.SubElement(geodetic_model, "cart:longitude_direction").text = "Positive East"
+        # Et.SubElement(geodetic_model, "cart:longitude_direction").text = "Positive East"
+        label = data["productLabel"]
+        logger.error(f"Longitude direction not found for product label {label} of target {target}")
 
     if verbose:
         print("\n------------------------------------------------------------------------------")
@@ -344,9 +399,11 @@ def create_service(data, target, verbose=False):
     # ensure abstract exists
     if abstract is not None:
         Et.SubElement(service, "abstract_desc").text = abstract.text
-    else:  # else check if desceription is available
-        if "description" in data:
-            Et.SubElement(service, "abstract_desc").text = data["description"]
+    elif "description" in data:
+        Et.SubElement(service, "abstract_desc").text = data["description"]
+    else:
+        label = data["productLabel"]
+        logger.error(f"Missing description in fgdc and json for product label {label} of target {target}")
 
     # urls: wmts capabilities, fgdc, treks product
     # & are not escaping and the encoding breaks the link for treks
@@ -384,10 +441,11 @@ def get_fgdc(product, target):
 
     :return: fgdc xml if it exists, empty element tree otherwise
     """
+    url = "https://trek.nasa.gov/" + target + "/TrekWS/rest/cat/metadata/stream?label=" + product
     try:
-        url = "https://trek.nasa.gov/" + target + "/TrekWS/rest/cat/metadata/stream?label=" + product
         response = requests.get(url, timeout=30)
         return Et.fromstring(response.content)
 
     except Exception:
+        logger.error(f"Missing or broken fgdc metadata at: {url}")
         return Et.Element("")
