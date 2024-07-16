@@ -3,6 +3,7 @@
 The layers are scraped using the Treks API.
 """
 import argparse
+import logging
 import time
 from pathlib import Path
 
@@ -82,6 +83,9 @@ def main():
         selected_targets = valid_targets[:-1]
     else:
         selected_targets = [target]
+
+    # initialize logger
+    logging.basicConfig(filename='create-treks-pds4-logs.log', level=logging.INFO)
 
     for target in selected_targets:
         target_dest = dest + "/" + target
