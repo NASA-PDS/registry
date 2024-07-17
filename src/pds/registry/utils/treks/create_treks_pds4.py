@@ -23,20 +23,20 @@ def main():
         "mercury",
         "venus",
         # moons (icy moons do not have listLayers json api)
-        # "dione", DNE
-        # "enceladus", DNE
-        # "europa", DNE
+        # "dione", 404
+        # "enceladus", 404
+        # "europa", 404
         # "ganymede", dead link
-        # "iapetus", DNE
-        # "mimas", DNE
+        # "iapetus", 404
+        # "mimas", 404
         "moon",
         "phobos",
-        # "phoebe",
-        # "rhea",
-        # "tethys",
+        # "phoebe", 404
+        # "rhea", 404
+        # "tethys", 404
         "titan",
         # asteroids
-        # "bennu", DNE
+        # "bennu", 404
         "ceres",
         "ryugu",
         "vesta",
