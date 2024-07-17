@@ -140,7 +140,7 @@ class ProductServiceBuilder:
             Et.SubElement(observing_system_component_spacecraft, "type").text = "Spacecraft"
         else:
             label = self.data["productLabel"]
-            logging.error(f"{self.target}, {label}, Spacecraft not found in json")
+            logging.error(f"{self.target},{label},Spacecraft not found in json,Observing_System_Component")
 
         if "instrument" in self.data:
             observing_system_component_instrument = Et.SubElement(observing_system, "Observing_System_Component")
@@ -148,7 +148,7 @@ class ProductServiceBuilder:
             Et.SubElement(observing_system_component_instrument, "type").text = "Instrument"
         else:
             label = self.data["productLabel"]
-            logging.error(f"{self.target}, {label}, instrument not found in json")
+            logging.error(f"{self.target},{label},instrument not found in json,Observing_System_Component")
 
         # Data object was not in Trent's xml but required according to pds4 documentation
         # Et.SubElement(observing_system, "data_object").text = "Physical_Object"
@@ -161,7 +161,7 @@ class ProductServiceBuilder:
         Et.SubElement(target_identification, "name").text = self.target.capitalize()
         # Et.SubElement(target_identification, "type").text = "Satellite"
         label = self.data["productLabel"]
-        logging.error(f"{self.target}, {label}, target identification type not found")
+        logging.error(f"{self.target},{label},target identification type not found,type")
 
         # Discipline_Area subtree
         observation_area.append(self.create_discipline_area())
@@ -201,10 +201,10 @@ class ProductServiceBuilder:
 
             else:
                 label = self.data["productLabel"]
-                logging.error(f"{self.target}, {label}, begdate tag empty in fgdc")
+                logging.error(f"{self.target},{label},begdate tag empty in fgdc,start_date_time")
         else:
             label = self.data["productLabel"]
-            logging.error(f"{self.target}, {label}, begdate tag not found in fgdc")
+            logging.error(f"{self.target},{label},begdate tag not found in fgdc,start_date_time")
 
         # repeat for stop time
         stop = self.fgdc_root.find(".//enddate")
@@ -221,10 +221,10 @@ class ProductServiceBuilder:
 
             else:
                 label = self.data["productLabel"]
-                logging.error(f"{self.target}, {label}, enddate tag empty in fgdc")
+                logging.error(f"{self.target},{label},enddate tag empty in fgdc,top_date_time")
         else:
             label = self.data["productLabel"]
-            logging.error(f"{self.target}, {label}, enddate tag not found in fgdc")
+            logging.error(f"{self.target},{label},enddate tag not found in fgdc,top_date_time")
 
         # check for single data
         if start is None and stop is None:
@@ -247,13 +247,13 @@ class ProductServiceBuilder:
 
                     else:
                         label = self.data["productLabel"]
-                        logging.error(f"{self.target}, {label}, caldate tag empty in fgdc")
+                        logging.error(f"{self.target},{label},caldate tag empty in fgdc,Time_Coordinates")
                 else:
                     label = self.data["productLabel"]
-                    logging.error(f"{self.target}, {label}, caldate tag not found in fgdc")
+                    logging.error(f"{self.target},{label},caldate tag not found in fgdc,Time_Coordinates")
             else:
                 label = self.data["productLabel"]
-                logging.error(f"{self.target}, {label}, sngdate tag not found in fgdc")
+                logging.error(f"{self.target},{label},sngdate tag not found in fgdc,Time_Coordinates")
 
         if self.verbose:
             print("\n-----------------------------------------------------------------------------")
@@ -308,16 +308,16 @@ class ProductServiceBuilder:
                 Et.SubElement(geographic, "cart:latitude_resolution", unit=unit).text = lat_res.text
             else:
                 label = self.data["productLabel"]
-                logging.error(f"{self.target}, {label}, latres tag not found in fgdc")
+                logging.error(f"{self.target},{label},latres tag not found in fgdc,cart:latitude_resolution")
 
             if lon_res is not None:
                 Et.SubElement(geographic, "cart:longitude_resolution", unit=unit).text = lon_res.text
             else:
                 label = self.data["productLabel"]
-                logging.error(f"{self.target}, {label}, longres tag not found in fgdc")
+                logging.error(f"{self.target},{label},longres tag not found in fgdc,cart:longitude_resolution")
         else:
             label = self.data["productLabel"]
-            logging.error(f"{self.target}, {label}, geounit tag not found in fgdc")
+            logging.error(f"{self.target},{label},geounit tag not found in fgdc,resolution units")
 
         geodetic_model = geographic = Et.SubElement(hcsd, "cart:Geodetic_Model")
 
@@ -333,12 +333,12 @@ class ProductServiceBuilder:
                 Et.SubElement(geodetic_model, "cart:spheroid_name").text = ellips.text
             else:
                 label = self.data["productLabel"]
-                logging.error(f"{self.target}, {label}, ellips tag not found in fgdc")
+                logging.error(f"{self.target},{label},ellips tag not found in fgdc,cart:spheroid_name")
 
             # TODO: FIND LATITUDE TYPE
             # Et.SubElement(geodetic_model, "cart:latitude_type").text = "Planetocentric"
             label = self.data["productLabel"]
-            logging.error(f"{self.target}, {label}, latitude type not found")
+            logging.error(f"{self.target},{label},latitude type not found,cart:latitude_type")
 
             # get axis info
             semiaxis = geodetic.find(".//semiaxis")
@@ -350,12 +350,12 @@ class ProductServiceBuilder:
                 # Do I need denominator of flattening ratio?
             else:
                 label = self.data["productLabel"]
-                logging.error(f"{self.target}, {label}, semiaxis tag not found in fgdc")
+                logging.error(f"{self.target},{label},semiaxis tag not found in fgdc,cart:a/b/c_axis_radius")
 
             # TODO: FIND longitude direction (default positive east?)
             # Et.SubElement(geodetic_model, "cart:longitude_direction").text = "Positive East"
             label = self.data["productLabel"]
-            logging.error(f"{self.target}, {label}, longitude direction not found")
+            logging.error(f"{self.target},{label},longitude direction not found,cart:longitude_direction")
 
         if self.verbose:
             print("\n------------------------------------------------------------------------------")
@@ -384,7 +384,7 @@ class ProductServiceBuilder:
             Et.SubElement(service, "abstract_desc").text = self.data["description"]
         else:
             label = self.data["productLabel"]
-            logging.error(f"{self.target}, {label}, description not found")
+            logging.error(f"{self.target},{label},description not found,abstract_desc")
 
         treks_url = "https://trek.nasa.gov/" + self.target + \
             "/#v=0.1&x=0&y=0&z=1&p=urn%3Aogc%3Adef%3Acrs%3AIAU2000%3A%3A60600&d=&l=" + \
@@ -430,5 +430,5 @@ class ProductServiceBuilder:
 
         except Exception:
             label = self.data["productLabel"]
-            logging.error(f"{self.target}, {label}, broken fgdc link or xml {url}")
+            logging.error(f"{self.target},{label},broken fgdc link or xml {url},fgdc")
             return Et.Element("")

@@ -85,7 +85,8 @@ def main():
         selected_targets = [target]
 
     # initialize logger
-    logging.basicConfig(filename='create-treks-pds4-logs.log', level=logging.INFO)
+    logging.basicConfig(filename='create-treks-pds4-log.log', level=logging.ERROR)
+    logging.error("target,product_label,missing_data_location,tag")
 
     for target in selected_targets:
         target_dest = dest + "/" + target
