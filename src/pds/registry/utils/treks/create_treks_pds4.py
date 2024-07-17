@@ -85,9 +85,10 @@ def main():
         selected_targets = [target]
 
     # initialize logger
-    logging.basicConfig(filename='create-treks-pds4-log.log', level=logging.ERROR)
+    logging.basicConfig(filename='create-treks-pds4-log.log', level=logging.WARNING)
     logging.error("target,product_label,missing_data_location,tag")
 
+    total_start = time.time()
     for target in selected_targets:
         target_dest = dest + "/" + target
         # if verbose:
@@ -137,7 +138,7 @@ def main():
 
         end_time = time.time()
         total = end_time - start_time
-        print(f"Took {total} seconds to run")
+        print(f"{target.capitalize()} layers took {total:.3f} seconds to build")
 
         # create collection inventory file
         if save_xml:
@@ -147,6 +148,11 @@ def main():
 
             if verbose:
                 print("Collection inventory saved")
+
+    total_end = time.time()
+    if args.target.lower() == "all":
+        total_time = total_end - total_start
+        print(f"All layers took {total_time:.3f} seconds to build")
 
 
 if __name__ == "__main__":
