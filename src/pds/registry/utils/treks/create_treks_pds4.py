@@ -61,6 +61,11 @@ def main():
                         action="store_true",
                         help="Verbosity of file creation",
                         default=False)
+    parser.add_argument("-l",
+                        "--save-logs",
+                        action="store_true",
+                        help="Save logs of run",
+                        default=False)
     parser.add_argument("-t",
                         "--target",
                         help=f"Treks target to generate labels for: {valid_targets}",
@@ -72,6 +77,7 @@ def main():
     save_xml = args.save_xml
     dest = args.destination_directory
     verbose = args.verbose
+    save_logs = args.save_logs
     target = args.target.lower()
 
     # remove whitespace from target
@@ -85,14 +91,16 @@ def main():
         selected_targets = [target]
 
     # initialize logger
-    logging.basicConfig(filename='create-treks-pds4-log.log', level=logging.WARNING)
-    logging.error("target,product_label,missing_data_location,tag")
+    if save_logs:
+        logging.basicConfig(filename='create-treks-pds4-log.log', level=logging.WARNING)
+        logging.warning("target,product_label,missing_data_location,tag")
 
     total_start = time.time()
     for target in selected_targets:
         target_dest = dest + "/" + target
-        # if verbose:
-        print("Creating pds4 xml for target:", target)
+
+        if verbose:
+            print("Creating pds4 xml for target:", target)
 
         if save_xml:
             # create destination path if it does not exist
@@ -125,20 +133,28 @@ def main():
         inventory_entries = []
         start_time = time.time()
         for i in range(start, len(docs)):
-            if verbose:
-                print("Creating pds4 xml for doc:", i)
 
             data = docs[i]
-            label = data["productLabel"]
-            print(f"[{i} / {len(docs) - 1}] | Creating PDS4 label for: {label}")
-            psb = ProductServiceBuilder(data=data, target=target, save_xml=save_xml, dest=target_dest, verbose=verbose)
+
+            if verbose:
+                label = data["productLabel"]
+                print(f"[{i} / {len(docs) - 1}] | Creating PDS4 label for: {label}")
+
+            psb = ProductServiceBuilder(data=data,
+                                        target=target,
+                                        save_xml=save_xml,
+                                        dest=target_dest,
+                                        verbose=verbose,
+                                        save_logs=save_logs)
+
             _, lidvid = psb.create_pds4_xml()
             entry = "P," + lidvid + "\n"
             inventory_entries.append(entry)
 
-        end_time = time.time()
-        total = end_time - start_time
-        print(f"{target.capitalize()} layers took {total:.3f} seconds to build")
+        if verbose:
+            end_time = time.time()
+            total = end_time - start_time
+            print(f"{target.capitalize()} layers took {total:.3f} seconds to build")
 
         # create collection inventory file
         if save_xml:
@@ -147,10 +163,10 @@ def main():
                     f.write(entry)
 
             if verbose:
-                print("Collection inventory saved")
+                print(f"Collection inventory saved for {target}")
 
     total_end = time.time()
-    if args.target.lower() == "all":
+    if args.target.lower() == "all" and verbose:
         total_time = total_end - total_start
         print(f"All layers took {total_time:.3f} seconds to build")
 

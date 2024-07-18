@@ -8,7 +8,7 @@ import requests
 
 class ProductServiceBuilder:
     """Builder class for pds4 xml files."""
-    def __init__(self, data, target, save_xml=False, dest="xml_files", verbose=False):
+    def __init__(self, data, target, save_xml=False, dest="xml_files", verbose=False, save_logs=False):
         """Constructor for ProductServiceBuilder.
 
         :param data: json data from Treks api
@@ -23,6 +23,7 @@ class ProductServiceBuilder:
         self.save_xml = save_xml
         self.dest = dest
         self.verbose = verbose
+        self.save_logs = save_logs
 
         # load in fgdc
         self.fgdc_root = self.get_fgdc()
@@ -38,8 +39,9 @@ class ProductServiceBuilder:
             self.target_type = response.json()["data"][0]["properties"]["pds:Target.pds:type"][0]
 
         except Exception:
-            label = self.data["productLabel"]
-            logging.warning(f"{self.target},{label},target or pds:Target.pds:type not found in pds,Observing_System_Component")
+            if self.save_logs:
+                label = self.data["productLabel"]
+                logging.warning(f"{self.target},{label},target or pds:Target.pds:type not found in pds,Observing_System_Component")
 
     def create_pds4_xml(self):
         """Creates the pds4 xml labels for the given data.
@@ -150,7 +152,7 @@ class ProductServiceBuilder:
             observing_system_component_spacecraft = Et.SubElement(observing_system, "Observing_System_Component")
             Et.SubElement(observing_system_component_spacecraft, "name").text = self.data["Spacecraft"]
             Et.SubElement(observing_system_component_spacecraft, "type").text = "Spacecraft"
-        else:
+        elif self.save_logs:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},Spacecraft not found in json,Observing_System_Component")
 
@@ -158,7 +160,7 @@ class ProductServiceBuilder:
             observing_system_component_instrument = Et.SubElement(observing_system, "Observing_System_Component")
             Et.SubElement(observing_system_component_instrument, "name").text = self.data["instrument"]
             Et.SubElement(observing_system_component_instrument, "type").text = "Instrument"
-        else:
+        elif self.save_logs:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},instrument not found in json,Observing_System_Component")
 
@@ -209,10 +211,10 @@ class ProductServiceBuilder:
                 # add in data
                 Et.SubElement(time_coordinates, "start_date_time").text = start
 
-            else:
+            elif self.save_logs:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},begdate tag empty in fgdc,start_date_time")
-        else:
+        elif self.save_logs:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},begdate tag not found in fgdc,start_date_time")
 
@@ -229,10 +231,10 @@ class ProductServiceBuilder:
 
                 Et.SubElement(time_coordinates, "stop_date_time").text = stop
 
-            else:
+            elif self.save_logs:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},enddate tag empty in fgdc,stop_date_time")
-        else:
+        elif self.save_logs:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},enddate tag not found in fgdc,stop_date_time")
 
@@ -255,13 +257,13 @@ class ProductServiceBuilder:
                         Et.SubElement(time_coordinates, "start_date_time").text = date
                         Et.SubElement(time_coordinates, "stop_date_time").text = date
 
-                    else:
+                    elif self.save_logs:
                         label = self.data["productLabel"]
                         logging.warning(f"{self.target},{label},caldate tag empty in fgdc,Time_Coordinates")
-                else:
+                elif self.save_logs:
                     label = self.data["productLabel"]
                     logging.warning(f"{self.target},{label},caldate tag not found in fgdc,Time_Coordinates")
-            else:
+            elif self.save_logs:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},sngdate tag not found in fgdc,Time_Coordinates")
 
@@ -316,16 +318,16 @@ class ProductServiceBuilder:
             # ensure resolutions exist
             if lat_res is not None:
                 Et.SubElement(geographic, "cart:latitude_resolution", unit=unit).text = lat_res.text
-            else:
+            elif self.save_logs:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},latres tag not found in fgdc,cart:latitude_resolution")
 
             if lon_res is not None:
                 Et.SubElement(geographic, "cart:longitude_resolution", unit=unit).text = lon_res.text
-            else:
+            elif self.save_logs:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},longres tag not found in fgdc,cart:longitude_resolution")
-        else:
+        elif self.save_logs:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},geounit tag not found in fgdc,resolution units")
 
@@ -341,14 +343,15 @@ class ProductServiceBuilder:
 
             if ellips is not None:
                 Et.SubElement(geodetic_model, "cart:spheroid_name").text = ellips.text
-            else:
+            elif self.save_logs:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},ellips tag not found in fgdc,cart:spheroid_name")
 
             # TODO: FIND LATITUDE TYPE
             # Et.SubElement(geodetic_model, "cart:latitude_type").text = "Planetocentric"
-            label = self.data["productLabel"]
-            logging.warning(f"{self.target},{label},latitude type not found,cart:latitude_type")
+            if self.save_logs:
+                label = self.data["productLabel"]
+                logging.warning(f"{self.target},{label},latitude type not found,cart:latitude_type")
 
             # get axis info
             semiaxis = geodetic.find(".//semiaxis")
@@ -358,14 +361,15 @@ class ProductServiceBuilder:
                 Et.SubElement(geodetic_model, "cart:b_axis_radius", unit="m").text = semiaxis.text
                 Et.SubElement(geodetic_model, "cart:c_axis_radius", unit="m").text = semiaxis.text
                 # Do I need denominator of flattening ratio?
-            else:
+            elif self.save_logs:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},semiaxis tag not found in fgdc,cart:a/b/c_axis_radius")
 
             # TODO: FIND longitude direction (default positive east?)
             # Et.SubElement(geodetic_model, "cart:longitude_direction").text = "Positive East"
-            label = self.data["productLabel"]
-            logging.warning(f"{self.target},{label},longitude direction not found,cart:longitude_direction")
+            if self.save_logs:
+                label = self.data["productLabel"]
+                logging.warning(f"{self.target},{label},longitude direction not found,cart:longitude_direction")
 
         if self.verbose:
             print("\n------------------------------------------------------------------------------")
@@ -392,7 +396,7 @@ class ProductServiceBuilder:
             Et.SubElement(service, "abstract_desc").text = abstract.text
         elif "description" in self.data:
             Et.SubElement(service, "abstract_desc").text = self.data["description"]
-        else:
+        elif self.save_logs:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},description not found,abstract_desc")
 
@@ -439,6 +443,7 @@ class ProductServiceBuilder:
             return Et.fromstring(response.content)
 
         except Exception:
-            label = self.data["productLabel"]
-            logging.warning(f"{self.target},{label},broken fgdc link or xml {url},fgdc")
+            if self.save_logs:
+                label = self.data["productLabel"]
+                logging.warning(f"{self.target},{label},broken fgdc link or xml {url},fgdc")
             return Et.Element("")
