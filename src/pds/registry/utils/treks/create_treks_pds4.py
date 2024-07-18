@@ -4,13 +4,11 @@ The layers are scraped using the Treks API.
 """
 import argparse
 import logging
-import os
 from pathlib import Path
 
 import requests
-
-from .product_collection_builder import create_collection_pds4
-from .product_service_builder import ProductServiceBuilder
+from pds.registry.utils.treks.product_collection_builder import create_collection_pds4
+from pds.registry.utils.treks.product_service_builder import ProductServiceBuilder
 
 
 def main():
@@ -118,11 +116,7 @@ def main():
                     f.write(entry)
 
             # create product collection file
-            template_path = os.path.dirname(os.path.abspath(__file__))
-            template_path = os.path.join(template_path, 'templates')
-            template_name = "product-collection-template.xml"
-
-            collection_pds4 = create_collection_pds4(template_path, template_name, target, verbose)
+            collection_pds4 = create_collection_pds4(target)
             with open(target_dest + "/" + target + "_treks_api_collection.xml", "w") as f:
                 f.write(collection_pds4)
 
