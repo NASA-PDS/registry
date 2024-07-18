@@ -23,7 +23,4 @@ def create_collection_pds4(templates_path, template_name, target, verbose):
         "inventory_file_name": inventory_file_name
     }
 
-    if verbose:
-        print(f"Created params {target} Product_Collection: {context}")
-
     return template.render(context)

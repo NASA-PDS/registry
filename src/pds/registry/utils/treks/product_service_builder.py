@@ -8,7 +8,7 @@ import requests
 
 class ProductServiceBuilder:
     """Builder class for pds4 xml files."""
-    def __init__(self, data, target, save_xml=False, dest="xml_files", verbose=False, save_logs=False):
+    def __init__(self, data, target, save_xml=False, dest="xml_files", verbose=False):
         """Constructor for ProductServiceBuilder.
 
         :param data: json data from Treks api
@@ -23,7 +23,6 @@ class ProductServiceBuilder:
         self.save_xml = save_xml
         self.dest = dest
         self.verbose = verbose
-        self.save_logs = save_logs
 
         # load in fgdc
         self.fgdc_root = self.get_fgdc()
@@ -39,7 +38,7 @@ class ProductServiceBuilder:
             self.target_type = response.json()["data"][0]["properties"]["pds:Target.pds:type"][0]
 
         except Exception:
-            if self.save_logs:
+            if self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},target or pds:Target.pds:type not found in pds,Observing_System_Component")
 
@@ -79,17 +78,8 @@ class ProductServiceBuilder:
         Et.indent(tree, space="\t", level=0)
         name = self.data["productLabel"]
 
-        if self.verbose:
-            print("\n------------------------------------------------------------------------------")
-            print("Created Tree:")
-            print(Et.tostring(root))
-            print("-----------------------------------------------------------------------------\n")
-
         if self.save_xml:
             tree.write(self.dest + f"/{name}_Product_Service.xml")
-
-            if self.verbose:
-                print(f"Successfully Saved File {name}_Product_Service.xml")
 
         return tree, lidvid
 
@@ -116,12 +106,6 @@ class ProductServiceBuilder:
         Et.SubElement(modification_detail, "modification_date").text = str(date.today())
         Et.SubElement(modification_detail, "version_id").text = str(1.0)  # increment as needed
         Et.SubElement(modification_detail, "description").text = "Exposing GIS services in the PDS4 registry"
-
-        if self.verbose:
-            print("\n-----------------------------------------------------------------------------")
-            print("Created Identifcation_Area Tag:")
-            print(Et.tostring(identification_area))
-            print("-----------------------------------------------------------------------------\n")
 
         return identification_area, lidvid
 
@@ -152,7 +136,7 @@ class ProductServiceBuilder:
             observing_system_component_spacecraft = Et.SubElement(observing_system, "Observing_System_Component")
             Et.SubElement(observing_system_component_spacecraft, "name").text = self.data["Spacecraft"]
             Et.SubElement(observing_system_component_spacecraft, "type").text = "Spacecraft"
-        elif self.save_logs:
+        elif self.verbose:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},Spacecraft not found in json,Observing_System_Component")
 
@@ -160,7 +144,7 @@ class ProductServiceBuilder:
             observing_system_component_instrument = Et.SubElement(observing_system, "Observing_System_Component")
             Et.SubElement(observing_system_component_instrument, "name").text = self.data["instrument"]
             Et.SubElement(observing_system_component_instrument, "type").text = "Instrument"
-        elif self.save_logs:
+        elif self.verbose:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},instrument not found in json,Observing_System_Component")
 
@@ -177,12 +161,6 @@ class ProductServiceBuilder:
 
         # Discipline_Area subtree
         observation_area.append(self.create_discipline_area())
-
-        if self.verbose:
-            print("\n------------------------------------------------------------------------------")
-            print("Created Observation_Area Tag:")
-            print(Et.tostring(observation_area))
-            print("-----------------------------------------------------------------------------\n")
 
         return observation_area
 
@@ -211,10 +189,10 @@ class ProductServiceBuilder:
                 # add in data
                 Et.SubElement(time_coordinates, "start_date_time").text = start
 
-            elif self.save_logs:
+            elif self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},begdate tag empty in fgdc,start_date_time")
-        elif self.save_logs:
+        elif self.verbose:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},begdate tag not found in fgdc,start_date_time")
 
@@ -231,10 +209,10 @@ class ProductServiceBuilder:
 
                 Et.SubElement(time_coordinates, "stop_date_time").text = stop
 
-            elif self.save_logs:
+            elif self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},enddate tag empty in fgdc,stop_date_time")
-        elif self.save_logs:
+        elif self.verbose:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},enddate tag not found in fgdc,stop_date_time")
 
@@ -257,21 +235,15 @@ class ProductServiceBuilder:
                         Et.SubElement(time_coordinates, "start_date_time").text = date
                         Et.SubElement(time_coordinates, "stop_date_time").text = date
 
-                    elif self.save_logs:
+                    elif self.verbose:
                         label = self.data["productLabel"]
                         logging.warning(f"{self.target},{label},caldate tag empty in fgdc,Time_Coordinates")
-                elif self.save_logs:
+                elif self.verbose:
                     label = self.data["productLabel"]
                     logging.warning(f"{self.target},{label},caldate tag not found in fgdc,Time_Coordinates")
-            elif self.save_logs:
+            elif self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},sngdate tag not found in fgdc,Time_Coordinates")
-
-        if self.verbose:
-            print("\n-----------------------------------------------------------------------------")
-            print("Created Time_Coordinates Tag:")
-            print(Et.tostring(time_coordinates))
-            print("-----------------------------------------------------------------------------\n")
 
         return time_coordinates
 
@@ -318,16 +290,16 @@ class ProductServiceBuilder:
             # ensure resolutions exist
             if lat_res is not None:
                 Et.SubElement(geographic, "cart:latitude_resolution", unit=unit).text = lat_res.text
-            elif self.save_logs:
+            elif self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},latres tag not found in fgdc,cart:latitude_resolution")
 
             if lon_res is not None:
                 Et.SubElement(geographic, "cart:longitude_resolution", unit=unit).text = lon_res.text
-            elif self.save_logs:
+            elif self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},longres tag not found in fgdc,cart:longitude_resolution")
-        elif self.save_logs:
+        elif self.verbose:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},geounit tag not found in fgdc,resolution units")
 
@@ -343,13 +315,13 @@ class ProductServiceBuilder:
 
             if ellips is not None:
                 Et.SubElement(geodetic_model, "cart:spheroid_name").text = ellips.text
-            elif self.save_logs:
+            elif self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},ellips tag not found in fgdc,cart:spheroid_name")
 
             # TODO: FIND LATITUDE TYPE
             # Et.SubElement(geodetic_model, "cart:latitude_type").text = "Planetocentric"
-            if self.save_logs:
+            if self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},latitude type not found,cart:latitude_type")
 
@@ -361,21 +333,15 @@ class ProductServiceBuilder:
                 Et.SubElement(geodetic_model, "cart:b_axis_radius", unit="m").text = semiaxis.text
                 Et.SubElement(geodetic_model, "cart:c_axis_radius", unit="m").text = semiaxis.text
                 # Do I need denominator of flattening ratio?
-            elif self.save_logs:
+            elif self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},semiaxis tag not found in fgdc,cart:a/b/c_axis_radius")
 
             # TODO: FIND longitude direction (default positive east?)
             # Et.SubElement(geodetic_model, "cart:longitude_direction").text = "Positive East"
-            if self.save_logs:
+            if self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},longitude direction not found,cart:longitude_direction")
-
-        if self.verbose:
-            print("\n------------------------------------------------------------------------------")
-            print("Created Discipline_Area Tag:")
-            print(Et.tostring(discipline_area))
-            print("-----------------------------------------------------------------------------\n")
 
         return discipline_area
 
@@ -396,7 +362,7 @@ class ProductServiceBuilder:
             Et.SubElement(service, "abstract_desc").text = abstract.text
         elif "description" in self.data:
             Et.SubElement(service, "abstract_desc").text = self.data["description"]
-        elif self.save_logs:
+        elif self.verbose:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},description not found,abstract_desc")
 
@@ -421,12 +387,6 @@ class ProductServiceBuilder:
         Et.SubElement(service, "service_type").text = "OGC WMTS"
         Et.SubElement(service, "category").text = "Visualization"
 
-        if self.verbose:
-            print("\n------------------------------------------------------------------------------")
-            print("Created Service Tag:")
-            print(Et.tostring(service))
-            print("-----------------------------------------------------------------------------\n")
-
         return service
 
     def get_fgdc(self):
@@ -443,7 +403,7 @@ class ProductServiceBuilder:
             return Et.fromstring(response.content)
 
         except Exception:
-            if self.save_logs:
+            if self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},broken fgdc link or xml {url},fgdc")
             return Et.Element("")
