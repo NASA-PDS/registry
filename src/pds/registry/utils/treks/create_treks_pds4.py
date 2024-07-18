@@ -4,14 +4,14 @@ The layers are scraped using the Treks API.
 """
 import argparse
 import logging
+import os
 import time
 from pathlib import Path
 
 import requests
 
+from .product_collection_builder import create_collection_pds4
 from .product_service_builder import ProductServiceBuilder
-# import os
-# import shutil
 
 
 def main():
@@ -22,24 +22,15 @@ def main():
         "mars",
         "mercury",
         "venus",
-        # moons (icy moons do not have listLayers json api)
-        # "dione", 404
-        # "enceladus", 404
-        # "europa", 404
-        # "ganymede", dead link
-        # "iapetus", 404
-        # "mimas", 404
+        # moons
         "moon",
         "phobos",
-        # "phoebe", 404
-        # "rhea", 404
-        # "tethys", 404
         "titan",
         # asteroids
-        # "bennu", 404
         "ceres",
         "ryugu",
         "vesta",
+        # run script on all targets
         "all"
     ]
 
@@ -106,18 +97,6 @@ def main():
             # create destination path if it does not exist
             Path(target_dest).mkdir(parents=True, exist_ok=True)
 
-            # copy collection pds4 into the destination path
-            # src = "titan-treks-api-collection.xml"
-            # for root, _, files in os.walk("."):  # find path to src
-            #     for name in files:
-            #         if name == src:
-            #             src = os.path.abspath(os.path.join(root, name))
-
-            # if os.path.exists(src):
-            #     # skip copy if file already exists
-            #     if not os.path.exists(target_dest + "/titan-treks-api-collection.xml"):
-            #         shutil.copy2(src, dest)
-
         # get json from url
         url = "https://trek.nasa.gov/" + target + "/TrekServices/ws/index/eq/" + \
             "listVisibleLayers?proj=urn:ogc:def:crs:EPSG::60620&start=0&rows=2147483647"
@@ -136,9 +115,9 @@ def main():
 
             data = docs[i]
 
-            if verbose:
-                label = data["productLabel"]
-                print(f"[{i} / {len(docs) - 1}] | Creating PDS4 label for: {label}")
+            # if verbose:
+            label = data["productLabel"]
+            print(f"[{i} / {len(docs) - 1}] | Creating PDS4 label for: {label}")
 
             psb = ProductServiceBuilder(data=data,
                                         target=target,
@@ -156,14 +135,26 @@ def main():
             total = end_time - start_time
             print(f"{target.capitalize()} layers took {total:.3f} seconds to build")
 
-        # create collection inventory file
         if save_xml:
+            # create collection inventory file
             with open(target_dest + "/" + target + "_treks_layers_inventory.tab", "w") as f:
                 for entry in inventory_entries:
                     f.write(entry)
 
             if verbose:
                 print(f"Collection inventory saved for {target}")
+
+            # create product collection file
+            template_path = os.path.dirname(os.path.abspath(__file__))
+            template_path = os.path.join(template_path, 'templates')
+            template_name = "product-collection-template.xml"
+
+            collection_pds4 = create_collection_pds4(template_path, template_name, target, verbose)
+            with open(target_dest + "/" + target + "_treks_api_collection.xml", "w") as f:
+                f.write(collection_pds4)
+
+            if verbose:
+                print(f"Product_Collection PDS4 saved for {target}")
 
     total_end = time.time()
     if args.target.lower() == "all" and verbose:
