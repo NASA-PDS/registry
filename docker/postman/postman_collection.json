@@ -1278,10 +1278,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"UUID-TBD Status code is 200\", () => {pm.response.to.have.status(200)});",
+									"pm.test(\"C4438463 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
-									"pm.test(\"UUID-TBD Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(1)});",
-									"pm.test(\"UUID-TBD Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
+									"pm.test(\"C4438463 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(1)});",
+									"pm.test(\"C4438463 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1312,9 +1312,9 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"UUID-TBD Status code is 200\", () => {pm.response.to.have.status(200)});",
+									"pm.test(\"C4438464 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
-									"pm.test(\"UUID-TBD Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(11)});"
+									"pm.test(\"C4438464 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(11)});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1346,10 +1346,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"UUID-TBD Status code is 200\", () => {pm.response.to.have.status(200)});",
+									"pm.test(\"C4438465 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
-									"pm.test(\"UUID-TBD Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(1)});",
-									"pm.test(\"UUID-TBD Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
+									"pm.test(\"C4438465 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(1)});",
+									"pm.test(\"C4438465 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1380,10 +1380,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"UUID-TBD Status code is 200\", () => {pm.response.to.have.status(200)});",
+									"pm.test(\"C4438466 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
-									"pm.test(\"UUID-TBD Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(1)});",
-									"pm.test(\"UUID-TBD Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
+									"pm.test(\"C4438466 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(1)});",
+									"pm.test(\"C4438466 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
 								],
 								"type": "text/javascript",
 								"packages": {}
