@@ -26,23 +26,15 @@ All users and developers of the NASA-PDS software are expected to abide by our [
 
 
 ## Utilities
-* Titan Treks
+* Treks
     * To deploy the package run one of these commands from the root directory:
         ```pip install .``` for users
         ```pip install -e '.[dev]'``` for developers
         * This package is also hosted on the "cheeseshop" and can be installed with
             ```pip install pds.registry```
-    * The Titan Treks utilities can be used to create pds4 labels for the layers given in the Titan Treks API
+    * The Treks utilities can be used to create pds4 labels for the layers given in the Treks API
     * Run the command:
-
-        ```create-titan-treks-pds4```
-
-    * `create-titan-treks-pds4` has 3 paramaters to customize the script
-    `-d DEST, --destination-directory DEST` Destination to save the pds4 xml labels, default `xml_files/product_service`
-    `-s, --save-xml` Save the xml files to the destination folder, deafult `True`
-    `-v, --verbose` Verbose, default `False`
-    * These can also be seen with the command:
-        ```create-titan-treks-pds4 --help```
+        ```create-treks-pds4```
 
 
 ## Development
