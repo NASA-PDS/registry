@@ -2044,13 +2044,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:sclk_m2020_168_sclkscet_refit_v01.tsc::1.0/member-of",
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"products",
-								"urn:nasa:pds:mars2020.spice:spice_kernels:sclk_m2020_168_sclkscet_refit_v01.tsc::1.0",
+								"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020",
 								"member-of"
 							]
 						}
