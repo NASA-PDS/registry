@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-07-15)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-07-23)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -15,6 +15,8 @@
 
 **Other closed issues:**
 
+- Propose options to integrate Trek footprints to PDS products [\#295](https://github.com/NASA-PDS/registry/issues/295)
+- Meet with Treks, MMGIS and GEOSTAC to discuss the PDS GIS activity [\#287](https://github.com/NASA-PDS/registry/issues/287)
 - Create the PDS4 service labels for the dataset served by GIS services [\#285](https://github.com/NASA-PDS/registry/issues/285)
 - Create GIS collection PDS4 label [\#284](https://github.com/NASA-PDS/registry/issues/284)
 - Create context product unique identifier [\#283](https://github.com/NASA-PDS/registry/issues/283)
