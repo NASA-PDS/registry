@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "bcdda625-da14-4466-bec4-3e9bf8c9af6c",
-		"name": "Planetary Data System API Reference Tests Copy 3",
+		"_postman_id": "147b1883-bab2-452e-8bb0-58bdab0c8e75",
+		"name": "Planetary Data System API Reference Tests Copy 5",
 		"description": "Federated PDS API which provides actionable end points standardized\nbetween the different nodes.\n\n\nContact Support:\n Email: pds-operator@jpl.nasa.gov",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11337552",
-		"_collection_link": "https://interstellar-satellite-406261.postman.co/workspace/My-Workspace~2ee1fece-93c6-4f38-806d-fa321e2e92d5/collection/11337552-bcdda625-da14-4466-bec4-3e9bf8c9af6c?action=share&source=collection_link&creator=11337552"
+		"_collection_link": "https://interstellar-satellite-406261.postman.co/workspace/My-Workspace~2ee1fece-93c6-4f38-806d-fa321e2e92d5/collection/11337552-147b1883-bab2-452e-8bb0-58bdab0c8e75?action=share&source=collection_link&creator=11337552"
 	},
 	"item": [
 		{
@@ -757,7 +757,7 @@
 					},
 					"response": []
 				},
-                {
+				{
 					"name": "NASA-PDS/registry-api/352 pagination step 1",
 					"request": {
 						"method": "GET",
@@ -871,6 +871,943 @@
 								{
 									"key": "search-after",
 									"value": "2024-01-23T22:53:30.402453Z"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#434 get product from lidvid",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4326843 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C4326843 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/kvp+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lidvid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lidvid"
+							],
+							"variable": [
+								{
+									"key": "lidvid",
+									"value": "urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020::3.0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#434 get product from lidvid not supported Accept",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4326843 Status code is 406\", () => {",
+									"  pm.response.to.have.status(406);",
+									"});",
+									"",
+									"pm.test(\"C4326843 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/not+supported",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lidvid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lidvid"
+							],
+							"variable": [
+								{
+									"key": "lidvid",
+									"value": "urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020::3.0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#434 get product from lidvid missing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4326843 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C4326843 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var data = pm.response.json();",
+									"",
+									"pm.test(\"C4326843 Description match the requested lidvid\", () => {",
+									"  pm.expect(data.id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020::3.0\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lidvid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lidvid"
+							],
+							"variable": [
+								{
+									"key": "lidvid",
+									"value": "urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020::3.0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#435 get latest product from lid",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4328804 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C4328804 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var data = pm.response.json();",
+									"",
+									"pm.test(\"C4328804 Description match the requested lidvid\", () => {",
+									"  pm.expect(data.id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020::3.0\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lid"
+							],
+							"variable": [
+								{
+									"key": "lid",
+									"value": "urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#435 get latest product from lid with explicit latest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4328804 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C4328804 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var data = pm.response.json();",
+									"",
+									"pm.test(\"C4328804 Description match the requested lidvid\", () => {",
+									"  pm.expect(data.id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020::3.0\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lid/latest",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lid",
+								"latest"
+							],
+							"variable": [
+								{
+									"key": "lid",
+									"value": "urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#436 get all product for a given lid",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4332661 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C4332661 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var data = pm.response.json();",
+									"",
+									"pm.test(\"C4332661 Description match the requested lid\", () => {",
+									"  pm.expect(data.data[0].id).to.include(\"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020\");",
+									"});",
+									"",
+									"pm.test(\"C4332661 Multiple products are returned\", () => {",
+									"  pm.expect(data.data.length).to.eql(3);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lid/all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lid",
+								"all"
+							],
+							"variable": [
+								{
+									"key": "lid",
+									"value": "urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#436 get all product for a given lid with pagination, page 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4332661 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C4332661 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var data = pm.response.json();",
+									"",
+									"pm.test(\"C4332661 Description match the requested lid\", () => {",
+									"  pm.expect(data.data[0].id).to.include(\"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020\");",
+									"});",
+									"",
+									"pm.test(\"C4332661 Page 1 returns 2 results\", () => {",
+									"  pm.expect(data.data.length).to.eql(2);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lid/all?limit=2&sort=ops:Harvest_Info.ops:harvest_date_time",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lid",
+								"all"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "sort",
+									"value": "ops:Harvest_Info.ops:harvest_date_time"
+								}
+							],
+							"variable": [
+								{
+									"key": "lid",
+									"value": "urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#436 get all product for a given lid with pagination, page 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4332661 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"C4332661 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									"var data = pm.response.json();",
+									"",
+									"pm.test(\"C4332661 Description match the requested lid\", () => {",
+									"  pm.expect(data.data[0].id).to.include(\"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020\");",
+									"});",
+									"",
+									"pm.test(\"C4332661 only 1 product is returned in last page\", () => {",
+									"  pm.expect(data.data.length).to.eql(1);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lid/all?limit=2&sort=vid&search-after=2.0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lid",
+								"all"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "sort",
+									"value": "vid"
+								},
+								{
+									"key": "search-after",
+									"value": "2.0"
+								}
+							],
+							"variable": [
+								{
+									"key": "lid",
+									"value": "urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#436 get all product for a given lid with pagination, page 2 missing sort",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4332661 Status code is 400\", () => {",
+									"  pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"C4332661 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lid/all?limit=2&search-after=2024-04-30T19:15:08.324465Z",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lid",
+								"all"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "sort",
+									"value": "ops:Harvest_Info.ops:harvest_date_time",
+									"disabled": true
+								},
+								{
+									"key": "search-after",
+									"value": "2024-04-30T19:15:08.324465Z"
+								}
+							],
+							"variable": [
+								{
+									"key": "lid",
+									"value": "urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#469 q param simple criteria",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4332661 Status code is 400\", () => {",
+									"  pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"C4332661 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=pds:Time_Coordinates.pds:stop_date_time eq \"2021-05-21T15:47:08Z\"",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "ops:Harvest_Info.ops:harvest_date_time",
+									"disabled": true
+								},
+								{
+									"key": "search-after",
+									"value": "2024-04-30T19:15:08.324465Z",
+									"disabled": true
+								},
+								{
+									"key": "q",
+									"value": "pds:Time_Coordinates.pds:stop_date_time eq \"2021-05-21T15:47:08Z\""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api/issues/66 invalid q string",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4332661 Status code is 400\", () => {",
+									"  pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"C4332661 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=ops:Data_File_Info.ops:file_size gte 138172",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "ops:Harvest_Info.ops:harvest_date_time",
+									"disabled": true
+								},
+								{
+									"key": "search-after",
+									"value": "2024-04-30T19:15:08.324465Z",
+									"disabled": true
+								},
+								{
+									"key": "q",
+									"value": "ops:Data_File_Info.ops:file_size gte 138172"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#457 q param like operator with wildcard",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4332661 Status code is 400\", () => {",
+									"  pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"C4332661 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=lid  like \"urn:nasa:pds:insight_*\"",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "ops:Harvest_Info.ops:harvest_date_time",
+									"disabled": true
+								},
+								{
+									"key": "search-after",
+									"value": "2024-04-30T19:15:08.324465Z",
+									"disabled": true
+								},
+								{
+									"key": "q",
+									"value": "lid  like \"urn:nasa:pds:insight_*\""
+								},
+								{
+									"key": "fields",
+									"value": "lid",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#469 q param criteria combination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4332661 Status code is 400\", () => {",
+									"  pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"C4332661 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=( ( ops:Label_File_Info.ops:file_size ge 6805 and lid eq \"urn:nasa:pds:insight_rad\" ) or  ops:Label_File_Info.ops:file_ref eq   \"http://localhost:81/archive/custom-datasets/naif3/bundle_mars2020_spice_v001.xml\")",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "ops:Harvest_Info.ops:harvest_date_time",
+									"disabled": true
+								},
+								{
+									"key": "search-after",
+									"value": "2024-04-30T19:15:08.324465Z",
+									"disabled": true
+								},
+								{
+									"key": "q",
+									"value": "( ( ops:Label_File_Info.ops:file_size ge 6805 and lid eq \"urn:nasa:pds:insight_rad\" ) or  ops:Label_File_Info.ops:file_ref eq   \"http://localhost:81/archive/custom-datasets/naif3/bundle_mars2020_spice_v001.xml\")"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "direct DSL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4332661 Status code is 400\", () => {",
+									"  pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"C4332661 Response takes less than 1s\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lid/all?limit=2&search-after=2024-04-30T19:15:08.324465Z",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lid",
+								"all"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "sort",
+									"value": "ops:Harvest_Info.ops:harvest_date_time",
+									"disabled": true
+								},
+								{
+									"key": "search-after",
+									"value": "2024-04-30T19:15:08.324465Z"
+								}
+							],
+							"variable": [
+								{
+									"key": "lid",
+									"value": "urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020"
 								}
 							]
 						}
@@ -1460,6 +2397,195 @@
 							"path": [
 								"legacy_registry",
 								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"wildcard\": {\n      \"lid\": {\n        \"value\": \"urn:nasa:pds:insight_*\"\n      }\n    }\n  }\n}\nCopy",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{opensearchUrl}}/registry/_search",
+							"host": [
+								"{{opensearchUrl}}"
+							],
+							"path": [
+								"registry",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request Copy",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"simple_query_string\": {\n      \"query\": \"urn*\",\n      \"fields\": [\"lid\"],\n      \"fuzzy_max_expansions\": 0\n    }\n  },\n  \"fields\": [\"pds:Bundle_Member_Entry/pds:lid_reference\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{opensearchUrl}}/registry/_search",
+							"host": [
+								"{{opensearchUrl}}"
+							],
+							"path": [
+								"registry",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "pds web",
+			"item": [
+				{
+					"name": "class eq and lid like",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(product_class eq \"Product_Collection\" and  lid  like \"urn:nasa:pds:insight_*\")&limit=9999&fields=lid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(product_class eq \"Product_Collection\" and  lid  like \"urn:nasa:pds:insight_*\")"
+								},
+								{
+									"key": "limit",
+									"value": "9999"
+								},
+								{
+									"key": "fields",
+									"value": "lid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "count having host and target",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(pds:Internal_Reference.pds:lid_reference eq \"urn:nasa:pds:context:instrument_host:spacecraft.insight\" and ref_lid_target eq \"urn:nasa:pds:context:target:planet.mars\")&limit=0&fields=lid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(pds:Internal_Reference.pds:lid_reference eq \"urn:nasa:pds:context:instrument_host:spacecraft.insight\" and ref_lid_target eq \"urn:nasa:pds:context:target:planet.mars\")"
+								},
+								{
+									"key": "limit",
+									"value": "0"
+								},
+								{
+									"key": "fields",
+									"value": "lid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "investigations Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=product_class eq \"Product_Context\"&limit=9999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "product_class eq \"Product_Context\""
+								},
+								{
+									"key": "limit",
+									"value": "9999"
+								}
 							]
 						}
 					},
