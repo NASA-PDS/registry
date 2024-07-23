@@ -16,7 +16,11 @@
 **Other closed issues:**
 
 - Propose options to integrate Trek footprints to PDS products [\#295](https://github.com/NASA-PDS/registry/issues/295)
+- Generalize the treks util to all the Treks services [\#294](https://github.com/NASA-PDS/registry/issues/294)
+- Make sure all the useful Treks links are used/referenced in the PDS4 LAbel [\#291](https://github.com/NASA-PDS/registry/issues/291)
+- Load the GIS Treks products in a local registry [\#289](https://github.com/NASA-PDS/registry/issues/289)
 - Meet with Treks, MMGIS and GEOSTAC to discuss the PDS GIS activity [\#287](https://github.com/NASA-PDS/registry/issues/287)
+- Design/Develop the initial GIS demo  [\#286](https://github.com/NASA-PDS/registry/issues/286)
 - Create the PDS4 service labels for the dataset served by GIS services [\#285](https://github.com/NASA-PDS/registry/issues/285)
 - Create GIS collection PDS4 label [\#284](https://github.com/NASA-PDS/registry/issues/284)
 - Create context product unique identifier [\#283](https://github.com/NASA-PDS/registry/issues/283)
