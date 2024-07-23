@@ -1849,6 +1849,41 @@
 					"response": []
 				},
 				{
+					"name": "NASA-PDS/registry-api#484 products/{id}/members default to latest-only",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4438479 Status code is 200\", () => {pm.response.to.have.status(200)});",
+									"const content = pm.response.json();",
+									"const relevantHits = content.data.filter(hit => hit.properties.lid[0] === \"urn:nasa:pds:mars2020.spice:spice_kernels\")",
+									"pm.test(\"C4438479 Correct hits returned\", () => { pm.expect(relevantHits.length).to.eql(1) });",
+									"pm.test(\"C4438479 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"urn:nasa:pds:mars2020.spice",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "NASA-PDS/registry-api#453 products/{id}/members/members",
 					"event": [
 						{
@@ -1858,6 +1893,43 @@
 									"pm.test(\"C4438464 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
 									"pm.test(\"C4438464 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(11)});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members/members",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"urn:nasa:pds:mars2020.spice",
+								"members",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#485 products/{id}/members/members default to latest-only",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4438481 Status code is 200\", () => { pm.response.to.have.status(200) });",
+									"const content = pm.response.json();",
+									"const relevantHits = content.data.filter(hit => hit.properties.lid[0] === \"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020\")",
+									"pm.test(\"C4438481 Correct hits returned\", () => { pm.expect(relevantHits.length).to.eql(1) });",
+									"pm.test(\"C4438481 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020::3.0\")});",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1903,13 +1975,48 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:sclk_m2020_168_sclkscet_refit_v01.tsc::1.0/member-of",
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"products",
-								"urn:nasa:pds:mars2020.spice:spice_kernels:sclk_m2020_168_sclkscet_refit_v01.tsc::1.0",
+								"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020",
+								"member-of"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#451/486 products/{id}/member-of default to latest-only",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4438482 Status code is 200\", () => {pm.response.to.have.status(200)});",
+									"const content = pm.response.json();",
+									"const relevantHits = content.data.filter(hit => hit.properties.lid[0] === \"urn:nasa:pds:mars2020.spice:spice_kernels\")",
+									"pm.test(\"C4438482 Correct hits returned\", () => { pm.expect(relevantHits.length).to.eql(1) });",
+									"pm.test(\"C4438482 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020",
 								"member-of"
 							]
 						}
@@ -1944,6 +2051,41 @@
 							"path": [
 								"products",
 								"urn:nasa:pds:mars2020.spice:spice_kernels:sclk_m2020_168_sclkscet_refit_v01.tsc::1.0",
+								"member-of"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#487 products/{id}/member-of/member-of default to latest-only",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4438483 Status code is 200\", () => {pm.response.to.have.status(200)});",
+									"const content = pm.response.json();",
+									"const relevantHits = content.data.filter(hit => hit.properties.lid[0] === \"urn:nasa:pds:mars2020.spice:spice_kernels\")",
+									"pm.test(\"C4438483 Correct hits returned\", () => { pm.expect(relevantHits.length).to.eql(1) });",
+									"pm.test(\"C4438483 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020",
 								"member-of"
 							]
 						}
