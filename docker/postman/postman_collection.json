@@ -2623,6 +2623,103 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#461 classes basic behaviour",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"4438495 Status code is 200\", () => {pm.response.to.have.status(200)});",
+									"const content = pm.response.json();",
+									"",
+									"pm.test(\"4438495 Correct content count returned\", () => { pm.expect(content.length).to.eql(35) });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/classes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"classes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#511 classes/{class} basic behaviour",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4438483 Status code is 200\", () => {pm.response.to.have.status(200)});",
+									"const content = pm.response.json();",
+									"pm.test(\"C4438483 only bundles returned\", () => {pm.expect(content.data.every(hit => hit.properties[\"pds:Identification_Area.pds:product_class\"][0] === \"Product_Bundle\")).to.be.true})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/classes/bundle",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"classes",
+								"bundle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#488 classes/{class} default to latest-only",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const content = pm.response.json();",
+									"const relevantHits = content.data.filter(hit => hit.properties.lid[0] === \"urn:nasa:pds:mars2020.spice\")",
+									"pm.test(\"C4438484 Correct hits returned\", () => { pm.expect(relevantHits.length).to.eql(1) }); // will be 3 if not only latest",
+									"pm.test(\"C4438484 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice::3.0\")});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/classes/bundle",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"classes",
+								"bundle"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
