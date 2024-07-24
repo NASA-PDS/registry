@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "147b1883-bab2-452e-8bb0-58bdab0c8e75",
-		"name": "Planetary Data System API Reference Tests Copy 5",
+		"_postman_id": "0b8d796c-b794-4bc2-a43b-ce89ad45902c",
+		"name": "Planetary Data System API Reference Tests Copy 6",
 		"description": "Federated PDS API which provides actionable end points standardized\nbetween the different nodes.\n\n\nContact Support:\n Email: pds-operator@jpl.nasa.gov",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11337552",
-		"_collection_link": "https://interstellar-satellite-406261.postman.co/workspace/My-Workspace~2ee1fece-93c6-4f38-806d-fa321e2e92d5/collection/11337552-147b1883-bab2-452e-8bb0-58bdab0c8e75?action=share&source=collection_link&creator=11337552"
+		"_collection_link": "https://interstellar-satellite-406261.postman.co/workspace/My-Workspace~2ee1fece-93c6-4f38-806d-fa321e2e92d5/collection/11337552-0b8d796c-b794-4bc2-a43b-ce89ad45902c?action=share&source=collection_link&creator=11337552"
 	},
 	"item": [
 		{
@@ -2033,7 +2033,7 @@
 									"pm.test(\"C4438466 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
 									"pm.test(\"C4438466 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(1)});",
-									"pm.test(\"C4438466 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
+									"pm.test(\"C4438466 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice::3.0\")});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2044,14 +2044,21 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of",
+							"raw": "{{baseUrl}}/products/:lid/member-of/member-of",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"products",
-								"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020",
+								":lid",
+								"member-of",
 								"member-of"
+							],
+							"variable": [
+								{
+									"key": "lid",
+									"value": "urn:nasa:pds:mars2020.spice:spice_kernels:sclk_m2020_168_sclkscet_refit_v01.tsc::1.0"
+								}
 							]
 						}
 					},
@@ -2066,9 +2073,9 @@
 								"exec": [
 									"pm.test(\"C4438483 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
-									"const relevantHits = content.data.filter(hit => hit.properties.lid[0] === \"urn:nasa:pds:mars2020.spice:spice_kernels\")",
+									"const relevantHits = content.data.filter(hit => hit.properties.lid[0] === \"urn:nasa:pds:mars2020.spice\")",
 									"pm.test(\"C4438483 Correct hits returned\", () => { pm.expect(relevantHits.length).to.eql(1) });",
-									"pm.test(\"C4438483 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
+									"pm.test(\"C4438483 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice::3.0\")});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2079,14 +2086,21 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of",
+							"raw": "{{baseUrl}}/products/:lid/member-of/member-of",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"products",
-								"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020",
+								":lid",
+								"member-of",
 								"member-of"
+							],
+							"variable": [
+								{
+									"key": "lid",
+									"value": "urn:nasa:pds:mars2020.spice:spice_kernels:sclk_m2020_168_sclkscet_refit_v01.tsc::1.0"
+								}
 							]
 						}
 					},
