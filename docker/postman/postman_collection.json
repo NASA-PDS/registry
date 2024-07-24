@@ -2066,9 +2066,9 @@
 								"exec": [
 									"pm.test(\"C4438483 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
-									"const relevantHits = content.data.filter(hit => hit.properties.lid[0] === \"urn:nasa:pds:mars2020.spice:spice_kernels\")",
+									"const relevantHits = content.data.filter(hit => hit.properties.lid[0] === \"urn:nasa:pds:mars2020.spice\")",
 									"pm.test(\"C4438483 Correct hits returned\", () => { pm.expect(relevantHits.length).to.eql(1) });",
-									"pm.test(\"C4438483 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
+									"pm.test(\"C4438483 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice::3.0\")});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2079,13 +2079,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of",
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of/member-of",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"products",
 								"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020",
+								"member-of",
 								"member-of"
 							]
 						}
