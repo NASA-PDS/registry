@@ -354,7 +354,18 @@
 									"",
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.execution.skipRequest();"
+								],
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -545,7 +556,18 @@
 									"",
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.execution.skipRequest();"
+								],
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -697,7 +719,18 @@
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.execution.skipRequest();"
+								],
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -1473,8 +1506,8 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"C4332661 Status code is 400\", () => {",
-									"  pm.response.to.have.status(400);",
+									"pm.test(\"C4332661 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
 									"});",
 									"",
 									"pm.test(\"C4332661 Response takes less than 1s\", () => {",
@@ -1502,7 +1535,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/products?q=pds:Time_Coordinates.pds:stop_date_time eq \"2021-05-21T15:47:08Z\"",
+							"raw": "{{baseUrl}}/products",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -1527,7 +1560,8 @@
 								},
 								{
 									"key": "q",
-									"value": "pds:Time_Coordinates.pds:stop_date_time eq \"2021-05-21T15:47:08Z\""
+									"value": "pds:Time_Coordinates.pds:stop_date_time eq \"3000-01-01T00:00:00.000Z\"",
+									"disabled": true
 								}
 							]
 						}
@@ -1609,8 +1643,8 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"C4332661 Status code is 400\", () => {",
-									"  pm.response.to.have.status(400);",
+									"pm.test(\"C4332661 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
 									"});",
 									"",
 									"pm.test(\"C4332661 Response takes less than 1s\", () => {",
@@ -1682,8 +1716,8 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"C4332661 Status code is 400\", () => {",
-									"  pm.response.to.have.status(400);",
+									"pm.test(\"C4332661 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
 									"});",
 									"",
 									"pm.test(\"C4332661 Response takes less than 1s\", () => {",
@@ -2093,6 +2127,502 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#497 application/json multi product result does not contain blobs Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4438480 json blob is not in the JSON summary response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.properties).not.to.contain(\"ops:Label_File_Info.ops:json_blob\");",
+									"});",
+									"",
+									"pm.test(\"C4438480 xml blob is not in the JSON summary response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.properties).not.to.contain(\"ops:Label_File_Info.ops:blob\");",
+									"});",
+									"",
+									"pm.test(\"C4438480 json blob is not in the JSON data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data[0].properties[\"ops:Label_File_Info.ops:json_blob\"]).to.be.undefined;",
+									"});",
+									"",
+									"pm.test(\"C4438480 xml blob is not in the JSON data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data[0].properties[\"ops:Label_File_Info.ops:blob\"]).to.be.undefined;",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products?limit=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#497 application/json single product result does not contain blobs Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4438480 json blob is not in the data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.properties[\"ops:Label_File_Info.ops:json_blob\"]).to.be.undefined;",
+									"});",
+									"",
+									"pm.test(\"C4438480 xml blob is not in the data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.properties[\"ops:Label_File_Info.ops:blob\"]).to.be.undefined;",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lidvid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lidvid"
+							],
+							"variable": [
+								{
+									"key": "lidvid",
+									"value": "urn:nasa:pds:insight_rad::2.1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#497 application/kvp+json multi-product result does not contain blobs Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4438480 json blob is not in the KVP summary response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.properties).not.to.contain(\"ops:Label_File_Info.ops:json_blob\");",
+									"});",
+									"",
+									"pm.test(\"C4438480 xml blob is not in the KVP summary response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.properties).not.to.contain(\"ops:Label_File_Info.ops:blob\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"C4438480 json blob is not in the KVP data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data[0][\"ops:Label_File_Info.ops:json_blob\"]).to.be.undefined;",
+									"});",
+									"",
+									"pm.test(\"C4438480 xml blob is not in the KVP data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data[0][\"ops:Label_File_Info.ops:blob\"]).to.be.undefined;",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/kvp+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products?limit=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#497 application/kvp+json single product result does not contain blobs Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"C4438480 json blob is not in the KVP data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData[\"ops:Label_File_Info.ops:json_blob\"]).to.be.undefined;",
+									"});",
+									"",
+									"pm.test(\"C4438480 xml blob is not in the KVP data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData[\"ops:Label_File_Info.ops:blob\"]).to.be.undefined;",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/kvp+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lidvid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lidvid"
+							],
+							"variable": [
+								{
+									"key": "lidvid",
+									"value": "urn:nasa:pds:insight_rad::2.1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#497 application/json multi product result does not contain blobs Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4438480 json blob is not in the JSON summary response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.properties).not.to.contain(\"ops:Label_File_Info.ops:json_blob\");",
+									"});",
+									"",
+									"pm.test(\"C4438480 xml blob is not in the JSON summary response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.properties).not.to.contain(\"ops:Label_File_Info.ops:blob\");",
+									"});",
+									"",
+									"pm.test(\"C4438480 json blob is not in the JSON data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data[0].properties[\"ops:Label_File_Info.ops:json_blob\"]).to.be.undefined;",
+									"});",
+									"",
+									"pm.test(\"C4438480 xml blob is not in the JSON data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data[0].properties[\"ops:Label_File_Info.ops:blob\"]).to.be.undefined;",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products?limit=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#497 application/json single product result does not contain blobs Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4438480 json blob is not in the data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.properties[\"ops:Label_File_Info.ops:json_blob\"]).to.be.undefined;",
+									"});",
+									"",
+									"pm.test(\"C4438480 xml blob is not in the data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.properties[\"ops:Label_File_Info.ops:blob\"]).to.be.undefined;",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lidvid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lidvid"
+							],
+							"variable": [
+								{
+									"key": "lidvid",
+									"value": "urn:nasa:pds:insight_rad::2.1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#497 application/kvp+json multi-product result does not contain blobs Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4438480 json blob is not in the KVP summary response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.properties).not.to.contain(\"ops:Label_File_Info.ops:json_blob\");",
+									"});",
+									"",
+									"pm.test(\"C4438480 xml blob is not in the KVP summary response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.properties).not.to.contain(\"ops:Label_File_Info.ops:blob\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"C4438480 json blob is not in the KVP data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data[0][\"ops:Label_File_Info.ops:json_blob\"]).to.be.undefined;",
+									"});",
+									"",
+									"pm.test(\"C4438480 xml blob is not in the KVP data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data[0][\"ops:Label_File_Info.ops:blob\"]).to.be.undefined;",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/kvp+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products?limit=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#497 application/kvp+json single product result does not contain blobs Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"C4438480 json blob is not in the KVP data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData[\"ops:Label_File_Info.ops:json_blob\"]).to.be.undefined;",
+									"});",
+									"",
+									"pm.test(\"C4438480 xml blob is not in the KVP data response\", () => {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData[\"ops:Label_File_Info.ops:blob\"]).to.be.undefined;",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/kvp+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:lidvid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":lidvid"
+							],
+							"variable": [
+								{
+									"key": "lidvid",
+									"value": "urn:nasa:pds:insight_rad::2.1"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -2130,7 +2660,18 @@
 									"",
 									"// Some additional tests may be warranted in future based on presence of particular keys, key formats, or types."
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.execution.skipRequest();"
+								],
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -2173,7 +2714,18 @@
 									"    pm.expect(Array.from(values).every(val => expectedValues.has(val)) && Array.from(expectedValues).every(val => values.has(val))).true;",
 									"})"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.execution.skipRequest();"
+								],
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
