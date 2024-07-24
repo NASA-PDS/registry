@@ -2777,7 +2777,7 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:8081"
+			"value": "http://registry-api:8080"
 		},
 		{
 			"key": "opensearchUrl",
