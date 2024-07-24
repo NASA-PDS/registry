@@ -5,7 +5,7 @@ repos:
     -   id: trailing-whitespace
         exclude: REQUIREMENTS\.md$
     -   id: end-of-file-fixer
-        exclude: REQUIREMENTS\.md$
+        exclude: REQUIREMENTS\.md$|postman_collection\.json$
     -   id: check-executables-have-shebangs
     -   id: check-merge-conflict
     -   id: debug-statements
