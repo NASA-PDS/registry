@@ -2033,7 +2033,7 @@
 									"pm.test(\"C4438466 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
 									"pm.test(\"C4438466 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(1)});",
-									"pm.test(\"C4438466 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
+									"pm.test(\"C4438466 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice::3.0\")});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2044,13 +2044,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of",
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of/member-of",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"products",
 								"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020",
+								"member-of",
 								"member-of"
 							]
 						}
@@ -2777,7 +2778,7 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:8081"
+			"value": "http://registry-api:8080"
 		},
 		{
 			"key": "opensearchUrl",
