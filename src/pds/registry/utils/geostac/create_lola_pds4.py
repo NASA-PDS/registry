@@ -149,6 +149,7 @@ def main():
         browse_pds4 = create_product_browse(item)
 
         if save_xml:
+            # create destination directoru if they don't exist
             Path(dest + "/product_external").mkdir(parents=True, exist_ok=True)
             Path(dest + "/product_browse").mkdir(parents=True, exist_ok=True)
 
