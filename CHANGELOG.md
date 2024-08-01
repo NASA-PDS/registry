@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-07-25)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-08-01)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -24,6 +24,7 @@
 - Create the PDS4 service labels for the dataset served by GIS services [\#285](https://github.com/NASA-PDS/registry/issues/285)
 - Create GIS collection PDS4 label [\#284](https://github.com/NASA-PDS/registry/issues/284)
 - Create context product unique identifier [\#283](https://github.com/NASA-PDS/registry/issues/283)
+- Managed OpenSearch Snapshots [\#282](https://github.com/NASA-PDS/registry/issues/282)
 - Migrate and fix types mismatches in registry mappings from all node cluster to OpenSearch serverless [\#280](https://github.com/NASA-PDS/registry/issues/280)
 - The migrated documents on opensearch serverless have a generated \_id [\#270](https://github.com/NASA-PDS/registry/issues/270)
 - Setup API Gateway - OpenSearch Serverless Authentication [\#256](https://github.com/NASA-PDS/registry/issues/256)
