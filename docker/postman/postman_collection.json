@@ -2552,6 +2552,43 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#516 Welcome page",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"",
+									"pm.test(\"C4439829 Welcome page, base URL returns documentation\", () => {",
+									"    var response = pm.response.text();",
+									"    pm.expect(response).to.contain('<div id=\"swagger-ui\"></div>');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "text/html",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -2992,7 +3029,18 @@
 									"});",
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.execution.skipRequest()"
+								],
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
