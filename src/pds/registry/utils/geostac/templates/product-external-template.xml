@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1L00.sch" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="https://pds.nasa.gov/pds4/cart/v1/PDS4_CART_1L00_1970.sch" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+
+<Product_External
+  xmlns="http://pds.nasa.gov/pds4/pds/v1"
+  xmlns:pds="http://pds.nasa.gov/pds4/pds/v1"
+  xmlns:cart="http://pds.nasa.gov/pds4/cart/v1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+  xsi:schemaLocation="http://pds.nasa.gov/pds4/pds/v1 https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1L00.xsd
+  http://pds.nasa.gov/pds4/cart/v1 https://pds.nasa.gov/pds4/cart/v1/PDS4_CART_1L00_1970.xsd">
+
+  <Identification_Area>
+    <logical_identifier>{{lid}}</logical_identifier>
+    <version_id>1.0</version_id>
+    <title>{{title}}</title>
+    <information_model_version>1.21.0.0</information_model_version>
+    <product_class>Product_External</product_class>
+    <Modification_History>
+      <Modification_Detail>
+        <modification_date>{{modification_date}}</modification_date>
+        <version_id>1.0</version_id>
+        <description>
+          Derived release of the LOLA LIDAR shots in a stretched LAZ/COPC format for streaming services
+        </description>
+      </Modification_Detail>
+    </Modification_History>
+  </Identification_Area>
+  <Context_Area>
+    <Target_Identification>
+			<name>Moon</name>
+			<type>Satellite</type>
+		</Target_Identification>
+    <Discipline_Area>
+      <cart:Cartography>
+        <Local_Internal_Reference>
+          <local_identifier_reference>{{lid_ref}}</local_identifier_reference>
+          <local_reference_type>cartography_parameters_to_service</local_reference_type>
+        </Local_Internal_Reference>
+        <cart:Spatial_Domain>
+          <cart:Bounding_Coordinates>
+            <cart:west_bounding_coordinate unit="deg">{{bb_west}}</cart:west_bounding_coordinate>
+            <cart:east_bounding_coordinate unit="deg">{{bb_east}}</cart:east_bounding_coordinate>
+            <cart:north_bounding_coordinate unit="deg">{{bb_north}}</cart:north_bounding_coordinate>
+            <cart:south_bounding_coordinate unit="deg">{{bb_south}}</cart:south_bounding_coordinate>
+          </cart:Bounding_Coordinates>
+        </cart:Spatial_Domain>
+        <cart:Spatial_Reference_Information>
+          <cart:Horizontal_Coordinate_System_Definition>
+            <cart:Geographic>
+              <cart:geographic_description>
+                The actual shots in the LAZ/COPC file are in geocentric meters. To use in a lat/lon viewer,
+                the X,Y,Z data will need to be converted to Longitude,Latitude. The Z can be maintained as radius
+                or elevation using "radius - 1737400".
+              </cart:geographic_description>
+              <!-- <cart:latitude_resolution unit="deg">0.001</cart:latitude_resolution>
+              <cart:longitude_resolution unit="deg">0.001</cart:longitude_resolution> -->
+            </cart:Geographic>
+            <cart:Geodetic_Model>
+              <cart:latitude_type>Planetocentric</cart:latitude_type>
+              <cart:spheroid_name>MOON</cart:spheroid_name>
+              <cart:a_axis_radius unit="m">1737400</cart:a_axis_radius>
+              <cart:b_axis_radius unit="m">1737400</cart:b_axis_radius>
+              <cart:c_axis_radius unit="m">1737400</cart:c_axis_radius>
+              <cart:longitude_direction>Positive East</cart:longitude_direction>
+            </cart:Geodetic_Model>
+          </cart:Horizontal_Coordinate_System_Definition>
+        </cart:Spatial_Reference_Information>
+      </cart:Cartography>
+    </Discipline_Area>
+  </Context_Area>
+  <File_Area_External>
+    <File>
+      <file_name>{{file_name}}</file_name>
+      <local_identifier>{{lid_file}}</local_identifier>
+      <creation_date_time>{{file_date}}</creation_date_time>
+      <file_URL>{{file_url}}</file_URL>
+      <!-- <file_size unit="byte">{{file_size}}</file_size> -->
+      <comment>
+        A Cloud Optimized Point Cloud (COpCG) is a regular, but generally compressed, LAZ file,
+        aimed at being hosted on a HTTPS file server, with an internal organization that
+        enables more efficient workflows on the cloud.
+      </comment>
+    </File>
+    <Encoded_External>
+      <offset unit="byte">0</offset>
+      <encoding_standard_id>{{encoding_standard}}</encoding_standard_id>
+    </Encoded_External>
+  </File_Area_External>
+</Product_External>
