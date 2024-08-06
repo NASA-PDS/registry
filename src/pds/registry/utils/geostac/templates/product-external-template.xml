@@ -88,4 +88,12 @@
       <encoding_standard_id>{{encoding_standard}}</encoding_standard_id>
     </Encoded_External>
   </File_Area_External>
+
+  <Reference_List>
+    <Internal_Reference>
+      <lid_reference>urn:nasa:pds:context:target:satellite.earth.moon</lid_reference>
+      <reference_type>data_to_target</reference_type>
+    </Internal_Reference>
+  </Reference_List>
+
 </Product_External>

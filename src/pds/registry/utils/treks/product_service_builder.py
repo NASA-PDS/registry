@@ -29,6 +29,7 @@ class ProductServiceBuilder:
 
         # get target info
         self.target_type = None
+        self.target_lid = None
         try:
             name = self.target.capitalize()
             pds_query_url = \
@@ -36,6 +37,7 @@ class ProductServiceBuilder:
             response = requests.get(pds_query_url, timeout=30)
             # search type of first hit
             self.target_type = response.json()["data"][0]["properties"]["pds:Target.pds:type"][0]
+            self.target_lid = response.json()["data"][0]["properties"]["lid"][0]
 
         except Exception:
             if self.verbose:
@@ -51,7 +53,7 @@ class ProductServiceBuilder:
         identification_area, lidvid = self.create_identification_area()
         observation_area = self.create_observation_area()
         service = self.create_service()
-        # TODO: add reference list?
+        reference_list = self.create_reference_list()
 
         # create root
         root = Et.Element("Product_Service")
@@ -71,6 +73,7 @@ class ProductServiceBuilder:
         root.append(identification_area)
         root.append(observation_area)
         root.append(service)
+        root.append(reference_list)
 
         tree = Et.ElementTree(root)
 
@@ -388,6 +391,19 @@ class ProductServiceBuilder:
         Et.SubElement(service, "category").text = "Visualization"
 
         return service
+
+    def create_reference_list(self):
+        """Creates Reference_Area for pds4 labeel.
+
+        :return: Reference_List section of pds4 xml
+        """
+        reference_list = Et.Element("Reference_List")
+
+        internal_reference = Et.SubElement(reference_list, "Internal_Reference")
+        Et.SubElement(internal_reference, "lid_reference").text = self.target_lid
+        Et.SubElement(internal_reference, "reference_type").text = "data_to_target"
+
+        return reference_list
 
     def get_fgdc(self):
         """Utility function to get fgdc metadata xml.
