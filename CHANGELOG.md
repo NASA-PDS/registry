@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-07-25)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-08-05)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -15,6 +15,7 @@
 
 **Other closed issues:**
 
+- Add Lola PDS4 script [\#305](https://github.com/NASA-PDS/registry/issues/305)
 - Propose options to integrate Trek footprints to PDS products [\#295](https://github.com/NASA-PDS/registry/issues/295)
 - Generalize the treks util to all the Treks services [\#294](https://github.com/NASA-PDS/registry/issues/294)
 - Make sure all the useful Treks links are used/referenced in the PDS4 LAbel [\#291](https://github.com/NASA-PDS/registry/issues/291)
@@ -24,6 +25,7 @@
 - Create the PDS4 service labels for the dataset served by GIS services [\#285](https://github.com/NASA-PDS/registry/issues/285)
 - Create GIS collection PDS4 label [\#284](https://github.com/NASA-PDS/registry/issues/284)
 - Create context product unique identifier [\#283](https://github.com/NASA-PDS/registry/issues/283)
+- Managed OpenSearch Snapshots [\#282](https://github.com/NASA-PDS/registry/issues/282)
 - Migrate and fix types mismatches in registry mappings from all node cluster to OpenSearch serverless [\#280](https://github.com/NASA-PDS/registry/issues/280)
 - The migrated documents on opensearch serverless have a generated \_id [\#270](https://github.com/NASA-PDS/registry/issues/270)
 - Setup API Gateway - OpenSearch Serverless Authentication [\#256](https://github.com/NASA-PDS/registry/issues/256)
