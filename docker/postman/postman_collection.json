@@ -477,6 +477,209 @@
 			"name": "requirements",
 			"item": [
 				{
+					"name": "NASA-PDS/registry-api#495 querystring supports AND",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4440388 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C4440388 Number of results is 1\", () => {",
+									"    pm.expect(data.length).to.equal(1); ",
+									"});",
+									"",
+									"pm.test(\"C4440388 Returned hits contain correct values\", () => {",
+									"    pm.expect(data[0][\"properties\"][\"product_class\"][0]).to.eql(\"Product_Bundle\");",
+									"    pm.expect(data[0][\"properties\"][\"lid\"][0]).to.eql(\"urn:nasa:pds:mars2020.spice\"); ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=((product_class EQ \"Product_Bundle\") AND (lid EQ \"urn:nasa:pds:mars2020.spice\"))",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "((product_class EQ \"Product_Bundle\") AND (lid EQ \"urn:nasa:pds:mars2020.spice\"))"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#495 querystring supports OR",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4440389 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C4440389 Number of results is 2\", () => {",
+									"    pm.expect(data.length).to.equal(2); ",
+									"});",
+									"",
+									"const acceptableLids = [",
+									"    \"urn:nasa:pds:mars2020.spice\",",
+									"    \"urn:nasa:pds:insight_rad\"",
+									"]",
+									"",
+									"pm.test(\"C4440389 Returned hits contain correct values\", () => {",
+									"    data.forEach(hit => {",
+									"        pm.expect(hit[\"properties\"][\"product_class\"][0]).to.eql(\"Product_Bundle\");",
+									"    pm.expect(acceptableLids).to.include(hit[\"properties\"][\"lid\"][0]);",
+									"    })",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=((product_class EQ \"Product_Bundle\") AND ((lid EQ \"urn:nasa:pds:mars2020.spice\") OR (lid EQ \"urn:nasa:pds:insight_rad\")))",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "((product_class EQ \"Product_Bundle\") AND ((lid EQ \"urn:nasa:pds:mars2020.spice\") OR (lid EQ \"urn:nasa:pds:insight_rad\")))"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#495 querystring supports NOT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4440390 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C4440390 Number of results is 1\", () => {",
+									"    pm.expect(data.length).to.equal(1); ",
+									"});",
+									"",
+									"pm.test(\"C4440390 Returned hits contain correct values\", () => {",
+									"    pm.expect(data[0][\"properties\"][\"product_class\"][0]).to.eql(\"Product_Bundle\");",
+									"    pm.expect(data[0][\"properties\"][\"lid\"][0]).to.eql(\"urn:nasa:pds:insight_rad\"); ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=((product_class EQ \"Product_Bundle\") AND NOT (lid EQ \"urn:nasa:pds:mars2020.spice\"))",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "((product_class EQ \"Product_Bundle\") AND NOT (lid EQ \"urn:nasa:pds:mars2020.spice\"))"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#495 querystring supports lowercase operators",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4440391 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C4440391 Number of results is 1\", () => {",
+									"    pm.expect(data.length).to.equal(1); ",
+									"});",
+									"",
+									"pm.test(\"C4440391 Returned hits contain correct values\", () => {",
+									"    pm.expect(data[0][\"properties\"][\"product_class\"][0]).to.eql(\"Product_Bundle\");",
+									"    pm.expect(data[0][\"properties\"][\"lid\"][0]).to.eql(\"urn:nasa:pds:insight_rad\"); ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=((product_class eq \"Product_Bundle\") and not (lid eq \"urn:nasa:pds:mars2020.spice\"))",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "((product_class eq \"Product_Bundle\") and not (lid eq \"urn:nasa:pds:mars2020.spice\"))"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "NASA-PDS/pds-api#72 search by a temporal range as an ISO-8601 time interval",
 					"event": [
 						{
