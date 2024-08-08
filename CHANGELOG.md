@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-08-05)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-08-08)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -11,6 +11,7 @@
 **Defects:**
 
 - Secret detection is broken on branch titan\_treks\_utility\_script [\#292](https://github.com/NASA-PDS/registry/issues/292) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
+- harvest created archive\_status as an array and registry-mgr updates it as a string [\#276](https://github.com/NASA-PDS/registry/issues/276) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - Missing NAIF from Legacy Dashboard [\#234](https://github.com/NASA-PDS/registry/issues/234) [[s.low](https://github.com/NASA-PDS/registry/labels/s.low)]
 
 **Other closed issues:**

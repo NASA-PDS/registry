@@ -477,6 +477,533 @@
 			"name": "requirements",
 			"item": [
 				{
+					"name": "NASA-PDS/registry-api#494 querystring supports EQ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const testrailId = \"C4440539\";",
+									"const minimumExpectedHits = 2; // actual count may increase as data is added to test corpus",
+									"function testHitConstraints(hit) {",
+									"    pm.expect(hit.properties.product_class[0]).to.eq(\"Product_Bundle\")",
+									"};",
+									"",
+									"pm.test(`${testrailId} Status code is 200`, () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(`${testrailId} Number of results is at least ${minimumExpectedHits}`, () => {",
+									"    pm.expect(data.length).gte(minimumExpectedHits); ",
+									"});",
+									"",
+									"pm.test(`${testrailId} Returned hits satisfy constraints`, () => {",
+									"    data.forEach(testHitConstraints) ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(product_class EQ \"Product_Bundle\")",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(product_class EQ \"Product_Bundle\")"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#494 querystring supports NE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const testrailId = \"C4440540\";",
+									"const minimumExpectedHits = 36; // actual count may increase as data is added to test corpus",
+									"function testHitConstraints(hit) {",
+									"    pm.expect(hit.properties.product_class[0]).to.not.eq(\"Product_Bundle\")",
+									"};",
+									"",
+									"pm.test(`${testrailId} Status code is 200`, () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(`${testrailId} Number of results is at least ${minimumExpectedHits}`, () => {",
+									"    pm.expect(data.length).gte(minimumExpectedHits); ",
+									"});",
+									"",
+									"pm.test(`${testrailId} Returned hits satisfy constraints`, () => {",
+									"    data.forEach(testHitConstraints) ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(product_class NE \"Product_Bundle\")",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(product_class NE \"Product_Bundle\")"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#494 querystring supports GT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const testrailId = \"C4440541\";",
+									"const minimumExpectedHits = 6; // actual count may increase as data is added to test corpus",
+									"function testHitConstraints(hit) {",
+									"    pm.expect(Date.parse(hit.properties[\"pds:Time_Coordinates.pds:start_date_time\"][0])).gt(Date.parse(\"2020-07-30T12:51:34Z\"))",
+									"};",
+									"",
+									"pm.test(`${testrailId} Status code is 200`, () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(`${testrailId} Number of results is at least ${minimumExpectedHits}`, () => {",
+									"    pm.expect(data.length).gte(minimumExpectedHits); ",
+									"});",
+									"",
+									"pm.test(`${testrailId} Returned hits satisfy constraints`, () => {",
+									"    data.forEach(testHitConstraints) ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(pds:Time_Coordinates.pds:start_date_time GT \"2020-07-30T12:51:34Z\")",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(pds:Time_Coordinates.pds:start_date_time GT \"2020-07-30T12:51:34Z\")"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#494 querystring supports LT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const testrailId = \"C4440542\";",
+									"const minimumExpectedHits = 25; // actual count may increase as data is added to test corpus",
+									"function testHitConstraints(hit) {",
+									"    pm.expect(Date.parse(hit.properties[\"pds:Time_Coordinates.pds:start_date_time\"][0])).lt(Date.parse(\"2020-07-30T12:51:34Z\"))",
+									"};",
+									"",
+									"pm.test(`${testrailId} Status code is 200`, () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(`${testrailId} Number of results is at least ${minimumExpectedHits}`, () => {",
+									"    pm.expect(data.length).gte(minimumExpectedHits); ",
+									"});",
+									"",
+									"pm.test(`${testrailId} Returned hits satisfy constraints`, () => {",
+									"    data.forEach(testHitConstraints) ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(pds:Time_Coordinates.pds:start_date_time LT \"2020-07-30T12:51:34Z\")",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(pds:Time_Coordinates.pds:start_date_time LT \"2020-07-30T12:51:34Z\")"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#494 querystring supports GE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const testrailId = \"C4440543\";",
+									"const minimumExpectedHits = 13; // actual count may increase as data is added to test corpus",
+									"function testHitConstraints(hit) {",
+									"    pm.expect(Date.parse(hit.properties[\"pds:Time_Coordinates.pds:start_date_time\"][0])).gte(Date.parse(\"2020-07-30T12:51:34Z\"))",
+									"};",
+									"",
+									"pm.test(`${testrailId} Status code is 200`, () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(`${testrailId} Number of results is at least ${minimumExpectedHits}`, () => {",
+									"    pm.expect(data.length).gte(minimumExpectedHits); ",
+									"});",
+									"",
+									"pm.test(`${testrailId} Returned hits satisfy constraints`, () => {",
+									"    data.forEach(testHitConstraints) ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(pds:Time_Coordinates.pds:start_date_time GE \"2020-07-30T12:51:34Z\")",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(pds:Time_Coordinates.pds:start_date_time GE \"2020-07-30T12:51:34Z\")"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#494 querystring supports LE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const testrailId = \"C4440544\";",
+									"const minimumExpectedHits = 32; // actual count may increase as data is added to test corpus",
+									"function testHitConstraints(hit) {",
+									"    pm.expect(Date.parse(hit.properties[\"pds:Time_Coordinates.pds:start_date_time\"][0])).lte(Date.parse(\"2020-07-30T12:51:34Z\"))",
+									"};",
+									"",
+									"pm.test(`${testrailId} Status code is 200`, () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(`${testrailId} Number of results is at least ${minimumExpectedHits}`, () => {",
+									"    pm.expect(data.length).gte(minimumExpectedHits); ",
+									"});",
+									"",
+									"pm.test(`${testrailId} Returned hits satisfy constraints`, () => {",
+									"    data.forEach(testHitConstraints) ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(pds:Time_Coordinates.pds:start_date_time LE \"2020-07-30T12:51:34Z\")",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(pds:Time_Coordinates.pds:start_date_time LE \"2020-07-30T12:51:34Z\")"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#495 querystring supports AND",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4440388 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C4440388 Number of results is 1\", () => {",
+									"    pm.expect(data.length).to.equal(1); ",
+									"});",
+									"",
+									"pm.test(\"C4440388 Returned hits contain correct values\", () => {",
+									"    pm.expect(data[0][\"properties\"][\"product_class\"][0]).to.eql(\"Product_Bundle\");",
+									"    pm.expect(data[0][\"properties\"][\"lid\"][0]).to.eql(\"urn:nasa:pds:mars2020.spice\"); ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=((product_class EQ \"Product_Bundle\") AND (lid EQ \"urn:nasa:pds:mars2020.spice\"))",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "((product_class EQ \"Product_Bundle\") AND (lid EQ \"urn:nasa:pds:mars2020.spice\"))"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#495 querystring supports OR",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4440389 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C4440389 Number of results is 2\", () => {",
+									"    pm.expect(data.length).to.equal(2); ",
+									"});",
+									"",
+									"const acceptableLids = [",
+									"    \"urn:nasa:pds:mars2020.spice\",",
+									"    \"urn:nasa:pds:insight_rad\"",
+									"]",
+									"",
+									"pm.test(\"C4440389 Returned hits contain correct values\", () => {",
+									"    data.forEach(hit => {",
+									"        pm.expect(hit[\"properties\"][\"product_class\"][0]).to.eql(\"Product_Bundle\");",
+									"    pm.expect(acceptableLids).to.include(hit[\"properties\"][\"lid\"][0]);",
+									"    })",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=((product_class EQ \"Product_Bundle\") AND ((lid EQ \"urn:nasa:pds:mars2020.spice\") OR (lid EQ \"urn:nasa:pds:insight_rad\")))",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "((product_class EQ \"Product_Bundle\") AND ((lid EQ \"urn:nasa:pds:mars2020.spice\") OR (lid EQ \"urn:nasa:pds:insight_rad\")))"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#495 querystring supports NOT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4440390 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C4440390 Number of results is 1\", () => {",
+									"    pm.expect(data.length).to.equal(1); ",
+									"});",
+									"",
+									"pm.test(\"C4440390 Returned hits contain correct values\", () => {",
+									"    pm.expect(data[0][\"properties\"][\"product_class\"][0]).to.eql(\"Product_Bundle\");",
+									"    pm.expect(data[0][\"properties\"][\"lid\"][0]).to.eql(\"urn:nasa:pds:insight_rad\"); ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=((product_class EQ \"Product_Bundle\") AND NOT (lid EQ \"urn:nasa:pds:mars2020.spice\"))",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "((product_class EQ \"Product_Bundle\") AND NOT (lid EQ \"urn:nasa:pds:mars2020.spice\"))"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#495 querystring supports lowercase operators",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4440391 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C4440391 Number of results is 1\", () => {",
+									"    pm.expect(data.length).to.equal(1); ",
+									"});",
+									"",
+									"pm.test(\"C4440391 Returned hits contain correct values\", () => {",
+									"    pm.expect(data[0][\"properties\"][\"product_class\"][0]).to.eql(\"Product_Bundle\");",
+									"    pm.expect(data[0][\"properties\"][\"lid\"][0]).to.eql(\"urn:nasa:pds:insight_rad\"); ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=((product_class eq \"Product_Bundle\") and not (lid eq \"urn:nasa:pds:mars2020.spice\"))",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "((product_class eq \"Product_Bundle\") and not (lid eq \"urn:nasa:pds:mars2020.spice\"))"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "NASA-PDS/pds-api#72 search by a temporal range as an ISO-8601 time interval",
 					"event": [
 						{
@@ -2552,6 +3079,43 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#516 Welcome page",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"",
+									"pm.test(\"C4439829 Welcome page, base URL returns documentation\", () => {",
+									"    var response = pm.response.text();",
+									"    pm.expect(response).to.contain('<div id=\"swagger-ui\"></div>');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "text/html",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -2992,7 +3556,18 @@
 									"});",
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.execution.skipRequest()"
+								],
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
