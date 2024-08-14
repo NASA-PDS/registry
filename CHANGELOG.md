@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-08-08)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-08-14)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -16,6 +16,7 @@
 
 **Other closed issues:**
 
+- Finalize Cognito configuration in production for the Registry [\#307](https://github.com/NASA-PDS/registry/issues/307)
 - Add Lola PDS4 script [\#305](https://github.com/NASA-PDS/registry/issues/305)
 - Propose options to integrate Trek footprints to PDS products [\#295](https://github.com/NASA-PDS/registry/issues/295)
 - Generalize the treks util to all the Treks services [\#294](https://github.com/NASA-PDS/registry/issues/294)
