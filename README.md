@@ -43,6 +43,8 @@ All users and developers of the NASA-PDS software are expected to abide by our [
         * This package is also hosted on the "cheeseshop" and can be installed with
             ```pip install pds.registry```
     * The GeoSTAC utilities can be used to create pds4 labels for the Lola point clouds they host
+    * This command needs LOLA GDR data to be loaded in the registry in order to connect the lid references
+        * This data can be found here: [https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/cylindrical/float_img/](https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/cylindrical/float_img/)
     * Run the command:
         ```create-lola-pds4```
 
