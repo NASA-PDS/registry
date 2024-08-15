@@ -1,9 +1,12 @@
 """Utility for create_treks_pds4.py to build pds4 xml."""
+import importlib
 import logging
 import xml.etree.ElementTree as Et
 from datetime import date
 
 import requests
+from jinja2 import Environment
+from pds.registry.utils.treks import templates
 
 
 class ProductServiceBuilder:
@@ -23,6 +26,7 @@ class ProductServiceBuilder:
         self.save_xml = save_xml
         self.dest = dest
         self.verbose = verbose
+        self.context = {}
 
         # load in fgdc
         self.fgdc_root = self.get_fgdc()
@@ -49,123 +53,75 @@ class ProductServiceBuilder:
 
         :return: pds4 xml populated with the given data, lidvid
         """
-        # get necessary subtrees
-        identification_area, lidvid = self.create_identification_area()
-        observation_area = self.create_observation_area()
-        service = self.create_service()
-        reference_list = self.create_reference_list()
+        # fill out context
+        lidvid = self.create_identification_area()
+        self.create_observation_area()
+        self.create_service()
+        self.create_reference_list()
 
-        # create root
-        root = Et.Element("Product_Service")
+        # create env
+        env = Environment()
 
-        # add attributes to the root
-        xmlns = "http://pds.nasa.gov/pds4/pds/v1"
-        xmlns_xsi = "http://www.w3.org/2001/XMLSchema-instance"
-        xsi_schema_location = "http://pds.nasa.gov/pds4/pds/v1 https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1M00.xsd"
-        xmlns_cart = "http://pds.nasa.gov/pds4/cart/v1"
+        # get template
+        with importlib.resources.open_text(templates, "product-service-template.xml") as io:
+            template_text = io.read()
+            template = env.from_string(template_text)
 
-        root.set("xmlns", xmlns)
-        root.set("xmlns:xsi", xmlns_xsi)
-        root.set("xmlns:cart", xmlns_cart)
-        root.set("xsi:schemaLocation", xsi_schema_location)
-
-        # create full tree
-        root.append(identification_area)
-        root.append(observation_area)
-        root.append(service)
-        root.append(reference_list)
-
-        tree = Et.ElementTree(root)
-
-        # make tree pretty
-        Et.indent(tree, space="\t", level=0)
-        name = self.data["productLabel"]
-
-        if self.save_xml:
-            tree.write(self.dest + f"/{name}_Product_Service.xml")
-
-        return tree, lidvid
+            # create pds4
+            return template.render(self.context), lidvid
 
     def create_identification_area(self):
         """Creates Identification_Area for pds4 label.
 
-        :return: Identification_Area section of pds4 xml, lidvid
+        :return: lidvid
         """
-        identification_area = Et.Element("Identification_Area")
-
         # TODO: create bundleID and collectionID
         logical_identifier = "urn:nasa:pds:treks:" + self.target + "_treks_layers:" + self.data["productLabel"].lower()
         version_id = str(1.0)
         lidvid = logical_identifier + "::" + version_id
-        Et.SubElement(identification_area, "logical_identifier").text = logical_identifier  # productID needs to lowercase
-        Et.SubElement(identification_area, "version_id").text = version_id  # TODO: increment version as needed
-        Et.SubElement(identification_area, "title").text = self.data["title"]
-        Et.SubElement(identification_area, "information_model_version").text = "1.22.0.0"
-        Et.SubElement(identification_area, "product_class").text = "Product_Service"
+        self.context["lid"] = logical_identifier  # productID needs to lowercase
+        self.context["vid"] = version_id  # TODO: increment version as needed
+        self.context["title"] = self.data["title"]
 
-        modification_history = Et.SubElement(identification_area, "Modification_History")
-        modification_detail = Et.SubElement(modification_history, "Modification_Detail")
+        self.context["modification_date"] = str(date.today())
 
-        Et.SubElement(modification_detail, "modification_date").text = str(date.today())
-        Et.SubElement(modification_detail, "version_id").text = str(1.0)  # increment as needed
-        Et.SubElement(modification_detail, "description").text = "Exposing GIS services in the PDS4 registry"
-
-        return identification_area, lidvid
+        return lidvid
 
     def create_observation_area(self):
-        """Creates Observation_Area for pds4 label.
-
-        :return: Observation_Area section of pds4 xml
-        """
-        observation_area = Et.Element("Observation_Area")
-
+        """Creates Observation_Area for pds4 label."""
         # Time_Coordinates subtree
-        observation_area.append(self.create_time_coordinates())
-
-        # Investigation_Area subtree
-        investigation_area = Et.SubElement(observation_area, "Investigation_Area")
-        Et.SubElement(investigation_area, "name").text = "Treks Open Geospatial Consortium Web Mapping Tile Service"
-        Et.SubElement(investigation_area, "type").text = "OGC WMTS"
-
-        internal_reference = Et.SubElement(investigation_area, "Internal_Reference")
-        Et.SubElement(internal_reference, "lid_reference").text = "urn:nasa:pds:ogc:wmts"
-        # TODO: add lidvid_reference ? it was not in Trent's xml but required by pds4 docs
-        Et.SubElement(internal_reference, "reference_type").text = "lid_reference"
+        self.create_time_coordinates()
 
         # Observing_System subtree
-        observing_system = Et.SubElement(observation_area, "Observing_System")
-
+        observing_system_components = []
         if "Spacecraft" in self.data:
-            observing_system_component_spacecraft = Et.SubElement(observing_system, "Observing_System_Component")
-            Et.SubElement(observing_system_component_spacecraft, "name").text = self.data["Spacecraft"]
-            Et.SubElement(observing_system_component_spacecraft, "type").text = "Spacecraft"
+            component = []
+            component.append(self.data["Spacecraft"])
+            component.append("Spacecraft")
+            observing_system_components.append(component)
+
         elif self.verbose:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},Spacecraft not found in json,Observing_System_Component")
 
         if "instrument" in self.data:
-            observing_system_component_instrument = Et.SubElement(observing_system, "Observing_System_Component")
-            Et.SubElement(observing_system_component_instrument, "name").text = self.data["instrument"]
-            Et.SubElement(observing_system_component_instrument, "type").text = "Instrument"
+            component = []
+            component.append(self.data["instrument"])
+            component.append("Instrument")
+            observing_system_components.append(component)
+
         elif self.verbose:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},instrument not found in json,Observing_System_Component")
 
-        # Data object was not in Trent's xml but required according to pds4 documentation
-        # Et.SubElement(observing_system, "data_object").text = "Physical_Object"
-        # Conceptual_Object mentions it's not digital, but Physical_Object does not mention anything
+        self.context["observing_system_components"] = observing_system_components
 
         # Target_Identification subtree
-        target_identification = Et.SubElement(observation_area, "Target_Identification")
-        Et.SubElement(target_identification, "name").text = self.target.capitalize()
-
-        if self.target_type is not None:
-            Et.SubElement(target_identification, "type").text = self.target_type
+        self.context["target"] = self.target.capitalize()
+        self.context["target_type"] = self.target_type
 
         # Discipline_Area subtree
-        observation_area.append(self.create_discipline_area())
-
-        return observation_area
+        self.create_discipline_area()
 
     def create_time_coordinates(self):
         """Creates Time_Coordinates association for Observation_Area.
@@ -189,8 +145,8 @@ class ProductServiceBuilder:
                 d_start = start[6:]
                 start = y_start + '-' + m_start + '-' + d_start
 
-                # add in data
-                Et.SubElement(time_coordinates, "start_date_time").text = start
+                # add in context
+                self.context["start_time"] = start
 
             elif self.verbose:
                 label = self.data["productLabel"]
@@ -210,7 +166,7 @@ class ProductServiceBuilder:
                 d_stop = stop[6:]
                 stop = y_stop + '-' + m_stop + '-' + d_stop
 
-                Et.SubElement(time_coordinates, "stop_date_time").text = stop
+                self.context["stop_time"] = stop
 
             elif self.verbose:
                 label = self.data["productLabel"]
@@ -235,8 +191,8 @@ class ProductServiceBuilder:
                         day = date[6:]
                         date = year + '-' + month + '-' + day
 
-                        Et.SubElement(time_coordinates, "start_date_time").text = date
-                        Et.SubElement(time_coordinates, "stop_date_time").text = date
+                        self.context["start_time"] = date
+                        self.context["stop_time"] = date
 
                     elif self.verbose:
                         label = self.data["productLabel"]
@@ -251,31 +207,15 @@ class ProductServiceBuilder:
         return time_coordinates
 
     def create_discipline_area(self):
-        """Creates Discipline_Area association for Observation_Area.
-
-        :return: Discipline_Area section of pds4 xml
-        """
+        """Creates Discipline_Area association for Observation_Area."""
         # many attributes/ associations missing in data that pds4 spec has a cardinality requirement for
-        discipline_area = Et.Element("Discipline_Area")
-        cartography = Et.SubElement(discipline_area, "cart:Cartography")
-
-        lir = Et.SubElement(cartography, "Local_Internal_Reference")
-        Et.SubElement(lir, "local_identifier_reference").text = self.data["productLabel"].lower()
-        Et.SubElement(lir, "local_reference_type").text = "cartography_parameters_to_service"
-
-        spatial_domain = Et.SubElement(cartography, "cart:Spatial_Domain")
-        bounding_coordinates = Et.SubElement(spatial_domain, "cart:Bounding_Coordinates")
+        self.context["lid_ref"] = self.data["productLabel"].lower()
 
         bbox = self.data["bbox"].split(',')  # west, south, east, north
-        Et.SubElement(bounding_coordinates, "cart:west_bounding_coordinate", unit="deg").text = bbox[0]
-        Et.SubElement(bounding_coordinates, "cart:south_bounding_coordinate", unit="deg").text = bbox[1]
-        Et.SubElement(bounding_coordinates, "cart:east_bounding_coordinate", unit="deg").text = bbox[2]
-        Et.SubElement(bounding_coordinates, "cart:north_bounding_coordinate", unit="deg").text = bbox[3]
-
-        sri = Et.SubElement(cartography, "cart:Spatial_Reference_Information")
-        hcsd = Et.SubElement(sri, "cart:Horizontal_Coordinate_System_Definition")
-
-        geographic = Et.SubElement(hcsd, "cart:Geographic")
+        self.context["bbox_west"] = bbox[0]
+        self.context["bbox_south"] = bbox[1]
+        self.context["bbox_east"] = bbox[2]
+        self.context["bbox_north"] = bbox[3]
 
         # get resolution from fgdc
         lat_res = self.fgdc_root.find(".//latres")
@@ -289,24 +229,23 @@ class ProductServiceBuilder:
                 "Decimal seconds": "arcsec"
             }
             unit = pds4_unit_map[unit.text]
+            self.context["unit"] = unit
 
             # ensure resolutions exist
             if lat_res is not None:
-                Et.SubElement(geographic, "cart:latitude_resolution", unit=unit).text = lat_res.text
+                self.context["lat_res"] = lat_res.text
             elif self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},latres tag not found in fgdc,cart:latitude_resolution")
 
             if lon_res is not None:
-                Et.SubElement(geographic, "cart:longitude_resolution", unit=unit).text = lon_res.text
+                self.context["lon_res"] = lon_res.text
             elif self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},longres tag not found in fgdc,cart:longitude_resolution")
         elif self.verbose:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},geounit tag not found in fgdc,resolution units")
-
-        geodetic_model = geographic = Et.SubElement(hcsd, "cart:Geodetic_Model")
 
         # get geodetic model infro from fgdc
         geodetic = self.fgdc_root.find(".//geodetic")
@@ -317,93 +256,60 @@ class ProductServiceBuilder:
             ellips = geodetic.find(".//ellips")
 
             if ellips is not None:
-                Et.SubElement(geodetic_model, "cart:spheroid_name").text = ellips.text
+                self.context["spheroid_name"] = ellips.text
             elif self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},ellips tag not found in fgdc,cart:spheroid_name")
-
-            # TODO: FIND LATITUDE TYPE
-            # Et.SubElement(geodetic_model, "cart:latitude_type").text = "Planetocentric"
-            if self.verbose:
-                label = self.data["productLabel"]
-                logging.warning(f"{self.target},{label},latitude type not found,cart:latitude_type")
 
             # get axis info
             semiaxis = geodetic.find(".//semiaxis")
 
             if semiaxis is not None:
-                Et.SubElement(geodetic_model, "cart:a_axis_radius", unit="m").text = semiaxis.text
-                Et.SubElement(geodetic_model, "cart:b_axis_radius", unit="m").text = semiaxis.text
-                Et.SubElement(geodetic_model, "cart:c_axis_radius", unit="m").text = semiaxis.text
+                self.context["axis_radius"] = semiaxis.text
                 # Do I need denominator of flattening ratio?
             elif self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},semiaxis tag not found in fgdc,cart:a/b/c_axis_radius")
 
-            # TODO: FIND longitude direction (default positive east?)
-            # Et.SubElement(geodetic_model, "cart:longitude_direction").text = "Positive East"
             if self.verbose:
                 label = self.data["productLabel"]
                 logging.warning(f"{self.target},{label},longitude direction not found,cart:longitude_direction")
 
-        return discipline_area
-
     def create_service(self):
-        """Creates Service for pds4 label.
-
-        :return: Service section of pds4 xml
-        """
-        service = Et.Element("Service")
-
-        Et.SubElement(service, "name").text = self.data["title"]
+        """Creates Service for pds4 label."""
+        self.context["name"] = self.data["title"]
 
         # get description from fgdc
         abstract = self.fgdc_root.find(".//abstract")
 
         # ensure abstract exists
         if abstract is not None:
-            Et.SubElement(service, "abstract_desc").text = abstract.text
+            self.context["abstract"] = abstract.text
         elif "description" in self.data:
-            Et.SubElement(service, "abstract_desc").text = self.data["description"]
+            self.context["abstract"] = self.data["description"]
         elif self.verbose:
             label = self.data["productLabel"]
             logging.warning(f"{self.target},{label},description not found,abstract_desc")
-
-        treks_url = "https://trek.nasa.gov/" + self.target + \
-            "/#v=0.1&x=0&y=0&z=1&p=urn%3Aogc%3Adef%3Acrs%3AIAU2000%3A%3A60600&d=&l=" + \
-            self.data["productLabel"] + "%2Ctrue%2C1"
 
         # capabilities url uses a capital first letter
         capabilities_url = "https://trek.nasa.gov/tiles/" + self.target.capitalize() + "/EQ/" + \
             self.data["productLabel"] + "/1.0.0/WMTSCapabilities.xml"
 
-        # urls: wmts capabilities, fgdc, treks product
-        urls = [
-            capabilities_url,
-            "https://trek.nasa.gov/" + self.target + "/TrekWS/rest/cat/metadata/stream?label=" + self.data["productLabel"],
-            treks_url
-        ]
-        for url in urls:
-            Et.SubElement(service, "url").text = url
+        fgdc_url = "https://trek.nasa.gov/" + self.target + "/TrekWS/rest/cat/metadata/stream?label=" + self.data["productLabel"]
 
-        Et.SubElement(service, "release_date").text = self.data["data_created_date"][:10]
-        Et.SubElement(service, "service_type").text = "OGC WMTS"
-        Et.SubElement(service, "category").text = "Visualization"
+        gui_url = "https://trek.nasa.gov/" + self.target + \
+            "/#v=0.1&x=0&y=0&z=1&p=urn%3Aogc%3Adef%3Acrs%3AIAU2000%3A%3A60600&d=&l=" + \
+            self.data["productLabel"] + "%2Ctrue%2C1"
 
-        return service
+        self.context["capabilities_url"] = capabilities_url
+        self.context["fgdc_url"] = fgdc_url
+        self.context["gui_url"] = gui_url
+
+        self.context["release_date"] = self.data["data_created_date"][:10]
 
     def create_reference_list(self):
-        """Creates Reference_Area for pds4 labeel.
-
-        :return: Reference_List section of pds4 xml
-        """
-        reference_list = Et.Element("Reference_List")
-
-        internal_reference = Et.SubElement(reference_list, "Internal_Reference")
-        Et.SubElement(internal_reference, "lid_reference").text = self.target_lid
-        Et.SubElement(internal_reference, "reference_type").text = "data_to_target"
-
-        return reference_list
+        """Creates Reference_Area for pds4 labeel."""
+        self.context["target_lid"] = self.target_lid
 
     def get_fgdc(self):
         """Utility function to get fgdc metadata xml.

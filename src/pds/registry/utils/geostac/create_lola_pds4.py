@@ -9,6 +9,70 @@ from jinja2 import Environment
 from pds.registry.utils.geostac import templates
 
 
+def check_for_overlap(bbox1, bbox2):
+    """Checks if bounding boxes overlap anywhere.
+
+    :param item: item to fill out pds4 xml information with
+
+    :return: reference list
+    """
+    # unpack bounding boxes
+    b1_west, b1_south, b1_east, b1_north = bbox1
+    b2_west, b2_south, b2_east, b2_north = bbox2
+
+    # check lat overlap
+    lat_overlap = False
+    if b1_east >= b2_west and b2_east >= b1_west:
+        lat_overlap = True
+
+    # check lon overlap
+    lon_overlap = False
+    if b1_north >= b2_south and b2_north >= b1_south:
+        lon_overlap = True
+
+    if lat_overlap and lon_overlap:
+        return True
+
+    return False
+
+
+def create_reference_list(item):
+    """Finds relevant references for given item.
+
+    :param item: item to fill out pds4 xml information with
+
+    :return: reference list
+    """
+    reference_list = []
+
+    bb_west = float(item["bbox"][0])
+    bb_south = float(item["bbox"][1])
+    bb_east = float(item["bbox"][2])
+    bb_north = float(item["bbox"][3])
+
+    bbox1 = [bb_west, bb_south, bb_east, bb_north]
+
+    # needs to be updated with the collection we want to check for overlapping bounding boxes with
+    url = "http://localhost:8080/products/urn:nasa:pds:lro_lola_rdr:data_gridded::1.0/members"
+    response = requests.get(url, timeout=30)
+    json_data = response.json()
+
+    for gdr in json_data["data"]:
+
+        gdr_lid = gdr["properties"]["lid"][0]
+        gdr_bb_west = float(gdr["properties"]["cart:Bounding_Coordinates.cart:west_bounding_coordinate"][0])
+        gdr_bb_south = float(gdr["properties"]["cart:Bounding_Coordinates.cart:south_bounding_coordinate"][0])
+        gdr_bb_east = float(gdr["properties"]["cart:Bounding_Coordinates.cart:east_bounding_coordinate"][0])
+        gdr_bb_north = float(gdr["properties"]["cart:Bounding_Coordinates.cart:north_bounding_coordinate"][0])
+
+        bbox2 = [gdr_bb_west, gdr_bb_south, gdr_bb_east, gdr_bb_north]
+
+        if check_for_overlap(bbox1, bbox2):
+            reference_list.append(gdr_lid)
+
+    return reference_list
+
+
 def create_product_external(item):
     """Creates Product_External for given item.
 
@@ -43,6 +107,7 @@ def create_product_external(item):
         file_url = item["assets"]["data"]["href"]
         # file_size not in api, but also not required by pds
         encoding_standard = item["properties"]["pc:encoding"]
+        reference_list = create_reference_list(item)
 
         context = {
             "lid": lid,
@@ -58,7 +123,8 @@ def create_product_external(item):
             "file_date": file_date,
             "file_url": file_url,
             # file_size
-            "encoding_standard": encoding_standard
+            "encoding_standard": encoding_standard,
+            "reference_list": reference_list
         }
 
         return template.render(context)

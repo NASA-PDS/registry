@@ -31,6 +31,10 @@
     <Target_Identification>
 			<name>Moon</name>
 			<type>Satellite</type>
+      <Internal_Reference>
+        <lid_reference>urn:nasa:pds:context:target:satellite.earth.moon</lid_reference>
+        <reference_type>data_to_target</reference_type>
+      </Internal_Reference>
 		</Target_Identification>
     <Discipline_Area>
       <cart:Cartography>
@@ -90,10 +94,12 @@
   </File_Area_External>
 
   <Reference_List>
+    {% for reference in reference_list %}
     <Internal_Reference>
-      <lid_reference>urn:nasa:pds:context:target:satellite.earth.moon</lid_reference>
-      <reference_type>data_to_target</reference_type>
+      <lid_reference>{{reference}}</lid_reference>
+      <reference_type>external_used_to_derive_gridded_data</reference_type>
     </Internal_Reference>
+    {% endfor %}
   </Reference_List>
 
 </Product_External>
