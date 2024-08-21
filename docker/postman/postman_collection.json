@@ -1,5 +1,5 @@
 {
-	"info": {
+		"info": {
 		"_postman_id": "6ee727e9-b4e3-4a72-8181-abd7d2d312e5",
 		"name": "Planetary Data System API Reference Tests Copy 9",
 		"description": "Federated PDS API which provides actionable end points standardized\nbetween the different nodes.\n\n\nContact Support:\n Email: pds-operator@jpl.nasa.gov",
@@ -943,6 +943,56 @@
 							],
 							"path": [
 								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "((product_class EQ \"Product_Bundle\") AND NOT (lid EQ \"urn:nasa:pds:mars2020.spice\"))"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#493 querystring supports NOT on other endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"C4443889 Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = pm.response.json().data;",
+									"",
+									"pm.test(\"C4443889 Number of results is 1\", () => {",
+									"    pm.expect(data.length).to.equal(1); ",
+									"});",
+									"",
+									"pm.test(\"C4443889 Returned hits contain correct values\", () => {",
+									"    pm.expect(data[0][\"properties\"][\"product_class\"][0]).to.eql(\"Product_Bundle\");",
+									"    pm.expect(data[0][\"properties\"][\"lid\"][0]).to.eql(\"urn:nasa:pds:insight_rad\"); ",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/classes/bundle?q=((product_class EQ \"Product_Bundle\") AND NOT (lid EQ \"urn:nasa:pds:mars2020.spice\"))",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"classes",
+								"bundle"
 							],
 							"query": [
 								{
@@ -2314,7 +2364,10 @@
 									"pm.test(\"C4438463 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
 									"pm.test(\"C4438463 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(1)});",
-									"pm.test(\"C4438463 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
+									"pm.test(\"C4438463 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});",
+									"",
+									"pm.test(\"C4443905 Data match the q param\", () => {pm.expect(content.data[0]['properties'][\"pds:Collection.pds:collection_type\"][0]).to.eql(\"SPICE Kernel\")});",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2325,7 +2378,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members",
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members?q=pds:Collection.pds:collection_type eq \"SPICE Kernel\"",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -2333,6 +2386,12 @@
 								"products",
 								"urn:nasa:pds:mars2020.spice",
 								"members"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "pds:Collection.pds:collection_type eq \"SPICE Kernel\""
+								}
 							]
 						}
 					},
@@ -2382,7 +2441,10 @@
 								"exec": [
 									"pm.test(\"C4438464 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
-									"pm.test(\"C4438464 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(11)});"
+									"pm.test(\"C4438464 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(5)});",
+									"",
+									"pm.test(\"C4443902 data match q param\", () => {pm.expect(content.data[0][\"properties\"][\"pds:Time_Coordinates.pds:start_date_time\"][0]).to.eql(\"2020-07-30T12:51:34Z\")});",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2393,7 +2455,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members/members",
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members/members?q=pds:Time_Coordinates.pds:start_date_time eq \"2020-07-30T12:51:34Z\"",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -2402,6 +2464,12 @@
 								"urn:nasa:pds:mars2020.spice",
 								"members",
 								"members"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "pds:Time_Coordinates.pds:start_date_time eq \"2020-07-30T12:51:34Z\""
+								}
 							]
 						}
 					},
@@ -2454,7 +2522,9 @@
 									"pm.test(\"C4438465 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
 									"pm.test(\"C4438465 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(1)});",
-									"pm.test(\"C4438465 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
+									"pm.test(\"C4438465 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});",
+									"pm.test(\"C4443891 data match q param\", () => {pm.expect(content.data[0][\"properties\"][\"pds:Time_Coordinates.pds:start_date_time\"][0]).to.eql(\"2020-07-30T12:51:34Z\")});",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2465,7 +2535,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of",
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of?q=pds:Time_Coordinates.pds:start_date_time eq \"2020-07-30T12:51:34Z\"",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -2473,6 +2543,12 @@
 								"products",
 								"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020",
 								"member-of"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "pds:Time_Coordinates.pds:start_date_time eq \"2020-07-30T12:51:34Z\""
+								}
 							]
 						}
 					},
@@ -2523,7 +2599,9 @@
 									"pm.test(\"C4438466 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
 									"pm.test(\"C4438466 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(1)});",
-									"pm.test(\"C4438466 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice::3.0\")});"
+									"pm.test(\"C4438466 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice::3.0\")});",
+									"",
+									"pm.test(\"C4443890 Correct data returned according to q param\", () => {pm.expect(content.data[0][\"properties\"][\"pds:Time_Coordinates.pds:start_date_time\"][0]).to.eql(\"2020-07-30T12:51:34Z\")});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2534,7 +2612,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of/member-of",
+							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of/member-of?q=pds:Time_Coordinates.pds:start_date_time eq \"2020-07-30T12:51:34Z\"",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -2543,6 +2621,12 @@
 								"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020",
 								"member-of",
 								"member-of"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "pds:Time_Coordinates.pds:start_date_time eq \"2020-07-30T12:51:34Z\""
+								}
 							]
 						}
 					},
