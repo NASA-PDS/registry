@@ -105,7 +105,13 @@ def main():
                                         dest=target_dest,
                                         verbose=verbose)
 
-            _, lidvid = psb.create_pds4_xml()
+            service_pds4, lidvid = psb.create_pds4_xml()
+
+            if save_xml:
+                save_path = target_dest + "/" + data["productLabel"].lower() + ".xml"
+                with open(save_path, "w") as f:
+                    f.write(service_pds4)
+
             entry = "P," + lidvid + "\n"
             inventory_entries.append(entry)
 

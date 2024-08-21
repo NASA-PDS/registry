@@ -4,11 +4,11 @@ href="https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1L00.sch" schematypens="http://p
 <Product_Browse>
   <Identification_Area>
     <logical_identifier>
-      {{lid}}
+      {{lid|e}}
     </logical_identifier>
     <version_id>1.0</version_id>
     <title>
-      {{title}}
+      {{title|e}}
     </title>
     <information_model_version>1.21.0.0</information_model_version>
     <product_class>Product_Browse</product_class>
@@ -17,7 +17,7 @@ href="https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1L00.sch" schematypens="http://p
     <Internal_Reference>
       <!-->lid_reference is incorrect, used as filler right now</-->
       <lid_reference>
-        {{lid_ref}}
+        {{lid_ref|e}}
       </lid_reference>
       <reference_type>browse_to_data</reference_type>
       <comment>
@@ -27,15 +27,15 @@ href="https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1L00.sch" schematypens="http://p
   </Reference_List>
   <File_Area_Browse>
     <File>
-      <file_name>{{file_name}}</file_name>
+      <file_name>{{file_name|e}}</file_name>
       <local_identifier>BROWSE_FILE</local_identifier>
-      <creation_date_time>{{file_date}}</creation_date_time>
-      <file_URL>{{file_url}}</file_URL>
+      <creation_date_time>{{file_date|e}}</creation_date_time>
+      <file_URL>{{file_url|e}}</file_URL>
     </File>
     <Encoded_Image>
       <local_identifier>BROWSE_IMAGE</local_identifier>
       <offset unit="byte">0</offset>
-      <encoding_standard_id>{{encoding}}</encoding_standard_id>
+      <encoding_standard_id>{{encoding|e}}</encoding_standard_id>
     </Encoded_Image>
   </File_Area_Browse>
 </Product_Browse>

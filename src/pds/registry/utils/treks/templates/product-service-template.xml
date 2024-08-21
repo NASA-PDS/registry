@@ -1,0 +1,88 @@
+<Product_Service xmlns="http://pds.nasa.gov/pds4/pds/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cart="http://pds.nasa.gov/pds4/cart/v1" xsi:schemaLocation="http://pds.nasa.gov/pds4/pds/v1 https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1M00.xsd">
+	<Identification_Area>
+		<logical_identifier>{{lid|e}}</logical_identifier>
+		<version_id>{{vid|e}}</version_id>
+		<title>{{title|e}}</title>
+		<information_model_version>1.22.0.0</information_model_version>
+		<product_class>Product_Service</product_class>
+		<Modification_History>
+			<Modification_Detail>
+				<modification_date>{{modification_date|e}}</modification_date>
+				<version_id>1.0</version_id>
+				<description>Exposing GIS services in the PDS4 registry</description>
+			</Modification_Detail>
+		</Modification_History>
+	</Identification_Area>
+	<Observation_Area>
+		<Time_Coordinates>
+			<start_date_time>{{start_time|e}}</start_date_time>
+			<stop_date_time>{{stop_time|e}}</stop_date_time>
+		</Time_Coordinates>
+		<Investigation_Area>
+			<name>Treks Open Geospatial Consortium Web Mapping Tile Service</name>
+			<type>OGC WMTS</type>
+			<Internal_Reference>
+				<lid_reference>urn:nasa:pds:ogc:wmts</lid_reference>
+				<reference_type>lid_reference</reference_type>
+			</Internal_Reference>
+		</Investigation_Area>
+		<Observing_System>
+			{% for component in observing_system_components %}
+			<Observing_System_Component>
+				<name>{{component[0]|e}}</name>
+				<type>{{component[1]|e}}</type>
+			</Observing_System_Component>
+			{% endfor %}
+		</Observing_System>
+		<Target_Identification>
+			<name>{{target|e}}</name>
+			<type>{{target_type|e}}</type>
+		</Target_Identification>
+		<Discipline_Area>
+			<cart:Cartography>
+				<Local_Internal_Reference>
+					<local_identifier_reference>{{lid_ref|e}}</local_identifier_reference>
+					<local_reference_type>cartography_parameters_to_service</local_reference_type>
+				</Local_Internal_Reference>
+				<cart:Spatial_Domain>
+					<cart:Bounding_Coordinates>
+						<cart:west_bounding_coordinate unit="deg">{{bbox_west|e}}</cart:west_bounding_coordinate>
+						<cart:south_bounding_coordinate unit="deg">{{bbox_south|e}}</cart:south_bounding_coordinate>
+						<cart:east_bounding_coordinate unit="deg">{{bbox_east|e}}</cart:east_bounding_coordinate>
+						<cart:north_bounding_coordinate unit="deg">{{bbox_north|e}}</cart:north_bounding_coordinate>
+					</cart:Bounding_Coordinates>
+				</cart:Spatial_Domain>
+				<cart:Spatial_Reference_Information>
+					<cart:Horizontal_Coordinate_System_Definition>
+						<cart:Geographic>
+							<cart:latitude_resolution unit="{{unit}}">{{lat_res|e}}</cart:latitude_resolution>
+							<cart:longitude_resolution unit="{{unit}}">{{lon_res|e}}</cart:longitude_resolution>
+						</cart:Geographic>
+						<cart:Geodetic_Model>
+							<cart:spheroid_name>{{spheroid_name}}</cart:spheroid_name>
+							<cart:a_axis_radius unit="m">{{axis_radius|e}}</cart:a_axis_radius>
+							<cart:b_axis_radius unit="m">{{axis_radius|e}}</cart:b_axis_radius>
+							<cart:c_axis_radius unit="m">{{axis_radius|e}}</cart:c_axis_radius>
+						</cart:Geodetic_Model>
+					</cart:Horizontal_Coordinate_System_Definition>
+				</cart:Spatial_Reference_Information>
+			</cart:Cartography>
+		</Discipline_Area>
+	</Observation_Area>
+	<Service>
+		<name>{{name|e}}</name>
+		<abstract_desc>{{abstract|e}}</abstract_desc>
+		<url>{{capabilities_url|e}}</url>
+		<url>{{fgdc_url|e}}</url>
+		<url>{{gui_url|e}}</url>
+		<release_date>{{release_date|e}}</release_date>
+		<service_type>OGC WMTS</service_type>
+		<category>Visualization</category>
+	</Service>
+	<Reference_List>
+		<Internal_Reference>
+			<lid_reference>{{target_lid|e}}</lid_reference>
+			<reference_type>data_to_target</reference_type>
+		</Internal_Reference>
+	</Reference_List>
+</Product_Service>
