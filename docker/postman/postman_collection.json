@@ -3294,7 +3294,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.execution.skipRequest();"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
