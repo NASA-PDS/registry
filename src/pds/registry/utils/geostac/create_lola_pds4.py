@@ -1,6 +1,7 @@
 """Script to scrape GeoSTAC for Lola point clouds and make pds4 xml."""
 import argparse
 import importlib
+import os
 from datetime import date
 from pathlib import Path
 
@@ -53,7 +54,7 @@ def create_reference_list(item):
     bbox1 = [bb_west, bb_south, bb_east, bb_north]
 
     # needs to be updated with the collection we want to check for overlapping bounding boxes with
-    url = "http://localhost:8080/products/urn:nasa:pds:lro_lola_rdr:data_gridded::1.0/members"
+    url = "http://pds.nasa.gov/api/search/1/products/urn:nasa:pds:lro_lola_rdr:data_gridded::1.0/members"
     response = requests.get(url, timeout=30)
     json_data = response.json()
 
@@ -82,7 +83,6 @@ def create_product_external(item):
     """
     # create env
     env = Environment()
-
     with importlib.resources.open_text(templates, "product-external-template.xml") as io:
         template_text = io.read()
         template = env.from_string(template_text)
@@ -90,7 +90,9 @@ def create_product_external(item):
         item_title = item["assets"]["data"]["title"]
 
         last_slash_i = item["assets"]["data"]["href"].rfind("/")
-        file = item["assets"]["data"]["href"][last_slash_i + 1:]
+        file = "data/" +item["assets"]["data"]["href"][last_slash_i + 1:]
+        print(f'file is on {item["assets"]["data"]["href"]},fake file is on {file}')
+        open("lola_xml/product_external/" + file, 'a').close()
 
         # fill out template params
         lid = "urn:nasa:pds:geostac:external:" + item_title.lower()
@@ -147,7 +149,10 @@ def create_product_browse(item):
         item_title = item["assets"]["data"]["title"]
 
         last_slash_i = item["assets"]["thumbnail"]["href"].rfind("/")
-        file = item["assets"]["thumbnail"]["href"][last_slash_i + 1:]
+        file = "data/" + item["assets"]["thumbnail"]["href"][last_slash_i + 1:]
+        print(f'file is on {item["assets"]["thumbnail"]["href"]},fake file is on {file}')
+        open("lola_xml/product_browse/" + file, 'a').close()
+
         data_type = item["assets"]["thumbnail"]["type"]
         encoding_map = {"image/jpeg": "JPEG"}
 
@@ -210,15 +215,18 @@ def main():
     json_data = response.json()
     features = json_data["features"]
 
+    if save_xml:
+        # create destination directoru if they don't exist
+        Path(dest + "/product_external").mkdir(parents=True, exist_ok=True)
+        Path(dest + "/product_external/data").mkdir(parents=True, exist_ok=True)
+        Path(dest + "/product_browse").mkdir(parents=True, exist_ok=True)
+        Path(dest + "/product_browse/data").mkdir(parents=True, exist_ok=True)
+
     for item in features:
         external_pds4 = create_product_external(item)
         browse_pds4 = create_product_browse(item)
 
         if save_xml:
-            # create destination directoru if they don't exist
-            Path(dest + "/product_external").mkdir(parents=True, exist_ok=True)
-            Path(dest + "/product_browse").mkdir(parents=True, exist_ok=True)
-
             ex_path = dest + "/product_external/" + item["assets"]["data"]["title"] + "_product_external.xml"
             with open(ex_path, "w") as f:
                 f.write(external_pds4)
