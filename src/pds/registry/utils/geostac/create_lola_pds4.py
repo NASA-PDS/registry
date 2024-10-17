@@ -1,6 +1,7 @@
 """Script to scrape GeoSTAC for Lola point clouds and make pds4 xml."""
 import argparse
 import importlib
+import logging
 import os
 from datetime import date
 from pathlib import Path
@@ -9,6 +10,8 @@ import requests
 from jinja2 import Environment
 from pds.registry.utils.geostac import templates
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def check_for_overlap(bbox1, bbox2):
     """Checks if bounding boxes overlap anywhere.
@@ -91,7 +94,7 @@ def create_product_external(item):
 
         last_slash_i = item["assets"]["data"]["href"].rfind("/")
         file = "data/" +item["assets"]["data"]["href"][last_slash_i + 1:]
-        logging.info(f'file is on {item["assets"]["data"]["href"]},fake file is on {file}')
+        logger.info(f'file is on {item["assets"]["data"]["href"]},fake file is on {file}')
         open("lola_xml/product_external/" + file, 'a').close()
 
         # fill out template params
@@ -150,7 +153,7 @@ def create_product_browse(item):
 
         last_slash_i = item["assets"]["thumbnail"]["href"].rfind("/")
         file = "data/" + item["assets"]["thumbnail"]["href"][last_slash_i + 1:]
-        logging.info(f'file is on {item["assets"]["thumbnail"]["href"]},fake file is on {file}')
+        logger.info(f'file is on {item["assets"]["thumbnail"]["href"]},fake file is on {file}')
         open("lola_xml/product_browse/" + file, 'a').close()
 
         data_type = item["assets"]["thumbnail"]["type"]
