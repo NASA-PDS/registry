@@ -91,7 +91,7 @@ def create_product_external(item):
 
         last_slash_i = item["assets"]["data"]["href"].rfind("/")
         file = "data/" +item["assets"]["data"]["href"][last_slash_i + 1:]
-        print(f'file is on {item["assets"]["data"]["href"]},fake file is on {file}')
+        logging.info(f'file is on {item["assets"]["data"]["href"]},fake file is on {file}')
         open("lola_xml/product_external/" + file, 'a').close()
 
         # fill out template params
@@ -150,7 +150,7 @@ def create_product_browse(item):
 
         last_slash_i = item["assets"]["thumbnail"]["href"].rfind("/")
         file = "data/" + item["assets"]["thumbnail"]["href"][last_slash_i + 1:]
-        print(f'file is on {item["assets"]["thumbnail"]["href"]},fake file is on {file}')
+        logging.info(f'file is on {item["assets"]["thumbnail"]["href"]},fake file is on {file}')
         open("lola_xml/product_browse/" + file, 'a').close()
 
         data_type = item["assets"]["thumbnail"]["type"]
