@@ -204,3 +204,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a user, I want to deprecate all products associated with a superseded collection ([#335](https://github.com/NASA-PDS/registry/issues/335)) 
+
+
+This requirement is not impacted by the current version
