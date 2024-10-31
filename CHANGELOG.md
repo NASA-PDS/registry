@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-09-15)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-10-31)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -10,12 +10,14 @@
 
 **Defects:**
 
+- GEO index does not work, appears to be corrupted [\#331](https://github.com/NASA-PDS/registry/issues/331) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - Secret detection is broken on branch titan\_treks\_utility\_script [\#292](https://github.com/NASA-PDS/registry/issues/292) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - harvest created archive\_status as an array and registry-mgr updates it as a string [\#276](https://github.com/NASA-PDS/registry/issues/276) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - Missing NAIF from Legacy Dashboard [\#234](https://github.com/NASA-PDS/registry/issues/234) [[s.low](https://github.com/NASA-PDS/registry/labels/s.low)]
 
 **Other closed issues:**
 
+- Onboard Irma from ATM node [\#325](https://github.com/NASA-PDS/registry/issues/325)
 - Add reference links to LOLA data [\#316](https://github.com/NASA-PDS/registry/issues/316)
 - Finalize Cognito configuration in production for the Registry [\#307](https://github.com/NASA-PDS/registry/issues/307)
 - Add Lola PDS4 script [\#305](https://github.com/NASA-PDS/registry/issues/305)
@@ -30,6 +32,9 @@
 - Create context product unique identifier [\#283](https://github.com/NASA-PDS/registry/issues/283)
 - Managed OpenSearch Snapshots [\#282](https://github.com/NASA-PDS/registry/issues/282)
 - Migrate and fix types mismatches in registry mappings from all node cluster to OpenSearch serverless [\#280](https://github.com/NASA-PDS/registry/issues/280)
+- Copy data necessary for web mod efforts to search-en registry prior to shutdown [\#277](https://github.com/NASA-PDS/registry/issues/277)
+- Deploy Multi-tenant Registry to test [\#272](https://github.com/NASA-PDS/registry/issues/272)
+- Deploy Multi-tenant Registry to production and sync data [\#271](https://github.com/NASA-PDS/registry/issues/271)
 - The migrated documents on opensearch serverless have a generated \_id [\#270](https://github.com/NASA-PDS/registry/issues/270)
 - Setup API Gateway - OpenSearch Serverless Authentication [\#256](https://github.com/NASA-PDS/registry/issues/256)
 - Create Lambda Authorizer for Read Access - OpenSearch Serverless Authentication [\#255](https://github.com/NASA-PDS/registry/issues/255)
@@ -41,6 +46,7 @@
 - Registry-Sweepers Multiple Updates Statements Detected - NOT retry-related [\#225](https://github.com/NASA-PDS/registry/issues/225)
 - Initial OpenSearch Serverless Setup and Deployment in MCP [\#223](https://github.com/NASA-PDS/registry/issues/223)
 - Add registry costs to the PDS EN Cloud spreadsheet [\#218](https://github.com/NASA-PDS/registry/issues/218)
+- Write a migration plan to multitenant registry [\#217](https://github.com/NASA-PDS/registry/issues/217)
 - Design scalable, multi-tenant opensearch [\#212](https://github.com/NASA-PDS/registry/issues/212)
 - B14.0 Update postman test suite with bug fixes for current build [\#201](https://github.com/NASA-PDS/registry/issues/201)
 - B14.0 Update the postman test suite with all the requirement tests [\#200](https://github.com/NASA-PDS/registry/issues/200)
