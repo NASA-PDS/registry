@@ -7,7 +7,7 @@ from datetime import date
 from pathlib import Path
 
 import requests
-from jinja2 import Environment
+from jinja2 import Environment, select_autoescape
 from pds.registry.utils.geostac import templates
 
 logging.basicConfig(level=logging.INFO)
@@ -85,7 +85,7 @@ def create_product_external(item):
     :return: pds4 xml
     """
     # create env
-    env = Environment()
+    env = Environment(autoescape=select_autoescape(['html', 'xml']))
     with importlib.resources.open_text(templates, "product-external-template.xml") as io:
         template_text = io.read()
         template = env.from_string(template_text)
@@ -143,7 +143,7 @@ def create_product_browse(item):
     :return: pds4 xml
     """
     # create env
-    env = Environment()
+    env = Environment(autoescape=select_autoescape(['html', 'xml']))
 
     with importlib.resources.open_text(templates, "product-browse-template.xml") as io:
         template_text = io.read()
