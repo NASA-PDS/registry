@@ -1,7 +1,7 @@
 """Utility for creating Product_Collection PDS4 xml."""
 import importlib.resources
 
-from jinja2 import Environment
+from jinja2 import Environment, select_autoescape
 from pds.registry.utils.treks import templates
 
 
@@ -13,7 +13,7 @@ def create_collection_pds4(target):
     :return: Product_Collection PDS4 xml
     """
     # create env
-    env = Environment()
+    env = Environment(autoescape=select_autoescape(['html', 'xml']))
 
     with importlib.resources.open_text(templates, "product-collection-template.xml") as io:
         template_text = io.read()
