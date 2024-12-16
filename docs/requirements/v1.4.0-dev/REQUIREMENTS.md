@@ -64,14 +64,6 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
-## As a user, I want to change the archive status for a collection and it's associated products ([#115](https://github.com/NASA-PDS/registry/issues/115)) 
-
-
-This requirement is not impacted by the current version
-## As a user, I want to switch a bundle and it's associated collections and products from a protected status to operational. ([#105](https://github.com/NASA-PDS/registry/issues/105)) 
-
-
-This requirement is not impacted by the current version
 ## As a user, I want to ingest data products even when errors are thrown ([#106](https://github.com/NASA-PDS/registry/issues/106)) 
 
 
@@ -205,6 +197,18 @@ This requirement is not impacted by the current version
 
 This requirement is not impacted by the current version
 ## As a user, I want to deprecate all products associated with a superseded collection ([#335](https://github.com/NASA-PDS/registry/issues/335)) 
+
+
+This requirement is not impacted by the current version
+## As a node operator, I want to upload to Registry without downloading data from s3 ([#349](https://github.com/NASA-PDS/registry/issues/349)) 
+
+
+This requirement is not impacted by the current version
+## As a user, I want to have read-only access to all registry indexes ([#350](https://github.com/NASA-PDS/registry/issues/350)) 
+
+
+This requirement is not impacted by the current version
+## As a user, I want to sort my result by number of citations and see the citations ([#353](https://github.com/NASA-PDS/registry/issues/353)) 
 
 
 This requirement is not impacted by the current version
