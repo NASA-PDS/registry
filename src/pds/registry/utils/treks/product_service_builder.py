@@ -5,7 +5,7 @@ import xml.etree.ElementTree as Et
 from datetime import date
 
 import requests
-from jinja2 import Environment
+from jinja2 import Environment, select_autoescape
 from pds.registry.utils.treks import templates
 
 
@@ -60,7 +60,7 @@ class ProductServiceBuilder:
         self.create_reference_list()
 
         # create env
-        env = Environment()
+        env = Environment(autoescape=select_autoescape(['html', 'xml']))
 
         # get template
         with importlib.resources.open_text(templates, "product-service-template.xml") as io:
