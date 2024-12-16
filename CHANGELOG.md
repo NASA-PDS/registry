@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-11-19)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-12-16)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -18,6 +18,7 @@
 
 **Other closed issues:**
 
+- Investigate what the number of property per discipline node was at migration time [\#332](https://github.com/NASA-PDS/registry/issues/332)
 - Onboard Irma from ATM node [\#325](https://github.com/NASA-PDS/registry/issues/325)
 - Add reference links to LOLA data [\#316](https://github.com/NASA-PDS/registry/issues/316)
 - As an administrator of the registry, I don't want ENG operator loading data to have administration authorizations [\#309](https://github.com/NASA-PDS/registry/issues/309)
@@ -34,6 +35,7 @@
 - Create context product unique identifier [\#283](https://github.com/NASA-PDS/registry/issues/283)
 - Managed OpenSearch Snapshots [\#282](https://github.com/NASA-PDS/registry/issues/282)
 - Migrate and fix types mismatches in registry mappings from all node cluster to OpenSearch serverless [\#280](https://github.com/NASA-PDS/registry/issues/280)
+- Create snapshots of production OpenSearch clusters prior to shutdown [\#278](https://github.com/NASA-PDS/registry/issues/278)
 - Copy data necessary for web mod efforts to search-en registry prior to shutdown [\#277](https://github.com/NASA-PDS/registry/issues/277)
 - Deploy Multi-tenant Registry to test [\#272](https://github.com/NASA-PDS/registry/issues/272)
 - Deploy Multi-tenant Registry to production and sync data [\#271](https://github.com/NASA-PDS/registry/issues/271)
@@ -191,8 +193,6 @@
 **Requirements:**
 
 - Upgrade the initialization of the ES/OS database following latest upgrade of components [\#31](https://github.com/NASA-PDS/registry/issues/31)
-- As a user, I want to switch a bundle and it's associated collections and products from a protected status to operational. [\#105](https://github.com/NASA-PDS/registry/issues/105)
-- As a user, I want to change the archive status for a collection and it's associated products [\#115](https://github.com/NASA-PDS/registry/issues/115)
 
 ## [v1.0.0-SNAPSHOT](https://github.com/NASA-PDS/registry/tree/v1.0.0-SNAPSHOT) (2022-01-20)
 
