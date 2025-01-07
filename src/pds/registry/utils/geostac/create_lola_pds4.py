@@ -2,16 +2,17 @@
 import argparse
 import importlib
 import logging
-import os
 from datetime import date
 from pathlib import Path
 
 import requests
 from jinja2 import Environment
+from jinja2 import select_autoescape
 from pds.registry.utils.geostac import templates
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 def check_for_overlap(bbox1, bbox2):
     """Checks if bounding boxes overlap anywhere.
@@ -85,7 +86,7 @@ def create_product_external(item):
     :return: pds4 xml
     """
     # create env
-    env = Environment()
+    env = Environment(autoescape=select_autoescape(['html', 'xml']))
     with importlib.resources.open_text(templates, "product-external-template.xml") as io:
         template_text = io.read()
         template = env.from_string(template_text)
@@ -93,7 +94,7 @@ def create_product_external(item):
         item_title = item["assets"]["data"]["title"]
 
         last_slash_i = item["assets"]["data"]["href"].rfind("/")
-        file = "data/" +item["assets"]["data"]["href"][last_slash_i + 1:]
+        file = "data/" + item["assets"]["data"]["href"][last_slash_i + 1:]
         logger.info(f'file is on {item["assets"]["data"]["href"]},fake file is on {file}')
         open("lola_xml/product_external/" + file, 'a').close()
 
@@ -143,7 +144,7 @@ def create_product_browse(item):
     :return: pds4 xml
     """
     # create env
-    env = Environment()
+    env = Environment(autoescape=select_autoescape(['html', 'xml']))
 
     with importlib.resources.open_text(templates, "product-browse-template.xml") as io:
         template_text = io.read()
