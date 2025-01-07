@@ -6,7 +6,8 @@ from datetime import date
 from pathlib import Path
 
 import requests
-from jinja2 import Environment, select_autoescape
+from jinja2 import Environment
+from jinja2 import select_autoescape
 from pds.registry.utils.geostac import templates
 
 logging.basicConfig(level=logging.INFO)
