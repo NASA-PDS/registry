@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-12-16)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-01-07)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -18,6 +18,7 @@
 
 **Other closed issues:**
 
+- Update Registry configuration to support issues with IMG user\(s\) [\#337](https://github.com/NASA-PDS/registry/issues/337) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - Investigate what the number of property per discipline node was at migration time [\#332](https://github.com/NASA-PDS/registry/issues/332)
 - Onboard Irma from ATM node [\#325](https://github.com/NASA-PDS/registry/issues/325)
 - Add reference links to LOLA data [\#316](https://github.com/NASA-PDS/registry/issues/316)
