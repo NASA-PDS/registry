@@ -2,7 +2,6 @@
 import argparse
 import importlib
 import logging
-import os
 from datetime import date
 from pathlib import Path
 
@@ -12,6 +11,7 @@ from pds.registry.utils.geostac import templates
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 def check_for_overlap(bbox1, bbox2):
     """Checks if bounding boxes overlap anywhere.
@@ -93,7 +93,7 @@ def create_product_external(item):
         item_title = item["assets"]["data"]["title"]
 
         last_slash_i = item["assets"]["data"]["href"].rfind("/")
-        file = "data/" +item["assets"]["data"]["href"][last_slash_i + 1:]
+        file = "data/" + item["assets"]["data"]["href"][last_slash_i + 1:]
         logger.info(f'file is on {item["assets"]["data"]["href"]},fake file is on {file}')
         open("lola_xml/product_external/" + file, 'a').close()
 
