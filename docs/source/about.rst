@@ -29,9 +29,9 @@ API
 Provides read-only REST APIs to search and access PDS data. You can call REST APIs directly or
 use Python or Java clients.
 
-The most popular client library is `peppi <https://nasa-pds.github.io/peppi>`_
+The most popular client library is `peppi <https://nasa-pds.github.io/peppi>`_.
 
-For direct access, the API is documented `here <https://nasa-pds.github.io/pds-api/guides/search.html>`_
+For direct access, the API is documented `here <https://nasa-pds.github.io/pds-api/guides/search.html>`_.
 
 
 

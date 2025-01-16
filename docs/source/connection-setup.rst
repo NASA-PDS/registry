@@ -12,7 +12,7 @@ Node (DN).
 Initial Set-up
 **************
 
-To get things going, you should have provided the EN contact with the following:
+To get things going, you should have provided the Engineering Node contact with the following:
 
   * A list of user email addresses which will be authorized to perform data ingestion.
   * A list of IP addresses or blocks of addresses from which data ingestion will occur.
@@ -23,6 +23,8 @@ Opensearch accounts will be set up for each user and their username and (tempora
 password will be sent to them.
 
 Along with your Opensearch user credentials you will receive configuration inputs for your tools to connect to the registry services.
+
+The following sections provide the steps to follow to have your connection set up.
 
 Changing Your Opensearch Password
 *********************************
@@ -97,9 +99,7 @@ Create OpenSearch connection configuration file, e.g.  sbn_mcp_prod.xml or sbn_m
 Run Registry Tools on AWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can run harvest on AWS.
-
-You can run it on ECS or EC2 directly.
+You can run harvest on AWS, on ECS or EC2 directly.
 
 Run Harvest On EC2
 -------------------
@@ -112,7 +112,7 @@ See the AWS console screenshot, you should have **No** instead of **Yes** here:
 
 .. image:: _static/images/aws_console_vpc.png
 
-If you need to change that in your AWS account, double check that all your applications still work.
+If you need to change that in your AWS account, double check that all your other applications still work.
 
 
 
@@ -121,7 +121,7 @@ Run Harest On ECS
 
 You can run harvest on ECS, as on EC2 using the Cognito authentication.
 
-But if you run harvest, on ECS, on the same AWS account as the Registry service, you can also configure the connexion to the Registry without Cognito authentication, as follows:
+Alternatively if you run harvest, on ECS, on the same AWS account as the Registry service, you can also configure the connexion to the Registry without Cognito authentication, as follows:
 
 .. code:: xml
 
@@ -141,16 +141,6 @@ metadata into the Registry. Details on how to install and run these tools are fo
 
 - :doc:`Install </install/install>`
 - :doc:`User Tasks </user/tasks>`
-
-
-
-Registry API
-************
-
-Once data has been ingested using the Registry Tools, queries can be submitted using the Registry
-API which is `documented here <https://nasa-pds.github.io/pds-api/guides/search.html>`_.
-
-The base URL of the API `https://pds.nasa.gov/api/search/1 <https://pds.nasa.gov/api/search/1>_` also provides an online documentation.
 
 
 

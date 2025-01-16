@@ -108,7 +108,7 @@ Test by running::
 Registry Client
 ~~~~~~~~~~~~~~~~
 
-See `documentation <https://nasa-pds.github.io/registry-client/>`_.
+To install Registry Client see `documentation <https://nasa-pds.github.io/registry-client/>`_.
 
 
 Supplementer
@@ -117,7 +117,7 @@ Supplementer
 .. note::
    Only install this if you plan to load supplemental metadata.
 
-..warning::
+.. warning::
    Not tested with latest Registry service.
 
 Download latest stable release (tar or zip) from https://github.com/NASA-PDS/supplementer/releases/latest.
