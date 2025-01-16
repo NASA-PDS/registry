@@ -25,8 +25,6 @@ Registry Manager
 Prerequisites
 =============
 
-  * OpenSearch server is `running <https://opensearch.org/>`_.
-  * Registry indices are `created <../admin/create_reg.html#create-registry>`_ in OpenSearch.
   * Some data is `ingested <./load1.html>`_ into the Registry.
   * Registry Manager command-line tool is `installed <../install/tools.html#registry-manager>`_.
 
@@ -42,93 +40,32 @@ The following parameters are required:
  * **-lidvid <id>** - LIDVID of a product to update. If the product is a collection product,
    all primary references from the collection inventory will be also updated.
    If the product is a bundle product, all bundle's collections will be also updated.
-
-Optional parameters:
-
- * **-es <url>** - OpenSearch URL. Default URL is "http://localhost:9200".
- * **-index <name>** - OpenSearch index name. Default value is 'registry'.
- * **-auth <file>** - OpenSearch authentication configuration file. See example below.
+ * **-es <url>** - link to the connection configuration file described in :doc:`/connection-setup`
+ * **-auth <file>** - OpenSearch authentication configuration file. See :doc:`/connection-setup`.
 
 **Examples:**
 
-Update local Registry / OpenSearch (http://localhost:9200), no authentication.
+On **MacOS/Linux**:
 
 .. code-block:: bash
 
    registry-manager set-archive-status \
-       -status archived
+       -es file://path/to/registry_connection.xml \
+       -auth /my/path/auth.cfg \
+       -status archived \
        -lidvid "urn:nasa:pds:kaguya_grs_spectra:document::1.0"
 
-Update remote Registry / OpenSearch
 
-.. code-block:: bash
+On **Windows**:
 
-   registry-manager set-archive-status \
-       -status archived
-       -lidvid "urn:nasa:pds:kaguya_grs_spectra:document::1.0" \
-       -es https://my-host.my-domain:443 \
-       -auth /my/path/auth.cfg
+.. code-block:: powershell
 
-.. Note::
-   In the -es option value, always have a port specified in the URL. For PDS Registries, this port should be 443. If a port is not specified, it will default to OpenSearch default port of 9200, and the update of the registry will fail.
-
-If your OpenSearch server requires authentication, you have to create an authentication configuration
-file and provide following parameters:
-
-.. code-block:: python
-
-   # true - trust self-signed certificates; false - don't trust.
-   trust.self-signed = true
-   user = pds-user1
-   password = mypassword
+    .\registry-manager.bat set-archive-status
+        -auth 'C:\Users\loubrieu\Documents\es-auth.txt'
+        -es 'file:///C:\Users\loubrieu\Documents\mcp_dev.xml'
+        -lidvid 'urn:nasa:pds:insight_rad:data_derived::7.0'
+        -status archived
 
 
-Harvest Client (Scalable Harvest only)
-**************************************
 
-Prerequisites
-=============
-
-  * OpenSearch server is `running <https://opensearch.org/>`_.
-  * Registry indices are `created <../admin/create_reg.html#create-registry>`_ in OpenSearch.
-  * Some data is `ingested <./load2.html>`_ into the Registry.
-  * All server components - RabbitMQ, Crawler Server, Harvest Server - are deployed and running on-prem or in the cloud.
-  * Harvest Client command-line tool is `installed <../install/tools.html#harvest-client>`_.
-
-
-Set status
-===========
-
-To set product archive status, execute Harvest Client's "set-archive-status" command.
-
-The following parameters are required:
-
- * **-status <status>** - New status. Pass one of the following values: "archived", "certified", "restricted", "staged".
- * **-lidvid <id>** - LIDVID of a product to update. If the product is a collection product,
-   all primary references from the collection inventory will be also updated.
-   If the product is a bundle product, all bundle's collections will be also updated.
-
-Optional parameters:
-
- * **-c <path>** - Harvest Client configuration file. Default is <CLIENT_HOME>/conf/harvest-client.cfg
-
-Usually Harvest Client is configured after the installation. Example configuration is shown below:
-
-.. code-block:: python
-
-  mq.type = RabbitMQ
-  # RabbitMQ host(s). One or more host:port tuples (one tuple per line).
-  rmq.host = localhost:5672
-  # RabbitMQ user
-  rmq.user = harvest
-  # RabbitMQ password
-  rmq.password = harvest
-
-
-**Examples:**
-
-.. code-block:: bash
-
-   harvest-client set-archive-status \
-       -status archived
-       -lidvid "urn:nasa:pds:kaguya_grs_spectra:document::1.0"
+The connection and auth files are described in :doc:`/connection-setup`

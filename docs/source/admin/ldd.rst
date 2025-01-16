@@ -2,6 +2,8 @@
 Data Dictionary
 ===============
 
+.. warning:: this task is now done automatically by the `registry-sweepers <https://github.com/NASA-PDS/registry-sweepers>`_
+
 Overview
 ********
 
@@ -32,16 +34,22 @@ Usually you don't need to load data dictionaries manually if they are listed in 
 Prerequisites
 *************
 
- * OpenSearch server is `running <https://opensearch.org/>`_.
+ * The connection to the registry service is set up. See :doc:`/connection-setup`
  * Registry Manager command-line tool is `installed <../install/tools.html#registry-manager>`_.
 
 
 List Installed Data Dictionaries
 ********************************
 
-To list all data dictionaries in the Registry run the following command::
+To list all data dictionaries in the Registry run the following command:
 
-  registry-manager list-dd
+
+.. code-block:: bash
+
+  registry-manager list-dd \
+    -es file:///path/to/connection.xml \
+    -auth /my/path/auth.cfg
+
 
 You will see the list similar to this::
 
@@ -65,25 +73,39 @@ Load PDS Data Dictionary Files
 ******************************
 
 To load standard PDS4 data dictionary JSON file, for example, *orex_ldd_OREX_1300.JSON*,
-run the following command::
+run the following command:
 
-  registry-manager load-dd -dd /home/pds/schema/orex_ldd_OREX_1300.JSON
+.. code-block:: bash
+
+  registry-manager load-dd \
+    -dd /home/pds/schema/orex_ldd_OREX_1300.JSON
+    -es file:///path/to/connection.xml \
+    -auth /my/path/auth.cfg
+
 
 
 Upgrade Data Dictionary
 ***********************
 
 Data dictionaries can change between major releases of the registry and/or its tools and APIs, necessitating an
-upgrade. To perform this, run the following command::
+upgrade. To perform this, run the following command:
 
-  registry-manager upgrade-dd
+.. code-block:: bash
+
+  registry-manager upgrade-dd \
+    -es file:///path/to/connection.xml \
+    -auth /my/path/auth.cfg
 
 The above command will replace entries in the data dictionary on a document by document basis (i.e. those in the
 data dictionary having the same _id's as the incoming documents). This is relevant if you have loaded your own data
 dictionary files (see 'load-dd' above), in which case the upgrade will retain those additional documents.
 
-If you wish to replace the entire data dictionary, add the '-r' (recreate) command line switch::
+If you wish to replace the entire data dictionary, add the '-r' (recreate) command line switch:
+
+.. code-block:: bash
 
   registry-manager upgrade-dd -r
+    -es file:///path/to/connection.xml \
+    -auth /my/path/auth.cfg
 
 This ensures that legacy documents that are no longer applicable are removed.

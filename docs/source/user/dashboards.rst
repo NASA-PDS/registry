@@ -2,6 +2,8 @@
 Dashboards
 ===========
 
+.. warning:: The dashboards are not available with the latest version of the Registry Service.
+
 Overview
 ********
 
@@ -10,7 +12,7 @@ You can view summaries of the datasets available in your registry with Dashboard
 Prerequisites
 *************
 
-You need to be on a whitelisted IP address to access the Registry's OpenSearch database, see :doc:`/cloud_startup`
+You need to be on a whitelisted IP address to access the Registry's OpenSearch database, see :doc:`/connection-setup`
 
 
 View the dashboards
@@ -18,7 +20,7 @@ View the dashboards
 
 #. Go to your dashboard in you favorite web browser, using the URL of your OpenSearch database suffixed by ``/_dashboards``
 
-#. Log in with the username/password provided by Engineering Node (see :doc:`/cloud_startup`)
+#. Log in with the username/password provided by Engineering Node (see :doc:`/connection-setup`)
 
 #. Select global tenant
 

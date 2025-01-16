@@ -14,8 +14,6 @@ The high level architecture of the PDS Registry Service is shown below:
 
 .. image:: _static/images/registry_service.png
 
-Details on the deployment on AWS are given in the :doc:`cloud architecture page</cloud/architecture>`.
-
 The PDS Registry Application is the software which implements the components of the PDS Registry Service.
 
 
@@ -24,17 +22,17 @@ The PDS Registry Application
 
 The core functionality for the PDS Registry Application is satisfied by `OpenSearch <https://opensearch.org/>`_.
 
-The high level architecture of PDS Registry Application and its main components is shown below.
-
-.. image:: _static/images/registry-arc.png
-
 
 API
 ----
 
 Provides read-only REST APIs to search and access PDS data. You can call REST APIs directly or
-use Python or Java clients.  More information about PDS API clients is available
-`here <https://nasa-pds.github.io/pds-api-client/>`_.
+use Python or Java clients.
+
+The most popular client library is `peppi <https://nasa-pds.github.io/peppi>`_
+
+For direct access, the API is documented `here <https://nasa-pds.github.io/pds-api/guides/search.html>`_
+
 
 
 
@@ -42,31 +40,23 @@ OpenSearch
 -----------
 
 `OpenSearch <https://opensearch.org/>`_ is a NoSQL database based on Apache Lucene project,
-optimized for text search. All metadata extracted from PDS4 labels is stored in OpenSearch database.
+optimized for text search. All metadata extracted from PDS4 labels is stored in the OpenSearch database provided by AWS as `OpenSearch Serverless Managed Service <https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless.html>`_.
+
+
+Authentication/Authorization
+-----------------------------
+
+The access to the OpenSearch service is restricted using Cognito username and passwords provided by Engineering Node to the other PDS nodes.
+Using their login, discipline node can write in their own OpenSearch indexes and read from all the other indexes.
 
 
 Harvest
 --------
 
 Harvest is a software to crawl and extract metadata from PDS4 labels and to load
-extracted information into OpenSearch. There are two versions of Harvest:
+extracted information into OpenSearch.
 
- * Standalone command-line tool.
- * Scalable Harvest.
-
-**Standalone Harvest**
-
-A command-line tool which doesn't require complex installation and configuration.
-This tool is recommended for small data sets of up to 5,000-10,000 of PDS4 labels.
-
-**Scalable Harvest**
-
-Scalable Harvest consists of several server components: RabbitMQ message broker, Crawler server, and Harvest server.
-These components can be deployed in the cloud or on-prem. Also there is a Harvest Client command-line tool to submit jobs
-to server components asynchronously.
-This setup is recommended if you want to process big data sets in parallel.
-
-.. image:: _static/images/scalable-harvest.png
+This command-line tool doesn't require complex installation and configuration.
 
 
 Registry Manager
@@ -74,6 +64,16 @@ Registry Manager
 
 A command-line tool to perform admin tasks on a Registry, such as:
 
- * Create or delete registry indices in OpenSearch.
- * Manage registry data dictionary.
  * Update product archive status.
+ * Delete products.
+ * Create or delete registry indices in OpenSearch (by Engineering Node administrators).
+ * Manage registry data dictionary (by Engineering Node administrators).
+
+
+
+Registry Client
+----------------
+
+A command-line tool which provides full access to the OpenSearch API to handle operations not supported by the previous tools.
+The application takes care of the authentication of the user and signs the queries as required by the AWS OpenSearch Serverless Managed Service.
+

@@ -47,4 +47,4 @@ while ! curl --output /dev/null --silent --head --fail "$ES_URL" -u 'admin:admin
 done
 
 echo "Creating registry and data dictionary indices..." 1>&2
-registry-manager create-registry -es "$ES_URL" -auth /etc/es-auth.cfg
+registry-manager create-registry -es file:///etc/local_registry.xml  -auth /etc/es-auth.cfg
