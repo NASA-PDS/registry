@@ -5,39 +5,6 @@ Detailed Harvest Configuration
 The following sections describe Harvest configuration file in more detail.
 
 
-Node Name
-*********
-
-Node name is a required parameter which is used to tag ingested data with the node it is ingested by.
-
-.. code-block:: xml
-
-  <harvest nodeName="PDS_SBN">
-  ...
-
-One of the following values can be used:
-  * **PDS_ATM**  - Planetary Data System: Atmospheres Node
-  * **PDS_ENG**  - Planetary Data System: Engineering Node
-  * **PDS_GEO**  - Planetary Data System: Geosciences Node
-  * **PDS_IMG**  - Planetary Data System: Imaging Node
-  * **PDS_NAIF** - Planetary Data System: NAIF Node
-  * **PDS_RMS**  - Planetary Data System: Rings Node
-  * **PDS_SBN**  - Planetary Data System: Small Bodies Node at University of Maryland
-  * **PSA**      - Planetary Science Archive
-  * **JAXA**     - Japan Aerospace Exploration Agency
-  * **ROSCOSMOS** - Russian State Corporation for Space Activities
-
-
-This value is saved in "ops:Harvest_Info/ops:node_name" field in the loaded OpenSearch documents:
-
-.. code-block:: javascript
-
-  {
-  ...
-    "ops:Harvest_Info/ops:node_name": "PDS_SBN",
-  ...
-  }
-
 
 Input Directories and Filters
 ******************************
@@ -49,12 +16,14 @@ To process products from one or more directories, add the following section in H
 
 .. code-block:: xml
 
-  <harvest nodeName="PDS_SBN">
+  <harvest>
     ...
-    <directories>
-      <path>/some-directory/sub-dir-1/</path>
-      <path>/some-directory/sub-dir-2/</path>
-    </directories>
+    <load>
+      <directories>
+        <path>/some-directory/sub-dir-1/</path>
+        <path>/some-directory/sub-dir-2/</path>
+      </directories>
+    </load>
     ...
   </harvest>
 
@@ -77,11 +46,13 @@ Next, add the following section in Harvest configuration file:
 
 .. code-block:: xml
 
-  <harvest nodeName="PDS_SBN">
+  <harvest>
     ...
-    <files>
-      <manifest>/some-directory/manifest.txt</manifest>
-    </files>
+    <load>
+      <files>
+        <manifest>/some-directory/manifest.txt</manifest>
+      </files>
+    </load>
     ...
   </harvest>
 
@@ -93,7 +64,7 @@ product filter in Harvest configuration file:
 
 .. code-block:: xml
 
-  <harvest nodeName="PDS_SBN">
+  <harvest>
     ...
     <productFilter>
       <includeClass>Product_Document</includeClass>
@@ -106,7 +77,7 @@ To exclude documents, add following product filter:
 
 .. code-block:: xml
 
-  <harvest nodeName="PDS_SBN">
+  <harvest>
     ...
     <productFilter>
       <excludeClass>Product_Document</excludeClass>
@@ -130,12 +101,14 @@ To process products from one or more bundles, add the following section in Harve
 
 .. code-block:: xml
 
-  <harvest nodeName="PDS_SBN">
+  <harvest>
     ...
-    <bundles>
-      <bundle dir="/data/geo/urn-nasa-pds-kaguya_grs_spectra" />
-      <bundle dir="/data/geo/urn-nasa-pds-trang2020_moon_space_weathering" />
-    </bundles>
+    <load>
+      <bundles>
+        <bundle dir="/data/geo/urn-nasa-pds-kaguya_grs_spectra" />
+        <bundle dir="/data/geo/urn-nasa-pds-trang2020_moon_space_weathering" />
+      </bundles>
+    </load>
     ...
   </harvest>
 
@@ -153,11 +126,13 @@ You can separate versions by comma, semicolon or space.
 
 .. code-block:: xml
 
-  <harvest nodeName="PDS_SBN">
+  <harvest>
     ...
-    <bundles>
-      <bundle dir="/data/OREX/orex_spice" versions="7.0;8.0" />
-    </bundles>
+    <load>
+      <bundles>
+        <bundle dir="/data/OREX/orex_spice" versions="7.0;8.0" />
+      </bundles>
+    </load>
     ...
   </harvest>
 
@@ -165,11 +140,13 @@ To process all versions you can use either versions="all" or no versions attribu
 
 .. code-block:: xml
 
-  <harvest nodeName="PDS_SBN">
+  <harvest>
     ...
-    <bundles>
-      <bundle dir="/data/OREX/orex_spice" versions="all" />
-    </bundles>
+    <load>
+      <bundles>
+        <bundle dir="/data/OREX/orex_spice" versions="all" />
+      </bundles>
+    </load>
     ...
   </harvest>
 
@@ -251,49 +228,22 @@ After running Harvest, you should get different *file_ref* value:
 Registry Integration
 *********************
 
-(only applies to **command line harvest**)
-
-Standalone Harvest tool loads extracted PDS4 metadata into OpenSearch database.
+Harvest tool loads extracted PDS4 metadata into OpenSearch database.
 You have to configure following OpenSearch parameters:
 
-* **url** - Registry (OpenSearch) URL
-* **index** - OpenSearch index name. This is an optional parameter. Default value is 'registry'.
-* **auth** - Registry (OpenSearch) authentication configuration file. This is an optional parameter.
+* **connection file** - externalized configuration of the connection to the Registry Service. See :doc:`/connection-setup`.
+* **auth** - Registry service authentication configuration file. See :doc:`/connection-setup`.
 
-Below are few examples:
-
-**Local OpenSearch instance (localhost)**
+As in the the following example:
 
 .. code-block:: xml
 
- <harvest nodeName="PDS_SBN">
+ <harvest>
    ...
-   <registry url="http://localhost:9200" index="registry" />
-   ...
- </harvest>
-
-.. Note::
-   In the URL attribute, always have a port specified, which for PDS Registries in AWS, this port should be 443. If a port is not specified, it will default to the OpenSearch default port of 9200, and any attempted writes/updates of the registry will fail.
-
-**Remote OpenSearch instance (on-prem or cloud)**
-
-.. code-block:: xml
-
- <harvest nodeName="PDS_SBN">
-   ...
-   <registry url="https://es-server.mydomain.com:443" index="registry" auth="/path/to/auth.cfg" />
+   <registry auth="/path/to/auth.cfg">file:///path/to/config/mcp_dev.xm</registry>
    ...
  </harvest>
 
-If your OpenSearch server requires authentication, you have to create an authentication
-configuration file and provide following parameters:
-
-.. code-block:: python
-
- # true - trust self-signed certificates; false - don't trust.
- trust.self-signed = true
- user = pds-user1
- password = mypassword
 
 
 Label and Data File Information
@@ -359,7 +309,6 @@ To disable BLOB storage, modify *fileInfo* section in Harvest configuration file
   <fileInfo storeLabels="false" storeJsonLabels="false" />
 
 
-
 Extract Metadata by XPath
 **************************
 
@@ -370,7 +319,7 @@ in Harvest configuration file as shown below.
 
 .. code-block:: xml
 
-  <harvest nodeName="PDS_SBN">
+  <harvest>
   ...
     <xpathMaps baseDir="/home/pds/harvest/conf">
       <xpathMap filePath="common.xml" />

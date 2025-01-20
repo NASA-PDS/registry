@@ -42,6 +42,7 @@ services:
       - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-config.xml
       - data-volume:${CONTAINER_HARVEST_data-volume}
       - ./default-config/es-auth.cfg:/etc/es-auth.cfg
+      - ./default-config/local-registry.xml:/etc/local-registry.xml
     networks:
       - pds
 
@@ -58,6 +59,7 @@ services:
       - data-volume:${CONTAINER_HARVEST_DATA_DIR}
       - ./scripts/registry-loader-waits-for-elasticsearch.sh:/usr/local/bin/registry-loader-waits-for-elasticsearch.sh
       - ./default-config/es-auth.cfg:/etc/es-auth.cfg
+      - ./custom-datasets.tar.gz:/etc/custom-datasets.tar.gz
     networks:
       - pds
     entrypoint: /usr/local/bin/registry-loader-waits-for-elasticsearch.sh
@@ -71,6 +73,7 @@ services:
       - PROV_CREDENTIALS=${PROV_CREDENTIALS}
       - LOGLEVEL=DEBUG
       - DEV_MODE=1
+      - MULTITENANCY_NODE_ID=geo
     command: ["/usr/local/bin/sweepers_driver.py", "--legacy-sync"]
     networks:
       - pds
@@ -78,12 +81,9 @@ services:
       registry-loader-test-init:
         condition: service_completed_successfully
 
-
-
-
   # Starts Elasticsearch
   elasticsearch:
-    profiles: ["dev-api", "dev-loader", "pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]
+    profiles: ["dev-api", "dev-loader", "pds-core-registry", "int-registry-batch-loader", "os"]
     image: ${ES_IMAGE}
     environment:
       - discovery.type=${ES_DISCOVERY_TYPE}
@@ -102,33 +102,21 @@ services:
 
   # Initializes Elasticsearch by creating registry and data dictionary indices by utilizing the Registry Loader
   elasticsearch-init:
-    profiles: ["dev-api", "pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]
+    profiles: ["dev-api", "pds-core-registry", "int-registry-batch-loader"]
     image: ${REG_LOADER_IMAGE}
     environment:
       - ES_URL=${ES_URL}
     volumes:
       - ./scripts/elasticsearch-init.sh:/usr/local/bin/elasticsearch-init.sh
       - ./default-config/es-auth.cfg:/etc/es-auth.cfg
+      - ./default-config/local_registry.xml:/etc/local_registry.xml
     networks:
       - pds
     entrypoint: ["bash", "/usr/local/bin/elasticsearch-init.sh"]
 
-  # Starts RabbitMQ
-  rabbit-mq:
-    profiles: ["dev-loader", "int-registry-service-loader", "pds-loader-services"]
-    image: rabbitmq:3.9-management
-    ports:
-      - "15672:15672"
-      - "5672:5672"
-    volumes:
-      - ./default-config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
-      - ./default-config/rabbitmq-definitions.json:/etc/rabbitmq/definitions.json:ro
-    networks:
-      - pds
-
   # Starts the Registry API
   registry-api:
-    profiles: ["dev-loader", "pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]
+    profiles: ["pds-core-registry", "int-registry-batch-loader"]
     image: ${REG_API_IMAGE}
     environment:
       - ES_URL=${ES_URL}
@@ -142,62 +130,9 @@ services:
       - pds
     command: /usr/local/registry-api-service/registry-api-waits-for-elasticsearch.sh
 
-  # Starts the Registry Harvest Service
-  registry-harvest-service:
-    profiles: ["int-registry-service-loader", "pds-loader-services"]
-    image: ${REGISTRY_HARVEST_SERVICE_IMAGE}
-    environment:
-      - ES_URL=${ES_URL}
-    ports:
-      - "8005:8005"
-    volumes:
-      - ${HARVEST_SERVER_CONFIG_FILE}:/cfg/harvest-server.cfg
-      - data-volume:${CONTAINER_HARVEST_DATA_DIR}
-      - ./default-config/es-auth.cfg:/etc/es-auth.cfg
-    networks:
-      - pds
-
-  # Starts the Registry Crawler Service
-  registry-crawler-service:
-    profiles: ["int-registry-service-loader", "pds-loader-services"]
-    image: ${REGISTRY_CRAWLER_SERVICE_IMAGE}
-    ports:
-      - "8001:8001"
-    volumes:
-      - $CRAWLER_SERVER_CONFIG_FILE:/cfg/crawler-server.cfg
-      - data-volume:${CONTAINER_HARVEST_DATA_DIR}
-    networks:
-      - pds
-
-  # Executes the Registry Harvest CLI
-  registry-harvest-cli:
-    profiles: ["pds-service-loader"]
-    image: ${REGISTRY_HARVEST_CLI_IMAGE}
-    volumes:
-      - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-job-config.xml
-      - data-volume:${CONTAINER_HARVEST_DATA_DIR}
-      - ${HARVEST_CLIENT_CONFIG_FILE}:/cfg/harvest-client.cfg
-    networks:
-      - pds
-
-  # Executes the Registry Harvest CLI with test data
-  registry-harvest-cli-test-init:
-    profiles: ["int-registry-service-loader"]
-    image: ${REGISTRY_HARVEST_CLI_IMAGE}
-    environment:
-      - RUN_TESTS=true
-      - TEST_DATA_URL=${TEST_DATA_URL}
-      - TEST_DATA_LIDVID=${TEST_DATA_LIDVID}
-    volumes:
-      - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-job-config.xml
-      - data-volume:${CONTAINER_HARVEST_DATA_DIR}
-      - ${HARVEST_CLIENT_CONFIG_FILE}:/cfg/harvest-client.cfg
-    networks:
-      - pds
-
   # Executes an nginx service to expose the PDS4 archive
   registry-web-archive:
-    profiles: ["dev-loader", "dev-api", "int-registry-batch-loader", "int-registry-service-loader"]
+    profiles: ["dev-loader", "dev-api", "int-registry-batch-loader"]
     image: nginx
     ports:
       - "81:80"

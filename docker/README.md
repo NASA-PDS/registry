@@ -5,20 +5,18 @@ please refer to [https://docs.docker.com/compose/](https://docs.docker.com/compo
 
 The docker-compose.yml file contains following profiles and each profile will start the components as shown in the table below.
 
-| Components\\Profiles                                 | dev-api | pds-core-registry | int-registry-batch-loader | int-registry-service-loader | pds-loader-services | pds-batch-loader | pds-service-loader | int-test |
-|:-----------------------------------------------------|:-------:|:-----------------:|:-------------------------:|:---------------------------:|:-------------------:|:----------------:|:------------------:|:--------:|
-| Elasticsearch                                        | ✓       | ✓                 | ✓                         | ✓                           |                     |                  |                    |          |
-| Elasticsearch init                                   | ✓       | ✓                 | ✓                         | ✓                           |                     |                  |                    |          |
-| Registry API                                         |         | ✓                 | ✓                         | ✓                           |                     |                  |                    |          |
-| Registry loader test init                            | ✓       |                   | ✓                         |                             |                     |                  |                    |          |
-| Registry loader                                      |         |                   |                           |                             |                     | ✓                |                    |          |
-| Registry API integration tests (postman collection?) |         |                   | ✓                         | ✓                           |                     |                  |                    | ✓        |
-| Rabbitmq                                             |         |                   |                           | ✓                           | ✓                   |                  |                    |          |
-| Registry harvest service                             |         |                   |                           | ✓                           | ✓                   |                  |                    |          |
-| Registry crawler service                             |         |                   |                           | ✓                           | ✓                   |                  |                    |          |
-| Registry harvest cli test init                       |         |                   |                           | ✓                           |                     |                  |                    |          |
-| Registry harvest cli                                 |         |                   |                           |                             |                     |                  | ✓                  |          |
-| TLS termination                                      |         | ✓                 | ✓                         | ✓                           |                     |                  |                    |          |
+| Components\\Profiles                                 | dev-api | pds-core-registry | int-registry-batch-loader |  pds-batch-loader | int-test |
+|:-----------------------------------------------------|:-------:|:-----------------:|:-------------------------:|:-----------------:|:--------:|
+| Elasticsearch                                        | ✓       | ✓                 | ✓                         |                   |          |
+| Elasticsearch init                                   | ✓       | ✓                 | ✓                         |                   |          |
+| Registry API                                         |         | ✓                 | ✓                         |                   |          |
+| Nginx                                                | ✓       | ✓                 | ✓                         |                   | ✓        |
+| Registry loader test init                            | ✓       |                   | ✓                         |                   |          |
+| Registry loader                                      |         |                   |                           | ✓                 |          |
+| Registry API integration tests (postman collection?) |         |                   | ✓                         |                   | ✓        |
+| TLS termination                                      |         | ✓                 | ✓                         |                   |          |
+
+
 
 With the use of above profiles the docker compose can start components individually
 or as a group of components as follows. The `-d` option at the end of the commands is used to

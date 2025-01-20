@@ -9,13 +9,15 @@ Indices must be created in OpenSearch, before running the registry.
 
 The indices used by the registry are:
 
- * **registry** - this index stores metadata extracted from PDS4 labels, one ES document per PDS label.
- * **registry-dd** - this index stores data dictionary - a list of searchable fields and its data types.
+ * **<node prefix>-registry** - this index stores metadata extracted from PDS4 labels, one ES document per PDS label.
+ * **<node prefix>-registry-dd** - this index stores data dictionary - a list of searchable fields and its data types.
    When registry is created, the registry data dictionary is populated with PDS common and few discipline dictionaries.
    Harvest automatically loads new dictionaries from schema location specified in PDS4 labels.
    You can also add more fields and LDDs manually with Registry Manager tool.
- * **registry-refs** - this index stores product references extracted from collection inventory files.
+ * **<node prefix>-registry-refs** - this index stores product references extracted from collection inventory files.
    There could be 1 or more ES documents per inventory file.
+
+Where the node prefix is: atm, en, geo, img, naif, ppi, psa, rms, sbnpsi or sbnumd.
 
 The indices are created with Registry Manager command-line tool.
 
@@ -23,7 +25,7 @@ The indices are created with Registry Manager command-line tool.
 Prerequisites
 *************
 
- * OpenSearch server is `running <https://opensearch.org/>`_.
+ * The connection to the registry service is set up. See :doc:`/connection-setup`
  * Registry Manager command-line tool is `installed <../install/tools.html#registry-manager>`_.
 
 
@@ -33,44 +35,26 @@ Create Registry
 To create registry indices run Registry Manager's "create-registry" command.
 You can pass the following optional parameters:
 
- * **-es <url>** - OpenSearch URL. Default value is http://localhost:9200
- * **-index <name>** - OpenSearch index name. Default value is "registry".
- * **-auth <file>** - OpenSearch authentication configuration file. See example below.
+ * **-es <url>** - link to the connection configuration file described in :doc:`/connection-setup`
+ * **-auth <file>** - OpenSearch authentication configuration file. See :doc:`/connection-setup`.
+
+Only applicable for local deployment, e.g. for development of test purpose:
+
  * **-shards <number>** - Number of shards (partitions) for registry index. Default value is 1.
  * **-replicas <number>** - Number of replicas (extra copies) of registry index. Default value is 0.
 
-.. note:: Default number of shards and replicas is not recommended for production.
 
-Examples
+Example
 ========
 
-Create Registry indices in local OpenSearch (http://localhost:9200) with default number of shards and replicas.
-
-.. code-block:: python
-
-   registry-manager create-registry
-
-
-Create Registry indices in remote OpenSearch with 3 shards and 1 replica.
+Create Registry indices in remote OpenSearch.
 
 .. code-block:: python
 
    registry-manager create-registry \
-       -es https://my-host.my-domain:9999 \
-       -auth /my/path/auth.cfg \
-       -shards 3 \
-       -replicas 1
+       -es file:///path/to/connection.xml \
+       -auth /my/path/auth.cfg
 
-
-If your OpenSearch server requires authentication, you have to create an authentication configuration
-file and provide following parameters:
-
-.. code-block:: python
-
-   # true - trust self-signed certificates; false - don't trust.
-   trust.self-signed = true
-   user = pds-user1
-   password = mypassword
 
 
 Check that indices were created
@@ -90,9 +74,9 @@ The response should look similar to this. Make sure that each index health is "g
 .. code-block:: bash
 
   health status index         uuid                   pri rep docs.count docs.deleted store.size pri.store.size
-  green  open   registry      PY6ObzELRlSx9gHOWbR8dw   1   0          0            0       208b           208b
-  green  open   registry-dd   CuJ-nqg1SbKI9hejHrISWA   1   0       2505            0      625kb          625kb
-  green  open   registry-refs 1cJLc-9cQj2D_MAYo7gOpw   1   0          0            0       208b           208b
+  green  open   geo-registry      PY6ObzELRlSx9gHOWbR8dw   1   0          0            0       208b           208b
+  green  open   geo-registry-dd   CuJ-nqg1SbKI9hejHrISWA   1   0       2505            0      625kb          625kb
+  green  open   geo-registry-refs 1cJLc-9cQj2D_MAYo7gOpw   1   0          0            0       208b           208b
 
 
 Delete Registry
@@ -101,15 +85,5 @@ Delete Registry
 To delete registry indices, run Registry Manager's "delete-registry" command.
 You can pass the following optional parameters:
 
- * **-es <url>** - OpenSearch URL. Default value is http://localhost:9200
- * **-index <name>** - OpenSearch index name. Default value is "registry".
- * **-auth <file>** - OpenSearch authentication configuration file.
-
-Examples
-========
-
-Delete registry indices from local OpenSearch (http://localhost:9200)
-
-.. code-block:: python
-
-   registry-manager delete-registry
+ * **-es <url>** - link to the connection configuration file described in :doc:`/connection-setup`
+ * **-auth <file>** - OpenSearch authentication configuration file. See :doc:`/connection-setup`.

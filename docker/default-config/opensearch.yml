@@ -33,7 +33,7 @@ plugins.security.system_indices.enabled: true
 plugins.security.system_indices.indices: [".opendistro-alerting-config", ".opendistro-alerting-alert*", ".opendistro-anomaly-results*", ".opendistro-anomaly-detector*", ".opendistro-anomaly-checkpoints", ".opendistro-anomaly-detection-state", ".opendistro-reports-*", ".opendistro-notifications-*", ".opendistro-notebooks", ".opendistro-asynchronous-search-response*", ".replication-metadata-store"]
 node.max_local_storage_nodes: 3
 
-#logger.level: DEBUG
+logger.level: DEBUG
 
 
 ######## End OpenSearch Security Demo Configuration ########
