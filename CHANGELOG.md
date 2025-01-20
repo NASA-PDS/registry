@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2024-08-22)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-01-10)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -10,13 +10,19 @@
 
 **Defects:**
 
+- SBN user no longer able to access test registry [\#336](https://github.com/NASA-PDS/registry/issues/336) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+- GEO index does not work, appears to be corrupted [\#331](https://github.com/NASA-PDS/registry/issues/331) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - Secret detection is broken on branch titan\_treks\_utility\_script [\#292](https://github.com/NASA-PDS/registry/issues/292) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - harvest created archive\_status as an array and registry-mgr updates it as a string [\#276](https://github.com/NASA-PDS/registry/issues/276) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - Missing NAIF from Legacy Dashboard [\#234](https://github.com/NASA-PDS/registry/issues/234) [[s.low](https://github.com/NASA-PDS/registry/labels/s.low)]
 
 **Other closed issues:**
 
+- Update Registry configuration to support issues with IMG user\(s\) [\#337](https://github.com/NASA-PDS/registry/issues/337) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+- Investigate what the number of property per discipline node was at migration time [\#332](https://github.com/NASA-PDS/registry/issues/332)
+- Onboard Irma from ATM node [\#325](https://github.com/NASA-PDS/registry/issues/325)
 - Add reference links to LOLA data [\#316](https://github.com/NASA-PDS/registry/issues/316)
+- As an administrator of the registry, I don't want ENG operator loading data to have administration authorizations [\#309](https://github.com/NASA-PDS/registry/issues/309)
 - Finalize Cognito configuration in production for the Registry [\#307](https://github.com/NASA-PDS/registry/issues/307)
 - Add Lola PDS4 script [\#305](https://github.com/NASA-PDS/registry/issues/305)
 - Propose options to integrate Trek footprints to PDS products [\#295](https://github.com/NASA-PDS/registry/issues/295)
@@ -30,6 +36,10 @@
 - Create context product unique identifier [\#283](https://github.com/NASA-PDS/registry/issues/283)
 - Managed OpenSearch Snapshots [\#282](https://github.com/NASA-PDS/registry/issues/282)
 - Migrate and fix types mismatches in registry mappings from all node cluster to OpenSearch serverless [\#280](https://github.com/NASA-PDS/registry/issues/280)
+- Create snapshots of production OpenSearch clusters prior to shutdown [\#278](https://github.com/NASA-PDS/registry/issues/278)
+- Copy data necessary for web mod efforts to search-en registry prior to shutdown [\#277](https://github.com/NASA-PDS/registry/issues/277)
+- Deploy Multi-tenant Registry to test [\#272](https://github.com/NASA-PDS/registry/issues/272)
+- Deploy Multi-tenant Registry to production and sync data [\#271](https://github.com/NASA-PDS/registry/issues/271)
 - The migrated documents on opensearch serverless have a generated \_id [\#270](https://github.com/NASA-PDS/registry/issues/270)
 - Setup API Gateway - OpenSearch Serverless Authentication [\#256](https://github.com/NASA-PDS/registry/issues/256)
 - Create Lambda Authorizer for Read Access - OpenSearch Serverless Authentication [\#255](https://github.com/NASA-PDS/registry/issues/255)
@@ -41,6 +51,7 @@
 - Registry-Sweepers Multiple Updates Statements Detected - NOT retry-related [\#225](https://github.com/NASA-PDS/registry/issues/225)
 - Initial OpenSearch Serverless Setup and Deployment in MCP [\#223](https://github.com/NASA-PDS/registry/issues/223)
 - Add registry costs to the PDS EN Cloud spreadsheet [\#218](https://github.com/NASA-PDS/registry/issues/218)
+- Write a migration plan to multitenant registry [\#217](https://github.com/NASA-PDS/registry/issues/217)
 - Design scalable, multi-tenant opensearch [\#212](https://github.com/NASA-PDS/registry/issues/212)
 - B14.0 Update postman test suite with bug fixes for current build [\#201](https://github.com/NASA-PDS/registry/issues/201)
 - B14.0 Update the postman test suite with all the requirement tests [\#200](https://github.com/NASA-PDS/registry/issues/200)
@@ -183,8 +194,6 @@
 **Requirements:**
 
 - Upgrade the initialization of the ES/OS database following latest upgrade of components [\#31](https://github.com/NASA-PDS/registry/issues/31)
-- As a user, I want to switch a bundle and it's associated collections and products from a protected status to operational. [\#105](https://github.com/NASA-PDS/registry/issues/105)
-- As a user, I want to change the archive status for a collection and it's associated products [\#115](https://github.com/NASA-PDS/registry/issues/115)
 
 ## [v1.0.0-SNAPSHOT](https://github.com/NASA-PDS/registry/tree/v1.0.0-SNAPSHOT) (2022-01-20)
 

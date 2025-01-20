@@ -1,13 +1,17 @@
 """Script to scrape GeoSTAC for Lola point clouds and make pds4 xml."""
 import argparse
 import importlib
-import os
+import logging
 from datetime import date
 from pathlib import Path
 
 import requests
 from jinja2 import Environment
+from jinja2 import select_autoescape
 from pds.registry.utils.geostac import templates
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def check_for_overlap(bbox1, bbox2):
@@ -82,7 +86,7 @@ def create_product_external(item):
     :return: pds4 xml
     """
     # create env
-    env = Environment()
+    env = Environment(autoescape=select_autoescape(['html', 'xml']))
     with importlib.resources.open_text(templates, "product-external-template.xml") as io:
         template_text = io.read()
         template = env.from_string(template_text)
@@ -90,8 +94,8 @@ def create_product_external(item):
         item_title = item["assets"]["data"]["title"]
 
         last_slash_i = item["assets"]["data"]["href"].rfind("/")
-        file = "data/" +item["assets"]["data"]["href"][last_slash_i + 1:]
-        print(f'file is on {item["assets"]["data"]["href"]},fake file is on {file}')
+        file = "data/" + item["assets"]["data"]["href"][last_slash_i + 1:]
+        logger.info(f'file is on {item["assets"]["data"]["href"]},fake file is on {file}')
         open("lola_xml/product_external/" + file, 'a').close()
 
         # fill out template params
@@ -140,7 +144,7 @@ def create_product_browse(item):
     :return: pds4 xml
     """
     # create env
-    env = Environment()
+    env = Environment(autoescape=select_autoescape(['html', 'xml']))
 
     with importlib.resources.open_text(templates, "product-browse-template.xml") as io:
         template_text = io.read()
@@ -150,7 +154,7 @@ def create_product_browse(item):
 
         last_slash_i = item["assets"]["thumbnail"]["href"].rfind("/")
         file = "data/" + item["assets"]["thumbnail"]["href"][last_slash_i + 1:]
-        print(f'file is on {item["assets"]["thumbnail"]["href"]},fake file is on {file}')
+        logger.info(f'file is on {item["assets"]["thumbnail"]["href"]},fake file is on {file}')
         open("lola_xml/product_browse/" + file, 'a').close()
 
         data_type = item["assets"]["thumbnail"]["type"]
