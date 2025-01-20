@@ -76,4 +76,3 @@ Registry Client
 
 A command-line tool which provides full access to the OpenSearch API to handle operations not supported by the previous tools.
 The application takes care of the authentication of the user and signs the queries as required by the AWS OpenSearch Serverless Managed Service.
-

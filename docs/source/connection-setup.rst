@@ -130,7 +130,7 @@ Alternatively if you run harvest, on ECS, on the same AWS account as the Registr
      <ec2_credential_url endpoint="https://<abcdefg>.us-west-2.aoss.amazonaws.com">http://169.254.170.2/AWS_CONTAINER_CREDENTIALS_RELATIVE_URI</ec2_credential_url>
    </registry_connection>
 
-The ECS task role must give you access to the Registry Opensearch Serverless Collection.
+vThe ECS task role must give you access to the Registry Opensearch Serverless Collection.
 
 
 Next steps
@@ -141,6 +141,3 @@ metadata into the Registry. Details on how to install and run these tools are fo
 
 - :doc:`Install </install/install>`
 - :doc:`User Tasks </user/tasks>`
-
-
-

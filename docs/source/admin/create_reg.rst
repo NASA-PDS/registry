@@ -87,4 +87,3 @@ You can pass the following optional parameters:
 
  * **-es <url>** - link to the connection configuration file described in :doc:`/connection-setup`
  * **-auth <file>** - OpenSearch authentication configuration file. See :doc:`/connection-setup`.
-

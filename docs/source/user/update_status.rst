@@ -77,5 +77,3 @@ Once data has been ingested and archive status is set to `archived` or `register
 API which is `documented here <https://nasa-pds.github.io/pds-api/guides/search.html>`_.
 
 The base URL of the API https://pds.nasa.gov/api/search/1 also provides an online documentation.
-
-
