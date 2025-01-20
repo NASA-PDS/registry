@@ -212,3 +212,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a user, I want the total number of products returned to match both the total number of products expected to be loaded and the total number of products that were loaded ([#358](https://github.com/NASA-PDS/registry/issues/358)) 
+
+
+This requirement is not impacted by the current version
