@@ -21,4 +21,3 @@ Note the version of the LDD, since that is very important. For the example above
 3. If it does exist as a GitHub release, look in [portal-legacy repo](https://github.com/NASA-PDS/portal-legacy/tree/main/datastandards/schema/released) to see if an older version of the IngestLDD exists.
 4. If you find an older version of the IngestLDD in portal-legacy, add to the LDD repository, and run LDDTool to generate the JSON: `lddtool -lpJm input_historical_ingestldd.xml`
 5. Post to [portal-legacy repo](https://github.com/NASA-PDS/portal-legacy/tree/main/datastandards/schema/released) develop branch, and create pull request to be merged to main.
-
