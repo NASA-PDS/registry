@@ -1,12 +1,17 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-01-10)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-01-20)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
 **Requirements:**
 
 - As a data manager, I want to query OpenSearch Serverless from the command-line [\#273](https://github.com/NASA-PDS/registry/issues/273) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+
+**Improvements:**
+
+- Recreate PDS EN Registry from scratch and load only necessary data [\#352](https://github.com/NASA-PDS/registry/issues/352)
+- Migrate registry-harvest-service documentation [\#78](https://github.com/NASA-PDS/registry/issues/78)
 
 **Defects:**
 
@@ -41,6 +46,7 @@
 - Deploy Multi-tenant Registry to test [\#272](https://github.com/NASA-PDS/registry/issues/272)
 - Deploy Multi-tenant Registry to production and sync data [\#271](https://github.com/NASA-PDS/registry/issues/271)
 - The migrated documents on opensearch serverless have a generated \_id [\#270](https://github.com/NASA-PDS/registry/issues/270)
+- Upgrade docker compose as needed for the multitenant setup [\#269](https://github.com/NASA-PDS/registry/issues/269)
 - Setup API Gateway - OpenSearch Serverless Authentication [\#256](https://github.com/NASA-PDS/registry/issues/256)
 - Create Lambda Authorizer for Read Access - OpenSearch Serverless Authentication [\#255](https://github.com/NASA-PDS/registry/issues/255)
 - Create Lambda Authorizer for Write Access - OpenSearch Serverless Authentication [\#254](https://github.com/NASA-PDS/registry/issues/254)
@@ -57,6 +63,7 @@
 - B14.0 Update the postman test suite with all the requirement tests [\#200](https://github.com/NASA-PDS/registry/issues/200)
 - Enable I&T to use and update registry-api automated tests [\#199](https://github.com/NASA-PDS/registry/issues/199)
 - Design authorization handshake with Cognito, API Gateway, and Lambda for multi-tenancy approach [\#179](https://github.com/NASA-PDS/registry/issues/179)
+- Revise documentation to be more clear about what is suitable for operational vs. development purposes [\#95](https://github.com/NASA-PDS/registry/issues/95)
 
 ## [v1.3.1](https://github.com/NASA-PDS/registry/tree/v1.3.1) (2023-11-16)
 
