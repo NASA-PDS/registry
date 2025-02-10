@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-01-20)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-02-10)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -15,8 +15,10 @@
 
 **Defects:**
 
+- Data products duplicated across en-registry and other node registries [\#351](https://github.com/NASA-PDS/registry/issues/351) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - SBN user no longer able to access test registry [\#336](https://github.com/NASA-PDS/registry/issues/336) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - GEO index does not work, appears to be corrupted [\#331](https://github.com/NASA-PDS/registry/issues/331) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+- AOSS 500/502 responses repeatedly observed under heavy load [\#329](https://github.com/NASA-PDS/registry/issues/329) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Secret detection is broken on branch titan\_treks\_utility\_script [\#292](https://github.com/NASA-PDS/registry/issues/292) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - harvest created archive\_status as an array and registry-mgr updates it as a string [\#276](https://github.com/NASA-PDS/registry/issues/276) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - Missing NAIF from Legacy Dashboard [\#234](https://github.com/NASA-PDS/registry/issues/234) [[s.low](https://github.com/NASA-PDS/registry/labels/s.low)]
@@ -24,6 +26,7 @@
 **Other closed issues:**
 
 - Update Registry configuration to support issues with IMG user\(s\) [\#337](https://github.com/NASA-PDS/registry/issues/337) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+- Reindex MCP Prod ATM registry index with corrected mappings [\#339](https://github.com/NASA-PDS/registry/issues/339)
 - Investigate what the number of property per discipline node was at migration time [\#332](https://github.com/NASA-PDS/registry/issues/332)
 - Onboard Irma from ATM node [\#325](https://github.com/NASA-PDS/registry/issues/325)
 - Add reference links to LOLA data [\#316](https://github.com/NASA-PDS/registry/issues/316)
