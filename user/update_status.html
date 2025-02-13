@@ -1,40 +1,25 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Update Archive Status &mdash; PDS Registry 1.1 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
-
-  
-  
-  
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Update Archive Status &mdash; PDS Registry 1.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css" />
 
   
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,61 +27,35 @@
     <link rel="prev" title="Detailed Harvest Configuration" href="harvest_job_configuration.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PDS Registry
           
-
-          
-            
-            <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
-          
+          <a href="../index.html" class="icon icon-home">
+            PDS Registry
+              <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
           </a>
-
-          
-            
-            
               <div class="version">
-                1.1
+                1.3
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../about.html">About PDS Registry</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cloud_startup.html">Cloud Startup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connection-setup.html">Connection Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="tasks.html">User Tasks</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="load1.html">Load Data - Standalone Harvest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="load2.html">Load Data - Scalable Harvest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load1.html">Load Data - Harvest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html">Detailed Harvest Configuration</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Update Archive Status</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#registry-manager">Registry Manager</a><ul>
@@ -104,11 +63,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#set-status">Set status</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#harvest-client-scalable-harvest-only">Harvest Client (Scalable Harvest only)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id1">Prerequisites</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id6">Set status</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#registry-api">Registry API</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="delete_data.html">Delete Data</a></li>
@@ -116,79 +71,36 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../admin/tasks.html">Admin Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../support/support.html">Support</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">PDS Registry</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="tasks.html">User Tasks</a> &raquo;</li>
-        
-      <li>Update Archive Status</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tasks.html">User Tasks</a></li>
+      <li class="breadcrumb-item active">Update Archive Status</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
-            
               <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/user/update_status.rst" class="fa fa-github"> Edit on GitHub</a>
-            
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="update-archive-status">
-<h1>Update Archive Status<a class="headerlink" href="#update-archive-status" title="Permalink to this headline">¶</a></h1>
+<h1>Update Archive Status<a class="headerlink" href="#update-archive-status" title="Permalink to this heading"></a></h1>
 <p>When a product is ingested into PDS Registry, its archive status is set to <em>“staged”</em>.</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ops:Tracking_Meta/ops:archive_status&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;staged&quot;</span>
 </pre></div>
@@ -202,22 +114,21 @@
 <li><p>staged</p></li>
 </ul>
 </div></blockquote>
+<p>Status <em>“archived”</em> and <em>“certified”</em> make the products visible to the public, currently through the PDS Web API.</p>
 <p>You can use either Registry Manager or Harvest Client (Scalable Harvest deployments only) for this task.</p>
 <div class="section" id="registry-manager">
-<h2>Registry Manager<a class="headerlink" href="#registry-manager" title="Permalink to this headline">¶</a></h2>
+<h2>Registry Manager<a class="headerlink" href="#registry-manager" title="Permalink to this heading"></a></h2>
 <div class="section" id="prerequisites">
-<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>OpenSearch server is <a class="reference external" href="https://opensearch.org/">running</a>.</p></li>
-<li><p>Registry indices are <a class="reference external" href="../admin/create_reg.html#create-registry">created</a> in OpenSearch.</p></li>
 <li><p>Some data is <a class="reference external" href="./load1.html">ingested</a> into the Registry.</p></li>
 <li><p>Registry Manager command-line tool is <a class="reference external" href="../install/tools.html#registry-manager">installed</a>.</p></li>
 </ul>
 </div></blockquote>
 </div>
 <div class="section" id="set-status">
-<h3>Set status<a class="headerlink" href="#set-status" title="Permalink to this headline">¶</a></h3>
+<h3>Set status<a class="headerlink" href="#set-status" title="Permalink to this heading"></a></h3>
 <p>To set product archive status, execute Registry Manager’s “set-archive-status” command.</p>
 <p>The following parameters are required:</p>
 <blockquote>
@@ -226,151 +137,67 @@
 <li><p><strong>-lidvid &lt;id&gt;</strong> - LIDVID of a product to update. If the product is a collection product,
 all primary references from the collection inventory will be also updated.
 If the product is a bundle product, all bundle’s collections will be also updated.</p></li>
-</ul>
-</div></blockquote>
-<p>Optional parameters:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>-es &lt;url&gt;</strong> - OpenSearch URL. Default URL is “<a class="reference external" href="http://localhost:9200">http://localhost:9200</a>”.</p></li>
-<li><p><strong>-index &lt;name&gt;</strong> - OpenSearch index name. Default value is ‘registry’.</p></li>
-<li><p><strong>-auth &lt;file&gt;</strong> - OpenSearch authentication configuration file. See example below.</p></li>
+<li><p><strong>-es &lt;url&gt;</strong> - link to the connection configuration file described in <a class="reference internal" href="../connection-setup.html"><span class="doc">Connection Setup</span></a></p></li>
+<li><p><strong>-auth &lt;file&gt;</strong> - OpenSearch authentication configuration file. See <a class="reference internal" href="../connection-setup.html"><span class="doc">Connection Setup</span></a>.</p></li>
 </ul>
 </div></blockquote>
 <p><strong>Examples:</strong></p>
-<p>Update local Registry / OpenSearch (<a class="reference external" href="http://localhost:9200">http://localhost:9200</a>), no authentication.</p>
+<p>On <strong>MacOS/Linux</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>set-archive-status<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-status<span class="w"> </span>archived
+<span class="w">    </span>-es<span class="w"> </span>file://path/to/registry_connection.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-auth<span class="w"> </span>/my/path/auth.cfg<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-status<span class="w"> </span>archived<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-lidvid<span class="w"> </span><span class="s2">&quot;urn:nasa:pds:kaguya_grs_spectra:document::1.0&quot;</span>
 </pre></div>
 </div>
-<p>Update remote Registry / OpenSearch</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>set-archive-status<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-status<span class="w"> </span>archived
-<span class="w">    </span>-lidvid<span class="w"> </span><span class="s2">&quot;urn:nasa:pds:kaguya_grs_spectra:document::1.0&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-es<span class="w"> </span>https://my-host.my-domain:443<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-auth<span class="w"> </span>/my/path/auth.cfg
+<p>On <strong>Windows</strong>:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.\</span><span class="n">registry-manager</span><span class="p">.</span><span class="n">bat</span> <span class="nb">set-archive</span><span class="n">-status</span>
+    <span class="n">-auth</span> <span class="s1">&#39;C:\Users\loubrieu\Documents\es-auth.txt&#39;</span>
+    <span class="n">-es</span> <span class="s1">&#39;file:///C:\Users\loubrieu\Documents\mcp_dev.xml&#39;</span>
+    <span class="n">-lidvid</span> <span class="s1">&#39;urn:nasa:pds:insight_rad:data_derived::7.0&#39;</span>
+    <span class="n">-status</span> <span class="n">archived</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In the -es option value, always have a port specified in the URL. For PDS Registries, this port should be 443. If a port is not specified, it will default to OpenSearch default port of 9200, and the update of the registry will fail.</p>
-</div>
-<p>If your OpenSearch server requires authentication, you have to create an authentication configuration
-file and provide following parameters:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># true - trust self-signed certificates; false - don&#39;t trust.</span>
-<span class="n">trust</span><span class="o">.</span><span class="n">self</span><span class="o">-</span><span class="n">signed</span> <span class="o">=</span> <span class="n">true</span>
-<span class="n">user</span> <span class="o">=</span> <span class="n">pds</span><span class="o">-</span><span class="n">user1</span>
-<span class="n">password</span> <span class="o">=</span> <span class="n">mypassword</span>
-</pre></div>
+<p>The connection and auth files are described in <a class="reference internal" href="../connection-setup.html"><span class="doc">Connection Setup</span></a></p>
 </div>
 </div>
-</div>
-<div class="section" id="harvest-client-scalable-harvest-only">
-<h2>Harvest Client (Scalable Harvest only)<a class="headerlink" href="#harvest-client-scalable-harvest-only" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id1">
-<h3>Prerequisites<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<blockquote>
-<div><ul class="simple">
-<li><p>OpenSearch server is <a class="reference external" href="https://opensearch.org/">running</a>.</p></li>
-<li><p>Registry indices are <a class="reference external" href="../admin/create_reg.html#create-registry">created</a> in OpenSearch.</p></li>
-<li><p>Some data is <a class="reference external" href="./load2.html">ingested</a> into the Registry.</p></li>
-<li><p>All server components - RabbitMQ, Crawler Server, Harvest Server - are deployed and running on-prem or in the cloud.</p></li>
-<li><p>Harvest Client command-line tool is <a class="reference external" href="../install/tools.html#harvest-client">installed</a>.</p></li>
-</ul>
-</div></blockquote>
-</div>
-<div class="section" id="id6">
-<h3>Set status<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
-<p>To set product archive status, execute Harvest Client’s “set-archive-status” command.</p>
-<p>The following parameters are required:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>-status &lt;status&gt;</strong> - New status. Pass one of the following values: “archived”, “certified”, “restricted”, “staged”.</p></li>
-<li><p><strong>-lidvid &lt;id&gt;</strong> - LIDVID of a product to update. If the product is a collection product,
-all primary references from the collection inventory will be also updated.
-If the product is a bundle product, all bundle’s collections will be also updated.</p></li>
-</ul>
-</div></blockquote>
-<p>Optional parameters:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>-c &lt;path&gt;</strong> - Harvest Client configuration file. Default is &lt;CLIENT_HOME&gt;/conf/harvest-client.cfg</p></li>
-</ul>
-</div></blockquote>
-<p>Usually Harvest Client is configured after the installation. Example configuration is shown below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mq</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">RabbitMQ</span>
-<span class="c1"># RabbitMQ host(s). One or more host:port tuples (one tuple per line).</span>
-<span class="n">rmq</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">localhost</span><span class="p">:</span><span class="mi">5672</span>
-<span class="c1"># RabbitMQ user</span>
-<span class="n">rmq</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">harvest</span>
-<span class="c1"># RabbitMQ password</span>
-<span class="n">rmq</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">harvest</span>
-</pre></div>
-</div>
-<p><strong>Examples:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>harvest-client<span class="w"> </span>set-archive-status<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-status<span class="w"> </span>archived
-<span class="w">    </span>-lidvid<span class="w"> </span><span class="s2">&quot;urn:nasa:pds:kaguya_grs_spectra:document::1.0&quot;</span>
-</pre></div>
-</div>
-</div>
+<div class="section" id="registry-api">
+<h2>Registry API<a class="headerlink" href="#registry-api" title="Permalink to this heading"></a></h2>
+<p>Once data has been ingested and archive status is set to <cite>archived</cite> or <cite>registered</cite>, it is accessible using the Registry
+API which is <a class="reference external" href="https://nasa-pds.github.io/pds-api/guides/search.html">documented here</a>.</p>
+<p>The base URL of the API <a class="reference external" href="https://pds.nasa.gov/api/search/1">https://pds.nasa.gov/api/search/1</a> also provides an online documentation.</p>
 </div>
 </div>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="delete_data.html" class="btn btn-neutral float-right" title="Delete Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="harvest_job_configuration.html" class="btn btn-neutral float-left" title="Detailed Harvest Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="harvest_job_configuration.html" class="btn btn-neutral float-left" title="Detailed Harvest Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="delete_data.html" class="btn btn-neutral float-right" title="Delete Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2022 California Institute of Technology
-
-    </p>
+    <p>&#169; Copyright 2022 California Institute of Technology.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

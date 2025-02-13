@@ -1,58 +1,51 @@
 ==============================
-Load Data - Standalone Harvest
+Load Data - Harvest
 ==============================
 
 Overview
 ********
 
-To load PDS4 data into Registry you have to use Harvest software. There are two versions of Harvest:
-a simple standalone command-line tool and a scalable Harvest which can process big data sets in parallel thanks to distributed components comminucating through a message broker.
-Both versions extract metadata from PDS4 products (labels) and load extracted
+To load PDS4 data into Registry you have to use Harvest software to extract metadata from PDS4 products (labels) and load extracted
 metadata into OpenSearch database.
 
-This document describes how to load data with Standalone Harvest command-line tool.
-
+This document describes how to load data with Harvest command-line tool.
 
 Prerequisites
-*************
+**************
 
-  * OpenSearch server is `running <https://opensearch.org/>`_.
-  * Registry indices are `created <../admin/create_reg.html#create-registry>`_ in OpenSearch.
-  * Standalone Harvest command-line tool is `installed <../install/tools.html#standalone-harvest>`_.
+  * Your connection to the registry service is setup, see :doc:`/connection-setup`.
+  * Harvest command-line tool is `installed <../install/tools.html#harvest>`_.
 
 
-Standalone Harvest Quick Start
-******************************
+
+Harvest Quick Start
+********************
 
 To run Harvest you need a job configuration file (XML).
 The configuration file has several sections such as Registry (OpenSearch) configuration
-and the path to the data. Example configuration files are located in *<INSTALL_DIR>/conf/examples*.
+and the path to the data.
 
-The most useful configuration for an Harvest's job is *conf/examples/directories.xml*. You will want to update the nodeName:
+Example configuration files are located in *<INSTALL_DIR>/conf/examples*.
 
-.. code-block:: xml
+The most useful configuration for an Harvest's job is *conf/examples/directories.xml*.
 
-  <harvest nodeName="PDS_GEO">
-
-
-Registry (OpenSearch) configuration:
+Registry (OpenSearch) acess configuration:
 
 .. code-block:: xml
 
-  <registry url="http://localhost:9200" index="registry" auth="/path/to/auth.cfg" />
+  <registry auth="/path/to/auth.cfg">file:///path/to/config/mcp_dev.xm</registry>
 
-For details on the registry configuration, see :ref:`Registry Integration <Registry Integration>`.
-
-.. Note::
-   In the URL attribute, always have a port specified, which for PDS Registries in AWS, this port should be 443. If a port is not specified, it will default to the OpenSearch default port of 9200, and any attempted writes/updates of the registry will fail.
+Use the paths of the files identified in :doc:`/connection-setup`.
 
 The path to the data:
 
 .. code-block:: xml
 
-  <directories>
-    <path>/data/geo/urn-nasa-pds-kaguya_grs_spectra</path>
-  </directories>
+  <load>
+    <directories>
+      <path>/data/geo/urn-nasa-pds-kaguya_grs_spectra</path>
+    </directories>
+  </load>
 
 And the URL prefix for the data:
 
@@ -63,13 +56,13 @@ And the URL prefix for the data:
     <fileRef replacePrefix="/data/geo/" with="https://pds-geosciences.wustl.edu/lunar/" />
   </fileInfo>
 
-If you save this file as */tmp/kaguya.cfg* and run Harvest
+If you save this file as */tmp/kaguya.xml* and run Harvest
 
 .. code-block:: python
 
-   harvest -c /tmp/kaguya.cfg
+   harvest -c /tmp/kaguya.xml
 
-all XML files in */data/orex/orex_spice* folder and its subfolders will be processed.
+All XML files in */data/geo/urn-nasa-pds-kaguya_grs_spectra* folder and its subfolders will be processed.
 All metadata from PDS4 labels will be extracted and loaded into Registry (OpenSearch).
 
 You will see multiple log messages similar to these:
@@ -95,20 +88,28 @@ You will see multiple log messages similar to these:
   [SUMMARY] Package ID: e46f6ba9-6151-48ee-b822-b0536e3e4bd9
 
 
-To quickly check that data was loaded you can query Registry indices in OpenSearch by calling
-`OpenSearch Search API <https://opensearch.org/docs/latest/opensearch/query-dsl/index/>`_
-or in a web browser. For example,
+To quickly check that data was loaded you can query Registry indices using `Registry Client <https://nasa-pds.github.io/registry-client/>`_
 
-.. code-block:: python
+.. note::
+   On Windows, the harvest job configuration file would look as follows:
 
-   # Select all products
-   curl "http://localhost:9200/registry/_search?q=*&amp;pretty"
+.. image:: /_static/images/windows_harvest_conf_file.png
 
-   # Select only collections
-   curl "http://localhost:9200/registry/_search?q=product_class:Product_Collection&amp;pretty"
-
-This `page <./harvest_job_configuration.html>`_ describes the job configuration file in detail.
 
 Next Steps
 **********
+
+You can see additional harvest options by running:
+
+.. code:: bash
+
+  ./bin/harvest -help
+
+The harvest job configuration file provides also additional options described in :doc:`/user/harvest_job_configuration`.
+
+You can validate the products uploaded in the registry using `registry-client <https://nasa-pds.github.io/registry-client/>`_.
+
+.. warning::
+Due to refresh rates and indexation delays, it may take up to a few hours before the data becomes visible.
+
 When ready for public release, you need to `update the archive status <update_status.html>`_

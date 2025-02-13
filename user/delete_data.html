@@ -1,40 +1,25 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Delete Data &mdash; PDS Registry 1.1 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
-
-  
-  
-  
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delete Data &mdash; PDS Registry 1.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css" />
 
   
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,163 +27,97 @@
     <link rel="prev" title="Update Archive Status" href="update_status.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PDS Registry
           
-
-          
-            
-            <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
-          
+          <a href="../index.html" class="icon icon-home">
+            PDS Registry
+              <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
           </a>
-
-          
-            
-            
               <div class="version">
-                1.1
+                1.3
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../about.html">About PDS Registry</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cloud_startup.html">Cloud Startup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connection-setup.html">Connection Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="tasks.html">User Tasks</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="load1.html">Load Data - Standalone Harvest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="load2.html">Load Data - Scalable Harvest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load1.html">Load Data - Harvest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html">Detailed Harvest Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="update_status.html">Update Archive Status</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Delete Data</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id1">Delete Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#opensearch-api">OpenSearch API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#on-macos-linux">On MacOS/Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#on-windows">On Windows</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="dashboards.html">Dashboards</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../admin/tasks.html">Admin Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../support/support.html">Support</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">PDS Registry</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="tasks.html">User Tasks</a> &raquo;</li>
-        
-      <li>Delete Data</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tasks.html">User Tasks</a></li>
+      <li class="breadcrumb-item active">Delete Data</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
-            
               <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/user/delete_data.rst" class="fa fa-github"> Edit on GitHub</a>
-            
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="delete-data">
-<h1>Delete Data<a class="headerlink" href="#delete-data" title="Permalink to this headline">¶</a></h1>
+<h1>Delete Data<a class="headerlink" href="#delete-data" title="Permalink to this heading"></a></h1>
 <div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
 <p>You can delete data from PDS Registry (OpenSearch) with Registry Manager command-line tool.</p>
 </div>
 <div class="section" id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
 <blockquote>
 <div><ul class="simple">
-<li><p>OpenSearch server is running.</p></li>
-<li><p>Registry Manager command-line tool is installed.</p></li>
+<li><p>You have access to the Registry Service, see <a class="reference internal" href="../connection-setup.html"><span class="doc">Connection Setup</span></a></p></li>
+<li><p>Registry Manager command-line tool is installed, see <span class="xref std std-doc">/install/tools</span></p></li>
 </ul>
 </div></blockquote>
 </div>
 <div class="section" id="id1">
-<h2>Delete Data<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>Delete Data<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
 <p>To delete data, run Registry Manager’s “delete-data” command.</p>
 <p>You have to pass one of the following parameters:</p>
 <blockquote>
@@ -207,121 +126,92 @@
 <li><p><strong>-lid &lt;id&gt;</strong> - Delete data by lid</p></li>
 <li><p><strong>-packageId &lt;id&gt;</strong> - Delete data by package / job id</p></li>
 <li><p><strong>-all</strong> - Delete all data</p></li>
-</ul>
-</div></blockquote>
-<p>You can also pass optional parameters:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>-es &lt;url&gt;</strong> - OpenSearch URL. Default URL is “<a class="reference external" href="http://localhost:9200">http://localhost:9200</a>”.</p></li>
-<li><p><strong>-index &lt;name&gt;</strong> - OpenSearch index name. Default value is ‘registry’.</p></li>
-<li><p><strong>-auth &lt;file&gt;</strong> - OpenSearch authentication configuration file. See example below.</p></li>
+<li><p><strong>-es &lt;url&gt;</strong> - link to the connection configuration file described in <a class="reference internal" href="../connection-setup.html"><span class="doc">Connection Setup</span></a></p></li>
+<li><p><strong>-auth &lt;file&gt;</strong> - OpenSearch authentication configuration file. See <a class="reference internal" href="../connection-setup.html"><span class="doc">Connection Setup</span></a>.</p></li>
 </ul>
 </div></blockquote>
 </div>
 <div class="section" id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
+<div class="section" id="on-macos-linux">
+<h3>On MacOS/Linux<a class="headerlink" href="#on-macos-linux" title="Permalink to this heading"></a></h3>
 <p><strong>Delete by LIDVID</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>delete-data<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-lidvid<span class="w"> </span>urn:nasa:pds:context:target:asteroid.4_vesta::1.1<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-es<span class="w"> </span>https://my-server.my-domain.com:443<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-index<span class="w"> </span>registry<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-auth<span class="w"> </span>path/to/auth.cfg
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In the -es option value, always have a port specified in the URL. For PDS Registries, this port should be 443. If a port is not specified, it will default to OpenSearch default port of 9200, and the update of the registry will fail.</p>
-</div>
-<p>If your OpenSearch server requires authentication, you have to create an authentication configuration file
-and provide following parameters:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># true - trust self-signed certificates; false - don&#39;t trust.</span>
-<span class="n">trust</span><span class="o">.</span><span class="n">self</span><span class="o">-</span><span class="n">signed</span> <span class="o">=</span> <span class="n">true</span>
-<span class="n">user</span> <span class="o">=</span> <span class="n">pds</span><span class="o">-</span><span class="n">user1</span>
-<span class="n">password</span> <span class="o">=</span> <span class="n">mypassword</span>
+<span class="w">    </span>-auth<span class="w"> </span>/Users/loubrieu/Documents/pds/registry/registry-auth.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-es<span class="w"> </span>file:/Users/loubrieu/Documents/pds/registry/mcp_dev.xml
 </pre></div>
 </div>
 <p><strong>Delete by LID</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>delete-data<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-lid<span class="w"> </span>urn:nasa:pds:context:target:asteroid.4_vesta
-<span class="w">    </span>-es<span class="w"> </span>http://localhost:9200
+<span class="w">    </span>-auth<span class="w"> </span>/Users/loubrieu/Documents/pds/registry/registry-auth.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-es<span class="w"> </span>file:/Users/loubrieu/Documents/pds/registry/mcp_dev.xml
 </pre></div>
 </div>
 <p><strong>Delete by Package / Job ID</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>delete-data<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-packageId<span class="w"> </span>8d8ae96d-044e-473d-a278-62635b1c5977
+<span class="w">  </span>-auth<span class="w"> </span>/Users/loubrieu/Documents/pds/registry/registry-auth.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-es<span class="w"> </span>file:/Users/loubrieu/Documents/pds/registry/mcp_dev.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-packageId<span class="w"> </span>8d12a9ba-2ba0-4d80-8ce9-65da271ecf89
 </pre></div>
 </div>
 <p><strong>Delete all Data</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>delete-data<span class="w"> </span>-all<span class="w"> </span>-index<span class="w"> </span>test1
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>delete-data<span class="w"> </span>-all<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-auth<span class="w"> </span>/Users/loubrieu/Documents/pds/registry/registry-auth.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-es<span class="w"> </span>file:/Users/loubrieu/Documents/pds/registry/mcp_dev.xml
 </pre></div>
 </div>
 </div>
-<div class="section" id="opensearch-api">
-<h2>OpenSearch API<a class="headerlink" href="#opensearch-api" title="Permalink to this headline">¶</a></h2>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Only use this if you really know what you are doing and how to do it.</p>
+<div class="section" id="on-windows">
+<h3>On Windows<a class="headerlink" href="#on-windows" title="Permalink to this heading"></a></h3>
+<p><strong>Delete by LIDVID</strong></p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.\</span><span class="n">registry-manager</span><span class="p">.</span><span class="n">bat</span> <span class="n">delete-data</span>
+  <span class="n">-auth</span> <span class="s1">&#39;C:\Users\loubrieu\Documents\es-auth.txt&#39;</span>
+  <span class="n">-es</span> <span class="s1">&#39;file:///C:\Users\loubrieu\Documents\mcp_dev.xml&#39;</span>
+  <span class="n">-lidvid</span> <span class="s1">&#39;urn:nasa:pds:insight_rad:data_derived::7.0&#39;</span>
+</pre></div>
 </div>
-<p>You can also use OpenSearch
-<a class="reference external" href="https://opensearch.org/docs/latest/opensearch/rest-api/document-apis/delete-by-query/">delete by query API</a>
-to delete documents from the Registry / OpenSearch.</p>
+<p><strong>Delete by Package / Job ID</strong></p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.\</span><span class="n">registry-manager</span> <span class="n">delete-data</span> <span class="p">\</span>
+  <span class="n">-auth</span> <span class="p">/</span><span class="n">Users</span><span class="p">/</span><span class="n">loubrieu</span><span class="p">/</span><span class="n">Documents</span><span class="p">/</span><span class="n">pds</span><span class="p">/</span><span class="n">registry</span><span class="p">/</span><span class="n">registry-auth</span><span class="p">.</span><span class="n">txt</span> <span class="p">\</span>
+  <span class="n">-es</span> <span class="n">file</span><span class="p">:///</span><span class="n">C</span><span class="p">:\</span><span class="n">Users</span><span class="p">\</span><span class="n">loubrieu</span><span class="p">\</span><span class="n">Documents</span><span class="p">\</span><span class="n">mcp_dev</span><span class="p">.</span><span class="n">xml</span> <span class="p">\</span>
+  <span class="n">-packageId</span> <span class="n">8d12a9ba</span><span class="p">-</span><span class="n">2ba0</span><span class="p">-</span><span class="n">4d80</span><span class="p">-</span><span class="n">8ce9</span><span class="p">-</span><span class="n">65da271ecf89</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="dashboards.html" class="btn btn-neutral float-right" title="Dashboards" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="update_status.html" class="btn btn-neutral float-left" title="Update Archive Status" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="update_status.html" class="btn btn-neutral float-left" title="Update Archive Status" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="dashboards.html" class="btn btn-neutral float-right" title="Dashboards" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2022 California Institute of Technology
-
-    </p>
+    <p>&#169; Copyright 2022 California Institute of Technology.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

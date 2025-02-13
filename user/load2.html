@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Load Data - Scalable Harvest &mdash; PDS Registry 1.1 documentation</title>
@@ -13,6 +14,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -27,10 +30,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -171,7 +174,7 @@
         
             
             
-              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/user/load2.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/pds-data-dictionaries/ldd-template/blob/main/docs/source/user/load2.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -185,9 +188,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="load-data-scalable-harvest">
+  <section id="load-data-scalable-harvest">
 <h1>Load Data - Scalable Harvest<a class="headerlink" href="#load-data-scalable-harvest" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="overview">
+<section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>To load PDS4 data into Registry you have to use Harvest software. There are two versions of Harvest:
 a simple standalone command-line tool and a scalable Harvest consisting of several server and and
@@ -195,8 +198,8 @@ client components. Scalable Harvest can process big data sets in parallel.
 Both versions extract metadata from PDS4 products (labels) and load extracted
 metadata into OpenSearch database.</p>
 <p>This document describes how to use Harvest Client command-line tool to submit jobs to Scalable Harvest Server cluster.</p>
-</div>
-<div class="section" id="prerequisites">
+</section>
+<section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>OpenSearch server is <a class="reference external" href="https://opensearch.org/">running</a>.</p></li>
@@ -204,12 +207,12 @@ metadata into OpenSearch database.</p>
 <li><p>All server components - RabbitMQ, Crawler Server, Harvest Server - are deployed and running on-prem or in the cloud.</p></li>
 <li><p>Harvest Client command-line tool is installed.</p></li>
 </ul>
-</div>
-<div class="section" id="scalable-harvest-quick-start">
+</section>
+<section id="scalable-harvest-quick-start">
 <h2>Scalable Harvest Quick Start<a class="headerlink" href="#scalable-harvest-quick-start" title="Permalink to this headline">¶</a></h2>
 <p>Scalable Harvest consists of several server components: RabbitMQ, Crawler and Harvest servers.
 To load data you have to use Harvest Client command-line tool to submit a job to Harvest server cluster.</p>
-<div class="section" id="configuration-file">
+<section id="configuration-file">
 <h3>Configuration File<a class="headerlink" href="#configuration-file" title="Permalink to this headline">¶</a></h3>
 <p>Harvest Client requires message broker (RabbitMQ) connection to submit jobs to the Harvest server cluster.
 Default configuration file, <em>&lt;INSTALL_DIR&gt;/conf/harvest-client.cfg</em>, has the following parameters:</p>
@@ -231,19 +234,19 @@ Default configuration file, <em>&lt;INSTALL_DIR&gt;/conf/harvest-client.cfg</em>
 </pre></div>
 </div>
 <p>You can either edit default configuration file, or create another file and pass it to Harvest Client CLI as a parameter.</p>
-</div>
-<div class="section" id="submit-a-job">
+</section>
+<section id="submit-a-job">
 <h3>Submit a Job<a class="headerlink" href="#submit-a-job" title="Permalink to this headline">¶</a></h3>
 <p>To submit a job to the harvest server cluster you need a job configuration file.
 An example configuration file is available in the installation directory:
 <em>&lt;INSTALL_DIR&gt;/examples/directories.xml</em>.</p>
 <p>You will need to update the nodeName:</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span><span class="w"> </span><span class="na">nodeName=</span><span class="s">&quot;PDS_GEO&quot;</span><span class="nt">&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;harvest</span> <span class="na">nodeName=</span><span class="s">&quot;PDS_GEO&quot;</span><span class="nt">&gt;</span>
 </pre></div>
 </div>
 <p>The path to the data.</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;directories&gt;</span>
-<span class="w">  </span><span class="nt">&lt;path&gt;</span>/data/geo/urn-nasa-pds-kaguya_grs_spectra<span class="nt">&lt;/path&gt;</span>
+  <span class="nt">&lt;path&gt;</span>/data/geo/urn-nasa-pds-kaguya_grs_spectra<span class="nt">&lt;/path&gt;</span>
 <span class="nt">&lt;/directories&gt;</span>
 </pre></div>
 </div>
@@ -253,8 +256,8 @@ An example configuration file is available in the installation directory:
 </div>
 <p>And the URL prefix for the data:</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;fileInfo&gt;</span>
-<span class="w">  </span><span class="cm">&lt;!-- UPDATE with your own local path and base url where pds4 archive is published --&gt;</span>
-<span class="w">  </span><span class="nt">&lt;fileRef</span><span class="w"> </span><span class="na">replacePrefix=</span><span class="s">&quot;/data/geo/&quot;</span><span class="w"> </span><span class="na">with=</span><span class="s">&quot;https://pds-geosciences.wustl.edu/lunar/&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+  <span class="c">&lt;!-- UPDATE with your own local path and base url where pds4 archive is published --&gt;</span>
+  <span class="nt">&lt;fileRef</span> <span class="na">replacePrefix=</span><span class="s">&quot;/data/geo/&quot;</span> <span class="na">with=</span><span class="s">&quot;https://pds-geosciences.wustl.edu/lunar/&quot;</span> <span class="nt">/&gt;</span>
 <span class="nt">&lt;/fileInfo&gt;</span>
 </pre></div>
 </div>
@@ -279,13 +282,13 @@ An example configuration file is available in the installation directory:
 <p>For backward compatibility, job ID field is called “_package_id” in OpenSearch.</p>
 </div>
 <p>This <a class="reference external" href="./harvest_job_configuration.html">page</a> describes the job configuration file in detail.</p>
-</div>
-</div>
-<div class="section" id="next-steps">
+</section>
+</section>
+<section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
 <p>When ready for public release, you need to <a class="reference external" href="update_status.html">update the archive status</a></p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

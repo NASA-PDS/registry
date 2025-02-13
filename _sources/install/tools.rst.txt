@@ -129,7 +129,7 @@ Configure Your Environment
 **************************
 
 .. note::
-   Optional: Configuring your environment is preferred, but not required. You can always run any of the command-line tools from
+   Optional: Configuring your environment is preferred, but not required. You can always run any of the command-line tools from 
    the ``bin/`` directory of the appropriate downloaded package.
 
 Update PATH environment variable to be able to run registry tools from any directory.

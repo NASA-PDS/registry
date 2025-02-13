@@ -19,8 +19,9 @@ Sitemap
    :maxdepth: 2
 
    about
-   cloud_startup
+   connection-setup
+   install/install
    user/tasks
    admin/tasks
-   install/install
+
    support/support

@@ -10,8 +10,8 @@ You can delete data from PDS Registry (OpenSearch) with Registry Manager command
 Prerequisites
 *************
 
- * OpenSearch server is running.
- * Registry Manager command-line tool is installed.
+ * You have access to the Registry Service, see :doc:`/connection-setup`
+ * Registry Manager command-line tool is installed, see :doc:`/install/tools`
 
 
 Delete Data
@@ -25,15 +25,14 @@ You have to pass one of the following parameters:
  * **-lid <id>** - Delete data by lid
  * **-packageId <id>** - Delete data by package / job id
  * **-all** - Delete all data
-
-You can also pass optional parameters:
-
- * **-es <url>** - OpenSearch URL. Default URL is "http://localhost:9200".
- * **-index <name>** - OpenSearch index name. Default value is 'registry'.
- * **-auth <file>** - OpenSearch authentication configuration file. See example below.
+ * **-es <url>** - link to the connection configuration file described in :doc:`/connection-setup`
+ * **-auth <file>** - OpenSearch authentication configuration file. See :doc:`/connection-setup`.
 
 Examples
 ********
+
+On MacOS/Linux
+~~~~~~~~~~~~~~~
 
 **Delete by LIDVID**
 
@@ -41,22 +40,9 @@ Examples
 
   registry-manager delete-data \
       -lidvid urn:nasa:pds:context:target:asteroid.4_vesta::1.1 \
-      -es https://my-server.my-domain.com:443 \
-      -index registry \
-      -auth path/to/auth.cfg
+      -auth /Users/loubrieu/Documents/pds/registry/registry-auth.txt \
+      -es file:/Users/loubrieu/Documents/pds/registry/mcp_dev.xml
 
-.. Note::
-   In the -es option value, always have a port specified in the URL. For PDS Registries, this port should be 443. If a port is not specified, it will default to OpenSearch default port of 9200, and the update of the registry will fail.
-
-If your OpenSearch server requires authentication, you have to create an authentication configuration file
-and provide following parameters:
-
-.. code-block:: python
-
-  # true - trust self-signed certificates; false - don't trust.
-  trust.self-signed = true
-  user = pds-user1
-  password = mypassword
 
 **Delete by LID**
 
@@ -64,28 +50,44 @@ and provide following parameters:
 
   registry-manager delete-data \
       -lid urn:nasa:pds:context:target:asteroid.4_vesta
-      -es http://localhost:9200
+      -auth /Users/loubrieu/Documents/pds/registry/registry-auth.txt \
+      -es file:/Users/loubrieu/Documents/pds/registry/mcp_dev.xml
 
 **Delete by Package / Job ID**
 
 .. code-block:: bash
 
   registry-manager delete-data \
-      -packageId 8d8ae96d-044e-473d-a278-62635b1c5977
+    -auth /Users/loubrieu/Documents/pds/registry/registry-auth.txt \
+    -es file:/Users/loubrieu/Documents/pds/registry/mcp_dev.xml \
+    -packageId 8d12a9ba-2ba0-4d80-8ce9-65da271ecf89
+
 
 **Delete all Data**
 
 .. code-block:: bash
 
-  registry-manager delete-data -all -index test1
+  registry-manager delete-data -all \
+    -auth /Users/loubrieu/Documents/pds/registry/registry-auth.txt \
+    -es file:/Users/loubrieu/Documents/pds/registry/mcp_dev.xml
 
+On Windows
+~~~~~~~~~~~
 
-OpenSearch API
-*****************
+**Delete by LIDVID**
 
-.. warning::
-    Only use this if you really know what you are doing and how to do it.
+.. code-block:: powershell
 
-You can also use OpenSearch
-`delete by query API <https://opensearch.org/docs/latest/opensearch/rest-api/document-apis/delete-by-query/>`_
-to delete documents from the Registry / OpenSearch.
+  .\registry-manager.bat delete-data
+    -auth 'C:\Users\loubrieu\Documents\es-auth.txt'
+    -es 'file:///C:\Users\loubrieu\Documents\mcp_dev.xml'
+    -lidvid 'urn:nasa:pds:insight_rad:data_derived::7.0'
+
+**Delete by Package / Job ID**
+
+.. code-block:: powershell
+
+  .\registry-manager delete-data \
+    -auth /Users/loubrieu/Documents/pds/registry/registry-auth.txt \
+    -es file:///C:\Users\loubrieu\Documents\mcp_dev.xml \
+    -packageId 8d12a9ba-2ba0-4d80-8ce9-65da271ecf89

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connection Setup &mdash; PDS Registry 1.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="install/install.html" />
+    <link rel="prev" title="About PDS Registry" href="about.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PDS Registry
+              <img src="_static/PDS_Planets.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About PDS Registry</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Connection Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#initial-set-up">Initial Set-up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#changing-your-opensearch-password">Changing Your Opensearch Password</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#registry-tools-configurations">Registry Tools Configurations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#have-a-secure-directory-for-your-configurations">Have a Secure Directory For Your Configurations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#authentication-file">Authentication file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#registry-client-environment">Registry Client Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opensearch-connection-configuration-file-for-harvest-and-registry-manager">OpenSearch Connection Configuration File, For Harvest and Registry Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-registry-tools-on-aws">Run Registry Tools on AWS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#run-harvest-on-ec2">Run Harvest On EC2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#run-harest-on-ecs">Run Harest On ECS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next steps</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/tasks.html">User Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin/tasks.html">Admin Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support/support.html">Support</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PDS Registry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Connection Setup</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/connection-setup.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="connection-setup">
+<h1>Connection Setup<a class="headerlink" href="#connection-setup" title="Permalink to this heading"></a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>This page provides the steps necessary to get going with data ingestion and
+querying of the PDS Registry Service on the cloud from the perspective of a Discipline
+Node (DN).</p>
+</div>
+<div class="section" id="initial-set-up">
+<h2>Initial Set-up<a class="headerlink" href="#initial-set-up" title="Permalink to this heading"></a></h2>
+<p>To get things going, you should have provided the Engineering Node contact with the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A list of user email addresses which will be authorized to perform data ingestion.</p></li>
+<li><p>A list of IP addresses or blocks of addresses from which data ingestion will occur.</p></li>
+</ul>
+</div></blockquote>
+<p>The IP addresses are added to an access whitelist.</p>
+<p>Opensearch accounts will be set up for each user and their username and (temporary)
+password will be sent to them.</p>
+<p>Along with your Opensearch user credentials you will receive configuration inputs for your tools to connect to the registry services.</p>
+<p>The following sections provide the steps to follow to have your connection set up.</p>
+</div>
+<div class="section" id="changing-your-opensearch-password">
+<h2>Changing Your Opensearch Password<a class="headerlink" href="#changing-your-opensearch-password" title="Permalink to this heading"></a></h2>
+<p>To update your user password click <a class="reference external" href="https://pds-prod-nucleus-dum.auth.us-west-2.amazoncognito.com/login?client_id=3rgdgts818hdrkas4q66lebum0&amp;response_type=code&amp;scope=email+openid&amp;redirect_uri=https%3A%2F%2Fnasa-pds.github.io%2Fdata-upload-manager%2F">here</a> and select “Forgot your password”.</p>
+</div>
+<div class="section" id="registry-tools-configurations">
+<h2>Registry Tools Configurations<a class="headerlink" href="#registry-tools-configurations" title="Permalink to this heading"></a></h2>
+<div class="section" id="have-a-secure-directory-for-your-configurations">
+<h3>Have a Secure Directory For Your Configurations<a class="headerlink" href="#have-a-secure-directory-for-your-configurations" title="Permalink to this heading"></a></h3>
+<p>Create a secure directory to place config files: Two of the config files you will be creating should be placed in a secure location accessible only by the current user.</p>
+<p>On <strong>Linux</strong> and Linux-like Operating Systems:</p>
+<p>Create new <code class="docutils literal notranslate"><span class="pre">$HOME/.auth</span> <span class="pre">directory</span></code></p>
+<p>Change access to this directory to be only current user accessible only:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod<span class="w"> </span><span class="m">700</span><span class="w"> </span><span class="nv">$HOME</span>/.auth
+</pre></div>
+</div>
+<p>On <strong>Windows</strong>:</p>
+<p>Take the necessary precautions so that the directory is not readable by anyone but its owner.</p>
+</div>
+<div class="section" id="authentication-file">
+<h3>Authentication file<a class="headerlink" href="#authentication-file" title="Permalink to this heading"></a></h3>
+<p>Create Harvest authentication file
+Create a <code class="docutils literal notranslate"><span class="pre">registry-auth.txt</span></code> file with your username and password, and place it in the secure location created above.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="nx">username</span><span class="w"> </span><span class="nx">sent</span><span class="w"> </span><span class="nx">by</span><span class="w"> </span><span class="nx">Engineering</span><span class="w"> </span><span class="nx">Node</span><span class="p">}</span>
+<span class="nx">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="nx">your</span><span class="w"> </span><span class="nx">password</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="registry-client-environment">
+<h3>Registry Client Environment<a class="headerlink" href="#registry-client-environment" title="Permalink to this heading"></a></h3>
+<p>Create Registry Client environment variables file (registry-client.env):</p>
+<p>Engineering Node (<a class="reference external" href="mailto:pds-operator&#37;&#52;&#48;jpl&#46;nasa&#46;gov">pds-operator<span>&#64;</span>jpl<span>&#46;</span>nasa<span>&#46;</span>gov</a>) will provide you with a config file containing necessary Registry OpenSearch configuration information.</p>
+<p>On <strong>Linux</strong> and Linux-like Operating Systems:</p>
+<p>Update this file with your username and password.</p>
+<p>As needed, update the setting of the environment variables to match the shell you are using.</p>
+<p>Place in the secure location created above.</p>
+<p>On <strong>Windows</strong>:</p>
+<p>The environment variables noted will need to be set manually through the Windows console.</p>
+</div>
+<div class="section" id="opensearch-connection-configuration-file-for-harvest-and-registry-manager">
+<h3>OpenSearch Connection Configuration File, For Harvest and Registry Manager<a class="headerlink" href="#opensearch-connection-configuration-file-for-harvest-and-registry-manager" title="Permalink to this heading"></a></h3>
+<p>Create OpenSearch connection configuration file, e.g.  sbn_mcp_prod.xml or sbn_mcp_test.xml.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Engineering Node (<a class="reference external" href="mailto:pds-operator&#37;&#52;&#48;jpl&#46;nasa&#46;gov">pds-operator<span>&#64;</span>jpl<span>&#46;</span>nasa<span>&#46;</span>gov</a>) will provide you with the content of the file.</p>
+</div>
+</div>
+<div class="section" id="run-registry-tools-on-aws">
+<h3>Run Registry Tools on AWS<a class="headerlink" href="#run-registry-tools-on-aws" title="Permalink to this heading"></a></h3>
+<p>You can run harvest on AWS, on ECS or EC2 directly.</p>
+<div class="section" id="run-harvest-on-ec2">
+<h4>Run Harvest On EC2<a class="headerlink" href="#run-harvest-on-ec2" title="Permalink to this heading"></a></h4>
+<p>You can run Harvest on EC2, as anywhere else, using the Cognito authentication and configurations described above.</p>
+<p>However, to be able to access the PDS Registry which is also hosted on AWS, on a different AWS account, you must disable “Private DNS names” in the VPC endpoint of the API gateway, otherwise the PDS Registry API gateway requests will be redirected to your own account and fail.</p>
+<p>See the AWS console screenshot, you should have <strong>No</strong> instead of <strong>Yes</strong> here:</p>
+<img alt="_static/images/aws_console_vpc.png" src="_static/images/aws_console_vpc.png" />
+<p>If you need to change that in your AWS account, double check that all your other applications still work.</p>
+</div>
+<div class="section" id="run-harest-on-ecs">
+<h4>Run Harest On ECS<a class="headerlink" href="#run-harest-on-ecs" title="Permalink to this heading"></a></h4>
+<p>You can run harvest on ECS, as on EC2 using the Cognito authentication.</p>
+<p>Alternatively if you run harvest, on ECS, on the same AWS account as the Registry service, you can also configure the connexion to the Registry without Cognito authentication, as follows:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;registry_connection</span><span class="w"> </span><span class="na">index=</span><span class="s">&quot;en-registry&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span><span class="nt">&lt;ec2_credential_url</span><span class="w"> </span><span class="na">endpoint=</span><span class="s">&quot;https://&lt;abcdefg&gt;.us-west-2.aoss.amazonaws.com&quot;</span><span class="nt">&gt;</span>http://169.254.170.2/AWS_CONTAINER_CREDENTIALS_RELATIVE_URI<span class="nt">&lt;/ec2_credential_url&gt;</span>
+<span class="nt">&lt;/registry_connection&gt;</span>
+</pre></div>
+</div>
+<p>vThe ECS task role must give you access to the Registry Opensearch Serverless Collection.</p>
+</div>
+</div>
+<div class="section" id="next-steps">
+<h3>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this heading"></a></h3>
+<p>Once the above setup is complete, the Registry Tools are used to process and ingest product
+metadata into the Registry. Details on how to install and run these tools are found in:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="install/install.html"><span class="doc">Install</span></a></p></li>
+<li><p><a class="reference internal" href="user/tasks.html"><span class="doc">User Tasks</span></a></p></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="about.html" class="btn btn-neutral float-left" title="About PDS Registry" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="install/install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022 California Institute of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
