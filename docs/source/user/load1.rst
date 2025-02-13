@@ -107,5 +107,9 @@ You can see additional harvest options by running:
 
 The harvest job configuration file provides also additional options described in :doc:`/user/harvest_job_configuration`.
 
+You can validate the products uploaded in the registry using `registry-client <https://nasa-pds.github.io/registry-client/>`_.
+
+.. warning::
+Due to refresh rates and indexation delays, it may take up to a few hours before the data becomes visible.
 
 When ready for public release, you need to `update the archive status <update_status.html>`_
