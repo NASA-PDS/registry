@@ -17,7 +17,7 @@ The indices used by the registry are:
  * **registry-refs** - this index stores product references extracted from collection inventory files.
    There could be 1 or more ES documents per inventory file.
 
-The indices are created with Registry Manager command-line tool.
+The indices, with their actual names, prefixed by nodes and suffxed with timestamps and their aliases are created with Registry Manager command-line tool.
 
 
 Prerequisites
@@ -33,11 +33,10 @@ Create Registry
 To create registry indices run Registry Manager's "create-registry" command.
 You can pass the following optional parameters:
 
- * **-es <url>** - OpenSearch URL. Default value is http://localhost:9200
- * **-index <name>** - OpenSearch index name. Default value is "registry".
+ * **-registry <url>** - Registry OpenSearch Connection File URL.
  * **-auth <file>** - OpenSearch authentication configuration file. See example below.
- * **-shards <number>** - Number of shards (partitions) for registry index. Default value is 1.
- * **-replicas <number>** - Number of replicas (extra copies) of registry index. Default value is 0.
+ * **-shards <number>** - Number of shards (partitions) for registry index. Only applicable for local deployment. Default value is 1.
+ * **-replicas <number>** - Number of replicas (extra copies) of registry index. Only applicable for local deployment. Default value is 0.
 
 .. note:: Default number of shards and replicas is not recommended for production.
 
