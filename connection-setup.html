@@ -178,7 +178,7 @@ Create a <code class="docutils literal notranslate"><span class="pre">registry-a
 <p>You can run Harvest on EC2, as anywhere else, using the Cognito authentication and configurations described above.</p>
 <p>However, to be able to access the PDS Registry which is also hosted on AWS, on a different AWS account, you must disable “Private DNS names” in the VPC endpoint of the API gateway, otherwise the PDS Registry API gateway requests will be redirected to your own account and fail.</p>
 <p>See the AWS console screenshot, you should have <strong>No</strong> instead of <strong>Yes</strong> here:</p>
-<img alt="_static/images/aws_console_vpc.png" src="_static/images/aws_console_vpc.png" />
+<img alt="_images/aws_console_vpc.png" src="_images/aws_console_vpc.png" />
 <p>If you need to change that in your AWS account, double check that all your other applications still work.</p>
 </div>
 <div class="section" id="run-harest-on-ecs">
