@@ -11,7 +11,7 @@ Prerequisites
 *************
 
  * You have access to the Registry Service, see :doc:`/connection-setup`
- * Registry Manager command-line tool is installed, see :doc:`/install/tools`
+ * Registry Manager command-line tool is installed, see :doc:`/install/install`
 
 
 Delete Data
