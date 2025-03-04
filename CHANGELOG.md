@@ -1,21 +1,24 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-02-13)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-03-04)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
 **Requirements:**
 
+- As a user, I want to have read-only access to all registry indexes [\#350](https://github.com/NASA-PDS/registry/issues/350)
 - As a data manager, I want to query OpenSearch Serverless from the command-line [\#273](https://github.com/NASA-PDS/registry/issues/273) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 
 **Improvements:**
 
+- Document the refresh rate of OpenSearch [\#361](https://github.com/NASA-PDS/registry/issues/361)
 - Recreate PDS EN Registry from scratch and load only necessary data [\#352](https://github.com/NASA-PDS/registry/issues/352)
 - Migrate registry-harvest-service documentation [\#78](https://github.com/NASA-PDS/registry/issues/78)
 
 **Defects:**
 
 - Data products duplicated across en-registry and other node registries [\#351](https://github.com/NASA-PDS/registry/issues/351) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+- Getting "blocked by: maximum OCU capacity reached" errors when harvesting [\#340](https://github.com/NASA-PDS/registry/issues/340) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - SBN user no longer able to access test registry [\#336](https://github.com/NASA-PDS/registry/issues/336) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - GEO index does not work, appears to be corrupted [\#331](https://github.com/NASA-PDS/registry/issues/331) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - AOSS 500/502 responses repeatedly observed under heavy load [\#329](https://github.com/NASA-PDS/registry/issues/329) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
@@ -26,6 +29,7 @@
 **Other closed issues:**
 
 - Update Registry configuration to support issues with IMG user\(s\) [\#337](https://github.com/NASA-PDS/registry/issues/337) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+- Document in the wiki how the authorization on opensearch are managed [\#334](https://github.com/NASA-PDS/registry/issues/334)
 - Reindex MCP Prod ATM registry index with corrected mappings [\#339](https://github.com/NASA-PDS/registry/issues/339)
 - Investigate what the number of property per discipline node was at migration time [\#332](https://github.com/NASA-PDS/registry/issues/332)
 - Onboard Irma from ATM node [\#325](https://github.com/NASA-PDS/registry/issues/325)
