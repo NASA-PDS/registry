@@ -197,11 +197,11 @@ services:
     profiles: ["pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]
     image: ${PROXYCRYPT_IMAGE}
     environment:
-      - PROXY_URL=http://registry-api:8080/
+      - PROXY_URL=https://registry-api:8080/
       - PROXY_PATH=/api/search/1/
-      - PROXY_PORT=8443
+      - PROXY_PORT=443
     ports:
-      - "8443:443"
+      - "443:443"
     networks:
       - pds
 

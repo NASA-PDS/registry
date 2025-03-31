@@ -3957,12 +3957,10 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8081/products?limit=3",
-							"protocol": "http",
+							"raw": "{{baseUrl}}/products?limit=3",
 							"host": [
-								"localhost"
+								"{{baseUrl}}"
 							],
-							"port": "8081",
 							"path": [
 								"products"
 							],
