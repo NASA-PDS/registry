@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-03-04)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-04-14)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -17,6 +17,8 @@
 
 **Defects:**
 
+- Registry return authorization error for ATM node [\#369](https://github.com/NASA-PDS/registry/issues/369) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+- Update terraform to use port 443 not port 80 [\#365](https://github.com/NASA-PDS/registry/issues/365) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - Data products duplicated across en-registry and other node registries [\#351](https://github.com/NASA-PDS/registry/issues/351) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Getting "blocked by: maximum OCU capacity reached" errors when harvesting [\#340](https://github.com/NASA-PDS/registry/issues/340) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - SBN user no longer able to access test registry [\#336](https://github.com/NASA-PDS/registry/issues/336) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
@@ -28,6 +30,8 @@
 
 **Other closed issues:**
 
+- Respond to Registry SIA review from SAs [\#364](https://github.com/NASA-PDS/registry/issues/364)
+- Complete security vulnerability assessment for registry [\#356](https://github.com/NASA-PDS/registry/issues/356)
 - Update Registry configuration to support issues with IMG user\(s\) [\#337](https://github.com/NASA-PDS/registry/issues/337) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - Document in the wiki how the authorization on opensearch are managed [\#334](https://github.com/NASA-PDS/registry/issues/334)
 - Reindex MCP Prod ATM registry index with corrected mappings [\#339](https://github.com/NASA-PDS/registry/issues/339)
