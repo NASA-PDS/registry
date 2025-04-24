@@ -71,7 +71,7 @@ services:
     environment:
       - PROV_ENDPOINT=${ES_URL}
       - PROV_CREDENTIALS=${PROV_CREDENTIALS}
-      - LOGLEVEL=DEBUG
+      - LOGLEVEL=INFO
       - DEV_MODE=1
       - MULTITENANCY_NODE_ID=geo
     command: ["/usr/local/bin/sweepers_driver.py", "--legacy-sync"]
@@ -108,6 +108,7 @@ services:
       - ES_URL=${ES_URL}
     volumes:
       - ./scripts/elasticsearch-init.sh:/usr/local/bin/elasticsearch-init.sh
+      - ./scripts/aliases:/usr/local/bin/aliases
       - ./default-config/es-auth.cfg:/etc/es-auth.cfg
       - ./default-config/local_registry.xml:/etc/local_registry.xml
     networks:
