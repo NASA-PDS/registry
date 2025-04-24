@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-04-22)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-04-24)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -30,6 +30,7 @@
 
 **Other closed issues:**
 
+- Clean test suite to un-skip test skipped after multitenant migration [\#378](https://github.com/NASA-PDS/registry/issues/378)
 - Respond to Registry SIA review from SAs [\#364](https://github.com/NASA-PDS/registry/issues/364)
 - Complete security vulnerability assessment for registry [\#356](https://github.com/NASA-PDS/registry/issues/356)
 - Update Registry configuration to support issues with IMG user\(s\) [\#337](https://github.com/NASA-PDS/registry/issues/337) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
