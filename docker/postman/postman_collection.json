@@ -3300,6 +3300,55 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#630 As a user, I want the total number of products returned to match both the total number of products expected to be loaded and the total number of products that were loaded",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const testrailId = \"C4494388\";",
+									"pm.test(`${testrailId} Status code is 200`, () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const content = pm.response.json();",
+									"pm.test(\"Expected hits count returned\", function () {",
+									"   pm.expect(content.summary.hits).to.eql(38)",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

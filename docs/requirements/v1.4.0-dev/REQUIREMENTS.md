@@ -212,7 +212,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
-## As a user, I want the total number of products returned to match both the total number of products expected to be loaded and the total number of products that were loaded ([#358](https://github.com/NASA-PDS/registry/issues/358)) 
+## As a PDS EN administrator, I want to have a local archive of all the PDS4 label ([#379](https://github.com/NASA-PDS/registry/issues/379)) 
 
 
 This requirement is not impacted by the current version

@@ -59,6 +59,48 @@ To develop this project, use your favorite text editor, or an integrated develop
 For information on how to contribute to NASA-PDS codebases please take a look at our [Contributing guidelines](https://github.com/NASA-PDS/.github/blob/main/CONTRIBUTING.md).
 
 
+### Installation
+
+Install in editable mode and with extra developer dependencies into your virtual environment of choice:
+
+    pip install --editable '.[dev]'
+
+Make a baseline for any secrets (email addresses, passwords, API keys, etc.) in the repository:
+
+    detect-secrets scan . \
+        --all-files \
+        --disable-plugin AbsolutePathDetectorExperimental \
+        --exclude-files '\.secrets..*' \
+        --exclude-files '\.git.*' \
+        --exclude-files '\.mypy_cache' \
+        --exclude-files '\.pytest_cache' \
+        --exclude-files '\.tox' \
+        --exclude-files '\.venv' \
+        --exclude-files 'venv' \
+        --exclude-files 'dist' \
+        --exclude-files 'build' \
+        --exclude-files '.*\.egg-info' > .secrets.baseline
+
+Review the secrets to determine which should be allowed and which are false positives:
+
+    detect-secrets audit .secrets.baseline
+
+Please remove any secrets that should not be seen by the public. You can then add the baseline file to the commit:
+
+    git add .secrets.baseline
+
+Then, configure the `pre-commit` hooks:
+
+    pre-commit install
+    pre-commit install -t pre-push
+    pre-commit install -t prepare-commit-msg
+    pre-commit install -t commit-msg
+
+These hooks then will check for any future commits that might contain secrets. They also check code formatting, PEP8 compliance, type hints, etc.
+
+👉 **Note:** A one time setup is required both to support `detect-secrets` and in your global Git configuration. See [the wiki entry on Secrets](https://github.com/NASA-PDS/nasa-pds.github.io/wiki/Git-and-Github-Guide#detect-secrets) to learn how.
+
+
 ### Documentation
 
 The project uses [Sphinx](https://www.sphinx-doc.org/en/master/) to build its documentation. PDS' documentation template is already configured as part of the default build. You can build your projects docs with:
