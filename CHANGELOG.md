@@ -1,11 +1,12 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-04-24)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-06-18)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
 **Requirements:**
 
+- As a node user, I want to have multiple cognito groups and still have the main cognito node group to be effective [\#396](https://github.com/NASA-PDS/registry/issues/396)
 - As a user, I want to have read-only access to all registry indexes [\#350](https://github.com/NASA-PDS/registry/issues/350)
 - As a data manager, I want to query OpenSearch Serverless from the command-line [\#273](https://github.com/NASA-PDS/registry/issues/273) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 
