@@ -216,3 +216,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a node user, I want to have multiple cognito groups and still have the main cognito node group to be effective ([#396](https://github.com/NASA-PDS/registry/issues/396)) 
+
+
+This requirement is not impacted by the current version
