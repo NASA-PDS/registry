@@ -182,7 +182,7 @@ services:
     #    are typically run with `--detach` and so any exit codes they might have to show pass/fail
     #    status of the tests are lost. We can always run the tests with `./int-tests.sh`.
     # profiles: ["int-registry-batch-loader", "int-registry-service-loader"]
-    profiles: []
+    profiles: ["test_something"]
     image: ${POSTMAN_NEWMAN_IMAGE}
     environment:
       - REG_API_URL=${REG_API_URL}
