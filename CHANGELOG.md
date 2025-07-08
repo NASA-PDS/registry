@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-06-25)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-07-08)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
 
@@ -13,11 +13,13 @@
 **Improvements:**
 
 - Document the refresh rate of OpenSearch [\#361](https://github.com/NASA-PDS/registry/issues/361)
+- Fix GEO node products which ops:Harvest\_Info/ops:node\_name: geo [\#360](https://github.com/NASA-PDS/registry/issues/360)
 - Recreate PDS EN Registry from scratch and load only necessary data [\#352](https://github.com/NASA-PDS/registry/issues/352)
 - Migrate registry-harvest-service documentation [\#78](https://github.com/NASA-PDS/registry/issues/78)
 
 **Defects:**
 
+- Registry is not accepting date time with leap second, e.g. `2015-06-30T23:59:60.862Z` [\#404](https://github.com/NASA-PDS/registry/issues/404) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Registry return authorization error for ATM node [\#369](https://github.com/NASA-PDS/registry/issues/369) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - Update terraform to use port 443 not port 80 [\#365](https://github.com/NASA-PDS/registry/issues/365) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - Data products duplicated across en-registry and other node registries [\#351](https://github.com/NASA-PDS/registry/issues/351) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
@@ -31,6 +33,7 @@
 
 **Other closed issues:**
 
+- Investigate the opensearch serverless scale out/down parameters [\#397](https://github.com/NASA-PDS/registry/issues/397)
 - Clean test suite to un-skip test skipped after multitenant migration [\#378](https://github.com/NASA-PDS/registry/issues/378)
 - Respond to Registry SIA review from SAs [\#364](https://github.com/NASA-PDS/registry/issues/364)
 - Complete security vulnerability assessment for registry [\#356](https://github.com/NASA-PDS/registry/issues/356)
