@@ -78,7 +78,6 @@ html_css_files = [
 html_theme_options = {
     'canonical_url': '',
     'logo_only': False,
-    'display_version': True,
     'prev_next_buttons_location': 'bottom',
     'style_external_links': False,
     # Toc options
