@@ -1,8 +1,20 @@
 # Changelog
 
-## [release/1.4.0](https://github.com/NASA-PDS/registry/tree/release/1.4.0) (2025-07-16)
+## [1.3.1](https://github.com/NASA-PDS/registry/tree/1.3.1) (2025-08-28)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...release/1.4.0)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...1.3.1)
+
+**Defects:**
+
+- Registry is not accepting date time with leap second, e.g. `2015-06-30T23:59:60.862Z` [\#404](https://github.com/NASA-PDS/registry/issues/404) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+
+**Other closed issues:**
+
+- Troubleshoot SBN 403 Error [\#414](https://github.com/NASA-PDS/registry/issues/414)
+
+## [v1.4.0](https://github.com/NASA-PDS/registry/tree/v1.4.0) (2025-07-16)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...v1.4.0)
 
 **Requirements:**
 
@@ -19,7 +31,6 @@
 
 **Defects:**
 
-- Registry is not accepting date time with leap second, e.g. `2015-06-30T23:59:60.862Z` [\#404](https://github.com/NASA-PDS/registry/issues/404) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Registry return authorization error for ATM node [\#369](https://github.com/NASA-PDS/registry/issues/369) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - Update terraform to use port 443 not port 80 [\#365](https://github.com/NASA-PDS/registry/issues/365) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - Data products duplicated across en-registry and other node registries [\#351](https://github.com/NASA-PDS/registry/issues/351) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
