@@ -64,7 +64,7 @@ We recommend installing **OpenJDK**. Sites listed above have detailed installati
 Python
 ~~~~~~
 
-Registry Client requires python 3.9.
+Registry Client requires python 3.13 or higher
 
 An installation procedure is proposed in a `GitHub discussion <https://github.com/orgs/NASA-PDS/discussions/64>`_
 
