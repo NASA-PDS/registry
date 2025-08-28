@@ -78,6 +78,7 @@ typescript
 .gwt/
 target/
 build/
+*.vscode/
 
 # macOS specific stuff
 .DS_Store

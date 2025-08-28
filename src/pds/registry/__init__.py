@@ -1,9 +1,19 @@
 # -*- coding: utf-8 -*-
 """PDS Registry."""
-import pkg_resources
+import importlib.metadata
+import pathlib
 
 
-__version__ = pkg_resources.resource_string(__name__, "VERSION.txt").decode("utf-8").strip()
+try:
+    # Try to get version from package metadata first (preferred method)
+    __version__ = importlib.metadata.version("pds.registry")
+except importlib.metadata.PackageNotFoundError:
+    # Fallback to reading from VERSION.txt file
+    try:
+        version_file = pathlib.Path(__file__).parent / "VERSION.txt"
+        __version__ = version_file.read_text().strip()
+    except OSError:
+        __version__ = "unknown"
 
 
 # For future consideration:
