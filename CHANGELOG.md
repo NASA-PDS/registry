@@ -1,8 +1,12 @@
 # Changelog
 
-## [1.3.1](https://github.com/NASA-PDS/registry/tree/1.3.1) (2025-08-28)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-09-08)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...1.3.1)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...«unknown»)
+
+**Requirements:**
+
+- As a node operator, I want the the registry schema to update autonomously / dynamically when new data is ingested. [\#113](https://github.com/NASA-PDS/registry/issues/113)
 
 **Defects:**
 
@@ -94,11 +98,7 @@
 
 ## [v1.3.1](https://github.com/NASA-PDS/registry/tree/v1.3.1) (2023-11-16)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.3.1...v1.3.1)
-
-## [release/1.3.1](https://github.com/NASA-PDS/registry/tree/release/1.3.1) (2023-11-16)
-
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...release/1.3.1)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...v1.3.1)
 
 **Requirements:**
 
@@ -239,7 +239,6 @@
 
 **Requirements:**
 
-- As a node operator, I want the the registry schema to update autonomously when new data is ingested. [\#113](https://github.com/NASA-PDS/registry/issues/113)
 - As a developer, I want to include supplemental file data sizes in the registry [\#112](https://github.com/NASA-PDS/registry/issues/112)
 - As a node operator, I want to ingest metadata regarding secondary collections that belong to a bundle. [\#109](https://github.com/NASA-PDS/registry/issues/109)
 - As a node operator, I want to ingest metadata regarding secondary products that belong to a collection. [\#108](https://github.com/NASA-PDS/registry/issues/108)
