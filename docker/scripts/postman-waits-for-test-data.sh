@@ -47,7 +47,7 @@ if [ -z "$ES_URL" ]; then
 fi
 
 echo "Waiting for test data to be available in the Registry-API, before starting the Postman tests..."  1>&2
-sleep 240
+sleep 480
 
 echo "Starting Postman tests..."  1>&2
 
