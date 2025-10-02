@@ -1,20 +1,26 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-09-08)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-10-02)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...«unknown»)
 
 **Requirements:**
 
+- As a user, I want to receive an alert when my registry credentials are readable by someone else than myself [\#424](https://github.com/NASA-PDS/registry/issues/424)
 - As a node operator, I want the the registry schema to update autonomously / dynamically when new data is ingested. [\#113](https://github.com/NASA-PDS/registry/issues/113)
 
 **Defects:**
 
+- Some of product urn:nasa:pds:lro\_diviner\_derived2::1.0's fields are not indexed [\#422](https://github.com/NASA-PDS/registry/issues/422) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Registry is not accepting date time with leap second, e.g. `2015-06-30T23:59:60.862Z` [\#404](https://github.com/NASA-PDS/registry/issues/404) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+- members of GEO bundle/collection collection not found [\#403](https://github.com/NASA-PDS/registry/issues/403) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+- CSV response not returning the values associated with `fields` argument [\#380](https://github.com/NASA-PDS/registry/issues/380) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
+- product has date for sweeper index but is listed as not indexed [\#375](https://github.com/NASA-PDS/registry/issues/375) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 
 **Other closed issues:**
 
 - Troubleshoot SBN 403 Error [\#414](https://github.com/NASA-PDS/registry/issues/414)
+- Add the --legacy-sync command option to the EN sweeper in production [\#390](https://github.com/NASA-PDS/registry/issues/390)
 
 ## [v1.4.0](https://github.com/NASA-PDS/registry/tree/v1.4.0) (2025-07-16)
 
