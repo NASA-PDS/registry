@@ -88,6 +88,8 @@ build/
 test-data/
 .venv
 *.egg-info
+.coverage
+coverage.xml
 
 # Python virtual environment
 venv/
