@@ -150,6 +150,7 @@ services:
     image: ${POSTMAN_NEWMAN_IMAGE}
     environment:
       - REG_API_URL=${REG_API_URL}
+      - ES_URL=${ES_URL}
     volumes:
       - ${POSTMAN_COLLECTION_FILE}:/postman/postman-collection.json
     networks:
@@ -161,13 +162,15 @@ services:
     profiles: ["testrail-reporting"]
     image: nasapds/newman-with-testrail-reporter
     environment:
-      TESTRAIL_DOMAIN: cae-testrail.jpl.nasa.gov/testrail
-      TESTRAIL_PROJECTID: 168
-      TESTRAIL_SUITEID: 24324
-      TESTRAIL_TITLE: Registry API Newman tests via Jenkins
+      - REG_API_URL=${REG_API_URL}
+      - ES_URL=${ES_URL}
+      - TESTRAIL_DOMAIN=cae-testrail.jpl.nasa.gov/testrail
+      - TESTRAIL_PROJECTID=168
+      - TESTRAIL_SUITEID=24324
+      - TESTRAIL_TITLE=Registry API Newman tests via Jenkins
       # Empty values here inherit from the host environment, which must provide these:
-      TESTRAIL_USERNAME:
-      TESTRAIL_APIKEY:
+      - TESTRAIL_USERNAME=
+      - TESTRAIL_APIKEY=
     volumes:
       - ${POSTMAN_COLLECTION_FILE}:/postman/postman-collection.json
     networks:
@@ -181,7 +184,7 @@ services:
     #    tests at this point. The two profiles `int-registry-batch-loader` and `int-registry-service-loader`
     #    are typically run with `--detach` and so any exit codes they might have to show pass/fail
     #    status of the tests are lost. We can always run the tests with `./int-tests.sh`.
-    # profiles: ["int-registry-batch-loader", "int-registry-service-loader"]
+    # -profiles: ["int-registry-batch-loader", "int-registry-service-loader"]
     profiles: ["test_something"]
     image: ${POSTMAN_NEWMAN_IMAGE}
     environment:
