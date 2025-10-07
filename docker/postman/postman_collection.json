@@ -4028,10 +4028,9 @@
 									"",
 									"const INDEX_URL = pm.environment.get(\"opensearchUrl\") + \"/en-legacy-registry/_search\";",
 									"const MAX_RETRIES = 20;     // how many times to check",
-									"const RETRY_INTERVAL = 15000; // milliseconds between checks (2 seconds)",
+									"const RETRY_INTERVAL = 30000; // milliseconds between checks (30 seconds)",
 									"",
 									"function waitForData(retriesLeft) {",
-									"    console.log(\"Checking request result on URL: ${INDEX_URL}\");",
 									"    pm.sendRequest({",
 									"        url: INDEX_URL,",
 									"        method: 'GET',",
@@ -4079,7 +4078,8 @@
 									"waitForData(MAX_RETRIES);"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						},
 						{
@@ -4096,13 +4096,14 @@
 									"",
 									"var resp = pm.response.json();",
 									"",
-									"pm.test(\"C2723010 equal 50 synchronized products, dev mode, one page\", () => {",
-									"    pm.expect(resp.hits.total.value).to.be.equal(50); ",
+									"pm.test(\"C2723010 equal 100 synchronized products, dev mode, one page\", () => {",
+									"    pm.expect(resp.hits.total.value).to.be.equal(100); ",
 									"});",
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
