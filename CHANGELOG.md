@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-10-07)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-10-13)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...«unknown»)
 
@@ -12,6 +12,7 @@
 **Defects:**
 
 - Some of product urn:nasa:pds:lro\_diviner\_derived2::1.0's fields are not indexed [\#422](https://github.com/NASA-PDS/registry/issues/422) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+- Error `FIPS mode: only SunJSSE TrustManagers may be used` [\#440](https://github.com/NASA-PDS/registry/issues/440) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Registry is not accepting date time with leap second, e.g. `2015-06-30T23:59:60.862Z` [\#404](https://github.com/NASA-PDS/registry/issues/404) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - members of GEO bundle/collection collection not found [\#403](https://github.com/NASA-PDS/registry/issues/403) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - CSV response not returning the values associated with `fields` argument [\#380](https://github.com/NASA-PDS/registry/issues/380) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
