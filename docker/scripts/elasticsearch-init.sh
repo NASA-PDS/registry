@@ -52,45 +52,20 @@ registry-manager create-registry -registry file:///etc/local_registry.xml  -auth
 echo "Create aliases, until registry-manager does it"
 curl -X POST  -H "Content-Type: application/json" -d @/usr/local/bin/aliases/alias_registry.json -u admin:admin --insecure https://elasticsearch:9200/_aliases
 
-# create pipelines for geographical objects
-curl -X PUT --insecure "https://elasticsearch:9200/_ingest/pipeline/bbox_to_polygon" -H 'Content-Type: application/json' -d '
-{
-  "description": "Builds a geo_shape polygon from bbox fields",
-  "processors": [
-    {
-      "script": {
-        "lang": "painless",
-        "source": """
-        def east  = ctx['cart:Bounding_Coordinates/cart:east_bounding_coordinate'];
-        def west  = ctx['cart:Bounding_Coordinates/cart:west_bounding_coordinate'];
-        def north = ctx['cart:Bounding_Coordinates/cart:north_bounding_coordinate'];
-        def south = ctx['cart:Bounding_Coordinates/cart:south_bounding_coordinate'];
+# build pipelines from source files
+echo "Building pipeline JSON files from Painless sources..."
+python3 ./pipelines/build_json.py \
+  ./pipelines/bbox_to_polygon.painless \
+  /tmp/bbox_to_polygon.json \
+  "Builds a geo_shape polygon from bbox fields"
 
-        if (east != null && west != null && north != null && south != null) {
-          // Basic sanity: east>=west and north>=south
-          if (east >= west && north >= south) {
-            ctx.polygon = [
-              'type': 'polygon',
-              'coordinates': [[
-                [west,  south],
-                [east,  south],
-                [east,  north],
-                [west,  north],
-                [west,  south]
-              ]]
-            ];
-          }
-        }
-        """
-      }
-    }
-  ]
-}'
+# create pipelines for geographical objects
+echo "Creating bbox_to_polygon pipeline..."
+curl -X PUT -u admin:admin --insecure "https://elasticsearch:9200/_ingest/pipeline/bbox_to_polygon" -H 'Content-Type: application/json' -d @/tmp/bbox_to_polygon.json
 
 # in test we have a single registry index, 
 # in production this needs to be repeated over all registry indices
-curl -X PUT "https://elasticsearch:9200/geo-registry/_mapping" -H 'Content-Type: application/json' -d '
-{
+curl -X PUT -u admin:admin --insecure "https://elasticsearch:9200/geo-registry/_mapping" -H 'Content-Type: application/json' -d '{
   "properties": {
     "polygon": { "type": "geo_shape" }
   }

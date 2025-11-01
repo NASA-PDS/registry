@@ -109,6 +109,7 @@ services:
     volumes:
       - ./scripts/elasticsearch-init.sh:/usr/local/bin/elasticsearch-init.sh
       - ./scripts/aliases:/usr/local/bin/aliases
+      - ./scripts/pipelines:/usr/local/bin/pipelines
       - ./default-config/es-auth.cfg:/etc/es-auth.cfg
       - ./default-config/local_registry.xml:/etc/local_registry.xml
     networks:
