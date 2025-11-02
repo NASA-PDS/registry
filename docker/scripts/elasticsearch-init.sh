@@ -34,6 +34,9 @@
 # This script is used to initialize Elasticsearch.
 # -------------------------------------------------
 
+# Get the directory where this script is located
+SCRIPT_DIR=$(dirname "$0")
+
 # Check if the ES_URL environment variable is set
 if [ -z "$ES_URL" ]; then
     echo "Error: 'ES_URL' (Elasticsearch URL) environment variable is not set. Use docker's -e option." 1>&2
@@ -54,8 +57,8 @@ curl -X POST  -H "Content-Type: application/json" -d @/usr/local/bin/aliases/ali
 
 # build pipelines from source files
 echo "Building pipeline JSON files from Painless sources..."
-python3 ./pipelines/build_json.py \
-  ./pipelines/bbox_to_polygon.painless \
+bash "$SCRIPT_DIR/pipelines/build_json.sh" \
+  "$SCRIPT_DIR/pipelines/bbox_to_polygon.painless" \
   /tmp/bbox_to_polygon.json \
   "Builds a geo_shape polygon from bbox fields"
 
@@ -63,10 +66,9 @@ python3 ./pipelines/build_json.py \
 echo "Creating bbox_to_polygon pipeline..."
 curl -X PUT -u admin:admin --insecure "https://elasticsearch:9200/_ingest/pipeline/bbox_to_polygon" -H 'Content-Type: application/json' -d @/tmp/bbox_to_polygon.json
 
+# associate the pipeline to the registry index
+curl -X PUT -u admin:admin --insecure "https://elasticsearch:9200/geo-registry/_settings" -H 'Content-Type: application/json' -d '{"index.default_pipeline": "bbox_to_polygon"}'
+
 # in test we have a single registry index, 
 # in production this needs to be repeated over all registry indices
-curl -X PUT -u admin:admin --insecure "https://elasticsearch:9200/geo-registry/_mapping" -H 'Content-Type: application/json' -d '{
-  "properties": {
-    "polygon": { "type": "geo_shape" }
-  }
-}'
+curl -X PUT -u admin:admin --insecure "https://elasticsearch:9200/geo-registry/_mapping" -H 'Content-Type: application/json' -d "@$SCRIPT_DIR/mappings/bbox_polygon.json"
