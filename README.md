@@ -18,6 +18,7 @@ This repository specifically contains these PDS registry application resources:
 
 - the source for the user/administrator documentation, see `docs` folder
 - docker compose script to start/test the full application with its required components, see https://github.com/NASA-PDS/registry/blob/main/docker/README.md for details. This also includes integration tests (in `docker/postman`). The integration test datasets are maintained in NASA-PDS/registry-ref-data repository.
+- **For developers:** See [Integration Testing Guide](https://nasa-pds.github.io/registry/developer/integration-testing.html) for instructions on adding and running integration tests.
 
 
 ## Code of Conduct

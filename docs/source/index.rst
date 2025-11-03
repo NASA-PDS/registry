@@ -23,5 +23,5 @@ Sitemap
    install/install
    user/tasks
    admin/tasks
-
+   developer/developer
    support/support
