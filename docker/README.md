@@ -3,6 +3,8 @@
 This directory contains the files related with docker compose for Registry Container. To learn more about docker compose,
 please refer to [https://docs.docker.com/compose/](https://docs.docker.com/compose/).
 
+> **For developers adding integration tests:** See the [Integration Testing Guide](https://nasa-pds.github.io/registry/developer/integration-testing.html) for complete instructions on adding and running Postman tests.
+
 The docker-compose.yml file contains following profiles and each profile will start the components as shown in the table below.
 
 | Components\\Profiles                                 | dev-api | pds-core-registry | int-registry-batch-loader |  pds-batch-loader | int-test |

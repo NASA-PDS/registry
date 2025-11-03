@@ -93,6 +93,7 @@ coverage.xml
 
 # Python virtual environment
 venv/
+.tox/
 
 # Certificate files
 *.pem
