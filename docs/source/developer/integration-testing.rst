@@ -5,7 +5,7 @@ Integration Testing Guide
 Overview
 ========
 
-The PDS Registry uses Postman collections for automated integration testing. These tests verify that the full technology stack (OpenSearch, Registry API, data loading) works correctly and meets specific requirements.
+The PDS Registry uses Docker Compose and Postman for automated integration testing. These tests verify that the full technology stack (OpenSearch, Registry API, data loading) works correctly and meets specific requirements.
 
 **Tests run automatically:**
 
@@ -21,15 +21,16 @@ For Running Tests Manually
 
 * `Postman Desktop Application <https://learning.postman.com/docs/getting-started/installation/installation-and-updates/>`_
 * Docker and Docker Compose
-* (Optional) TestRail credentials for validating test reporting
+* (Optional) TestRail credentials for test reporting
 
 For Adding New Tests
 ---------------------
 
 All of the above, plus:
 
-* Access to `TestRail <https://cae-testrail.jpl.nasa.gov/testrail/>`_
 * Familiarity with the `registry-ref-data <https://github.com/NASA-PDS/registry-ref-data>`_ repository
+* Read Access to `TestRail <https://cae-testrail.jpl.nasa.gov/testrail/>`_ , you can ask :doc:`../support/support` to get you the content needed from TestRail if you don't have access.
+
 
 Running Tests Manually
 =======================
@@ -125,11 +126,10 @@ Add integration tests for:
 Test Addition Process
 ---------------------
 
-Adding a new test involves updates to **three components:**
+Adding a new test involves updates to **2 components:**
 
 1. Reference datasets (if needed)
-2. TestRail test case
-3. Postman collection
+2. Postman collection
 
 Step-by-Step Guide
 ==================
@@ -148,20 +148,8 @@ If your test requires new or modified data:
       docker compose --profile=int-registry-batch-loader down --volume
       docker compose --profile=int-registry-batch-loader up
 
-2. Add Test Case in TestRail
------------------------------
 
-1. Navigate to the `Registry Requirements test suite <https://cae-testrail.jpl.nasa.gov/testrail/index.php?/suites/view/24324&group_by=cases:section_id&group_order=asc>`_
-2. Create a new test case:
-
-   * **Name:** Use the requirement title from GitHub (e.g., "As a user, I want to filter results by date")
-   * **External link:** Add the GitHub issue URL (e.g., ``https://github.com/NASA-PDS/pds-api/issues/239``)
-
-3. Save the test case and **record the test case ID** (e.g., ``C2555740``)
-
-   * You'll need this ID for the Postman test assertions
-
-3. Add Test in Postman
+2. Add Test in Postman
 ----------------------
 
 1. **Deploy the registry** (if not already running)
@@ -190,7 +178,7 @@ If your test requires new or modified data:
 
 5. **Write test assertions** in the "Tests" tab:
 
-   **CRITICAL:** Each assertion must include the TestRail test case ID in the test name.
+   **CRITICAL:** Each assertion must include the TestRail test case ID in the test name. You can retrieve the test Id from testRail automated export of github tickets as test cases, in test suite `nasa-pds`. Ask :doc:`../support/support` to get your test Id.
 
    Example test code:
 
@@ -268,28 +256,8 @@ Before submitting your changes:
 6. Validate TestRail Reporting (Optional)
 ------------------------------------------
 
-To verify that TestRail reporting works with your new test:
-
-1. **Get TestRail API credentials:**
-
-   * Follow steps in `TestRail API Reference <https://support.gurock.com/hc/en-us/articles/7077935859220-Accessing-the-TestRail-API>`_
-   * Your username is your TestRail email address
-
-2. **Set environment variables:**
-
-   .. code-block:: bash
-
-      export TESTRAIL_USERNAME="your-email@jpl.nasa.gov"
-      export TESTRAIL_APIKEY="your-api-key"
-
-3. **Run tests with TestRail reporting:**
-
-   .. code-block:: bash
-
-      cd docker
-      docker compose --profile=testrail-reporting up
-
-4. **Verify results** appear in TestRail under the appropriate test run
+To verify that TestRail reporting works with your new test, apply the procedure available in the internal wiki page "I&T Test Preparation for MGSS review", section "Postman Automated Tests".
+If you don't have access to the internal wiki, ask for :doc:`../support/support`
 
 Postman Test Writing Tips
 ==========================
