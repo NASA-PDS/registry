@@ -2,7 +2,7 @@
   "actions": [
     {
       "add": {
-        "index": "*-registry",
+        "index": "geo-registry",
         "alias": "registry"
       }
     }
