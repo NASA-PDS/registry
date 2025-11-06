@@ -1,0 +1,29 @@
+
+double getBoundary(def ctx, String field) {
+    def value = ctx[field];
+    if (value == null) {
+        return Double.NaN; 
+    }
+   
+    return Double.parseDouble(value[0].toString());
+}
+
+def east = getBoundary(ctx, 'cart:Bounding_Coordinates/cart:east_bounding_coordinate');
+def west = getBoundary(ctx, 'cart:Bounding_Coordinates/cart:west_bounding_coordinate');
+def north = getBoundary(ctx, 'cart:Bounding_Coordinates/cart:north_bounding_coordinate');
+def south = getBoundary(ctx, 'cart:Bounding_Coordinates/cart:south_bounding_coordinate');
+
+
+if (east != Double.NaN && west != Double.NaN && north != Double.NaN && south != Double.NaN) {
+    ctx.bbox_polygon = [
+        'type': 'polygon',
+        'coordinates': [[
+            [west, south],
+            [east, south],
+            [east, north],
+            [west, north],
+            [west, south]
+        ]]
+    ];
+}
+
