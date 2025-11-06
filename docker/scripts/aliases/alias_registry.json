@@ -2,8 +2,8 @@
   "actions": [
     {
       "add": {
-        "index": "*-registry-structured",
-        "alias": "registry-structured"
+        "index": "geo-registry",
+        "alias": "registry"
       }
     }
   ]
