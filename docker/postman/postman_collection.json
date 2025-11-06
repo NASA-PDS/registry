@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "0b7ad2d8-4160-4102-8c0b-2e2e3aeac4af",
-		"name": "Planetary Data System API Reference Tests Copy 14",
+		"_postman_id": "8231e835-4e81-4906-af93-d2c6fd8c98b1",
+		"name": "Planetary Data System API Reference Tests Copy 15",
 		"description": "Federated PDS API which provides actionable end points standardized\nbetween the different nodes.\n\n\nContact Support:\n Email: pds-operator@jpl.nasa.gov",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11337552",
-		"_collection_link": "https://interstellar-satellite-406261.postman.co/workspace/My-Workspace~2ee1fece-93c6-4f38-806d-fa321e2e92d5/collection/11337552-0b7ad2d8-4160-4102-8c0b-2e2e3aeac4af?action=share&source=collection_link&creator=11337552"
+		"_collection_link": "https://interstellar-satellite-406261.postman.co/workspace/My-Workspace~2ee1fece-93c6-4f38-806d-fa321e2e92d5/collection/11337552-8231e835-4e81-4906-af93-d2c6fd8c98b1?action=share&source=collection_link&creator=11337552"
 	},
 	"item": [
 		{
@@ -3565,7 +3565,7 @@
 									"",
 									"pm.test(\"C2488844 Response contains same number of properties\", () => {",
 									"    const responseJson = pm.response.json();",
-									"    pm.expect(responseJson.length).to.be.eql(146);",
+									"    pm.expect(responseJson.length).to.be.eql(170);",
 									"});",
 									"",
 									"pm.test(\"C2488844 Response property objects follow expected schema\", () => {",
@@ -3580,7 +3580,8 @@
 									"// Some additional tests may be warranted in future based on presence of particular keys, key formats, or types."
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						},
 						{
@@ -3590,7 +3591,8 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -4320,6 +4322,14 @@
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "sql injection in q parameter",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}
