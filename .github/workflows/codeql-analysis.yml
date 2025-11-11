@@ -23,7 +23,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         # We must fetch at least the immediate parents so that if this is
         # a pull request then we can checkout the head.
@@ -73,7 +73,7 @@ jobs:
 
 
     - name: Upload CodeQL Artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: codeql-artifacts
         path: ${{ env.RESULTS_DIR }}
@@ -85,7 +85,7 @@ jobs:
       steps:
           -
               name: 💳 Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
               with:
                   lfs: true
                   fetch-depth: 0
@@ -100,7 +100,7 @@ jobs:
 
           -
             name: Upload SLOC
-            uses: actions/upload-artifact@v4
+            uses: actions/upload-artifact@v5
             with:
               name: sloc-count
               path: ${{ github.workspace }}/cloc.md

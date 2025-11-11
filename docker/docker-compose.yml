@@ -71,7 +71,7 @@ services:
     environment:
       - PROV_ENDPOINT=${ES_URL}
       - PROV_CREDENTIALS=${PROV_CREDENTIALS}
-      - LOGLEVEL=DEBUG
+      - LOGLEVEL=INFO
       - DEV_MODE=1
       - MULTITENANCY_NODE_ID=geo
     command: ["/usr/local/bin/sweepers_driver.py", "--legacy-sync"]
@@ -108,6 +108,7 @@ services:
       - ES_URL=${ES_URL}
     volumes:
       - ./scripts/elasticsearch-init.sh:/usr/local/bin/elasticsearch-init.sh
+      - ./scripts/aliases:/usr/local/bin/aliases
       - ./default-config/es-auth.cfg:/etc/es-auth.cfg
       - ./default-config/local_registry.xml:/etc/local_registry.xml
     networks:
@@ -120,6 +121,7 @@ services:
     image: ${REG_API_IMAGE}
     environment:
       - ES_URL=${ES_URL}
+      - SERVER_PORT=8080
     ports:
       - "8080:8080"
     volumes:
@@ -148,6 +150,7 @@ services:
     image: ${POSTMAN_NEWMAN_IMAGE}
     environment:
       - REG_API_URL=${REG_API_URL}
+      - ES_URL=${ES_URL}
     volumes:
       - ${POSTMAN_COLLECTION_FILE}:/postman/postman-collection.json
     networks:
@@ -159,13 +162,15 @@ services:
     profiles: ["testrail-reporting"]
     image: nasapds/newman-with-testrail-reporter
     environment:
-      TESTRAIL_DOMAIN: cae-testrail.jpl.nasa.gov/testrail
-      TESTRAIL_PROJECTID: 168
-      TESTRAIL_SUITEID: 24324
-      TESTRAIL_TITLE: Registry API Newman tests via Jenkins
+      - REG_API_URL=${REG_API_URL}
+      - ES_URL=${ES_URL}
+      - TESTRAIL_DOMAIN=cae-testrail.jpl.nasa.gov/testrail
+      - TESTRAIL_PROJECTID=168
+      - TESTRAIL_SUITEID=24324
+      - TESTRAIL_TITLE=Registry API Newman tests via Jenkins
       # Empty values here inherit from the host environment, which must provide these:
-      TESTRAIL_USERNAME:
-      TESTRAIL_APIKEY:
+      - TESTRAIL_USERNAME=
+      - TESTRAIL_APIKEY=
     volumes:
       - ${POSTMAN_COLLECTION_FILE}:/postman/postman-collection.json
     networks:
@@ -179,8 +184,8 @@ services:
     #    tests at this point. The two profiles `int-registry-batch-loader` and `int-registry-service-loader`
     #    are typically run with `--detach` and so any exit codes they might have to show pass/fail
     #    status of the tests are lost. We can always run the tests with `./int-tests.sh`.
-    # profiles: ["int-registry-batch-loader", "int-registry-service-loader"]
-    profiles: []
+    # -profiles: ["int-registry-batch-loader", "int-registry-service-loader"]
+    profiles: ["test_something"]
     image: ${POSTMAN_NEWMAN_IMAGE}
     environment:
       - REG_API_URL=${REG_API_URL}
@@ -197,11 +202,11 @@ services:
     profiles: ["pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]
     image: ${PROXYCRYPT_IMAGE}
     environment:
-      - PROXY_URL=http://registry-api:8080/
+      - PROXY_URL=https://registry-api:8080/
       - PROXY_PATH=/api/search/1/
-      - PROXY_PORT=8443
+      - PROXY_PORT=443
     ports:
-      - "8443:443"
+      - "443:443"
     networks:
       - pds
 

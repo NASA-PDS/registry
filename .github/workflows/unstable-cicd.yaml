@@ -49,7 +49,7 @@ jobs:
         steps:
             -
                 name: 💳 Checkout
-                uses: actions/checkout@v4
+                uses: actions/checkout@v5
                 with:
                     lfs: true
                     fetch-depth: 0
@@ -76,6 +76,11 @@ jobs:
                     ossrh_password: ${{secrets.OSSRH_PASSWORD}}
                     CODE_SIGNING_KEY: ${{secrets.CODE_SIGNING_KEY}}
                     ADMIN_GITHUB_TOKEN: ${{secrets.ADMIN_GITHUB_TOKEN}}
+            -
+                name: 🛏️ Upload Coverage
+                uses: SonarSource/sonarqube-scan-action@v6
+                env:
+                    SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
 
 ...
 

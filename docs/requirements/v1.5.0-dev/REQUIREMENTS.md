@@ -36,7 +36,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
-## As a node operator, I want the the registry schema to update autonomously when new data is ingested. ([#113](https://github.com/NASA-PDS/registry/issues/113)) 
+## As a node operator, I want the the registry schema to update autonomously / dynamically when new data is ingested. ([#113](https://github.com/NASA-PDS/registry/issues/113)) 
 
 
 This requirement is not impacted by the current version
@@ -212,11 +212,27 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a user, I want to receive an alert when my registry credentials are readable by someone else than myself ([#424](https://github.com/NASA-PDS/registry/issues/424)) 
+
+
+This requirement is not impacted by the current version
 ## As a PDS EN administrator, I want to have a local archive of all the PDS4 label ([#379](https://github.com/NASA-PDS/registry/issues/379)) 
 
 
 This requirement is not impacted by the current version
 ## As a node user, I want to have multiple cognito groups and still have the main cognito node group to be effective ([#396](https://github.com/NASA-PDS/registry/issues/396)) 
+
+
+This requirement is not impacted by the current version
+## Add node-specific metadata to the Registry ([#417](https://github.com/NASA-PDS/registry/issues/417)) 
+
+
+This requirement is not impacted by the current version
+## As a user, I want to check for broken links in the registry ([#418](https://github.com/NASA-PDS/registry/issues/418)) 
+
+
+This requirement is not impacted by the current version
+## As a user, I want to load date times as strings in order to support leap seconds ([#426](https://github.com/NASA-PDS/registry/issues/426)) 
 
 
 This requirement is not impacted by the current version

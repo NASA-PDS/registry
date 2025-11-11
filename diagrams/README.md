@@ -10,9 +10,9 @@ This is an attempt to use [Diagram as Code](https://diagrams.mingrammer.com/) to
 
 - Brew (for MacOS/Linux users)
 - Chocolatey (for Windows users)
-- Python 3.9.0 or higher
+- Python 3.13.0 or higher
 
-> At the time of writing this document, Python 3.9 is the required version for everyone on PDS. Please confirm with project leads to ensure you're using the latest Python version.
+> At the time of writing this document, Python 3.13 is the latest stable version and is recommended for PDS development. Please confirm with project leads to ensure you're using the latest Python version.
 
 ## Providers
 

@@ -1,21 +1,51 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-02-13)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-11-06)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...«unknown»)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...«unknown»)
 
 **Requirements:**
 
+- As a user, I want to receive an alert when my registry credentials are readable by someone else than myself [\#424](https://github.com/NASA-PDS/registry/issues/424)
+- As a node operator, I want the the registry schema to update autonomously / dynamically when new data is ingested. [\#113](https://github.com/NASA-PDS/registry/issues/113)
+
+**Defects:**
+
+- Some of product urn:nasa:pds:lro\_diviner\_derived2::1.0's fields are not indexed [\#422](https://github.com/NASA-PDS/registry/issues/422) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+- Error `FIPS mode: only SunJSSE TrustManagers may be used` [\#440](https://github.com/NASA-PDS/registry/issues/440) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+- Registry is not accepting date time with leap second, e.g. `2015-06-30T23:59:60.862Z` [\#404](https://github.com/NASA-PDS/registry/issues/404) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+- members of GEO bundle/collection collection not found [\#403](https://github.com/NASA-PDS/registry/issues/403) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+- CSV response not returning the values associated with `fields` argument [\#380](https://github.com/NASA-PDS/registry/issues/380) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
+- product has date for sweeper index but is listed as not indexed [\#375](https://github.com/NASA-PDS/registry/issues/375) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
+
+**Other closed issues:**
+
+- Troubleshoot SBN 403 Error [\#414](https://github.com/NASA-PDS/registry/issues/414)
+- Add the --legacy-sync command option to the EN sweeper in production [\#390](https://github.com/NASA-PDS/registry/issues/390)
+
+## [v1.4.0](https://github.com/NASA-PDS/registry/tree/v1.4.0) (2025-07-16)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...v1.4.0)
+
+**Requirements:**
+
+- As a node user, I want to have multiple cognito groups and still have the main cognito node group to be effective [\#396](https://github.com/NASA-PDS/registry/issues/396)
+- As a user, I want to have read-only access to all registry indexes [\#350](https://github.com/NASA-PDS/registry/issues/350)
 - As a data manager, I want to query OpenSearch Serverless from the command-line [\#273](https://github.com/NASA-PDS/registry/issues/273) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 
 **Improvements:**
 
+- Document the refresh rate of OpenSearch [\#361](https://github.com/NASA-PDS/registry/issues/361)
+- Fix GEO node products which ops:Harvest\_Info/ops:node\_name: geo [\#360](https://github.com/NASA-PDS/registry/issues/360)
 - Recreate PDS EN Registry from scratch and load only necessary data [\#352](https://github.com/NASA-PDS/registry/issues/352)
 - Migrate registry-harvest-service documentation [\#78](https://github.com/NASA-PDS/registry/issues/78)
 
 **Defects:**
 
+- Registry return authorization error for ATM node [\#369](https://github.com/NASA-PDS/registry/issues/369) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+- Update terraform to use port 443 not port 80 [\#365](https://github.com/NASA-PDS/registry/issues/365) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - Data products duplicated across en-registry and other node registries [\#351](https://github.com/NASA-PDS/registry/issues/351) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
+- Getting "blocked by: maximum OCU capacity reached" errors when harvesting [\#340](https://github.com/NASA-PDS/registry/issues/340) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - SBN user no longer able to access test registry [\#336](https://github.com/NASA-PDS/registry/issues/336) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - GEO index does not work, appears to be corrupted [\#331](https://github.com/NASA-PDS/registry/issues/331) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - AOSS 500/502 responses repeatedly observed under heavy load [\#329](https://github.com/NASA-PDS/registry/issues/329) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
@@ -25,7 +55,12 @@
 
 **Other closed issues:**
 
+- Investigate the opensearch serverless scale out/down parameters [\#397](https://github.com/NASA-PDS/registry/issues/397)
+- Clean test suite to un-skip test skipped after multitenant migration [\#378](https://github.com/NASA-PDS/registry/issues/378)
+- Respond to Registry SIA review from SAs [\#364](https://github.com/NASA-PDS/registry/issues/364)
+- Complete security vulnerability assessment for registry [\#356](https://github.com/NASA-PDS/registry/issues/356)
 - Update Registry configuration to support issues with IMG user\(s\) [\#337](https://github.com/NASA-PDS/registry/issues/337) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+- Document in the wiki how the authorization on opensearch are managed [\#334](https://github.com/NASA-PDS/registry/issues/334)
 - Reindex MCP Prod ATM registry index with corrected mappings [\#339](https://github.com/NASA-PDS/registry/issues/339)
 - Investigate what the number of property per discipline node was at migration time [\#332](https://github.com/NASA-PDS/registry/issues/332)
 - Onboard Irma from ATM node [\#325](https://github.com/NASA-PDS/registry/issues/325)
@@ -211,7 +246,6 @@
 
 **Requirements:**
 
-- As a node operator, I want the the registry schema to update autonomously when new data is ingested. [\#113](https://github.com/NASA-PDS/registry/issues/113)
 - As a developer, I want to include supplemental file data sizes in the registry [\#112](https://github.com/NASA-PDS/registry/issues/112)
 - As a node operator, I want to ingest metadata regarding secondary collections that belong to a bundle. [\#109](https://github.com/NASA-PDS/registry/issues/109)
 - As a node operator, I want to ingest metadata regarding secondary products that belong to a collection. [\#108](https://github.com/NASA-PDS/registry/issues/108)

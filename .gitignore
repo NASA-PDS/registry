@@ -78,6 +78,7 @@ typescript
 .gwt/
 target/
 build/
+*.vscode/
 
 # macOS specific stuff
 .DS_Store
@@ -87,9 +88,12 @@ build/
 test-data/
 .venv
 *.egg-info
+.coverage
+coverage.xml
 
 # Python virtual environment
 venv/
+.tox/
 
 # Certificate files
 *.pem
