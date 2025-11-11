@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-11-06)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-11-11)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...«unknown»)
 
@@ -11,6 +11,7 @@
 
 **Defects:**
 
+- lid and pds:Identification\_Area.pds:logical\_identifier do not behave the same in the API [\#423](https://github.com/NASA-PDS/registry/issues/423) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - Some of product urn:nasa:pds:lro\_diviner\_derived2::1.0's fields are not indexed [\#422](https://github.com/NASA-PDS/registry/issues/422) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Error `FIPS mode: only SunJSSE TrustManagers may be used` [\#440](https://github.com/NASA-PDS/registry/issues/440) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Registry is not accepting date time with leap second, e.g. `2015-06-30T23:59:60.862Z` [\#404](https://github.com/NASA-PDS/registry/issues/404) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
@@ -22,6 +23,8 @@
 
 - Troubleshoot SBN 403 Error [\#414](https://github.com/NASA-PDS/registry/issues/414)
 - Add the --legacy-sync command option to the EN sweeper in production [\#390](https://github.com/NASA-PDS/registry/issues/390)
+- Update registry documentation [\#288](https://github.com/NASA-PDS/registry/issues/288)
+- Respond to User Questions Regarding Supporting Migration to OpenSearch Serverless [\#275](https://github.com/NASA-PDS/registry/issues/275)
 
 ## [v1.4.0](https://github.com/NASA-PDS/registry/tree/v1.4.0) (2025-07-16)
 
