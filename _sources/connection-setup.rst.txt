@@ -29,7 +29,7 @@ The following sections provide the steps to follow to have your connection set u
 Changing Your Opensearch Password
 *********************************
 
-To update your user password click `here <https://pds-prod-nucleus-dum.auth.us-west-2.amazoncognito.com/login?client_id=3rgdgts818hdrkas4q66lebum0&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2Fnasa-pds.github.io%2Fdata-upload-manager%2F>`_ and select "Forgot your password".
+To update your user password click `here <https://pds-prod-nucleus-dum.auth.us-west-2.amazoncognito.com/login?client_id=3rgdgts818hdrkas4q66lebum0&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2Fnasa-pds.github.io%2Fnucleus%2F>`_ and select "Forgot your password".
 
 
 Registry Tools Configurations
