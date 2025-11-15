@@ -62,6 +62,10 @@ bash "$SCRIPT_DIR/pipelines/build_json.sh" \
   /tmp/bbox_to_polygon.json \
   "Builds a geo_shape polygon from bbox fields"
 
+# in test we have a single registry index,
+# in production this needs to be repeated over all registry indices
+#curl -X PUT -u admin:admin --insecure "https://elasticsearch:9200/geo-registry/_mapping" -H 'Content-Type: application/json' -d "@$SCRIPT_DIR/mappings/bbox_polygon.json"
+
 # create pipelines for geographical objects
 echo "Creating bbox_to_polygon pipeline..."
 curl -X PUT -u admin:admin --insecure "https://elasticsearch:9200/_ingest/pipeline/bbox_to_polygon" -H 'Content-Type: application/json' -d @/tmp/bbox_to_polygon.json
@@ -69,6 +73,3 @@ curl -X PUT -u admin:admin --insecure "https://elasticsearch:9200/_ingest/pipeli
 # associate the pipeline to the registry index
 curl -X PUT -u admin:admin --insecure "https://elasticsearch:9200/geo-registry/_settings" -H 'Content-Type: application/json' -d '{"index.default_pipeline": "bbox_to_polygon"}'
 
-# in test we have a single registry index, 
-# in production this needs to be repeated over all registry indices
-curl -X PUT -u admin:admin --insecure "https://elasticsearch:9200/geo-registry/_mapping" -H 'Content-Type: application/json' -d "@$SCRIPT_DIR/mappings/bbox_polygon.json"
