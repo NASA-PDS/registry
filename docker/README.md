@@ -285,5 +285,3 @@ docker compose --profile=int-registry-batch-loader down
 
 Note: Ignore any `failed to remove network` errors, because the related docker network may
 have active endpoints of other services.
-
-
