@@ -20,7 +20,7 @@ Prerequisites
 Java is required to run many Registry components and tools such as Harvest, Registry Manager,
 and API Server.
 
-Only **Java version **17 to 25** are supported.
+Only **Java version 17 to 25** are supported.
 Some applications, like Harvest or Registry Manager will not run with **Java 1.8 or 11**.
 
 
@@ -50,7 +50,7 @@ Java Installation
 There are several distributions of Java:
 
 * **OpenJDK** (Free) can be downloaded from different sites, for example,
-  `jdk.java.net <https://jdk.java.net/>`_
+  `jdk.java.net <https://jdk.java.net/>`_,
   `temurin <https://adoptium.net/temurin/releases>`_ or
   `azul.com <https://www.azul.com/downloads/zulu-community>`_.
   Most Linux distributions have Open JDK in their standard repositories.
