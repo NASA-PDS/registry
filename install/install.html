@@ -73,6 +73,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user/tasks.html">User Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../admin/tasks.html">Admin Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/developer.html">Developer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../support/support.html">Support</a></li>
 </ul>
 
@@ -119,8 +120,8 @@ manage data and LDDs (data dictionaries).</p></li>
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
 <p>Java is required to run many Registry components and tools such as Harvest, Registry Manager,
 and API Server.</p>
-<p>Only <strong>Java 11</strong> is supported.
-Some applications, like Harvest or Registry Manager will not run with <strong>Java 1.8</strong>.</p>
+<p>Only <strong>Java version 17 to 25</strong> are supported.
+Some applications, like Harvest or Registry Manager will not run with <strong>Java 1.8 or 11</strong>.</p>
 <div class="section" id="test-if-java-is-already-installed">
 <h3>Test If Java Is Already Installed<a class="headerlink" href="#test-if-java-is-already-installed" title="Permalink to this heading"></a></h3>
 <p>To test if Java is already installed on your system, run the following command in a terminal:</p>
@@ -128,15 +129,15 @@ Some applications, like Harvest or Registry Manager will not run with <strong>Ja
 </pre></div>
 </div>
 <p>If Java is already installed, you will see a message similar to this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">openjdk</span> <span class="n">version</span> <span class="s2">&quot;11.0.5&quot;</span> <span class="mi">2019</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">15</span>
-<span class="n">OpenJDK</span> <span class="n">Runtime</span> <span class="n">Environment</span> <span class="mf">18.9</span> <span class="p">(</span><span class="n">build</span> <span class="mf">11.0.5</span><span class="o">+</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">OpenJDK</span> <span class="mi">64</span><span class="o">-</span><span class="n">Bit</span> <span class="n">Server</span> <span class="n">VM</span> <span class="mf">18.9</span> <span class="p">(</span><span class="n">build</span> <span class="mf">11.0.5</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="n">mixed</span> <span class="n">mode</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">java</span> <span class="mi">25</span> <span class="mi">2025</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">16</span> <span class="n">LTS</span>
+<span class="n">Java</span><span class="p">(</span><span class="n">TM</span><span class="p">)</span> <span class="n">SE</span> <span class="n">Runtime</span> <span class="n">Environment</span> <span class="p">(</span><span class="n">build</span> <span class="mi">25</span><span class="o">+</span><span class="mi">37</span><span class="o">-</span><span class="n">LTS</span><span class="o">-</span><span class="mi">3491</span><span class="p">)</span>
+<span class="n">Java</span> <span class="n">HotSpot</span><span class="p">(</span><span class="n">TM</span><span class="p">)</span> <span class="mi">64</span><span class="o">-</span><span class="n">Bit</span> <span class="n">Server</span> <span class="n">VM</span> <span class="p">(</span><span class="n">build</span> <span class="mi">25</span><span class="o">+</span><span class="mi">37</span><span class="o">-</span><span class="n">LTS</span><span class="o">-</span><span class="mi">3491</span><span class="p">,</span> <span class="n">mixed</span> <span class="n">mode</span><span class="p">,</span> <span class="n">sharing</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Your system might have multiple versions of Java installed, for example, JDK 1.8 and JDK 11.
-If JDK 11 is not the default, then set <strong>JAVA_HOME</strong> environment variable to point to JDK 11 before running
+<p>Your system might have multiple versions of Java installed, for example, JDK 11 and JDK 25.
+If JDK 25 is not the default, then set <strong>JAVA_HOME</strong> environment variable to point to JDK 25 before running
 Harvest or Registry Manager.</p>
 </div>
 </div>
@@ -145,18 +146,19 @@ Harvest or Registry Manager.</p>
 <p>There are several distributions of Java:</p>
 <ul class="simple">
 <li><p><strong>OpenJDK</strong> (Free) can be downloaded from different sites, for example,
-<a class="reference external" href="https://adoptopenjdk.net/">adoptopenjdk.net</a> or
+<a class="reference external" href="https://jdk.java.net/">jdk.java.net</a>,
+<a class="reference external" href="https://adoptium.net/temurin/releases">temurin</a> or
 <a class="reference external" href="https://www.azul.com/downloads/zulu-community">azul.com</a>.
 Most Linux distributions have Open JDK in their standard repositories.</p></li>
-<li><p><strong>Oracle JDK</strong> (Commercial) can be downloaded from
-<a class="reference external" href="https://www.oracle.com/java/technologies/javase-jdk11-downloads.html">www.oracle.com</a>.
+<li><p><strong>Oracle JDK</strong> (non-open-source license) can be downloaded from
+<a class="reference external" href="https://www.oracle.com/java/technologies/">www.oracle.com</a>.
 You must register and accept a license to download.</p></li>
 </ul>
 <p>We recommend installing <strong>OpenJDK</strong>. Sites listed above have detailed installation instructions.</p>
 </div>
 <div class="section" id="python">
 <h3>Python<a class="headerlink" href="#python" title="Permalink to this heading"></a></h3>
-<p>Registry Client requires python 3.9.</p>
+<p>Registry Client requires python 3.13 or higher</p>
 <p>An installation procedure is proposed in a <a class="reference external" href="https://github.com/orgs/NASA-PDS/discussions/64">GitHub discussion</a></p>
 </div>
 </div>

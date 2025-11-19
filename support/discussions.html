@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Discussions &mdash; PDS Registry 1.3 documentation</title>
+  <title>Troubleshooting &amp; Discussions &mdash; PDS Registry 1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
       <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css" />
@@ -56,8 +56,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../install/install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user/tasks.html">User Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../admin/tasks.html">Admin Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/developer.html">Developer</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="support.html">Support</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Discussions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Troubleshooting &amp; Discussions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fips-mode">FIPS mode</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="contact.html">Contact Us</a></li>
 <li class="toctree-l2"><a class="reference internal" href="contribute.html">Contribute</a></li>
 </ul>
@@ -79,7 +83,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="support.html">Support</a></li>
-      <li class="breadcrumb-item active">Discussions</li>
+      <li class="breadcrumb-item active">Troubleshooting &amp; Discussions</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/support/discussions.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -89,9 +93,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="discussions">
-<h1>Discussions<a class="headerlink" href="#discussions" title="Permalink to this heading"></a></h1>
+  <div class="section" id="troubleshooting-discussions">
+<h1>Troubleshooting &amp; Discussions<a class="headerlink" href="#troubleshooting-discussions" title="Permalink to this heading"></a></h1>
 <p>As part of the Registry Users community you can use and contribute to the <a class="reference external" href="https://github.com/NASA-PDS/registry/discussions">discussion forum</a> hosted on github.</p>
+<p>Here is a list of common, issues:</p>
+<div class="section" id="fips-mode">
+<h2>FIPS mode<a class="headerlink" href="#fips-mode" title="Permalink to this heading"></a></h2>
+<p>If harvest or registry manager returns the following error:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>FIPS<span class="w"> </span>mode:<span class="w"> </span>only<span class="w"> </span>SunJSSE<span class="w"> </span>TrustManagers<span class="w"> </span>may<span class="w"> </span>be<span class="w"> </span>used
+</pre></div>
+</div>
+<p>This means your system has FIPS mode turned on. This is not supported by our OpenSearch database serverside as it restricts harvest and registry-mgr to using only FIPS-approved cryptographic algorithms and other security functions to communicate with it.</p>
+<p>To turn the FIPS mode off for your harvest or registry-mgr session, in the same terminal, just run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">JDK_JAVA_OPTIONS</span><span class="o">=</span><span class="s1">&#39;-Dcom.redhat.fips=false&#39;</span>
+</pre></div>
+</div>
+<p>Then, run harvest or registry-mgr, as usual.</p>
+<p><em>(See `harvest#247 &lt;https://github.com/NASA-PDS/harvest/issues/247&gt;`_ for details)</em></p>
+</div>
 </div>
 
 
