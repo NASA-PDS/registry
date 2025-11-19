@@ -16,7 +16,7 @@ def south = getBoundary(ctx, 'cart:Bounding_Coordinates/cart:south_bounding_coor
 
 if (!Double.isNaN(east) && !Double.isNaN(west) &&  !Double.isNaN(north) && !Double.isNaN(south)) {
     ctx.bbox_polygon = [
-        'type': 'polygon',
+        'type': 'Polygon',
         'coordinates': [[
             [west, south],
             [east, south],
