@@ -29,23 +29,25 @@ All users and developers of the NASA-PDS software are expected to abide by our [
 
 ## Scripts
 
-### Missing Products Report Generator
+### Registry Status Report Generator
 
-Generate CSV reports for missing bundles and collections in the PDS Registry:
+Generate CSV reports for missing and staged products in the PDS Registry:
 
 ```bash
 # Generate reports and commit/push to GitHub (default)
-./scripts/generate_missing_products_report.py
+./scripts/generate_registry_status_reports.py
 
 # Generate reports only, without committing
-./scripts/generate_missing_products_report.py --no-commit
+./scripts/generate_registry_status_reports.py --no-commit
 ```
 
-**Purpose:** Identifies Product_Bundle and Product_Collection records marked as missing in the registry.
+**Purpose:** Generates reports for missing and staged products in the registry.
 
-**Output:** Creates CSV files in `docs/status/`:
-- `missing_bundles_in_registry.csv`
-- `missing_collections_in_registry.csv`
+**Output:** Creates four CSV files in `docs/status/`:
+- `missing_bundles_in_registry.csv` - Missing Product_Bundle records
+- `missing_collections_in_registry.csv` - Missing Product_Collection records
+- `staged_bundles_in_registry.csv` - Staged Product_Bundle records
+- `staged_collections_in_registry.csv` - Staged Product_Collection records
 
 By default, the script commits and pushes these files to GitHub. Use `--no-commit` to disable this.
 
