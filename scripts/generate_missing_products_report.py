@@ -248,9 +248,9 @@ def main() -> int:
         print_error("Please install pds-registry-client: pip install pds-registry-client")
         return 1
 
-    # Define paths
-    conf_dir = script_dir / "conf"
-    output_dir = script_dir / "docs" / "status"
+    # Define paths (relative to repository root, not script directory)
+    conf_dir = repo_dir / "conf"
+    output_dir = repo_dir / "docs" / "status"
     bundles_query = conf_dir / "missing_bundles_per_node.json"
     collections_query = conf_dir / "missing_collections_per_node.json"
     bundles_output = output_dir / "missing_bundles_in_registry.csv"
