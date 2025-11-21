@@ -9,6 +9,10 @@
 - As a user, I want to receive an alert when my registry credentials are readable by someone else than myself [\#424](https://github.com/NASA-PDS/registry/issues/424)
 - As a node operator, I want the the registry schema to update autonomously / dynamically when new data is ingested. [\#113](https://github.com/NASA-PDS/registry/issues/113)
 
+**Improvements:**
+
+- Document and script the monthly legacy registry statusing [\#460](https://github.com/NASA-PDS/registry/issues/460)
+
 **Defects:**
 
 - lid and pds:Identification\_Area.pds:logical\_identifier do not behave the same in the API [\#423](https://github.com/NASA-PDS/registry/issues/423) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
