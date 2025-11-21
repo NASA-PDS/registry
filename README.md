@@ -19,12 +19,40 @@ This repository specifically contains these PDS registry application resources:
 - the source for the user/administrator documentation, see `docs` folder
 - docker compose script to start/test the full application with its required components, see https://github.com/NASA-PDS/registry/blob/main/docker/README.md for details. This also includes integration tests (in `docker/postman`). The integration test datasets are maintained in NASA-PDS/registry-ref-data repository.
 - **For developers:** See [Integration Testing Guide](https://nasa-pds.github.io/registry/developer/integration-testing.html) for instructions on adding and running integration tests.
+- utility scripts for registry management and reporting, see `scripts` folder
 
 
 ## Code of Conduct
 
 All users and developers of the NASA-PDS software are expected to abide by our [Code of Conduct](https://github.com/NASA-PDS/.github/blob/main/CODE_OF_CONDUCT.md). Please read this to ensure you understand the expectations of our community.
 
+
+## Scripts
+
+### Missing Products Report Generator
+
+Generate CSV reports for missing bundles and collections in the PDS Registry:
+
+```bash
+# Generate reports and commit/push to GitHub (default)
+./scripts/generate_missing_products_report.py
+
+# Generate reports only, without committing
+./scripts/generate_missing_products_report.py --no-commit
+```
+
+**Purpose:** Identifies Product_Bundle and Product_Collection records marked as missing in the registry.
+
+**Output:** Creates CSV files in `docs/status/`:
+- `missing_bundles_in_registry.csv`
+- `missing_collections_in_registry.csv`
+
+By default, the script commits and pushes these files to GitHub. Use `--no-commit` to disable this.
+
+**Requirements:**
+- Python 3.12 or higher
+- `pds-registry-client` and PDS Registry credentials
+- See `scripts/README.md` for full configuration details
 
 ## Utilities
 * Treks
