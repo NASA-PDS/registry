@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-11-19)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-11-21)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...«unknown»)
 
@@ -237,18 +237,11 @@
 
 ## [v1.0.0](https://github.com/NASA-PDS/registry/tree/v1.0.0) (2022-05-03)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.0-SNAPSHOT...v1.0.0)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/1f4d45e5a395b8d05b58a0924066dcd3cd0b3565...v1.0.0)
 
 **Requirements:**
 
 - Upgrade the initialization of the ES/OS database following latest upgrade of components [\#31](https://github.com/NASA-PDS/registry/issues/31)
-
-## [v1.0.0-SNAPSHOT](https://github.com/NASA-PDS/registry/tree/v1.0.0-SNAPSHOT) (2022-01-20)
-
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/1f4d45e5a395b8d05b58a0924066dcd3cd0b3565...v1.0.0-SNAPSHOT)
-
-**Requirements:**
-
 - As a developer, I want to include supplemental file data sizes in the registry [\#112](https://github.com/NASA-PDS/registry/issues/112)
 - As a node operator, I want to ingest metadata regarding secondary collections that belong to a bundle. [\#109](https://github.com/NASA-PDS/registry/issues/109)
 - As a node operator, I want to ingest metadata regarding secondary products that belong to a collection. [\#108](https://github.com/NASA-PDS/registry/issues/108)
