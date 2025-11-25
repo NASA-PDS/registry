@@ -58,7 +58,7 @@ def create_reference_list(item):
     bbox1 = [bb_west, bb_south, bb_east, bb_north]
 
     # needs to be updated with the collection we want to check for overlapping bounding boxes with
-    url = "http://pds.nasa.gov/api/search/1/products/urn:nasa:pds:lro_lola_rdr:data_gridded::1.0/members"
+    url = "https://pds.nasa.gov/api/search/1/products/urn:nasa:pds:lro_lola_rdr:data_gridded::1.0/members"
     response = requests.get(url, timeout=30)
     json_data = response.json()
 
