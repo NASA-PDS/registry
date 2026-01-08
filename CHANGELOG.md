@@ -1,8 +1,8 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-11-25)
+## [1.4.0](https://github.com/NASA-PDS/registry/tree/1.4.0) (2026-01-08)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...«unknown»)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...1.4.0)
 
 **Requirements:**
 
@@ -15,6 +15,7 @@
 
 **Defects:**
 
+- Some properties return "null" values [\#456](https://github.com/NASA-PDS/registry/issues/456) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - lid and pds:Identification\_Area.pds:logical\_identifier do not behave the same in the API [\#423](https://github.com/NASA-PDS/registry/issues/423) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - Some of product urn:nasa:pds:lro\_diviner\_derived2::1.0's fields are not indexed [\#422](https://github.com/NASA-PDS/registry/issues/422) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Error `FIPS mode: only SunJSSE TrustManagers may be used` [\#440](https://github.com/NASA-PDS/registry/issues/440) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
@@ -27,12 +28,17 @@
 
 - Troubleshoot SBN 403 Error [\#414](https://github.com/NASA-PDS/registry/issues/414)
 - Add the --legacy-sync command option to the EN sweeper in production [\#390](https://github.com/NASA-PDS/registry/issues/390)
+- Document password rotation requirements [\#320](https://github.com/NASA-PDS/registry/issues/320)
 - Update registry documentation [\#288](https://github.com/NASA-PDS/registry/issues/288)
 - Respond to User Questions Regarding Supporting Migration to OpenSearch Serverless [\#275](https://github.com/NASA-PDS/registry/issues/275)
 
 ## [v1.4.0](https://github.com/NASA-PDS/registry/tree/v1.4.0) (2025-07-16)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...v1.4.0)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.4.0...v1.4.0)
+
+## [release/1.4.0](https://github.com/NASA-PDS/registry/tree/release/1.4.0) (2025-07-16)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...release/1.4.0)
 
 **Requirements:**
 
@@ -112,7 +118,11 @@
 
 ## [v1.3.1](https://github.com/NASA-PDS/registry/tree/v1.3.1) (2023-11-16)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...v1.3.1)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.3.1...v1.3.1)
+
+## [release/1.3.1](https://github.com/NASA-PDS/registry/tree/release/1.3.1) (2023-11-16)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...release/1.3.1)
 
 **Requirements:**
 
