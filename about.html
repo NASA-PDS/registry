@@ -1,24 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About PDS Registry &mdash; PDS Registry 1.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
-      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css?v=303734b9" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c55cb9cb"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="#" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -39,9 +37,6 @@
             PDS Registry
               <img src="_static/PDS_Planets.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                1.3
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -96,45 +91,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="about-pds-registry">
-<h1>About PDS Registry<a class="headerlink" href="#about-pds-registry" title="Permalink to this heading"></a></h1>
-<div class="section" id="the-pds-registry-service">
-<h2>The PDS Registry Service<a class="headerlink" href="#the-pds-registry-service" title="Permalink to this heading"></a></h2>
+  <section id="about-pds-registry">
+<h1>About PDS Registry<a class="headerlink" href="#about-pds-registry" title="Link to this heading"></a></h1>
+<section id="the-pds-registry-service">
+<h2>The PDS Registry Service<a class="headerlink" href="#the-pds-registry-service" title="Link to this heading"></a></h2>
 <p>PDS Registry Service enables tracking, searching, auditing, locating, and maintaining artifacts within the system.
 These artifacts can range from data files and label files, schemas, dictionary definitions for objects and elements, services, etc…</p>
 <p>The PDS Registry Service is enabled by a complex architecture of components deployed on the AWS Cloud by Engineering Node and on premises by the PDS Discipline Nodes.</p>
 <p>The high level architecture of the PDS Registry Service is shown below:</p>
 <img alt="_images/registry_service.png" src="_images/registry_service.png" />
 <p>The PDS Registry Application is the software which implements the components of the PDS Registry Service.</p>
-</div>
-<div class="section" id="the-pds-registry-application">
-<h2>The PDS Registry Application<a class="headerlink" href="#the-pds-registry-application" title="Permalink to this heading"></a></h2>
+</section>
+<section id="the-pds-registry-application">
+<h2>The PDS Registry Application<a class="headerlink" href="#the-pds-registry-application" title="Link to this heading"></a></h2>
 <p>The core functionality for the PDS Registry Application is satisfied by <a class="reference external" href="https://opensearch.org/">OpenSearch</a>.</p>
-<div class="section" id="api">
-<h3>API<a class="headerlink" href="#api" title="Permalink to this heading"></a></h3>
+<section id="api">
+<h3>API<a class="headerlink" href="#api" title="Link to this heading"></a></h3>
 <p>Provides read-only REST APIs to search and access PDS data. You can call REST APIs directly or
 use Python or Java clients.</p>
 <p>The most popular client library is <a class="reference external" href="https://nasa-pds.github.io/peppi">peppi</a>.</p>
 <p>For direct access, the API is documented <a class="reference external" href="https://nasa-pds.github.io/pds-api/guides/search.html">here</a>.</p>
-</div>
-<div class="section" id="id1">
-<h3>OpenSearch<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+</section>
+<section id="id1">
+<h3>OpenSearch<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p><a class="reference external" href="https://opensearch.org/">OpenSearch</a> is a NoSQL database based on Apache Lucene project,
 optimized for text search. All metadata extracted from PDS4 labels is stored in the OpenSearch database provided by AWS as <a class="reference external" href="https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless.html">OpenSearch Serverless Managed Service</a>.</p>
-</div>
-<div class="section" id="authentication-authorization">
-<h3>Authentication/Authorization<a class="headerlink" href="#authentication-authorization" title="Permalink to this heading"></a></h3>
+</section>
+<section id="authentication-authorization">
+<h3>Authentication/Authorization<a class="headerlink" href="#authentication-authorization" title="Link to this heading"></a></h3>
 <p>The access to the OpenSearch service is restricted using Cognito username and passwords provided by Engineering Node to the other PDS nodes.
 Using their login, discipline node can write in their own OpenSearch indexes and read from all the other indexes.</p>
-</div>
-<div class="section" id="harvest">
-<h3>Harvest<a class="headerlink" href="#harvest" title="Permalink to this heading"></a></h3>
+</section>
+<section id="harvest">
+<h3>Harvest<a class="headerlink" href="#harvest" title="Link to this heading"></a></h3>
 <p>Harvest is a software to crawl and extract metadata from PDS4 labels and to load
 extracted information into OpenSearch.</p>
 <p>This command-line tool doesn’t require complex installation and configuration.</p>
-</div>
-<div class="section" id="registry-manager">
-<h3>Registry Manager<a class="headerlink" href="#registry-manager" title="Permalink to this heading"></a></h3>
+</section>
+<section id="registry-manager">
+<h3>Registry Manager<a class="headerlink" href="#registry-manager" title="Link to this heading"></a></h3>
 <p>A command-line tool to perform admin tasks on a Registry, such as:</p>
 <blockquote>
 <div><ul class="simple">
@@ -144,14 +139,14 @@ extracted information into OpenSearch.</p>
 <li><p>Manage registry data dictionary (by Engineering Node administrators).</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="registry-client">
-<h3>Registry Client<a class="headerlink" href="#registry-client" title="Permalink to this heading"></a></h3>
+</section>
+<section id="registry-client">
+<h3>Registry Client<a class="headerlink" href="#registry-client" title="Link to this heading"></a></h3>
 <p>A command-line tool which provides full access to the OpenSearch API to handle operations not supported by the previous tools.
 The application takes care of the authentication of the user and signs the queries as required by the AWS OpenSearch Serverless Managed Service.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

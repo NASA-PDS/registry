@@ -1,24 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Update Archive Status &mdash; PDS Registry 1.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css?v=303734b9" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=c55cb9cb"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -39,9 +37,6 @@
             PDS Registry
               <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                1.3
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -100,8 +95,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="update-archive-status">
-<h1>Update Archive Status<a class="headerlink" href="#update-archive-status" title="Permalink to this heading"></a></h1>
+  <section id="update-archive-status">
+<h1>Update Archive Status<a class="headerlink" href="#update-archive-status" title="Link to this heading"></a></h1>
 <p>When a product is ingested into PDS Registry, its archive status is set to <em>“staged”</em>.</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ops:Tracking_Meta/ops:archive_status&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;staged&quot;</span>
 </pre></div>
@@ -117,19 +112,19 @@
 </div></blockquote>
 <p>Status <em>“archived”</em> and <em>“certified”</em> make the products visible to the public, currently through the PDS Web API.</p>
 <p>You can use either Registry Manager or Harvest Client (Scalable Harvest deployments only) for this task.</p>
-<div class="section" id="registry-manager">
-<h2>Registry Manager<a class="headerlink" href="#registry-manager" title="Permalink to this heading"></a></h2>
-<div class="section" id="prerequisites">
-<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h3>
+<section id="registry-manager">
+<h2>Registry Manager<a class="headerlink" href="#registry-manager" title="Link to this heading"></a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>Some data is <a class="reference external" href="./load1.html">ingested</a> into the Registry.</p></li>
 <li><p>Registry Manager command-line tool is <a class="reference external" href="../install/tools.html#registry-manager">installed</a>.</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="set-status">
-<h3>Set status<a class="headerlink" href="#set-status" title="Permalink to this heading"></a></h3>
+</section>
+<section id="set-status">
+<h3>Set status<a class="headerlink" href="#set-status" title="Link to this heading"></a></h3>
 <p>To set product archive status, execute Registry Manager’s “set-archive-status” command.</p>
 <p>The following parameters are required:</p>
 <blockquote>
@@ -160,15 +155,15 @@ If the product is a bundle product, all bundle’s collections will be also upda
 </pre></div>
 </div>
 <p>The connection and auth files are described in <a class="reference internal" href="../connection-setup.html"><span class="doc">Connection Setup</span></a></p>
-</div>
-</div>
-<div class="section" id="registry-api">
-<h2>Registry API<a class="headerlink" href="#registry-api" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+<section id="registry-api">
+<h2>Registry API<a class="headerlink" href="#registry-api" title="Link to this heading"></a></h2>
 <p>Once data has been ingested and archive status is set to <cite>archived</cite> or <cite>registered</cite>, it is accessible using the Registry
 API which is <a class="reference external" href="https://nasa-pds.github.io/pds-api/guides/search.html">documented here</a>.</p>
 <p>The base URL of the API <a class="reference external" href="https://pds.nasa.gov/api/search/1">https://pds.nasa.gov/api/search/1</a> also provides an online documentation.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

@@ -1,24 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Delete Data &mdash; PDS Registry 1.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css?v=303734b9" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=c55cb9cb"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -39,9 +37,6 @@
             PDS Registry
               <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                1.3
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -102,23 +97,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="delete-data">
-<h1>Delete Data<a class="headerlink" href="#delete-data" title="Permalink to this heading"></a></h1>
-<div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+  <section id="delete-data">
+<h1>Delete Data<a class="headerlink" href="#delete-data" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>You can delete data from PDS Registry (OpenSearch) with Registry Manager command-line tool.</p>
-</div>
-<div class="section" id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>You have access to the Registry Service, see <a class="reference internal" href="../connection-setup.html"><span class="doc">Connection Setup</span></a></p></li>
 <li><p>Registry Manager command-line tool is installed, see <a class="reference internal" href="../install/install.html"><span class="doc">Installation</span></a></p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="id1">
-<h2>Delete Data<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+</section>
+<section id="id1">
+<h2>Delete Data<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <p>To delete data, run Registry Manager’s “delete-data” command.</p>
 <p>You have to pass one of the following parameters:</p>
 <blockquote>
@@ -131,11 +126,11 @@
 <li><p><strong>-auth &lt;file&gt;</strong> - OpenSearch authentication configuration file. See <a class="reference internal" href="../connection-setup.html"><span class="doc">Connection Setup</span></a>.</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
-<div class="section" id="on-macos-linux">
-<h3>On MacOS/Linux<a class="headerlink" href="#on-macos-linux" title="Permalink to this heading"></a></h3>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="on-macos-linux">
+<h3>On MacOS/Linux<a class="headerlink" href="#on-macos-linux" title="Link to this heading"></a></h3>
 <p><strong>Delete by LIDVID</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>registry-manager<span class="w"> </span>delete-data<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-lidvid<span class="w"> </span>urn:nasa:pds:context:target:asteroid.4_vesta::1.1<span class="w"> </span><span class="se">\</span>
@@ -163,9 +158,9 @@
 <span class="w">  </span>-es<span class="w"> </span>file:/Users/loubrieu/Documents/pds/registry/mcp_dev.xml
 </pre></div>
 </div>
-</div>
-<div class="section" id="on-windows">
-<h3>On Windows<a class="headerlink" href="#on-windows" title="Permalink to this heading"></a></h3>
+</section>
+<section id="on-windows">
+<h3>On Windows<a class="headerlink" href="#on-windows" title="Link to this heading"></a></h3>
 <p><strong>Delete by LIDVID</strong></p>
 <div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.\</span><span class="n">registry-manager</span><span class="p">.</span><span class="n">bat</span> <span class="n">delete-data</span>
   <span class="n">-auth</span> <span class="s1">&#39;C:\Users\loubrieu\Documents\es-auth.txt&#39;</span>
@@ -180,9 +175,9 @@
   <span class="n">-packageId</span> <span class="n">8d12a9ba</span><span class="p">-</span><span class="n">2ba0</span><span class="p">-</span><span class="n">4d80</span><span class="p">-</span><span class="n">8ce9</span><span class="p">-</span><span class="n">65da271ecf89</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

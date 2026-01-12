@@ -1,0 +1,567 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integration Testing Guide &mdash; PDS Registry 1.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css?v=303734b9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=c55cb9cb"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Support" href="../support/support.html" />
+    <link rel="prev" title="Developer" href="developer.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PDS Registry
+              <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About PDS Registry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connection-setup.html">Connection Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/tasks.html">User Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/tasks.html">Admin Tasks</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="developer.html">Developer</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Integration Testing Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#for-running-tests-manually">For Running Tests Manually</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#for-adding-new-tests">For Adding New Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#running-tests-manually">Running Tests Manually</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-tests-in-postman-ui">Running Tests in Postman UI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-new-tests">Adding New Tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#when-to-add-tests">When to Add Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test-addition-process">Test Addition Process</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#step-by-step-guide">Step-by-Step Guide</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#update-reference-datasets-optional">1. Update Reference Datasets (Optional)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#add-test-in-postman">2. Add Test in Postman</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#validate-the-full-suite">4. Validate the Full Suite</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#export-and-commit-changes">5. Export and Commit Changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#validate-testrail-reporting-optional">6. Validate TestRail Reporting (Optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#postman-test-writing-tips">Postman Test Writing Tips</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#common-assertions">Common Assertions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-environment-variables">Using Environment Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#docker-compose-profiles">Docker Compose Profiles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tests-fail-locally-but-pass-in-ci">Tests Fail Locally But Pass in CI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#testrail-ids-not-matching">TestRail IDs Not Matching</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#collection-export-issues">Collection Export Issues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#docker-compose-hangs">Docker Compose Hangs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#additional-resources">Additional Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#questions-or-issues">Questions or Issues?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../support/support.html">Support</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PDS Registry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="developer.html">Developer</a></li>
+      <li class="breadcrumb-item active">Integration Testing Guide</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/developer/integration-testing.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="integration-testing-guide">
+<h1>Integration Testing Guide<a class="headerlink" href="#integration-testing-guide" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The PDS Registry uses Docker Compose and Postman for automated integration testing. These tests verify that the full technology stack (OpenSearch, Registry API, data loading) works correctly and meets specific requirements.</p>
+<p><strong>Tests run automatically:</strong></p>
+<ul class="simple">
+<li><p>On every feature branch update (via GitHub Actions)</p></li>
+<li><p>Daily on the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch (via automated CI/CD)</p></li>
+<li><p>On stable release builds (with reports published alongside releases)</p></li>
+</ul>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<section id="for-running-tests-manually">
+<h3>For Running Tests Manually<a class="headerlink" href="#for-running-tests-manually" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://learning.postman.com/docs/getting-started/installation/installation-and-updates/">Postman Desktop Application</a></p></li>
+<li><p>Docker and Docker Compose</p></li>
+<li><p>(Optional) TestRail credentials for test reporting</p></li>
+</ul>
+</section>
+<section id="for-adding-new-tests">
+<h3>For Adding New Tests<a class="headerlink" href="#for-adding-new-tests" title="Link to this heading"></a></h3>
+<p>All of the above, plus:</p>
+<ul class="simple">
+<li><p>Familiarity with the <a class="reference external" href="https://github.com/NASA-PDS/registry-ref-data">registry-ref-data</a> repository</p></li>
+<li><p>Read Access to <a class="reference external" href="https://cae-testrail.jpl.nasa.gov/testrail/">TestRail</a> , you can ask <a class="reference internal" href="../support/support.html"><span class="doc">Support</span></a> to get you the content needed from TestRail if you don’t have access.</p></li>
+</ul>
+</section>
+</section>
+<section id="running-tests-manually">
+<h2>Running Tests Manually<a class="headerlink" href="#running-tests-manually" title="Link to this heading"></a></h2>
+<section id="quick-start">
+<h3>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Clone the repository</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/NASA-PDS/registry.git
+<span class="nb">cd</span><span class="w"> </span>registry
+</pre></div>
+</div>
+</li>
+<li><p><strong>Generate certificates</strong> (first time only)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docker/certs
+./generate-certs.sh
+<span class="nb">cd</span><span class="w"> </span>..
+</pre></div>
+</div>
+</li>
+<li><p><strong>Deploy the registry with test data</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="o">=</span>int-registry-batch-loader<span class="w"> </span>up
+</pre></div>
+</div>
+<p>This will:</p>
+<ul class="simple">
+<li><p>Start OpenSearch/Elasticsearch</p></li>
+<li><p>Deploy the Registry API</p></li>
+<li><p>Load test data using the registry-loader</p></li>
+<li><p>Run the Postman integration tests automatically</p></li>
+</ul>
+</li>
+<li><p><strong>View test results</strong> in the console output</p></li>
+<li><p><strong>Clean up</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="o">=</span>int-registry-batch-loader<span class="w"> </span>down<span class="w"> </span>--volume
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="running-tests-in-postman-ui">
+<h3>Running Tests in Postman UI<a class="headerlink" href="#running-tests-in-postman-ui" title="Link to this heading"></a></h3>
+<p>To manually run or debug tests in Postman:</p>
+<ol class="arabic simple">
+<li><p><strong>Import the collection</strong></p>
+<ul class="simple">
+<li><p>Open Postman</p></li>
+<li><p>File → Import</p></li>
+<li><p>Select <code class="docutils literal notranslate"><span class="pre">docker/postman/postman_collection.json</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>Configure the environment</strong></p>
+<ul class="simple">
+<li><p>Create a new environment or use an existing one</p></li>
+<li><p>Set the <code class="docutils literal notranslate"><span class="pre">baseUrl</span></code> variable to your API endpoint</p>
+<ul>
+<li><p>For local Docker: <code class="docutils literal notranslate"><span class="pre">https://localhost:8443/api/search/</span></code></p></li>
+<li><p>For other environments: <code class="docutils literal notranslate"><span class="pre">https://&lt;host&gt;:&lt;port&gt;/api/search/</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Run the collection</strong></p>
+<ul class="simple">
+<li><p>Click the “…” menu next to the collection name</p></li>
+<li><p>Select “Run collection”</p></li>
+<li><p>Review results in the Collection Runner</p></li>
+</ul>
+</li>
+<li><p><strong>Run individual requests</strong></p>
+<ul class="simple">
+<li><p>Select a specific request</p></li>
+<li><p>Click “Send”</p></li>
+<li><p>View results in the “Test Results” tab</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="adding-new-tests">
+<h2>Adding New Tests<a class="headerlink" href="#adding-new-tests" title="Link to this heading"></a></h2>
+<section id="when-to-add-tests">
+<h3>When to Add Tests<a class="headerlink" href="#when-to-add-tests" title="Link to this heading"></a></h3>
+<p>Add integration tests for:</p>
+<ul class="simple">
+<li><p>New requirements or feature implementations</p></li>
+<li><p>Bug fixes that should be regression-tested</p></li>
+<li><p>Public-facing API examples (from the <a class="reference external" href="https://nasa-pds.github.io/pds-api/guides/search/tutorials.html">user’s manual</a>)</p></li>
+</ul>
+<p><strong>Find issues needing tests:</strong> Use this GitHub filter on registry-related repos:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>is:issue is:closed label:requirement -label:i&amp;t.skip
+</pre></div>
+</div>
+</section>
+<section id="test-addition-process">
+<h3>Test Addition Process<a class="headerlink" href="#test-addition-process" title="Link to this heading"></a></h3>
+<p>Adding a new test involves updates to <strong>2 components:</strong></p>
+<ol class="arabic simple">
+<li><p>Reference datasets (if needed)</p></li>
+<li><p>Postman collection</p></li>
+</ol>
+</section>
+</section>
+<section id="step-by-step-guide">
+<h2>Step-by-Step Guide<a class="headerlink" href="#step-by-step-guide" title="Link to this heading"></a></h2>
+<section id="update-reference-datasets-optional">
+<h3>1. Update Reference Datasets (Optional)<a class="headerlink" href="#update-reference-datasets-optional" title="Link to this heading"></a></h3>
+<p>If your test requires new or modified data:</p>
+<ol class="arabic">
+<li><p>Update test datasets in the <a class="reference external" href="https://github.com/NASA-PDS/registry-ref-data">registry-ref-data</a> repository</p></li>
+<li><p>Follow the instructions in that repository for adding/modifying datasets</p></li>
+<li><p>After updating, restart your local deployment to load the new data:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="o">=</span>int-registry-batch-loader<span class="w"> </span>down<span class="w"> </span>--volume
+docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="o">=</span>int-registry-batch-loader<span class="w"> </span>up
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="add-test-in-postman">
+<h3>2. Add Test in Postman<a class="headerlink" href="#add-test-in-postman" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Deploy the registry</strong> (if not already running)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docker
+docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="o">=</span>int-registry-batch-loader<span class="w"> </span>up
+</pre></div>
+</div>
+</li>
+<li><p><strong>Open Postman</strong> and import the collection (if not already imported)</p></li>
+<li><p><strong>Create a new request</strong> in the collection:</p>
+<ul class="simple">
+<li><p><strong>Name:</strong> Use the GitHub issue reference (e.g., <code class="docutils literal notranslate"><span class="pre">NASA-PDS/pds-api#239</span></code>) or cookbook example name</p></li>
+<li><p><strong>Method:</strong> GET, POST, etc., as appropriate</p></li>
+<li><p><strong>URL:</strong> Use <code class="docutils literal notranslate"><span class="pre">{{baseUrl}}</span></code> variable + endpoint path</p>
+<ul>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">{{baseUrl}}products?q=*:*</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Configure request parameters:</strong></p>
+<ul class="simple">
+<li><p>Path parameters</p></li>
+<li><p>Query parameters</p></li>
+<li><p>Headers</p></li>
+<li><p>Body (for POST/PUT requests)</p></li>
+</ul>
+</li>
+<li><p><strong>Write test assertions</strong> in the “Tests” tab:</p>
+<p><strong>CRITICAL:</strong> Each assertion must include the TestRail test case ID in the test name. You can retrieve the test Id from testRail automated export of github tickets as test cases, in test suite <cite>nasa-pds</cite>. Ask <a class="reference internal" href="../support/support.html"><span class="doc">Support</span></a> to get your test Id.</p>
+<p>Example test code:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">pm</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s2">&quot;C2555740 the header Content-Type is application/json&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">pm</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">pm</span><span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="nx">pm</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)).</span><span class="nx">to</span><span class="p">.</span><span class="nx">include</span><span class="p">(</span><span class="s2">&quot;application/json&quot;</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">pm</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s2">&quot;C2555740 response status is 200&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">pm</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">200</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">pm</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s2">&quot;C2555740 response contains summary&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">jsonData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">pm</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">pm</span><span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">property</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p><strong>Test Naming Convention:</strong> <code class="docutils literal notranslate"><span class="pre">C&lt;TestRailID&gt;</span> <span class="pre">&lt;assertion</span> <span class="pre">description&gt;</span></code></p>
+<ul class="simple">
+<li><p>This links Postman results to TestRail for automated reporting</p></li>
+</ul>
+</li>
+<li><p><strong>Test your request:</strong></p>
+<ul class="simple">
+<li><p>Click “Send”</p></li>
+<li><p>Verify the response in the “Body” tab</p></li>
+<li><p>Check test results in the “Test Results” tab</p></li>
+<li><p><strong>Save frequently!</strong></p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="validate-the-full-suite">
+<h3>4. Validate the Full Suite<a class="headerlink" href="#validate-the-full-suite" title="Link to this heading"></a></h3>
+<p>Before submitting your changes:</p>
+<ol class="arabic">
+<li><p><strong>Run the entire collection</strong> in Postman:</p>
+<ul class="simple">
+<li><p>Click “…” next to the collection name</p></li>
+<li><p>Select “Run collection”</p></li>
+<li><p>Verify all tests pass (including your new test)</p></li>
+</ul>
+</li>
+<li><p><strong>Run via Docker</strong> (recommended):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="o">=</span>int-registry-batch-loader<span class="w"> </span>down<span class="w"> </span>--volume
+docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="o">=</span>int-registry-batch-loader<span class="w"> </span>up
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Verify all tests pass in the console output</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="export-and-commit-changes">
+<h3>5. Export and Commit Changes<a class="headerlink" href="#export-and-commit-changes" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Export the collection</strong> from Postman:</p>
+<ul class="simple">
+<li><p>Click “…” next to the collection name</p></li>
+<li><p>Select “Export”</p></li>
+<li><p>Choose “Collection v2.1” format</p></li>
+<li><p>Save to <code class="docutils literal notranslate"><span class="pre">docker/postman/postman_collection.json</span></code> (replace existing file)</p></li>
+</ul>
+</li>
+<li><p><strong>Create a branch and commit:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>test/add-api-239-test
+git<span class="w"> </span>add<span class="w"> </span>docker/postman/postman_collection.json
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add integration test for NASA-PDS/pds-api#239&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Create a Pull Request:</strong></p>
+<ul class="simple">
+<li><p>Push your branch to GitHub</p></li>
+<li><p>Create a PR with a description of the test added</p></li>
+<li><p>Link to the original requirement/bug issue</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="validate-testrail-reporting-optional">
+<h3>6. Validate TestRail Reporting (Optional)<a class="headerlink" href="#validate-testrail-reporting-optional" title="Link to this heading"></a></h3>
+<p>To verify that TestRail reporting works with your new test, apply the procedure available in the internal wiki page “I&amp;T Test Preparation for MGSS review”, section “Postman Automated Tests”.
+If you don’t have access to the internal wiki, ask for <a class="reference internal" href="../support/support.html"><span class="doc">Support</span></a></p>
+</section>
+</section>
+<section id="postman-test-writing-tips">
+<h2>Postman Test Writing Tips<a class="headerlink" href="#postman-test-writing-tips" title="Link to this heading"></a></h2>
+<section id="common-assertions">
+<h3>Common Assertions<a class="headerlink" href="#common-assertions" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// Status code</span>
+<span class="nx">pm</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s2">&quot;C1234567 status code is 200&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">pm</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">200</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Response time</span>
+<span class="nx">pm</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s2">&quot;C1234567 response time is less than 2000ms&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">pm</span><span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="nx">pm</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">responseTime</span><span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">be</span><span class="p">.</span><span class="nx">below</span><span class="p">(</span><span class="mf">2000</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Header checks</span>
+<span class="nx">pm</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s2">&quot;C1234567 has correct content-type header&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">pm</span><span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="nx">pm</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)).</span><span class="nx">to</span><span class="p">.</span><span class="nx">include</span><span class="p">(</span><span class="s2">&quot;application/json&quot;</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// JSON structure</span>
+<span class="nx">pm</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s2">&quot;C1234567 response has required fields&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">jsonData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">pm</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">pm</span><span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">property</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">pm</span><span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">property</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Array length</span>
+<span class="nx">pm</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s2">&quot;C1234567 returns at least one result&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">jsonData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">pm</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">pm</span><span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">be</span><span class="p">.</span><span class="nx">above</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Specific values</span>
+<span class="nx">pm</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s2">&quot;C1234567 product type is correct&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">jsonData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">pm</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">pm</span><span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nx">type</span><span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="s2">&quot;Product_Observational&quot;</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+<section id="using-environment-variables">
+<h3>Using Environment Variables<a class="headerlink" href="#using-environment-variables" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// Access baseUrl</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">baseUrl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">pm</span><span class="p">.</span><span class="nx">environment</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;baseUrl&quot;</span><span class="p">);</span>
+
+<span class="c1">// Set variables for use in other requests</span>
+<span class="nx">pm</span><span class="p">.</span><span class="nx">environment</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s2">&quot;productId&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">pm</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">().</span><span class="nx">data</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
+
+<span class="c1">// Use in subsequent requests</span>
+<span class="p">{{</span><span class="nx">productId</span><span class="p">}}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="docker-compose-profiles">
+<h2>Docker Compose Profiles<a class="headerlink" href="#docker-compose-profiles" title="Link to this heading"></a></h2>
+<p>The registry repository includes several Docker Compose profiles for different testing scenarios:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Profile</p></th>
+<th class="head"><p>Use Case</p></th>
+<th class="head"><p>Components</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dev-api</span></code></p></td>
+<td><p>API development with test data, no API
+container</p></td>
+<td><p>OpenSearch + test data</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pds-core-registry</span></code></p></td>
+<td><p>Full stack with API</p></td>
+<td><p>OpenSearch + Registry API</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">int-registry-batch-loader</span></code></p></td>
+<td><p><strong>Integration testing</strong></p></td>
+<td><p>Full stack + test data + Postman tests</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">int-registry-service-loader</span></code></p></td>
+<td><p>Integration testing with service loader</p></td>
+<td><p>Full stack + service loader + tests</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">testrail-reporting</span></code></p></td>
+<td><p>TestRail report validation</p></td>
+<td><p>Runs tests + pushes results to TestRail</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="tests-fail-locally-but-pass-in-ci">
+<h3>Tests Fail Locally But Pass in CI<a class="headerlink" href="#tests-fail-locally-but-pass-in-ci" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Ensure you’re using the same Docker image versions (check <code class="docutils literal notranslate"><span class="pre">docker/.env</span></code>)</p></li>
+<li><p>Verify test data is current (<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">down</span> <span class="pre">--volume</span></code> then restart)</p></li>
+<li><p>Check for timing issues (tests may need longer timeouts)</p></li>
+</ul>
+</section>
+<section id="testrail-ids-not-matching">
+<h3>TestRail IDs Not Matching<a class="headerlink" href="#testrail-ids-not-matching" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Verify the test case exists in TestRail</p></li>
+<li><p>Ensure the ID format is exactly <code class="docutils literal notranslate"><span class="pre">C&lt;number&gt;</span></code> at the start of the test name</p></li>
+<li><p>Check that the test is in the correct test suite</p></li>
+</ul>
+</section>
+<section id="collection-export-issues">
+<h3>Collection Export Issues<a class="headerlink" href="#collection-export-issues" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Always export in Collection v2.1 format</p></li>
+<li><p>Ensure you’re replacing the entire file (not appending)</p></li>
+<li><p>Verify the JSON is valid before committing</p></li>
+</ul>
+</section>
+<section id="docker-compose-hangs">
+<h3>Docker Compose Hangs<a class="headerlink" href="#docker-compose-hangs" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Check Docker logs: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">logs</span> <span class="pre">-f</span></code></p></li>
+<li><p>Ensure ports 8443, 8080, 9200 are available</p></li>
+<li><p>Try cleaning up: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">down</span> <span class="pre">--volume</span></code> and restart</p></li>
+</ul>
+</section>
+</section>
+<section id="additional-resources">
+<h2>Additional Resources<a class="headerlink" href="#additional-resources" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://learning.postman.com/">Postman Learning Center</a></p></li>
+<li><p><a class="reference external" href="https://nasa-pds.github.io/pds-api/">Registry API Documentation</a></p></li>
+<li><p><a class="reference external" href="https://github.com/NASA-PDS/registry-ref-data">Registry Ref Data Repository</a></p></li>
+<li><p><a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docker/README.md">Docker Compose Documentation</a></p></li>
+<li><p><a class="reference external" href="https://support.gurock.com/hc/en-us/categories/7077638315540-TestRail-Documentation">TestRail Documentation</a></p></li>
+</ul>
+</section>
+<section id="questions-or-issues">
+<h2>Questions or Issues?<a class="headerlink" href="#questions-or-issues" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>For test-related questions, open an issue in the <a class="reference external" href="https://github.com/NASA-PDS/registry/issues">registry repository</a></p></li>
+<li><p>For TestRail access issues, contact your PDS Engineering Node lead</p></li>
+<li><p>For general PDS questions, see the <a class="reference internal" href="../support/support.html"><span class="doc">Support</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="developer.html" class="btn btn-neutral float-left" title="Developer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../support/support.html" class="btn btn-neutral float-right" title="Support" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022 California Institute of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

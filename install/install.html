@@ -1,24 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Installation &mdash; PDS Registry 1.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css?v=303734b9" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=c55cb9cb"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -39,9 +37,6 @@
             PDS Registry
               <img src="../_static/PDS_Planets.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                1.3
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -101,10 +96,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
-<div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+  <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>This document describes how to install following PDS Registry tools (command-line applications):</p>
 <blockquote>
 <div><ul class="simple">
@@ -115,15 +110,15 @@ manage data and LDDs (data dictionaries).</p></li>
 <li><p><strong>Supplementer</strong> can be used to load supplemental metadata into PDS Registry.</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
 <p>Java is required to run many Registry components and tools such as Harvest, Registry Manager,
 and API Server.</p>
 <p>Only <strong>Java version 17 to 25</strong> are supported.
 Some applications, like Harvest or Registry Manager will not run with <strong>Java 1.8 or 11</strong>.</p>
-<div class="section" id="test-if-java-is-already-installed">
-<h3>Test If Java Is Already Installed<a class="headerlink" href="#test-if-java-is-already-installed" title="Permalink to this heading"></a></h3>
+<section id="test-if-java-is-already-installed">
+<h3>Test If Java Is Already Installed<a class="headerlink" href="#test-if-java-is-already-installed" title="Link to this heading"></a></h3>
 <p>To test if Java is already installed on your system, run the following command in a terminal:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">java</span> <span class="o">-</span><span class="n">version</span>
 </pre></div>
@@ -140,9 +135,9 @@ Some applications, like Harvest or Registry Manager will not run with <strong>Ja
 If JDK 25 is not the default, then set <strong>JAVA_HOME</strong> environment variable to point to JDK 25 before running
 Harvest or Registry Manager.</p>
 </div>
-</div>
-<div class="section" id="java-installation">
-<h3>Java Installation<a class="headerlink" href="#java-installation" title="Permalink to this heading"></a></h3>
+</section>
+<section id="java-installation">
+<h3>Java Installation<a class="headerlink" href="#java-installation" title="Link to this heading"></a></h3>
 <p>There are several distributions of Java:</p>
 <ul class="simple">
 <li><p><strong>OpenJDK</strong> (Free) can be downloaded from different sites, for example,
@@ -155,17 +150,17 @@ Most Linux distributions have Open JDK in their standard repositories.</p></li>
 You must register and accept a license to download.</p></li>
 </ul>
 <p>We recommend installing <strong>OpenJDK</strong>. Sites listed above have detailed installation instructions.</p>
-</div>
-<div class="section" id="python">
-<h3>Python<a class="headerlink" href="#python" title="Permalink to this heading"></a></h3>
+</section>
+<section id="python">
+<h3>Python<a class="headerlink" href="#python" title="Link to this heading"></a></h3>
 <p>Registry Client requires python 3.13 or higher</p>
 <p>An installation procedure is proposed in a <a class="reference external" href="https://github.com/orgs/NASA-PDS/discussions/64">GitHub discussion</a></p>
-</div>
-</div>
-<div class="section" id="tools">
-<h2>Tools<a class="headerlink" href="#tools" title="Permalink to this heading"></a></h2>
-<div class="section" id="registry-manager">
-<h3>Registry Manager<a class="headerlink" href="#registry-manager" title="Permalink to this heading"></a></h3>
+</section>
+</section>
+<section id="tools">
+<h2>Tools<a class="headerlink" href="#tools" title="Link to this heading"></a></h2>
+<section id="registry-manager">
+<h3>Registry Manager<a class="headerlink" href="#registry-manager" title="Link to this heading"></a></h3>
 <p>Download latest stable release (tar or zip) from <a class="reference external" href="https://github.com/NASA-PDS/registry-mgr/releases/latest">https://github.com/NASA-PDS/registry-mgr/releases/latest</a>.
 Extract the <strong>tar</strong> (Linux, Mac) or <strong>zip</strong> (Windows) to a directory without spaces, such as <em>/home/pds</em>.
 On Linux you can use the following command:</p>
@@ -177,9 +172,9 @@ On Linux you can use the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">registry</span><span class="o">-</span><span class="n">manager</span> <span class="o">--</span><span class="n">help</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="harvest">
-<h3>Harvest<a class="headerlink" href="#harvest" title="Permalink to this heading"></a></h3>
+</section>
+<section id="harvest">
+<h3>Harvest<a class="headerlink" href="#harvest" title="Link to this heading"></a></h3>
 <p>Download latest stable release (tar or zip) from <a class="reference external" href="https://github.com/NASA-PDS/harvest/releases/latest">https://github.com/NASA-PDS/harvest/releases/latest</a>.
 Extract the <strong>tar</strong> (Linux, Mac) or <strong>zip</strong> (Windows) to a directory without spaces, such as <em>/home/pds</em>.
 On Linux you can use the following command:</p>
@@ -191,13 +186,13 @@ On Linux you can use the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">harvest</span> <span class="o">--</span><span class="n">help</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="registry-client">
-<h3>Registry Client<a class="headerlink" href="#registry-client" title="Permalink to this heading"></a></h3>
+</section>
+<section id="registry-client">
+<h3>Registry Client<a class="headerlink" href="#registry-client" title="Link to this heading"></a></h3>
 <p>To install Registry Client see <a class="reference external" href="https://nasa-pds.github.io/registry-client/">documentation</a>.</p>
-</div>
-<div class="section" id="supplementer">
-<h3>Supplementer<a class="headerlink" href="#supplementer" title="Permalink to this heading"></a></h3>
+</section>
+<section id="supplementer">
+<h3>Supplementer<a class="headerlink" href="#supplementer" title="Link to this heading"></a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Only install this if you plan to load supplemental metadata.</p>
@@ -212,10 +207,10 @@ On Linux you can use the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">supplementer</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span><span class="o">-</span><span class="nb">bin</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="configure-your-environment">
-<h2>Configure Your Environment<a class="headerlink" href="#configure-your-environment" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+<section id="configure-your-environment">
+<h2>Configure Your Environment<a class="headerlink" href="#configure-your-environment" title="Link to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Optional: Configuring your environment is preferred, but not required. You can always run any of the command-line tools from
@@ -241,8 +236,8 @@ export PATH=${PATH}:$HARVEST_CLIENT_HOME/bin:$SUPPLEMENTER_HOME/bin:
 <img alt="../_images/win-env.png" src="../_images/win-env.png" />
 <p>“Environment Variables” dialog will open where you can edit “Path” variable.
 Add “bin” directory of Harvest, Registry Manager and other tools to “Path” variable.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
