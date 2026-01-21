@@ -236,3 +236,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a part time operator of the Registry, I would like to have the overall PDS Registry status to be visible at all time from my laptop ([#467](https://github.com/NASA-PDS/registry/issues/467)) 
+
+
+This requirement is not impacted by the current version
