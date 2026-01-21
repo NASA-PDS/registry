@@ -1,8 +1,12 @@
 # Changelog
 
-## [1.4.0](https://github.com/NASA-PDS/registry/tree/1.4.0) (2026-01-08)
+## [v1.6.0](https://github.com/NASA-PDS/registry/tree/v1.6.0) (2026-01-12)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...1.4.0)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.5.0...v1.6.0)
+
+## [release/1.5.0](https://github.com/NASA-PDS/registry/tree/release/1.5.0) (2026-01-08)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...release/1.5.0)
 
 **Requirements:**
 
