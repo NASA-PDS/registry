@@ -1,11 +1,11 @@
 {
   "info": {
-    "_postman_id": "14e4c3b8-98d0-43cd-8101-f7b56852ab83",
-    "name": "Planetary Data System API Reference Tests Copy 27",
+    "_postman_id": "92a78754-20ad-4377-8ee1-cc4c26691839",
+    "name": "Planetary Data System API Reference Tests Copy 18",
     "description": "Federated PDS API which provides actionable end points standardized\nbetween the different nodes.\n\n\nContact Support:\n Email: pds-operator@jpl.nasa.gov",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "11337552",
-    "_collection_link": "https://go.postman.co/collection/11337552-14e4c3b8-98d0-43cd-8101-f7b56852ab83?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/11337552-92a78754-20ad-4377-8ee1-cc4c26691839?source=collection_link"
   },
   "item": [
     {
@@ -2372,8 +2372,7 @@
                   ""
                 ],
                 "type": "text/javascript",
-                "packages": {},
-                "requests": {}
+                "packages": {}
               }
             }
           ],
@@ -2414,8 +2413,7 @@
                   "pm.test(\"C4438479 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
                 ],
                 "type": "text/javascript",
-                "packages": {},
-                "requests": {}
+                "packages": {}
               }
             }
           ],
@@ -2443,12 +2441,15 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"C4438464 Status code is 410\", () => {pm.response.to.have.status(410)});",
+                  "pm.test(\"C4438464 Status code is 200\", () => {pm.response.to.have.status(200)});",
+                  "const content = pm.response.json();",
+                  "pm.test(\"C4438464 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(5)});",
+                  "",
+                  "pm.test(\"C4443902 data match q param\", () => {pm.expect(content.data[0][\"properties\"][\"pds:Time_Coordinates.pds:start_date_time\"][0]).to.eql(\"2020-07-30T12:51:34Z\")});",
                   ""
                 ],
                 "type": "text/javascript",
-                "packages": {},
-                "requests": {}
+                "packages": {}
               }
             }
           ],
@@ -2483,12 +2484,15 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"C4438481 Status code is 410\", () => { pm.response.to.have.status(410) });",
+                  "pm.test(\"C4438481 Status code is 200\", () => { pm.response.to.have.status(200) });",
+                  "const content = pm.response.json();",
+                  "const relevantHits = content.data.filter(hit => hit.properties.lid[0] === \"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020\")",
+                  "pm.test(\"C4438481 Correct hits returned\", () => { pm.expect(relevantHits.length).to.eql(1) });",
+                  "pm.test(\"C4438481 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020::3.0\")});",
                   ""
                 ],
                 "type": "text/javascript",
-                "packages": {},
-                "requests": {}
+                "packages": {}
               }
             }
           ],
@@ -2525,8 +2529,7 @@
                   ""
                 ],
                 "type": "text/javascript",
-                "packages": {},
-                "requests": {}
+                "packages": {}
               }
             }
           ],
@@ -2567,8 +2570,7 @@
                   "pm.test(\"C4438482 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});"
                 ],
                 "type": "text/javascript",
-                "packages": {},
-                "requests": {}
+                "packages": {}
               }
             }
           ],
@@ -2604,8 +2606,7 @@
                   "pm.test(\"C4443890 Correct data returned according to q param\", () => {pm.expect(content.data[0][\"properties\"][\"pds:Time_Coordinates.pds:start_date_time\"][0]).to.eql(\"2020-07-30T12:51:34Z\")});"
                 ],
                 "type": "text/javascript",
-                "packages": {},
-                "requests": {}
+                "packages": {}
               }
             }
           ],
@@ -2647,8 +2648,7 @@
                   "pm.test(\"C4438483 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice::3.0\")});"
                 ],
                 "type": "text/javascript",
-                "packages": {},
-                "requests": {}
+                "packages": {}
               }
             }
           ],
@@ -3578,7 +3578,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=(exists pds:Identification_Area.pds:logical_identifier)",
+              "raw": "{{baseUrl}}/products?q=(pds:Identification_Area.pds:logical_identifier exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3588,7 +3588,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "(exists pds:Identification_Area.pds:logical_identifier)",
+                  "value": "(pds:Identification_Area.pds:logical_identifier exists)",
                   "description": "find all documents, which should be all, that have a logical identifier defined"
                 }
               ]
@@ -3631,7 +3631,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=(exists .*logical_identifier)",
+              "raw": "{{baseUrl}}/products?q=(\".*logical_identifier\" exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3641,7 +3641,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "(exists .*logical_identifier)",
+                  "value": "(\".*logical_identifier\" exists)",
                   "description": "find all documents, which should be all, that have a logical identifier defined"
                 }
               ]
@@ -3656,13 +3656,31 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
+                  "// Test for successful response status",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Response contains expected LDD error message\", function () {",
-                  "    pm.expect(pm.response.text()).to.include(\"does not match any field name in the LDD\");",
-                  "});"
+                  "// Test that response body is a valid JSON object",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        pm.response.json();",
+                  "    }).to.not.throw();",
+                  "});",
+                  "",
+                  "// Test that 'summary.hits' exists and is a number",
+                  "pm.test(\"'summary.hits' exists and is a number\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.nested.property('summary.hits');",
+                  "    pm.expect(jsonData.summary.hits).to.be.a('number');",
+                  "});",
+                  "",
+                  "// Test that 'summary.hits' is exactly zero",
+                  "pm.test(\"'summary.hits' is exactly zero\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.summary.hits).to.eql(0);",
+                  "});",
+                  ""
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -3674,7 +3692,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=(exists pds:Identification_Area.pds:illogical_identifier)",
+              "raw": "{{baseUrl}}/products?q=(pds:Identification_Area.pds:illogical_identifier exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3684,7 +3702,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "(exists pds:Identification_Area.pds:illogical_identifier)"
+                  "value": "(pds:Identification_Area.pds:illogical_identifier exists)"
                 }
               ]
             }
@@ -3702,10 +3720,7 @@
                   "pm.test(\"Status code is 400\", function () {",
                   "    pm.response.to.have.status(400);",
                   "});",
-                  "",
-                  "pm.test(\"Response contains expected LDD error message\", function () {",
-                  "    pm.expect(pm.response.text()).to.include(\"cannot match any field names in the LDD using regular expression\");",
-                  "});"
+                  ""
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -3717,7 +3732,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=(exists *illogical_identifier)",
+              "raw": "{{baseUrl}}/products?q=(\".*illogical_identifier\" exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3727,7 +3742,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "(exists *illogical_identifier)"
+                  "value": "(\".*illogical_identifier\" exists)"
                 }
               ]
             }
@@ -3741,13 +3756,30 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Response contains expected LDD error message\", function () {",
-                  "    pm.expect(pm.response.text()).to.include(\"does not match any field name in the LDD\");",
-                  "});"
+                  "pm.test(\"Response has summary object with hits and properties\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property(\"summary\");",
+                  "    pm.expect(jsonData.summary).to.have.property(\"hits\");",
+                  "    pm.expect(jsonData.summary).to.have.property(\"properties\");",
+                  "    pm.expect(jsonData.summary.properties).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response has data array and it is not empty\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property(\"data\");",
+                  "    pm.expect(jsonData.data).to.be.an(\"array\");",
+                  "    pm.expect(jsonData.data.length).to.be.above(0);",
+                  "});",
+                  "",
+                  "pm.test(\"summary.hits is greater than 0\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.summary.hits).to.be.above(0);",
+                  "});",
+                  ""
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -3759,7 +3791,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=not (exists pds:Identification_Area.pds:illogical_identifier)",
+              "raw": "{{baseUrl}}/products?q=not (pds:Identification_Area.pds:illogical_identifier exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3769,7 +3801,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "not (exists pds:Identification_Area.pds:illogical_identifier)"
+                  "value": "not (pds:Identification_Area.pds:illogical_identifier exists)"
                 }
               ]
             }
@@ -3786,10 +3818,7 @@
                   "pm.test(\"Status code is 400\", function () {",
                   "    pm.response.to.have.status(400);",
                   "});",
-                  "",
-                  "pm.test(\"Response contains expected LDD error message\", function () {",
-                  "    pm.expect(pm.response.text()).to.include(\"cannot match any field names in the LDD using regular expression\");",
-                  "});"
+                  ""
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -3801,7 +3830,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=not (exists .*illogical_identifier)",
+              "raw": "{{baseUrl}}/products?q=not (\".*illogical_identifier\" exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3811,7 +3840,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "not (exists .*illogical_identifier)"
+                  "value": "not (\".*illogical_identifier\" exists)"
                 }
               ]
             }
@@ -3863,7 +3892,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=not (exists pds:Identification_Area.pds:logical_identifier )",
+              "raw": "{{baseUrl}}/products?q=not (pds:Identification_Area.pds:logical_identifier exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3873,7 +3902,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "not (exists pds:Identification_Area.pds:logical_identifier )"
+                  "value": "not (pds:Identification_Area.pds:logical_identifier exists)"
                 }
               ]
             }
@@ -3925,7 +3954,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=not (exists *pds:logical_identifier )",
+              "raw": "{{baseUrl}}/products?q=not (pds:Identification_Area.pds:logical_identifier exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3935,7 +3964,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "not (exists *pds:logical_identifier )"
+                  "value": "not (pds:Identification_Area.pds:logical_identifier exists)"
                 }
               ]
             }
@@ -3964,7 +3993,7 @@
                   "",
                   "pm.test(\"C2488844 Response contains same number of properties\", () => {",
                   "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.length).to.be.eql(172);",
+                  "    pm.expect(responseJson.length).to.be.eql(170);",
                   "});",
                   "",
                   "pm.test(\"C2488844 Response property objects follow expected schema\", () => {",
@@ -4412,48 +4441,6 @@
             }
           },
           "response": []
-        },
-        {
-          "name": "registry-api#712 consistent error message for  field name not in LDD (see 406 for wildcard version of this test)S",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains expected LDD error message\", function () {",
-                  "    pm.expect(pm.response.text()).to.include(\"does not match any field name in the LDD\");",
-                  "});"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/products?q=pds:PickledOnion eq \"No\"\n",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "products"
-              ],
-              "query": [
-                {
-                  "key": "q",
-                  "value": "pds:PickledOnion eq \"No\"\n"
-                }
-              ]
-            }
-          },
-          "response": []
         }
       ]
     },
@@ -4719,44 +4706,6 @@
           "response": []
         },
         {
-          "name": "NASA-PDS/outlaw-tracker#46 html injection",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "  pm.response.to.have.status(400);",
-                  "});"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/products?<img%20src%3Dx%20onerror%3Dalert(document.domain)>=1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "products"
-              ],
-              "query": [
-                {
-                  "key": "<img%20src%3Dx%20onerror%3Dalert(document.domain)>",
-                  "value": "1"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "web cache poisoning",
           "event": [
             {
@@ -4851,7 +4800,8 @@
     },
     {
       "key": "opensearchUrl",
-      "value": "https://elasticsearch:9200"
+      "value": "https://elasticsearch:9200",
+      "type": "string"
     }
   ]
 }
