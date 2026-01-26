@@ -85,6 +85,10 @@ services:
   elasticsearch:
     profiles: ["dev-api", "dev-loader", "pds-core-registry", "int-registry-batch-loader", "os"]
     image: ${ES_IMAGE}
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     environment:
       - discovery.type=${ES_DISCOVERY_TYPE}
     # Uncomment the following environment variable to use OpenSearch without security
