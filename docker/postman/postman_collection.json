@@ -3631,7 +3631,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=(\".*logical_identifier\" exists)",
+              "raw": "{{baseUrl}}/products?q=(*logical_identifier exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3641,7 +3641,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "(\".*logical_identifier\" exists)",
+                  "value": "(logical_identifier exists)",
                   "description": "find all documents, which should be all, that have a logical identifier defined"
                 }
               ]
@@ -3732,7 +3732,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=(\".*illogical_identifier\" exists)",
+              "raw": "{{baseUrl}}/products?q=(illogical_identifier exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3742,7 +3742,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "(\".*illogical_identifier\" exists)"
+                  "value": "(illogical_identifier exists)"
                 }
               ]
             }
@@ -3830,7 +3830,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=not (\".*illogical_identifier\" exists)",
+              "raw": "{{baseUrl}}/products?q=not (illogical_identifier exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3840,7 +3840,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "not (\".*illogical_identifier\" exists)"
+                  "value": "not (illogical_identifier exists)"
                 }
               ]
             }
