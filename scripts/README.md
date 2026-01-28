@@ -21,8 +21,20 @@ This helps track data gaps, identify products that need to be ingested, and moni
 #### Requirements
 
 - Python 3.12 or higher
-- `pds-registry-client` - Install with: `pip install pds-registry-client`
+- [pds-registry-client](https://github.com/NASA-PDS/registry-client/) - Installation below
 - Access credentials to the PDS Registry OpenSearch instance
+
+### Install dependencies
+
+To isolate and be able to re-produce the environment for these scripts, you should use a [Python Virtual Environment](https://docs.python.org/3/tutorial/venv.html). To do so, run:
+
+    python -m venv venv
+    source bin/venv/activate  # Substitute with `source bin/venv/activate.csh` for csh/tcsh users
+
+Install the dependencies:
+
+    pip install ./scripts/requirements.txt
+
 
 #### Configuration
 
