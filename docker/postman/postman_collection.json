@@ -1,11 +1,11 @@
 {
   "info": {
-    "_postman_id": "92a78754-20ad-4377-8ee1-cc4c26691839",
-    "name": "Planetary Data System API Reference Tests Copy 18",
+    "_postman_id": "1a655299-afbc-4a5a-bc81-e63ca981722f",
+    "name": "Planetary Data System API Reference Tests Copy 20",
     "description": "Federated PDS API which provides actionable end points standardized\nbetween the different nodes.\n\n\nContact Support:\n Email: pds-operator@jpl.nasa.gov",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "11337552",
-    "_collection_link": "https://go.postman.co/collection/11337552-92a78754-20ad-4377-8ee1-cc4c26691839?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/11337552-1a655299-afbc-4a5a-bc81-e63ca981722f?source=collection_link"
   },
   "item": [
     {
@@ -2236,7 +2236,8 @@
                   ""
                 ],
                 "type": "text/javascript",
-                "packages": {}
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -3631,7 +3632,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=(\".*logical_identifier\" exists)",
+              "raw": "{{baseUrl}}/products?q=(*logical_identifier exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3641,7 +3642,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "(\".*logical_identifier\" exists)",
+                  "value": "(*logical_identifier exists)",
                   "description": "find all documents, which should be all, that have a logical identifier defined"
                 }
               ]
@@ -3732,7 +3733,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=(\".*illogical_identifier\" exists)",
+              "raw": "{{baseUrl}}/products?q=(*illogical_identifier exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3742,7 +3743,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "(\".*illogical_identifier\" exists)"
+                  "value": "(*illogical_identifier exists)"
                 }
               ]
             }
@@ -3830,7 +3831,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products?q=not (\".*illogical_identifier\" exists)",
+              "raw": "{{baseUrl}}/products?q=not (*illogical_identifier exists)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3840,7 +3841,7 @@
               "query": [
                 {
                   "key": "q",
-                  "value": "not (\".*illogical_identifier\" exists)"
+                  "value": "not (*illogical_identifier exists)"
                 }
               ]
             }
@@ -3965,6 +3966,68 @@
                 {
                   "key": "q",
                   "value": "not (pds:Identification_Area.pds:logical_identifier exists)"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "NASA-PDS/registry-api#406 search property wildcard on eq operator",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test that response status code is 200",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test that response body is a valid JSON object",
+                  "pm.test(\"Response body is valid JSON object\", function () {",
+                  "    let jsonData;",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).to.not.throw();",
+                  "    pm.expect(jsonData).to.be.an(\"object\");",
+                  "});",
+                  "",
+                  "// Test that summary.hits exists and is a number",
+                  "pm.test(\"summary.hits exists and is a number\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.nested.property(\"summary.hits\");",
+                  "    pm.expect(jsonData.summary.hits).to.be.a(\"number\");",
+                  "});",
+                  "",
+                  "// Test that 'summary.hits' is exactly zero",
+                  "pm.test(\"'summary.hits' is exactly zero\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.summary.hits).to.eql(0);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products?q=(.*pds:logical_identifier eq \"urn:nasa:pds:insight_rad:data_calibrated:hp3_rad_cal_00390_20200101_120222\")",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "(.*pds:logical_identifier eq \"urn:nasa:pds:insight_rad:data_calibrated:hp3_rad_cal_00390_20200101_120222\")"
                 }
               ]
             }
