@@ -5,33 +5,33 @@ This directory contains automatically generated CSV reports that track the statu
 ## Metrics Summary
 
 <!-- METRICS_START -->
-*Last updated: 2025-11-21 22:50:21 UTC*
+*Last updated: 2026-01-28 18:08:52 UTC*
 
 ### Missing Products by Node
 
 | Node | Bundles | Collections |
 |------|---------|-------------|
 | KPDS | 1 | 2 |
-| PDS_ATM | 22 | 93 |
-| PDS_ENG | 7 | 7 |
-| PDS_GEO | 36 | 252 |
-| PDS_IMG | 60 | 876 |
-| PDS_PPI | 199 | 653 |
-| PDS_SBN | 72 | 117 |
-| **Total** | **397** | **2000** |
+| PDS_ATM | 23 | 79 |
+| PDS_ENG | 7 | 6 |
+| PDS_GEO | 36 | 253 |
+| PDS_IMG | 60 | 819 |
+| PDS_PPI | 215 | 703 |
+| PDS_SBN | 78 | 138 |
+| **Total** | **420** | **2000** |
 
 ### Staged Products by Node
 
 | Node | Bundles | Collections |
 |------|---------|-------------|
 | PDS_ATM | 3 | 6 |
-| PDS_GEO | 0 | 11 |
+| PDS_GEO | 1 | 16 |
 | PDS_IMG | 13 | 38 |
 | PDS_NAIF | 0 | 63 |
-| PDS_PPI | 8 | 362 |
-| PDS_SBN | 35 | 57 |
-| PSA | 902 | 1463 |
-| **Total** | **961** | **2000** |
+| PDS_PPI | 9 | 383 |
+| PDS_SBN | 25 | 28 |
+| PSA | 902 | 1466 |
+| **Total** | **953** | **2000** |
 
 <!-- METRICS_END -->
 
