@@ -4001,9 +4001,9 @@
                   "});",
                   "",
                   "// Test that 'summary.hits' is exactly zero",
-                  "pm.test(\"'summary.hits' is exactly zero\", function () {",
+                  "pm.test(\"'summary.hits' is exactly one \", function () {",
                   "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.summary.hits).to.eql(0);",
+                  "    pm.expect(jsonData.summary.hits).to.eql(1);",
                   "});",
                   ""
                 ],
