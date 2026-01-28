@@ -5,37 +5,33 @@ This directory contains automatically generated CSV reports that track the statu
 ## Metrics Summary
 
 <!-- METRICS_START -->
-*Last updated: 2026-07-15 12:53:59 UTC*
+*Last updated: 2026-01-28 18:08:52 UTC*
 
 ### Missing Products by Node
 
-| Node | Latest Bundles | Superseded Bundles | Total Bundles | Latest Collections | Superseded Collections | Total Collections |
-|------|---------------:|-------------------:|--------------:|-------------------:|-----------------------:|------------------:|
-| KPDS | 1 | 0 | 1 | 3 | 0 | 3 |
-| PDS_ATM | 7 | 8 | 15 | 73 | 81 | 154 |
-| PDS_ENG | 1 | 6 | 7 | 3 | 89 | 92 |
-| PDS_GEO | 11 | 24 | 35 | 166 | 364 | 530 |
-| PDS_IMG | 36 | 40 | 76 | 1604 | 303 | 1907 |
-| PDS_PPI | 6 | 199 | 205 | 56 | 1347 | 1403 |
-| PDS_SBN | 23 | 30 | 53 | 122 | 93 | 215 |
-| **Total** | **85** | **307** | **392** | **2027** | **2277** | **4304** |
+| Node | Bundles | Collections |
+|------|---------|-------------|
+| KPDS | 1 | 2 |
+| PDS_ATM | 23 | 79 |
+| PDS_ENG | 7 | 6 |
+| PDS_GEO | 36 | 253 |
+| PDS_IMG | 60 | 819 |
+| PDS_PPI | 215 | 703 |
+| PDS_SBN | 78 | 138 |
+| **Total** | **420** | **2000** |
 
 ### Staged Products by Node
 
 | Node | Bundles | Collections |
-|------|--------:|------------:|
-| PDS_ATM | 3 | 30 |
-| PDS_GEO | 0 | 7 |
-| PDS_IMG | 0 | 64 |
-| PDS_PPI | 17 | 215 |
-| PDS_RMS | 0 | 1 |
-| PDS_SBN | 28 | 141 |
-| PSA | 902 | 4171 |
-| **Total** | **950** | **4629** |
-
-### Loading Progress
-
-[View Burnup Chart](burnup_chart.html) — cumulative products loaded over time vs. target
+|------|---------|-------------|
+| PDS_ATM | 3 | 6 |
+| PDS_GEO | 1 | 16 |
+| PDS_IMG | 13 | 38 |
+| PDS_NAIF | 0 | 63 |
+| PDS_PPI | 9 | 383 |
+| PDS_SBN | 25 | 28 |
+| PSA | 902 | 1466 |
+| **Total** | **953** | **2000** |
 
 <!-- METRICS_END -->
 
