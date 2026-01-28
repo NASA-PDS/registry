@@ -1,16 +1,25 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2025-11-19)
+## [release/1.5.0](https://github.com/NASA-PDS/registry/tree/release/1.5.0) (2026-01-08)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...«unknown»)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.6.0...release/1.5.0)
+
+## [release/1.6.0](https://github.com/NASA-PDS/registry/tree/release/1.6.0) (2026-01-07)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...release/1.6.0)
 
 **Requirements:**
 
 - As a user, I want to receive an alert when my registry credentials are readable by someone else than myself [\#424](https://github.com/NASA-PDS/registry/issues/424)
 - As a node operator, I want the the registry schema to update autonomously / dynamically when new data is ingested. [\#113](https://github.com/NASA-PDS/registry/issues/113)
 
+**Improvements:**
+
+- Document and script the monthly legacy registry statusing [\#460](https://github.com/NASA-PDS/registry/issues/460)
+
 **Defects:**
 
+- Some properties return "null" values [\#456](https://github.com/NASA-PDS/registry/issues/456) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - lid and pds:Identification\_Area.pds:logical\_identifier do not behave the same in the API [\#423](https://github.com/NASA-PDS/registry/issues/423) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - Some of product urn:nasa:pds:lro\_diviner\_derived2::1.0's fields are not indexed [\#422](https://github.com/NASA-PDS/registry/issues/422) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - Error `FIPS mode: only SunJSSE TrustManagers may be used` [\#440](https://github.com/NASA-PDS/registry/issues/440) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
@@ -23,12 +32,17 @@
 
 - Troubleshoot SBN 403 Error [\#414](https://github.com/NASA-PDS/registry/issues/414)
 - Add the --legacy-sync command option to the EN sweeper in production [\#390](https://github.com/NASA-PDS/registry/issues/390)
+- Document password rotation requirements [\#320](https://github.com/NASA-PDS/registry/issues/320)
 - Update registry documentation [\#288](https://github.com/NASA-PDS/registry/issues/288)
 - Respond to User Questions Regarding Supporting Migration to OpenSearch Serverless [\#275](https://github.com/NASA-PDS/registry/issues/275)
 
 ## [v1.4.0](https://github.com/NASA-PDS/registry/tree/v1.4.0) (2025-07-16)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...v1.4.0)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.4.0...v1.4.0)
+
+## [release/1.4.0](https://github.com/NASA-PDS/registry/tree/release/1.4.0) (2025-07-16)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...release/1.4.0)
 
 **Requirements:**
 
@@ -108,7 +122,11 @@
 
 ## [v1.3.1](https://github.com/NASA-PDS/registry/tree/v1.3.1) (2023-11-16)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...v1.3.1)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.3.1...v1.3.1)
+
+## [release/1.3.1](https://github.com/NASA-PDS/registry/tree/release/1.3.1) (2023-11-16)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...release/1.3.1)
 
 **Requirements:**
 
@@ -237,18 +255,11 @@
 
 ## [v1.0.0](https://github.com/NASA-PDS/registry/tree/v1.0.0) (2022-05-03)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.0.0-SNAPSHOT...v1.0.0)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/1f4d45e5a395b8d05b58a0924066dcd3cd0b3565...v1.0.0)
 
 **Requirements:**
 
 - Upgrade the initialization of the ES/OS database following latest upgrade of components [\#31](https://github.com/NASA-PDS/registry/issues/31)
-
-## [v1.0.0-SNAPSHOT](https://github.com/NASA-PDS/registry/tree/v1.0.0-SNAPSHOT) (2022-01-20)
-
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/1f4d45e5a395b8d05b58a0924066dcd3cd0b3565...v1.0.0-SNAPSHOT)
-
-**Requirements:**
-
 - As a developer, I want to include supplemental file data sizes in the registry [\#112](https://github.com/NASA-PDS/registry/issues/112)
 - As a node operator, I want to ingest metadata regarding secondary collections that belong to a bundle. [\#109](https://github.com/NASA-PDS/registry/issues/109)
 - As a node operator, I want to ingest metadata regarding secondary products that belong to a collection. [\#108](https://github.com/NASA-PDS/registry/issues/108)
