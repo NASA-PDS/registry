@@ -24,7 +24,12 @@ This helps track data gaps, identify products that need to be ingested, and moni
 - [pds-registry-client](https://github.com/NASA-PDS/registry-client/) - Installation below
 - Access credentials to the PDS Registry OpenSearch instance
 
-### Install dependencies
+### Installation
+
+Clone this repo and checkout `develop` branch:
+
+    git clone git@github.com:NASA-PDS/registry.git
+    cd registry && git checkout develop
 
 To isolate and be able to re-produce the environment for these scripts, you should use a [Python Virtual Environment](https://docs.python.org/3/tutorial/venv.html). To do so, run:
 
