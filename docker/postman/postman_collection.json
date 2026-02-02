@@ -4056,7 +4056,7 @@
                   "",
                   "pm.test(\"C2488844 Response contains same number of properties\", () => {",
                   "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.length).to.be.eql(170);",
+                  "    pm.expect(responseJson.length).to.be.eql(171);",
                   "});",
                   "",
                   "pm.test(\"C2488844 Response property objects follow expected schema\", () => {",
