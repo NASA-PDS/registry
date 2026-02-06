@@ -94,18 +94,22 @@ terraform apply
 
 ### Access Control
 
-**Public Access:**
+**Option 1: Public Access (Easiest for Development):**
 ```hcl
 enable_public_access = true
-allowed_principals = ["arn:aws:iam::123456789012:user/your-user"]
 ```
 
-**VPC-Only Access:**
+**Option 2: VPC-Only Access - Create VPC Endpoint (Recommended for Production):**
 ```hcl
 enable_public_access = false
-allowed_vpcs = ["vpce-1234567890abcdef0"]
-allowed_principals = ["arn:aws:iam::123456789012:role/your-role"]
+create_vpc_endpoint = true
+vpc_id = "vpc-1234567890abcdef0"
+subnet_ids = ["subnet-1234567890abcdef0", "subnet-0987654321fedcba0"]
+# Optional: provide security group IDs, or leave empty to create a default one
+security_group_ids = []
 ```
+
+**Note:** For VPC-only access, the VPC endpoint provides access to **all** OpenSearch Serverless collections in the region, not just this one.
 
 ### Standby Replicas
 
@@ -125,6 +129,10 @@ After applying, Terraform will output:
 - `dashboard_endpoint` - The OpenSearch Dashboards URL
 - `collection_name` - The name of the collection
 - `collection_type` - The type of the collection
+- `admin_policy_arn` - The ARN of the IAM policy for admin access
+- `vpc_endpoint_id` - The ID of the created VPC endpoint (if created)
+- `vpc_endpoint_dns_entries` - DNS entries for the VPC endpoint
+- `security_group_id` - The security group ID for the VPC endpoint (if created)
 
 ## Accessing the Collection
 

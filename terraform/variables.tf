@@ -50,10 +50,16 @@ variable "standby_replicas" {
   }
 }
 
-variable "admin_roles" {
-  description = "List of AWS principals (ARNs) allowed to access the OpenSearch collection with admin permissions."
+variable "admin_console_role" {
+  description = "List of AWS principals (ARNs) allowed to access the OpenSearch collection with admin permissions from the AWS console."
   type        = list(string)
   default     = []
+}
+
+variable "use_ssm_for_admin_role" {
+  description = "Read admin role ARN from SSM Parameter Store at /pds/infra/iam/roles/pds_registry_admin_role_arn (set to true after IAM role is created in separate terraform repo)"
+  type        = bool
+  default     = false
 }
 
 variable "common_tags" {
@@ -71,8 +77,21 @@ variable "enable_public_access" {
   default     = false
 }
 
-variable "allowed_vpcs" {
-  description = "List of VPC IDs allowed to access the collection (for private access)"
+
+variable "vpc_id" {
+  description = "VPC ID where the OpenSearch Serverless VPC endpoint will be created (required if create_vpc_endpoint is true)"
+  type        = string
+  default     = ""
+}
+
+variable "subnet_ids" {
+  description = "Subnet IDs for the VPC endpoint (required if create_vpc_endpoint is true)"
+  type        = list(string)
+  default     = []
+}
+
+variable "security_group_ids" {
+  description = "Security group IDs for the VPC endpoint (if not provided, a default security group will be created)"
   type        = list(string)
   default     = []
 }

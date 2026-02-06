@@ -13,15 +13,28 @@ collection_type = "SEARCH"
 # Standby replicas: ENABLED or DISABLED
 standby_replicas = "DISABLED"
 
-# Allow public access (set to false for VPC-only access)
-enable_public_access = false
+# Network Access Configuration
+# Option 1: Public access (easier for development/testing)
+enable_public_access = true
 
-# List of AWS principals (IAM users/roles) that can access the collection
-# Example: ["arn:aws:iam::123456789012:user/admin", "arn:aws:iam::123456789012:role/MyRole"]
-allowed_principals = []
+# Option 2: VPC-only access via VPC endpoint (recommended for production)
+# enable_public_access = false
+# create_vpc_endpoint = true
+# vpc_id = "vpc-1234567890abcdef0"
+# subnet_ids = ["subnet-1234567890abcdef0", "subnet-0987654321fedcba0"]
+# security_group_ids = []  # Leave empty to create a default security group
 
-# VPC IDs for private access (leave empty if using public access)
-allowed_vpcs = []
+# Admin roles configuration (see DEPLOYMENT_STAGES.md for deployment workflow)
+# Stage 1 (initial): Deploy without admin role
+admin_console_role = []
+use_ssm_for_admin_role = false
+
+# Stage 2 (after IAM role created in separate terraform): Enable SSM to read role ARN
+# The IAM role ARN should be stored at: /pds/infra/iam/roles/pds_cognito_cds_admin_role_arn
+# use_ssm_for_admin_role = true
+
+# Alternative: Directly specify admin role ARNs for console access
+# admin_console_role = ["arn:aws:iam::123456789012:role/pds-registry-admin"]
 
 # Common tags applied to all resources
 common_tags = {

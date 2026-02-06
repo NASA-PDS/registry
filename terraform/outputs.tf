@@ -37,3 +37,28 @@ output "admin_policy_ssm_parameter" {
   description = "The SSM parameter name storing the admin policy ARN"
   value       = aws_ssm_parameter.admin_policy_arn.name
 }
+
+output "admin_roles_configured" {
+  description = "List of admin roles currently configured for data access"
+  value       = local.data_access_principals
+}
+
+output "deployment_stage" {
+  description = "Current deployment stage based on admin roles configuration"
+  value = length(local.data_access_principals) > 0 ? "Stage 3: Complete - Admin roles configured" : "Stage 1: Initial - Awaiting admin role creation"
+}
+
+output "vpc_endpoint_id" {
+  description = "The ID of the created VPC endpoint (if created)"
+  value       = aws_vpc_endpoint.opensearch_serverless.id
+}
+
+output "vpc_endpoint_dns_entries" {
+  description = "DNS entries for the VPC endpoint"
+  value       = aws_vpc_endpoint.opensearch_serverless.dns_entry
+}
+
+output "security_group_id" {
+  description = "The ID of the security group created for the VPC endpoint (if created)"
+  value       = aws_security_group.vpce.id
+}
