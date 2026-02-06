@@ -20,8 +20,8 @@ Prerequisites
 Java is required to run many Registry components and tools such as Harvest, Registry Manager,
 and API Server.
 
-Only **Java 11** is supported.
-Some applications, like Harvest or Registry Manager will not run with **Java 1.8**.
+Only **Java 17** is supported.
+Some applications, like Harvest or Registry Manager will not run with **Java 1.8 or 11**.
 
 
 Test If Java Is Already Installed
@@ -34,13 +34,13 @@ To test if Java is already installed on your system, run the following command i
 
 If Java is already installed, you will see a message similar to this::
 
-   openjdk version "11.0.5" 2019-10-15
-   OpenJDK Runtime Environment 18.9 (build 11.0.5+10)
-   OpenJDK 64-Bit Server VM 18.9 (build 11.0.5+10, mixed mode)
+    openjdk version "17.0.2" 2022-01-18
+    OpenJDK Runtime Environment (build 17.0.2+8-86)
+    OpenJDK 64-Bit Server VM (build 17.0.2+8-86, mixed mode, sharing)
 
 .. note::
-   Your system might have multiple versions of Java installed, for example, JDK 1.8 and JDK 11.
-   If JDK 11 is not the default, then set **JAVA_HOME** environment variable to point to JDK 11 before running
+   Your system might have multiple versions of Java installed, for example, JDK 11 and JDK 17.
+   If JDK 17 is not the default, then set **JAVA_HOME** environment variable to point to JDK 17 before running
    Harvest or Registry Manager.
 
 

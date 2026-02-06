@@ -1,0 +1,78 @@
+variable "aws_region" {
+  description = "AWS region for resources"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "aws_profile" {
+  description = "AWS profile to use for authentication"
+  type        = string
+  default     = ""
+}
+
+variable "project_name" {
+  description = "Project name used for resource naming"
+  type        = string
+  default     = "registry"
+}
+
+variable "environment" {
+  description = "Environment name (dev, staging, prod)"
+  type        = string
+  default     = "dev"
+}
+
+variable "collection_name" {
+  description = "Name of the OpenSearch Serverless collection"
+  type        = string
+  default     = "registry-collection"
+}
+
+variable "collection_type" {
+  description = "Type of OpenSearch Serverless collection (SEARCH, TIMESERIES, or VECTORSEARCH)"
+  type        = string
+  default     = "SEARCH"
+
+  validation {
+    condition     = contains(["SEARCH", "TIMESERIES", "VECTORSEARCH"], var.collection_type)
+    error_message = "Collection type must be one of: SEARCH, TIMESERIES, VECTORSEARCH"
+  }
+}
+
+variable "standby_replicas" {
+  description = "Enable standby replicas for the collection (ENABLED or DISABLED)"
+  type        = string
+  default     = "DISABLED"
+
+  validation {
+    condition     = contains(["ENABLED", "DISABLED"], var.standby_replicas)
+    error_message = "Standby replicas must be either ENABLED or DISABLED"
+  }
+}
+
+variable "admin_roles" {
+  description = "List of AWS principals (ARNs) allowed to access the OpenSearch collection with admin permissions."
+  type        = list(string)
+  default     = []
+}
+
+variable "common_tags" {
+  description = "Common tags to apply to all resources"
+  type        = map(string)
+  default = {
+    Project     = "registry"
+    ManagedBy   = "terraform"
+  }
+}
+
+variable "enable_public_access" {
+  description = "Enable public access to the OpenSearch collection"
+  type        = bool
+  default     = false
+}
+
+variable "allowed_vpcs" {
+  description = "List of VPC IDs allowed to access the collection (for private access)"
+  type        = list(string)
+  default     = []
+}
