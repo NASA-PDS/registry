@@ -62,3 +62,13 @@ output "security_group_id" {
   description = "The ID of the security group created for the VPC endpoint (if created)"
   value       = aws_security_group.vpce.id
 }
+
+output "network_policy_name" {
+  description = "The name of the network security policy (update this in AWS Console to change Access Type)"
+  value       = aws_opensearchserverless_security_policy.network.name
+}
+
+output "network_policy_version" {
+  description = "The version of the network security policy"
+  value       = aws_opensearchserverless_security_policy.network.policy_version
+}

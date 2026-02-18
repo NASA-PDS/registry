@@ -71,12 +71,6 @@ variable "common_tags" {
   }
 }
 
-variable "enable_public_access" {
-  description = "Enable public access to the OpenSearch collection"
-  type        = bool
-  default     = false
-}
-
 
 variable "vpc_id" {
   description = "VPC ID where the OpenSearch Serverless VPC endpoint will be created (required if create_vpc_endpoint is true)"

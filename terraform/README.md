@@ -84,6 +84,14 @@ Apply the configuration:
 terraform apply
 ```
 
+### Post deployment updates
+
+Go to the AWS console, OpenSearch serverless, network policies, select `Network policies > {collection name}-network`
+
+Edit it to change the access tpye to public.
+
+
+
 ## Configuration Options
 
 ### Collection Types

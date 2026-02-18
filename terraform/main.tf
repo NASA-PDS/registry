@@ -84,9 +84,16 @@ resource "aws_opensearchserverless_security_policy" "network" {
             "collection/${var.collection_name}"
           ]
           ResourceType = "collection"
+        },
+        {
+          Resource = [
+            "collection/${var.collection_name}"
+          ]
+          ResourceType = "dashboard"
         }
       ]
-      AllowFromPublic = var.enable_public_access
+      # TODO; this is not authorized to turn this attribute to true from terraform, need to update it manually in the console for now, need to check with AWS if this is expected or if there is a workaround
+      AllowFromPublic = false
       SourceVPCEs     = [aws_vpc_endpoint.opensearch_serverless.id]
     }
   ])
@@ -158,9 +165,7 @@ resource "aws_opensearchserverless_access_policy" "data_access" {
   type        = "data"
   description = "Data access policy for ${var.collection_name}"
 
-  policy = jsonencode(concat(
-    # Admin access policy (only if admin roles are defined)
-    length(local.data_access_principals) > 0 ? [
+  policy = jsonencode(concat([
       {
         Rules = [
           # We consider 3 levels of authorization:
@@ -187,10 +192,10 @@ resource "aws_opensearchserverless_access_policy" "data_access" {
             "ResourceType" : "index"
           }
         ],
-        "Principal" : local.data_access_principals,
+        "Principal" : local.all_admin_roles,
         "Description" : "PDS - OpenSearch Admin Access"
       }
-    ] : [],
+    ],
     # TODO: add read-only access for read-only roles, and write access for specific indexes for discipline nodes
     []
   ))
