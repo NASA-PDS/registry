@@ -33,10 +33,6 @@ output "admin_policy_arn" {
   value       = aws_iam_policy.opensearch_admin_access.arn
 }
 
-output "admin_policy_ssm_parameter" {
-  description = "The SSM parameter name storing the admin policy ARN"
-  value       = aws_ssm_parameter.admin_policy_arn.name
-}
 
 output "admin_roles_configured" {
   description = "List of admin roles currently configured for data access"

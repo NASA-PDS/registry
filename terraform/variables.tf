@@ -10,11 +10,6 @@ variable "aws_profile" {
   default     = ""
 }
 
-variable "project_name" {
-  description = "Project name used for resource naming"
-  type        = string
-  default     = "registry"
-}
 
 variable "environment" {
   description = "Environment name (dev, staging, prod)"
@@ -26,17 +21,6 @@ variable "collection_name" {
   description = "Name of the OpenSearch Serverless collection"
   type        = string
   default     = "registry-collection"
-}
-
-variable "collection_type" {
-  description = "Type of OpenSearch Serverless collection (SEARCH, TIMESERIES, or VECTORSEARCH)"
-  type        = string
-  default     = "SEARCH"
-
-  validation {
-    condition     = contains(["SEARCH", "TIMESERIES", "VECTORSEARCH"], var.collection_type)
-    error_message = "Collection type must be one of: SEARCH, TIMESERIES, VECTORSEARCH"
-  }
 }
 
 variable "standby_replicas" {

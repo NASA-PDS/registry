@@ -124,15 +124,6 @@ resource "aws_iam_policy" "opensearch_admin_access" {
   tags = var.common_tags
 }
 
-# Store IAM policy ARN in SSM Parameter Store
-resource "aws_ssm_parameter" "admin_policy_arn" {
-  name        = "/pds/registry/iam_policies/admin"
-  description = "IAM policy ARN for OpenSearch Serverless admin access"
-  type        = "String"
-  value       = aws_iam_policy.opensearch_admin_access.arn
-
-  tags = var.common_tags
-}
 
 # Data source to get current AWS account ID
 data "aws_caller_identity" "current" {}
@@ -204,8 +195,8 @@ resource "aws_opensearchserverless_access_policy" "data_access" {
 # OpenSearch Serverless Collection
 resource "aws_opensearchserverless_collection" "main" {
   name        = var.collection_name
-  type        = var.collection_type
-  description = "OpenSearch Serverless collection for ${var.project_name} ${var.environment}"
+  type        = "SEARCH"
+  description = "OpenSearch Serverless collection for Registry ${var.environment}"
 
   standby_replicas = var.standby_replicas
 

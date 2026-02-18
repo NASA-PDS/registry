@@ -3,12 +3,8 @@
 # Copy this file to terraform.tfvars and customize the values
 
 aws_region      = "us-east-1"
-project_name    = "registry"
 environment     = "dev"
 collection_name = "registry-collection"
-
-# Collection type: SEARCH, TIMESERIES, or VECTORSEARCH
-collection_type = "SEARCH"
 
 # Standby replicas: ENABLED or DISABLED
 standby_replicas = "DISABLED"
