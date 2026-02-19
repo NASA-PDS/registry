@@ -13,8 +13,8 @@ module "opensearch" {
   standby_replicas       = var.standby_replicas
   vpc_id                 = var.vpc_id
   subnet_ids             = var.subnet_ids
-  admin_console_role     = var.admin_console_role
-  use_ssm_for_admin_role = var.use_ssm_for_admin_role
+  admin_roles            = var.admin_roles
+  readonly_roles         = var.readonly_roles
   aws_region             = var.aws_region
   common_tags            = var.common_tags
 }

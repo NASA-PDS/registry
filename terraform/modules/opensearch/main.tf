@@ -107,13 +107,14 @@ resource "aws_opensearchserverless_access_policy" "data_access" {
   description = "Data access policy for ${var.collection_name}"
 
   policy = jsonencode(concat([
-      {
-        Rules = [
-          # We consider 3 levels of authorization:
+       # We consider 3 levels of authorization:
           # - full access across the full collection, for admins
           # - read only across the full collection
           # - write access to specific indexes sharing the same prefix related to a discipline node, e.g. geo-*
           # Authentication access can be granted though Cognito groups or adhoc specific IAM roles.
+      {
+        Rules = [
+
           {
             "Resource" : [
               "collection/${var.collection_name}*"
@@ -133,12 +134,37 @@ resource "aws_opensearchserverless_access_policy" "data_access" {
             "ResourceType" : "index"
           }
         ],
-        "Principal" : var.admin_console_role,
+        "Principal" : var.admin_roles,
         "Description" : "PDS - OpenSearch Admin Access"
+      },
+     {
+        Rules = [
+          {
+        "Resource": [
+          "collection/${var.collection_name}*"
+        ],
+        "Permission": [
+          "aoss:DescribeCollectionItems"
+        ],
+        "ResourceType": "collection"
+      },
+      {
+        "Resource": [
+          "index/*/*"
+        ],
+        "Permission": [
+          "aoss:ReadDocument",
+          "aoss:DescribeIndex"
+        ],
+        "ResourceType": "index"
       }
-    ],
-    # TODO: add read-only access for read-only roles, and write access for specific indexes for discipline nodes
-    []
+        ],
+        "Principal" : var.readonly_roles,
+        "Description" : "PDS - OpenSearch Read-only Access"
+      }
+
+    ]
+    # TODO: add write access for specific indexes for discipline nodes
   ))
 }
 

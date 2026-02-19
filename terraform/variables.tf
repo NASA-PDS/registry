@@ -34,16 +34,16 @@ variable "standby_replicas" {
   }
 }
 
-variable "admin_console_role" {
-  description = "List of AWS principals (ARNs) allowed to access the OpenSearch collection with admin permissions from the AWS console."
+variable "admin_roles" {
+  description = "List of AWS principals (ARNs) allowed to access the OpenSearch collection with admin permissions."
   type        = list(string)
   default     = []
 }
 
-variable "use_ssm_for_admin_role" {
-  description = "Read admin role ARN from SSM Parameter Store at /pds/infra/iam/roles/pds_registry_admin_role_arn (set to true after IAM role is created in separate terraform repo)"
-  type        = bool
-  default     = false
+variable "readonly_roles" {
+  description = "List of AWS principals (ARNs) allowed to access the OpenSearch collection with readonly permissions."
+  type        = list(string)
+  default     = []
 }
 
 variable "common_tags" {
