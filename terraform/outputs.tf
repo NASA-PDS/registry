@@ -1,70 +1,71 @@
+# Root Outputs
+# These outputs expose values from the sub-modules
+
+# OpenSearch Collection Outputs
 output "collection_id" {
   description = "The ID of the OpenSearch Serverless collection"
-  value       = aws_opensearchserverless_collection.main.id
+  value       = module.opensearch.collection_id
 }
 
 output "collection_arn" {
   description = "The ARN of the OpenSearch Serverless collection"
-  value       = aws_opensearchserverless_collection.main.arn
+  value       = module.opensearch.collection_arn
 }
 
 output "collection_endpoint" {
   description = "The endpoint URL for the OpenSearch Serverless collection"
-  value       = aws_opensearchserverless_collection.main.collection_endpoint
+  value       = module.opensearch.collection_endpoint
 }
 
 output "dashboard_endpoint" {
   description = "The OpenSearch Dashboards endpoint URL"
-  value       = aws_opensearchserverless_collection.main.dashboard_endpoint
+  value       = module.opensearch.dashboard_endpoint
 }
 
 output "collection_name" {
   description = "The name of the OpenSearch Serverless collection"
-  value       = aws_opensearchserverless_collection.main.name
+  value       = module.opensearch.collection_name
 }
 
 output "collection_type" {
   description = "The type of the OpenSearch Serverless collection"
-  value       = aws_opensearchserverless_collection.main.type
+  value       = module.opensearch.collection_type
 }
 
-output "admin_policy_arn" {
-  description = "The ARN of the IAM policy for OpenSearch admin access"
-  value       = aws_iam_policy.opensearch_admin_access.arn
-}
-
-
-output "admin_roles_configured" {
-  description = "List of admin roles currently configured for data access"
-  value       = local.data_access_principals
-}
-
-output "deployment_stage" {
-  description = "Current deployment stage based on admin roles configuration"
-  value = length(local.data_access_principals) > 0 ? "Stage 3: Complete - Admin roles configured" : "Stage 1: Initial - Awaiting admin role creation"
-}
-
+# VPC Endpoint Outputs
 output "vpc_endpoint_id" {
   description = "The ID of the created VPC endpoint (if created)"
-  value       = aws_vpc_endpoint.opensearch_serverless.id
+  value       = module.opensearch.vpc_endpoint_id
 }
 
 output "vpc_endpoint_dns_entries" {
   description = "DNS entries for the VPC endpoint"
-  value       = aws_vpc_endpoint.opensearch_serverless.dns_entry
+  value       = module.opensearch.vpc_endpoint_dns_entries
 }
 
 output "security_group_id" {
   description = "The ID of the security group created for the VPC endpoint (if created)"
-  value       = aws_security_group.vpce.id
+  value       = module.opensearch.security_group_id
 }
 
+# Security Policy Outputs
 output "network_policy_name" {
   description = "The name of the network security policy (update this in AWS Console to change Access Type)"
-  value       = aws_opensearchserverless_security_policy.network.name
+  value       = module.opensearch.network_policy_name
 }
 
 output "network_policy_version" {
   description = "The version of the network security policy"
-  value       = aws_opensearchserverless_security_policy.network.policy_version
+  value       = module.opensearch.network_policy_version
+}
+
+# External Policies Outputs
+output "admin_policy_arn" {
+  description = "The ARN of the IAM policy for OpenSearch admin access"
+  value       = module.external_policies.admin_policy_arn
+}
+
+output "api_only_policy_arn" {
+  description = "The ARN of the IAM policy for OpenSearch API-only access (limited writer)"
+  value       = module.external_policies.api_only_policy_arn
 }
