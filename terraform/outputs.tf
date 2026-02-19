@@ -60,9 +60,9 @@ output "network_policy_version" {
 }
 
 # External Policies Outputs
-output "admin_policy_arn" {
+output "api_dashboard_policy_arn" {
   description = "The ARN of the IAM policy for OpenSearch admin access"
-  value       = module.external_policies.admin_policy_arn
+  value       = module.external_policies.api_dashboard_policy_arn
 }
 
 output "api_only_policy_arn" {

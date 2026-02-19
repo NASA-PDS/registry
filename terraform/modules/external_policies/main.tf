@@ -2,9 +2,9 @@
 # This module creates IAM policies that will be attached to roles defined in a separate repository
 
 # IAM policy for admin users
-resource "aws_iam_policy" "opensearch_admin_access" {
-  name        = "${var.collection_name}-admin-access"
-  description = "IAM policy for OpenSearch Serverless admin access to be used by admin users through their Cognito user groups"
+resource "aws_iam_policy" "opensearch_api_dashboard_access" {
+  name        = "${var.collection_name}-api-dashboard-access"
+  description = "IAM policy for OpenSearch Serverless access to API and Dashboards, restrictions are applied in the data policy attached to the collection"
 
   policy = jsonencode({
     Version = "2012-10-17"

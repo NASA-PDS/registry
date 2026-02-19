@@ -46,6 +46,12 @@ variable "readonly_roles" {
   default     = []
 }
 
+variable "node_list" {
+  description = "List of discipline nodes (e.g., ['geo', 'atm', 'img']). For each node, a read-write access rule will be created for the pattern '{node}-*' with the principal 'arn:aws:iam::{account_id}:role/pds-registry-{node}-read-write-aoss-role'"
+  type        = list(string)
+  default     = []
+}
+
 variable "common_tags" {
   description = "Common tags to apply to all resources"
   type        = map(string)

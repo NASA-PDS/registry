@@ -15,6 +15,8 @@ module "opensearch" {
   subnet_ids             = var.subnet_ids
   admin_roles            = var.admin_roles
   readonly_roles         = var.readonly_roles
+  node_list              = var.node_list
+  aws_account_id            = data.aws_caller_identity.current.account_id
   aws_region             = var.aws_region
   common_tags            = var.common_tags
 }

@@ -38,6 +38,15 @@ variable "readonly_roles" {
   type        = list(string)
 }
 
+variable "node_list" {
+  description = "List of discipline nodes (e.g., ['geo', 'atm', 'img']). For each node, a read-write access rule will be created."
+  type        = list(string)
+}
+
+variable "aws_account_id" {
+  description = "AWS account ID for resource ARNs"
+  type        = string
+}
 
 variable "aws_region" {
   description = "AWS region for resources"

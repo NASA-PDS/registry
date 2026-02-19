@@ -1,16 +1,16 @@
-output "admin_policy_arn" {
+output "api_dashboard_policy_arn" {
   description = "The ARN of the IAM policy for OpenSearch admin access"
-  value       = aws_iam_policy.opensearch_admin_access.arn
+  value       = aws_iam_policy.opensearch_api_dashboard_access.arn
 }
 
-output "admin_policy_name" {
+output "api_dashboard_policy_name" {
   description = "The name of the IAM policy for OpenSearch admin access"
-  value       = aws_iam_policy.opensearch_admin_access.name
+  value       = aws_iam_policy.opensearch_api_dashboard_access.name
 }
 
-output "admin_policy_id" {
+output "api_dashboard_policy_id" {
   description = "The ID of the IAM policy for OpenSearch admin access"
-  value       = aws_iam_policy.opensearch_admin_access.id
+  value       = aws_iam_policy.opensearch_api_dashboard_access.id
 }
 
 output "api_only_policy_arn" {

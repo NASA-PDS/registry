@@ -106,15 +106,15 @@ resource "aws_opensearchserverless_access_policy" "data_access" {
   type        = "data"
   description = "Data access policy for ${var.collection_name}"
 
-  policy = jsonencode(concat([
-       # We consider 3 levels of authorization:
-          # - full access across the full collection, for admins
-          # - read only across the full collection
-          # - write access to specific indexes sharing the same prefix related to a discipline node, e.g. geo-*
-          # Authentication access can be granted though Cognito groups or adhoc specific IAM roles.
+  policy = jsonencode(concat(
+    [
+      # We consider 3 levels of authorization:
+      # - full access across the full collection, for admins
+      # - read only across the full collection
+      # - write access to specific indexes sharing the same prefix related to a discipline node, e.g. geo-*
+      # Authentication access can be granted though Cognito groups or adhoc specific IAM roles.
       {
         Rules = [
-
           {
             "Resource" : [
               "collection/${var.collection_name}*"
@@ -137,34 +137,65 @@ resource "aws_opensearchserverless_access_policy" "data_access" {
         "Principal" : var.admin_roles,
         "Description" : "PDS - OpenSearch Admin Access"
       },
-     {
+      {
         Rules = [
           {
-        "Resource": [
-          "collection/${var.collection_name}*"
-        ],
-        "Permission": [
-          "aoss:DescribeCollectionItems"
-        ],
-        "ResourceType": "collection"
-      },
-      {
-        "Resource": [
-          "index/*/*"
-        ],
-        "Permission": [
-          "aoss:ReadDocument",
-          "aoss:DescribeIndex"
-        ],
-        "ResourceType": "index"
-      }
+            "Resource" : [
+              "collection/${var.collection_name}*"
+            ],
+            "Permission" : [
+              "aoss:DescribeCollectionItems"
+            ],
+            "ResourceType" : "collection"
+          },
+          {
+            "Resource" : [
+              "index/*/*"
+            ],
+            "Permission" : [
+              "aoss:ReadDocument",
+              "aoss:DescribeIndex"
+            ],
+            "ResourceType" : "index"
+          }
         ],
         "Principal" : var.readonly_roles,
         "Description" : "PDS - OpenSearch Read-only Access"
       }
-
+    ],
+    # Dynamic rules for discipline nodes (e.g., geo, atm, img)
+    # Each node gets read-write access to indexes matching {node}-* pattern
+    [
+      for node in var.node_list : {
+        Rules = [
+          {
+            "Resource" : [
+              "collection/${var.collection_name}*"
+            ],
+            "Permission" : [
+              "aoss:DescribeCollectionItems"
+            ],
+            "ResourceType" : "collection"
+          },
+          {
+            "Resource" : [
+              "index/*/${node}-*"
+            ],
+            "Permission" : [
+              "aoss:UpdateIndex",
+              "aoss:DescribeIndex",
+              "aoss:ReadDocument",
+              "aoss:WriteDocument"
+            ],
+            "ResourceType" : "index"
+          }
+        ],
+        "Principal" : [
+          "arn:aws:iam::${var.aws_account_id}:role/pds_${node}_limited_writer"
+        ],
+        "Description" : "PDS ${upper(node)} - OpenSearch Limited-Write Access"
+      }
     ]
-    # TODO: add write access for specific indexes for discipline nodes
   ))
 }
 
