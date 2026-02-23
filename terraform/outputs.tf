@@ -69,3 +69,50 @@ output "api_only_policy_arn" {
   description = "The ARN of the IAM policy for OpenSearch API-only access (limited writer)"
   value       = module.external_policies.api_only_policy_arn
 }
+
+# Lambda Outputs
+output "lambda_function_name" {
+  description = "Name of the Lambda function"
+  value       = module.lambda.lambda_function_name
+}
+
+output "lambda_function_arn" {
+  description = "ARN of the Lambda function"
+  value       = module.lambda.lambda_function_arn
+}
+
+output "lambda_log_group_name" {
+  description = "Name of the Lambda CloudWatch Log Group"
+  value       = module.lambda.lambda_log_group_name
+}
+
+output "lambda_log_group_arn" {
+  description = "ARN of the Lambda CloudWatch Log Group"
+  value       = module.lambda.lambda_log_group_arn
+}
+
+output "cognito_jwks_url" {
+  description = "Cognito JWKS URL used for JWT token validation"
+  value       = module.lambda.cognito_jwks_url
+}
+
+output "lambda_policy_arn" {
+  description = "The ARN of the IAM policy for Lambda execution"
+  value       = module.external_policies.lambda_policy_arn
+}
+
+# API Gateway Outputs
+output "api_gateway_id" {
+  description = "ID of the API Gateway"
+  value       = module.api_gateway.api_id
+}
+
+output "api_gateway_endpoint" {
+  description = "Base URL of the API Gateway"
+  value       = module.api_gateway.api_endpoint
+}
+
+output "credentials_endpoint" {
+  description = "Full URL for the GET /credentials endpoint"
+  value       = module.api_gateway.credentials_endpoint
+}

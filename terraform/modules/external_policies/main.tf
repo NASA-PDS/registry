@@ -47,3 +47,42 @@ resource "aws_iam_policy" "opensearch_api_only_access" {
 }
 
 
+
+# POLICY for the lambda function
+resource "aws_iam_policy" "lambda_policy" {
+  name        = "${var.collection_name}-lambda-execution-policy"
+  description = "IAM policy for Lambda execution with CloudWatch Logs and Cognito access"
+
+  policy = jsonencode({
+    "Statement": [
+        {
+            "Action": [
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams",
+                "logs:CreateLogStream",
+                "logs:CreateLogGroup"
+            ],
+            "Effect": "Allow",
+            "Resource": var.lambda_log_group_arn != "" ? [
+              var.lambda_log_group_arn,
+              "${var.lambda_log_group_arn}:*"
+            ] : ["*"]
+        },
+        {
+            "Action": [
+                "cognito-identity:Get*",
+                "cognito-identity:List*",
+                "cognito-identity:DescribeIdentity*",
+                "cognito-idp:AdminListGroupsForUser",
+                "cognito-idp:Get*"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        }
+    ],
+    "Version": "2012-10-17"
+  })
+
+  tags = var.common_tags
+}
+

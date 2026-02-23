@@ -22,3 +22,9 @@ variable "common_tags" {
   description = "Common tags to apply to all resources"
   type        = map(string)
 }
+
+variable "lambda_log_group_arn" {
+  description = "ARN of the Lambda CloudWatch Log Group"
+  type        = string
+  default     = ""
+}

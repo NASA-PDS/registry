@@ -39,3 +39,19 @@ common_tags = {
   ManagedBy   = "terraform"
   Owner       = "your-team"
 }
+
+# Lambda Configuration
+# The IAM execution role ARN should be created in a separate IAM terraform repository
+lambda_execution_role_arn = "arn:aws:iam::123456789012:role/pds-registry-lambda-execution-role"
+lambda_runtime            = "python3.13"
+lambda_timeout            = 30
+lambda_memory_size        = 512
+
+# Cognito Configuration for Lambda
+cognito_allowed_groups   = ["admin", "read-only", "geo-writers"]
+cognito_user_pool_id     = "us-east-1_XXXXXXXXX"
+cognito_identity_pool_id = "us-east-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+# API Gateway Configuration
+api_gateway_name       = "pds-registry-api"
+api_gateway_stage_name = "prod"

@@ -79,3 +79,59 @@ variable "security_group_ids" {
   type        = list(string)
   default     = []
 }
+
+# Lambda Configuration
+variable "lambda_execution_role_arn" {
+  description = "IAM execution role ARN for Lambda function (created in separate IAM infrastructure repository)"
+  type        = string
+  default     = ""
+}
+
+variable "lambda_runtime" {
+  description = "Lambda runtime version"
+  type        = string
+  default     = "python3.13"
+}
+
+variable "lambda_timeout" {
+  description = "Lambda function timeout in seconds"
+  type        = number
+  default     = 30
+}
+
+variable "lambda_memory_size" {
+  description = "Lambda function memory size in MB"
+  type        = number
+  default     = 512
+}
+
+variable "cognito_allowed_groups" {
+  description = "List of Cognito groups allowed to access the Lambda function"
+  type        = list(string)
+  default     = []
+}
+
+variable "cognito_user_pool_id" {
+  description = "Cognito User Pool ID for Lambda authentication"
+  type        = string
+  default     = ""
+}
+
+variable "cognito_identity_pool_id" {
+  description = "Cognito Identity Pool ID for Lambda authentication"
+  type        = string
+  default     = ""
+}
+
+# API Gateway Configuration
+variable "api_gateway_name" {
+  description = "Name of the API Gateway"
+  type        = string
+  default     = "pds-registry-api"
+}
+
+variable "api_gateway_stage_name" {
+  description = "API Gateway deployment stage name"
+  type        = string
+  default     = "prod"
+}
