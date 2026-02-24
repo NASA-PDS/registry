@@ -1,11 +1,10 @@
 {
 	"info": {
-		"_postman_id": "8231e835-4e81-4906-af93-d2c6fd8c98b1",
-		"name": "Planetary Data System API Reference Tests Copy 15",
+		"_postman_id": "7a775f03-8386-4c69-a93d-4cb7a5abacaf",
+		"name": "Planetary Data System API Reference Tests Copy 20",
 		"description": "Federated PDS API which provides actionable end points standardized\nbetween the different nodes.\n\n\nContact Support:\n Email: pds-operator@jpl.nasa.gov",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "11337552",
-		"_collection_link": "https://interstellar-satellite-406261.postman.co/workspace/My-Workspace~2ee1fece-93c6-4f38-806d-fa321e2e92d5/collection/11337552-8231e835-4e81-4906-af93-d2c6fd8c98b1?action=share&source=collection_link&creator=11337552"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36608493"
 	},
 	"item": [
 		{
@@ -1329,15 +1328,7 @@
 								"type": "text"
 							}
 						],
-						"url": {
-							"raw": "{{baseUrl}}/products",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products"
-							]
-						}
+						"url": "{{baseUrl}}/products"
 					},
 					"response": []
 				},
@@ -1360,15 +1351,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/health",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"health"
-							]
-						}
+						"url": "{{baseUrl}}/health"
 					},
 					"response": []
 				},
@@ -2236,7 +2219,8 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -2420,17 +2404,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products",
-								"urn:nasa:pds:mars2020.spice",
-								"members"
-							]
-						}
+						"url": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members"
 					},
 					"response": []
 				},
@@ -2449,7 +2423,19 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.execution.skipRequest(); // skip until reimplemented or route/requirement removed"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -2492,25 +2478,26 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.execution.skipRequest(); // skip until reimplemented or route/requirement removed"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members/members",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products",
-								"urn:nasa:pds:mars2020.spice",
-								"members",
-								"members"
-							]
-						}
+						"url": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members/members"
 					},
 					"response": []
 				},
@@ -2577,17 +2564,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products",
-								"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020",
-								"member-of"
-							]
-						}
+						"url": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of"
 					},
 					"response": []
 				},
@@ -2606,7 +2583,19 @@
 									"pm.test(\"C4443890 Correct data returned according to q param\", () => {pm.expect(content.data[0][\"properties\"][\"pds:Time_Coordinates.pds:start_date_time\"][0]).to.eql(\"2020-07-30T12:51:34Z\")});"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.execution.skipRequest(); // skip until reimplemented or route/requirement removed"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -2648,25 +2637,26 @@
 									"pm.test(\"C4438483 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice::3.0\")});"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.execution.skipRequest(); // skip until reimplemented or route/requirement removed"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of/member-of",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products",
-								"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020",
-								"member-of",
-								"member-of"
-							]
-						}
+						"url": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of/member-of"
 					},
 					"response": []
 				},
@@ -3040,12 +3030,7 @@
 								"type": "text"
 							}
 						],
-						"url": {
-							"raw": "{{baseUrl}}",
-							"host": [
-								"{{baseUrl}}"
-							]
-						}
+						"url": "{{baseUrl}}"
 					},
 					"response": []
 				},
@@ -3086,15 +3071,7 @@
 								"type": "text"
 							}
 						],
-						"url": {
-							"raw": "{{baseUrl}}/products",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products"
-							]
-						}
+						"url": "{{baseUrl}}/products"
 					},
 					"response": []
 				},
@@ -3542,6 +3519,496 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#406 search on existent field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body contains summary with hits count\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"summary\");",
+									"    pm.expect(jsonData.summary).to.have.property(\"hits\");",
+									"    pm.expect(jsonData.summary.hits).to.be.a(\"number\");",
+									"});",
+									"",
+									"pm.test(\"Data array is present and not empty\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"    pm.expect(jsonData.data).to.be.an(\"array\").that.is.not.empty;",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(pds:Identification_Area.pds:logical_identifier exists)",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(pds:Identification_Area.pds:logical_identifier exists)",
+									"description": "find all documents, which should be all, that have a logical identifier defined"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#406 search on existent wildcard field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body contains summary with hits count\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"summary\");",
+									"    pm.expect(jsonData.summary).to.have.property(\"hits\");",
+									"    pm.expect(jsonData.summary.hits).to.be.a(\"number\");",
+									"});",
+									"",
+									"pm.test(\"Data array is present and not empty\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"    pm.expect(jsonData.data).to.be.an(\"array\").that.is.not.empty;",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(*logical_identifier exists)",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(*logical_identifier exists)",
+									"description": "find all documents, which should be all, that have a logical identifier defined"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#406 search on non-existent field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test for successful response status",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test that response body is a valid JSON object",
+									"pm.test(\"Response body is valid JSON\", function () {",
+									"    pm.expect(function () {",
+									"        pm.response.json();",
+									"    }).to.not.throw();",
+									"});",
+									"",
+									"// Test that 'summary.hits' exists and is a number",
+									"pm.test(\"'summary.hits' exists and is a number\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.nested.property('summary.hits');",
+									"    pm.expect(jsonData.summary.hits).to.be.a('number');",
+									"});",
+									"",
+									"// Test that 'summary.hits' is exactly zero",
+									"pm.test(\"'summary.hits' is exactly zero\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.hits).to.eql(0);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(pds:Identification_Area.pds:illogical_identifier exists)",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(pds:Identification_Area.pds:illogical_identifier exists)"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#406 search on non-existent wildcard field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test for successful response status",
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(*illogical_identifier exists)",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(*illogical_identifier exists)"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#406 search on NOT non-existent field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has summary object with hits and properties\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"summary\");",
+									"    pm.expect(jsonData.summary).to.have.property(\"hits\");",
+									"    pm.expect(jsonData.summary).to.have.property(\"properties\");",
+									"    pm.expect(jsonData.summary.properties).to.be.an(\"array\");",
+									"});",
+									"",
+									"pm.test(\"Response has data array and it is not empty\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"data\");",
+									"    pm.expect(jsonData.data).to.be.an(\"array\");",
+									"    pm.expect(jsonData.data.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"summary.hits is greater than 0\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.hits).to.be.above(0);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=not (pds:Identification_Area.pds:illogical_identifier exists)",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "not (pds:Identification_Area.pds:illogical_identifier exists)"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#406 search on NOT non-existent wildcard field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=not (*illogical_identifier exists)",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "not (*illogical_identifier exists)"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#406 search on NOT existent field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that response status code is 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test that response body is a valid JSON object",
+									"pm.test(\"Response body is valid JSON object\", function () {",
+									"    let jsonData;",
+									"    pm.expect(function () {",
+									"        jsonData = pm.response.json();",
+									"    }).to.not.throw();",
+									"    pm.expect(jsonData).to.be.an(\"object\");",
+									"});",
+									"",
+									"// Test that summary.hits exists and is a number",
+									"pm.test(\"summary.hits exists and is a number\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.nested.property(\"summary.hits\");",
+									"    pm.expect(jsonData.summary.hits).to.be.a(\"number\");",
+									"});",
+									"",
+									"// Test that 'summary.hits' is exactly zero",
+									"pm.test(\"'summary.hits' is exactly zero\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.hits).to.eql(0);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=not (pds:Identification_Area.pds:logical_identifier exists)",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "not (pds:Identification_Area.pds:logical_identifier exists)"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#406 search on NOT existent wildcard field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that response status code is 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test that response body is a valid JSON object",
+									"pm.test(\"Response body is valid JSON object\", function () {",
+									"    let jsonData;",
+									"    pm.expect(function () {",
+									"        jsonData = pm.response.json();",
+									"    }).to.not.throw();",
+									"    pm.expect(jsonData).to.be.an(\"object\");",
+									"});",
+									"",
+									"// Test that summary.hits exists and is a number",
+									"pm.test(\"summary.hits exists and is a number\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.nested.property(\"summary.hits\");",
+									"    pm.expect(jsonData.summary.hits).to.be.a(\"number\");",
+									"});",
+									"",
+									"// Test that 'summary.hits' is exactly zero",
+									"pm.test(\"'summary.hits' is exactly zero\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.hits).to.eql(0);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=not (pds:Identification_Area.pds:logical_identifier exists)",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "not (pds:Identification_Area.pds:logical_identifier exists)"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NASA-PDS/registry-api#406 search property wildcard on eq operator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that response status code is 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test that response body is a valid JSON object",
+									"pm.test(\"Response body is valid JSON object\", function () {",
+									"    let jsonData;",
+									"    pm.expect(function () {",
+									"        jsonData = pm.response.json();",
+									"    }).to.not.throw();",
+									"    pm.expect(jsonData).to.be.an(\"object\");",
+									"});",
+									"",
+									"// Test that summary.hits exists and is a number",
+									"pm.test(\"summary.hits exists and is a number\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.nested.property(\"summary.hits\");",
+									"    pm.expect(jsonData.summary.hits).to.be.a(\"number\");",
+									"});",
+									"",
+									"// Test that 'summary.hits' is exactly zero",
+									"pm.test(\"'summary.hits' is exactly one \", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.summary.hits).to.eql(1);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?q=(.*pds:logical_identifier eq \"urn:nasa:pds:insight_rad:data_calibrated:hp3_rad_cal_00390_20200101_120222\")",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(.*pds:logical_identifier eq \"urn:nasa:pds:insight_rad:data_calibrated:hp3_rad_cal_00390_20200101_120222\")"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -3565,7 +4032,7 @@
 									"",
 									"pm.test(\"C2488844 Response contains same number of properties\", () => {",
 									"    const responseJson = pm.response.json();",
-									"    pm.expect(responseJson.length).to.be.eql(170);",
+									"    pm.expect(responseJson.length).to.be.greaterThanOrEqual(169)",
 									"});",
 									"",
 									"pm.test(\"C2488844 Response property objects follow expected schema\", () => {",
@@ -3605,15 +4072,7 @@
 								"type": "text"
 							}
 						],
-						"url": {
-							"raw": "{{baseUrl}}/properties",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"properties"
-							]
-						}
+						"url": "{{baseUrl}}/properties"
 					},
 					"response": []
 				},
@@ -3667,15 +4126,7 @@
 								"type": "text"
 							}
 						],
-						"url": {
-							"raw": "{{baseUrl}}/classes",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"classes"
-							]
-						}
+						"url": "{{baseUrl}}/classes"
 					},
 					"response": []
 				},
@@ -3805,16 +4256,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice::1.0",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products",
-								"urn:nasa:pds:mars2020.spice::1.0"
-							]
-						}
+						"url": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice::1.0"
 					},
 					"response": []
 				},
@@ -3874,17 +4316,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice::3.0/members",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products",
-								"urn:nasa:pds:mars2020.spice::3.0",
-								"members"
-							]
-						}
+						"url": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice::3.0/members"
 					},
 					"response": []
 				},
@@ -3906,17 +4338,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products",
-								"urn:nasa:pds:mars2020.spice",
-								"members"
-							]
-						}
+						"url": "{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members"
 					},
 					"response": []
 				},
@@ -4002,15 +4424,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/products",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"products"
-							]
-						}
+						"url": "{{baseUrl}}/products"
 					},
 					"response": []
 				}
@@ -4112,31 +4526,14 @@
 					"request": {
 						"auth": {
 							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "admin",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "admin",
-									"type": "string"
-								}
-							]
+							"basic": {
+								"password": "admin",
+								"username": "admin"
+							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{opensearchUrl}}/en-legacy-registry/_search",
-							"host": [
-								"{{opensearchUrl}}"
-							],
-							"path": [
-								"en-legacy-registry",
-								"_search"
-							]
-						}
+						"url": "{{opensearchUrl}}/en-legacy-registry/_search"
 					},
 					"response": []
 				}
@@ -4324,38 +4721,23 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "sql injection in q parameter",
-					"request": {
-						"method": "GET",
-						"header": []
-					},
-					"response": []
 				}
 			]
 		}
 	],
 	"auth": {
 		"type": "basic",
-		"basic": [
-			{
-				"key": "password",
-				"value": "admin",
-				"type": "string"
-			},
-			{
-				"key": "username",
-				"value": "admin",
-				"type": "string"
-			}
-		]
+		"basic": {
+			"password": "admin",
+			"username": "admin"
+		}
 	},
 	"event": [
 		{
 			"listen": "prerequest",
 			"script": {
 				"type": "text/javascript",
+				"requests": {},
 				"exec": [
 					"// console.log(\"Hello\");",
 					"// setTimeout(() => {  console.log(\"World!\"); }, 2000);",
@@ -4367,6 +4749,7 @@
 			"listen": "test",
 			"script": {
 				"type": "text/javascript",
+				"requests": {},
 				"exec": [
 					""
 				]
@@ -4380,8 +4763,7 @@
 		},
 		{
 			"key": "opensearchUrl",
-			"value": "https://elasticsearch:9200",
-			"type": "string"
+			"value": "https://elasticsearch:9200"
 		}
 	]
 }

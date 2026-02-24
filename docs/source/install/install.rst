@@ -20,7 +20,8 @@ Prerequisites
 Java is required to run many Registry components and tools such as Harvest, Registry Manager,
 and API Server.
 
-Only **Java 17** is supported.
+**Java version 17 to 25** are supported.
+
 Some applications, like Harvest or Registry Manager will not run with **Java 1.8 or 11**.
 
 
@@ -34,13 +35,14 @@ To test if Java is already installed on your system, run the following command i
 
 If Java is already installed, you will see a message similar to this::
 
-    openjdk version "17.0.2" 2022-01-18
-    OpenJDK Runtime Environment (build 17.0.2+8-86)
-    OpenJDK 64-Bit Server VM (build 17.0.2+8-86, mixed mode, sharing)
+
+    java 25 2025-09-16 LTS
+    Java(TM) SE Runtime Environment (build 25+37-LTS-3491)
+    Java HotSpot(TM) 64-Bit Server VM (build 25+37-LTS-3491, mixed mode, sharing)
 
 .. note::
-   Your system might have multiple versions of Java installed, for example, JDK 11 and JDK 17.
-   If JDK 17 is not the default, then set **JAVA_HOME** environment variable to point to JDK 17 before running
+   Your system might have multiple versions of Java installed, for example, JDK 11 and JDK 25.
+   If JDK 25 is not the default, then set **JAVA_HOME** environment variable to point to JDK 25 before running
    Harvest or Registry Manager.
 
 
@@ -50,12 +52,13 @@ Java Installation
 There are several distributions of Java:
 
 * **OpenJDK** (Free) can be downloaded from different sites, for example,
-  `adoptopenjdk.net <https://adoptopenjdk.net/>`_ or
+  `jdk.java.net <https://jdk.java.net/>`_,
+  `temurin <https://adoptium.net/temurin/releases>`_ or
   `azul.com <https://www.azul.com/downloads/zulu-community>`_.
   Most Linux distributions have Open JDK in their standard repositories.
 
-* **Oracle JDK** (Commercial) can be downloaded from
-  `www.oracle.com <https://www.oracle.com/java/technologies/javase-jdk11-downloads.html>`_.
+* **Oracle JDK** (non-open-source license) can be downloaded from
+  `www.oracle.com <https://www.oracle.com/java/technologies/>`_.
   You must register and accept a license to download.
 
 

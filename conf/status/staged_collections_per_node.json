@@ -1,0 +1,21 @@
+
+{
+  "_source": ["ops:Harvest_Info/ops:node_name", "lidvid", "product_class", "ops:Harvest_Info/ops:harvest_date_time"],
+  "size": 2000,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match_phrase": {
+            "product_class": "Product_Collection"
+          }
+        },
+        {
+          "match_phrase": {
+            "ops:Tracking_Meta/ops:archive_status": "staged"
+          }
+        }
+      ]
+    }
+  }
+}

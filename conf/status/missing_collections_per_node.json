@@ -1,0 +1,21 @@
+
+{
+  "_source": ["node", "lidvid", "product_class"],
+  "size": 2000,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match_phrase": {
+            "product_class": "Product_Collection"
+          }
+        },
+        {
+          "match_phrase": {
+            "found_in_registry": "false"
+          }
+        }
+      ]
+    }
+  }
+}
