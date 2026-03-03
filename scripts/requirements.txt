@@ -1,1 +1,1 @@
-pds.registry-client~=0.4.
+pds.registry-client~=0.4.0
