@@ -1,6 +1,6 @@
 
 {
-  "_source": ["node", "lidvid", "product_class", "found_in_registry"],
+  "_source": ["node", "lidvid", "product_class"],
   "size": 10000,
   "query": {
     "bool": {
