@@ -704,7 +704,6 @@ PSA,urn:esa:psa:em16::98.0,Product_Bundle,2023-08-25T17:15:34.107988Z
 PSA,urn:esa:psa:em16_spice::3.0,Product_Bundle,2023-09-23T18:37:19.130634Z
 PSA,urn:esa:psa:em16_spice::7.0,Product_Bundle,2023-09-23T18:37:19.339135Z
 PDS_SBN,urn:nasa:pds:ladee_ldex::1.1,Product_Bundle,2022-08-10T06:28:57.266065Z
-PDS_GEO,urn:nasa:pds:chand1-orb_mini_rf::1.0,Product_Bundle,2024-11-25T23:13:15.504379100Z
 PDS_PPI,urn:nasa:pds:maven.lpw.calibrated::8.1,Product_Bundle,2025-06-24T01:27:38.623827Z
 PDS_PPI,urn:nasa:pds:maven.euv.modelled::23.0,Product_Bundle,2025-06-23T21:52:35.901736Z
 PSA,urn:esa:psa:bc_mpo_berm::1.10,Product_Bundle,2023-09-20T16:01:55.504080Z
