@@ -1,7 +1,7 @@
 
 {
   "_source": ["node", "lidvid", "product_class"],
-  "size": 2000,
+  "size": 10000,
   "query": {
     "bool": {
       "filter": [
