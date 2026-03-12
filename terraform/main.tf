@@ -6,28 +6,28 @@ data "aws_caller_identity" "current" {}
 
 # OpenSearch Serverless Collection Module
 module "opensearch" {
-  source = "./modules/opensearch"
+  source = "./opensearch"
 
+  component_name  = "registry"
   collection_name    = var.collection_name
-  environment        = var.environment
   standby_replicas   = var.standby_replicas
   vpc_id             = var.vpc_id
   subnet_ids         = var.subnet_ids
-  admin_roles        = var.admin_roles
-  readonly_roles     = var.readonly_roles
+  admin_roles        = concat(var.admin_roles, [data.aws_ssm_parameter.opensearch_admin_role_arn.value])
+  readonly_roles     = [data.aws_ssm_parameter.opensearch_readonly_role_arn.value]
   node_list          = var.node_list
-  aws_account_id     = data.aws_caller_identity.current.account_id
   aws_region         = var.aws_region
   common_tags        = var.common_tags
 }
 
+
 # Lambda Module
 # Creates Lambda function and CloudWatch Log Group
 module "lambda" {
-  source = "./modules/lambda"
+  source = "./lambda"
 
   runtime                    = var.lambda_runtime
-  lambda_execution_role_arn  = var.lambda_execution_role_arn
+  lambda_execution_role_arn  = data.aws_ssm_parameter.lambda_execution_role_arn.value
   timeout                    = var.lambda_timeout
   memory_size                = var.lambda_memory_size
   cognito_allowed_groups     = var.cognito_allowed_groups
@@ -37,26 +37,27 @@ module "lambda" {
   vpc_subnet_ids             = var.subnet_ids
   vpc_security_group_ids     = var.security_group_ids
   common_tags                = var.common_tags
+
 }
 
 # External IAM Policies Module
 # Depends on Lambda module (implicit via lambda_log_group_arn reference)
 # This ensures: 1. Lambda created -> 2. CloudWatch log group output -> 3. Policies created
-module "external_policies" {
-  source = "./modules/external_policies"
-
-  collection_name      = var.collection_name
-  collection_arn       = module.opensearch.collection_arn
-  aws_region           = var.aws_region
-  account_id           = data.aws_caller_identity.current.account_id
-  common_tags          = var.common_tags
-  lambda_log_group_arn = module.lambda.lambda_log_group_arn
-}
+#module "external_policies" {
+#  source = "./modules/external_policies"
+#
+#  collection_name      = var.collection_name
+#  collection_arn       = module.opensearch.collection_arn
+#  aws_region           = var.aws_region
+#  account_id           = data.aws_caller_identity.current.account_id
+#  common_tags          = var.common_tags
+#  lambda_log_group_arn = module.lambda.lambda_log_group_arn
+#}
 
 # API Gateway Module
 # Integrates with Lambda function for /credentials endpoint
 module "api_gateway" {
-  source = "./modules/api_gateway"
+  source = "./api_gateway"
 
   api_name             = var.api_gateway_name
   api_description      = "API Gateway for PDS Registry credentials service"

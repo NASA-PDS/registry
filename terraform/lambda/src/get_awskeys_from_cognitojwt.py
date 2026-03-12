@@ -1,7 +1,7 @@
 import json
 import boto3
 import os
-import sys
+import logging
 import time
 import requests
 from jose import jwt, jwk
@@ -9,7 +9,13 @@ from jose.utils import base64url_decode
 from botocore.exceptions import ClientError
 
 
+logger = logging.getLogger(__name__)
+
+
 def lambda_handler(event, context):
+
+    logger.debug('Received event: ' + json.dumps(event))
+
     # Initialize AWS Cognito Idenity Provider (IdP) and Cognito Identity clients
     cognito_idp_client = boto3.client('cognito-idp')
     cognito_identity_client = boto3.client('cognito-identity')
@@ -22,10 +28,14 @@ def lambda_handler(event, context):
     COGNITO_JWKS_URL = os.environ['COGNITO_JWKS_URL']
 
     # Extract tokens from the HTTP headers
-    access_token = event['headers'].get('Authorization')
-    id_token = event['headers'].get('IDToken')
-    print(access_token)
-    print(id_token)
+    # With mapping template, headers preserve their case
+    headers = event.get('headers', {})
+    access_token = headers.get('Authorization')  # case-sensitive from mapping template
+    logger.debug("Access token found in Authorization header %s", access_token)
+
+    id_token = headers.get('IDToken')  # case-sensitive from mapping template
+    logger.debug("IDToken found in headers %s", id_token)
+
     # If no tokens are provided, assume the default read-only role
     if not access_token or not id_token:
         return {
@@ -65,7 +75,7 @@ def lambda_handler(event, context):
 
         # Get the role ARN associated with the user's group
         role_arn = get_role_arn_for_group(user_groups)
-        print(role_arn)
+        logger.debug("Role allocated %s", role_arn)
         identity_id_response = cognito_identity_client.get_id(
             IdentityPoolId=COGNITO_IDENTITY_POOL_ID,
             Logins={
@@ -76,7 +86,7 @@ def lambda_handler(event, context):
 
         # Get temporary creds for AWS
         credentials = get_cognito_credentials(identity_id, id_token, COGNITO_USER_POOL_ID)
-        print(credentials)
+        logger.debug("Credentials provided %s", credentials)
     except ClientError as e:
         return {
             'statusCode': 500,
@@ -94,7 +104,7 @@ def lambda_handler(event, context):
     }
 
 
-# Retrive the role ARN from the user's group
+# Retrieve the role ARN from the user's group
 def get_role_arn_for_group(groups):
     for group in groups:
         if 'RoleArn' in group:

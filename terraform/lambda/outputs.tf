@@ -26,3 +26,13 @@ output "cognito_jwks_url" {
   value       = local.jwks_url
 }
 
+output "lambda_layer_arn" {
+  description = "ARN of the Lambda layer with Python dependencies"
+  value       = aws_lambda_layer_version.layer.arn
+}
+
+output "lambda_layer_version" {
+  description = "Version of the Lambda layer"
+  value       = aws_lambda_layer_version.layer.version
+}
+

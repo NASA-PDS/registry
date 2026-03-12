@@ -43,12 +43,8 @@ resource "aws_security_group" "vpce" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(
-    var.common_tags,
-    {
-      Name = "${var.collection_name}-vpce-sg"
-    }
-  )
+  tags = var.common_tags
+
 }
 
 # VPC Endpoint for OpenSearch Serverless
@@ -62,12 +58,7 @@ resource "aws_vpc_endpoint" "opensearch_serverless" {
 
   private_dns_enabled = true
 
-  tags = merge(
-    var.common_tags,
-    {
-      Name = "${var.collection_name}-vpce"
-    }
-  )
+  tags = var.common_tags
 }
 
 
@@ -173,7 +164,7 @@ resource "aws_opensearchserverless_access_policy" "data_access" {
               "collection/${var.collection_name}*"
             ],
             "Permission" : [
-              "aoss:DescribeCollectionItems"
+              "aoss:DescribeCollectionItems",
             ],
             "ResourceType" : "collection"
           },
@@ -191,7 +182,8 @@ resource "aws_opensearchserverless_access_policy" "data_access" {
           }
         ],
         "Principal" : [
-          "arn:aws:iam::${var.aws_account_id}:role/pds_${node}_limited_writer"
+          data.aws_ssm_parameter.opensearch_node_limited_writer_role_arns[node].value,
+          data.aws_ssm_parameter.opensearch_tenant_core_cloudops_role_arns[node].value
         ],
         "Description" : "PDS ${upper(node)} - OpenSearch Limited-Write Access"
       }
@@ -203,17 +195,12 @@ resource "aws_opensearchserverless_access_policy" "data_access" {
 resource "aws_opensearchserverless_collection" "main" {
   name        = var.collection_name
   type        = "SEARCH"
-  description = "OpenSearch Serverless collection for Registry ${var.environment}"
+  description = "OpenSearch Serverless collection for Registry"
 
   standby_replicas = var.standby_replicas
 
-  tags = merge(
-    var.common_tags,
-    {
-      Name        = var.collection_name
-      Environment = var.environment
-    }
-  )
+  tags = var.common_tags
+
 
   depends_on = [
     aws_opensearchserverless_security_policy.encryption,

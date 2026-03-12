@@ -41,8 +41,8 @@ common_tags = {
 }
 
 # Lambda Configuration
-# The IAM execution role ARN should be created in a separate IAM terraform repository
-lambda_execution_role_arn = "arn:aws:iam::123456789012:role/pds-registry-lambda-execution-role"
+# Lambda execution role is now created automatically by the IAM module
+# lambda_execution_role_arn is no longer needed
 lambda_runtime            = "python3.13"
 lambda_timeout            = 30
 lambda_memory_size        = 512

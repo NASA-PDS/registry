@@ -81,11 +81,8 @@ variable "security_group_ids" {
 }
 
 # Lambda Configuration
-variable "lambda_execution_role_arn" {
-  description = "IAM execution role ARN for Lambda function (created in separate IAM infrastructure repository)"
-  type        = string
-  default     = ""
-}
+# Lambda execution role is now created by the IAM module
+# variable "lambda_execution_role_arn" is no longer needed
 
 variable "lambda_runtime" {
   description = "Lambda runtime version"
@@ -134,4 +131,9 @@ variable "api_gateway_stage_name" {
   description = "API Gateway deployment stage name"
   type        = string
   default     = "prod"
+}
+
+variable "permissions_boundary_arn" {
+  description = "ARN of the permissions boundary policy to attach to IAM roles"
+  type        = string
 }

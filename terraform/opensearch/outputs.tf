@@ -1,11 +1,23 @@
-output "collection_id" {
-  description = "The ID of the OpenSearch Serverless collection"
-  value       = aws_opensearchserverless_collection.main.id
+locals {
+  module_relative_path = replace(abspath(path.module), "/^.*\\/terraform\\//", "")
+  ssm_prefix = "/pds/${var.component_name}/${local.module_relative_path}"
 }
 
-output "collection_arn" {
+
+resource  "aws_ssm_parameter" "collection_name" {
+  name        = "${local.ssm_prefix}/collection_name"
+  description = "The name of the OpenSearch Serverless collection"
+  type        = "String"
+  value       = aws_opensearchserverless_collection.main.name
+  tags        = var.common_tags
+}
+
+resource "aws_ssm_parameter" "collection_arn" {
+  name        = "${local.ssm_prefix}/collection_arn"
   description = "The ARN of the OpenSearch Serverless collection"
+  type        = "String"
   value       = aws_opensearchserverless_collection.main.arn
+  tags        = var.common_tags
 }
 
 output "collection_endpoint" {
@@ -18,25 +30,6 @@ output "dashboard_endpoint" {
   value       = aws_opensearchserverless_collection.main.dashboard_endpoint
 }
 
-output "collection_name" {
-  description = "The name of the OpenSearch Serverless collection"
-  value       = aws_opensearchserverless_collection.main.name
-}
-
-output "collection_type" {
-  description = "The type of the OpenSearch Serverless collection"
-  value       = aws_opensearchserverless_collection.main.type
-}
-
-output "vpc_endpoint_id" {
-  description = "The ID of the created VPC endpoint"
-  value       = aws_vpc_endpoint.opensearch_serverless.id
-}
-
-output "vpc_endpoint_dns_entries" {
-  description = "DNS entries for the VPC endpoint"
-  value       = aws_vpc_endpoint.opensearch_serverless.dns_entry
-}
 
 output "security_group_id" {
   description = "The ID of the security group created for the VPC endpoint"

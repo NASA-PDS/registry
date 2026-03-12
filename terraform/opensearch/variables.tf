@@ -1,10 +1,10 @@
-variable "collection_name" {
-  description = "Name of the OpenSearch Serverless collection"
+variable "component_name" {
+  description = "Component name used for resource naming and tagging"
   type        = string
 }
 
-variable "environment" {
-  description = "Environment name (dev, staging, prod)"
+variable "collection_name" {
+  description = "Name of the OpenSearch Serverless collection"
   type        = string
 }
 
@@ -41,11 +41,6 @@ variable "readonly_roles" {
 variable "node_list" {
   description = "List of discipline nodes (e.g., ['geo', 'atm', 'img']). For each node, a read-write access rule will be created."
   type        = list(string)
-}
-
-variable "aws_account_id" {
-  description = "AWS account ID for resource ARNs"
-  type        = string
 }
 
 variable "aws_region" {
