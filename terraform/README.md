@@ -88,128 +88,35 @@ terraform apply
 
 Go to the AWS console, OpenSearch serverless, network policies, select `Network policies > {collection name}-network`
 
-Edit it to change the access tpye to public.
+Edit it to change the access to public.
 
 
 
-## Configuration Options
+### Initialize the registry
 
-### Collection Types
+The registry needs a schema to be intialized and for integration test purpose we also want to load some reference data in it. To do so, you can use the registry-loader utility as described in
 
-- `SEARCH` - General purpose search and analytics
-- `TIMESERIES` - Optimized for time-series data
-- `VECTORSEARCH` - Optimized for vector embeddings and similarity search
-
-### Access Control
-
-**Option 1: Public Access (Easiest for Development):**
-```hcl
-enable_public_access = true
-```
-
-**Option 2: VPC-Only Access - Create VPC Endpoint (Recommended for Production):**
-```hcl
-enable_public_access = false
-create_vpc_endpoint = true
-vpc_id = "vpc-1234567890abcdef0"
-subnet_ids = ["subnet-1234567890abcdef0", "subnet-0987654321fedcba0"]
-# Optional: provide security group IDs, or leave empty to create a default one
-security_group_ids = []
-```
-
-**Note:** For VPC-only access, the VPC endpoint provides access to **all** OpenSearch Serverless collections in the region, not just this one.
-
-### Standby Replicas
-
-Enable for high availability (increases cost):
-
-```hcl
-standby_replicas = "ENABLED"
-```
-
-## Outputs
-
-After applying, Terraform will output:
-
-- `collection_id` - The unique ID of the collection
-- `collection_arn` - The ARN of the collection
-- `collection_endpoint` - The API endpoint for the collection
-- `dashboard_endpoint` - The OpenSearch Dashboards URL
-- `collection_name` - The name of the collection
-- `collection_type` - The type of the collection
-- `admin_policy_arn` - The ARN of the IAM policy for admin access
-- `vpc_endpoint_id` - The ID of the created VPC endpoint (if created)
-- `vpc_endpoint_dns_entries` - DNS entries for the VPC endpoint
-- `security_group_id` - The security group ID for the VPC endpoint (if created)
-
-## Accessing the Collection
-
-### Using AWS CLI
+Most of the needed configuration is pulled from the terraform output but additional environment is required:
 
 ```bash
-# Get collection details
-aws opensearchserverless get-collection --id <collection-id>
-
-# List collections
-aws opensearchserverless list-collections
+export COGNITO_CLIENT_ID={the cognito client id}
+export COGNITO_USER_POOL_ID={the cognito user pool id}
+export COGNITO_ADMIN_USERNAME={a valid user name to create the registry(admin user)}
+export COGNITO_ADMIN_PASSWORD={their password}
+export COGNITO_WRITER_USERNAME={a valid user name to load data in the registry(writer user)}
+export COGNITO_WRITER_PASSWORD={their password}
+export TEST_DATA_URL=https://github.com/NASA-PDS/registry-ref-data/releases/download/Latest/custom-datasets.tar.gz
+export NODE_REGISTRY=geo-registry
+export REG_LOADER_IMAGE=nasapds/registry-loader-lite:latest
 ```
 
-### Using the API
+Then set you python environment:
 
-Use the `collection_endpoint` output with AWS Signature Version 4 authentication:
+    python3.12 -m venv venv
+    source venv/bin/activate
+    pip install jinja2 requests
 
-```bash
-curl -X GET "https://<collection-endpoint>/_cat/indices" \
-  --aws-sigv4 "aws:amz:us-east-1:aoss" \
-  --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY"
-```
 
-## Cost Considerations
+And run the script to initialize the registry:
 
-- OpenSearch Serverless charges for:
-  - OpenSearch Compute Units (OCUs) - minimum 2 OCUs
-  - Storage (per GB-month)
-  - Data transfer
-- Standby replicas double the OCU cost
-- Consider using `standby_replicas = "DISABLED"` for development
-
-## Cleanup
-
-To destroy all resources:
-
-```bash
-terraform destroy
-```
-
-## Troubleshooting
-
-### Authentication Issues
-
-Ensure your IAM user/role has the following permissions:
-- `aoss:CreateCollection`
-- `aoss:CreateSecurityPolicy`
-- `aoss:CreateAccessPolicy`
-- IAM permissions to create/manage policies
-
-### Access Denied to Collection
-
-Ensure your IAM principal is listed in `allowed_principals` in the variables.
-
-### VPC Endpoint Issues
-
-For VPC-only access, ensure you've created a VPC endpoint for OpenSearch Serverless in your VPC.
-
-## Security Best Practices
-
-1. **Never commit `backend-config.tfvars` or `terraform.tfvars`** - Add them to `.gitignore`
-2. Use IAM roles instead of IAM users when possible
-3. Enable encryption at rest (enabled by default in this configuration)
-4. Use VPC endpoints for production workloads
-5. Enable standby replicas for production environments
-6. Regularly review and audit access policies
-7. Use DynamoDB table for state locking to prevent concurrent modifications
-
-## References
-
-- [AWS OpenSearch Serverless Documentation](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless.html)
-- [Terraform AWS Provider - OpenSearch Serverless](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/opensearchserverless_collection)
+    python run-init-on-aws.py
