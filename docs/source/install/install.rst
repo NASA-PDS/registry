@@ -20,7 +20,8 @@ Prerequisites
 Java is required to run many Registry components and tools such as Harvest, Registry Manager,
 and API Server.
 
-Only **Java version 17 to 25** are supported.
+**Java version 17 to 25** are supported.
+
 Some applications, like Harvest or Registry Manager will not run with **Java 1.8 or 11**.
 
 
@@ -33,6 +34,7 @@ To test if Java is already installed on your system, run the following command i
 
 
 If Java is already installed, you will see a message similar to this::
+
 
     java 25 2025-09-16 LTS
     Java(TM) SE Runtime Environment (build 25+37-LTS-3491)

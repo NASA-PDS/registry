@@ -1,0 +1,57 @@
+
+# Example Terraform variables
+# Copy this file to terraform.tfvars and customize the values
+
+aws_region      = "us-east-1"
+environment     = "dev"
+collection_name = "registry-collection"
+
+# Standby replicas: ENABLED or DISABLED
+standby_replicas = "DISABLED"
+
+# Network Access Configuration
+# Option 1: Public access (easier for development/testing)
+enable_public_access = true
+
+# Option 2: VPC-only access via VPC endpoint (recommended for production)
+# enable_public_access = false
+# create_vpc_endpoint = true
+# vpc_id = "vpc-1234567890abcdef0"
+# subnet_ids = ["subnet-1234567890abcdef0", "subnet-0987654321fedcba0"]
+# security_group_ids = []  # Leave empty to create a default security group
+
+# Admin roles configuration (see DEPLOYMENT_STAGES.md for deployment workflow)
+# Stage 1 (initial): Deploy without admin role
+admin_console_role = []
+use_ssm_for_admin_role = false
+
+# Stage 2 (after IAM role created in separate terraform): Enable SSM to read role ARN
+# The IAM role ARN should be stored at: /pds/infra/iam/roles/pds_cognito_cds_admin_role_arn
+# use_ssm_for_admin_role = true
+
+# Alternative: Directly specify admin role ARNs for console access
+# admin_console_role = ["arn:aws:iam::123456789012:role/pds-registry-admin"]
+
+# Common tags applied to all resources
+common_tags = {
+  Project     = "registry"
+  Environment = "dev"
+  ManagedBy   = "terraform"
+  Owner       = "your-team"
+}
+
+# Lambda Configuration
+# Lambda execution role is now created automatically by the IAM module
+# lambda_execution_role_arn is no longer needed
+lambda_runtime            = "python3.13"
+lambda_timeout            = 30
+lambda_memory_size        = 512
+
+# Cognito Configuration for Lambda
+cognito_allowed_groups   = ["admin", "read-only", "geo-writers"]
+cognito_user_pool_id     = "us-east-1_XXXXXXXXX"
+cognito_identity_pool_id = "us-east-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+# API Gateway Configuration
+api_gateway_name       = "pds-registry-api"
+api_gateway_stage_name = "prod"
