@@ -433,6 +433,30 @@ password = {self.env_vars[password_key]}
                 ["harvest" , "-c", "/config/harvest-job-config.xml"]
             )
 
+            # set archive status
+            test_lidvids = ["urn:nasa:pds:mars2020.spice::1.0", "urn:nasa:pds:mars2020.spice::2.0",  "urn:nasa:pds:mars2020.spice::3.0"]
+            for lidvid in test_lidvids:
+                self.run_docker_container(
+                    "registry-manager set-archive-status",
+                    ["registry-manager", "set-archive-status",
+                     "-status", "archived", "-lidvid", lidvid,
+                     "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
+                )
+            self.run_docker_container(
+                "registry-manager set-archive-status",
+                ["registry-manager", "set-archive-status",
+                 "-status", "staged", "-lidvid", "urn:nasa:pds:mars2020.spice:document::1.0",
+                 "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
+            )
+            self.run_docker_container(
+                "registry-manager set-archive-status",
+                ["registry-manager", "set-archive-status",
+                 "-status", "archived", "-lidvid", "urn:nasa:pds:insight_rad::2.1",
+                 "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
+            )
+
+
+
             # Cleanup
             self.cleanup_temp_files()
 
