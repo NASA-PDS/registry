@@ -54,6 +54,8 @@ PDS_PPI,urn:nasa:pds:maven.anc:data.drf.usm4::2.22,Product_Collection,2026-03-17
 PDS_PPI,urn:nasa:pds:maven.anc:data.drf.usm5::2.22,Product_Collection,2026-03-17T05:15:43.181283Z
 PDS_PPI,urn:nasa:pds:maven.anc:data.drf.usm6::2.22,Product_Collection,2026-03-17T05:21:58.727741Z
 PDS_PPI,urn:nasa:pds:maven.mag.calibrated:data.ss::2.37,Product_Collection,2026-03-18T02:58:07.485590Z
+PDS_PPI,urn:nasa:pds:maven.sep.calibrated:data.anc::1.22,Product_Collection,2026-03-18T17:06:10.556580Z
+PDS_PPI,urn:nasa:pds:maven.sep.calibrated:data.spec::2.24,Product_Collection,2026-03-18T18:37:31.405528Z
 PSA,urn:esa:psa:em16_tgo_cas:data_raw::23.0,Product_Collection,2023-11-14T15:06:19.896660Z
 PSA,urn:esa:psa:em16_tgo_cas:data_raw::26.0,Product_Collection,2023-11-14T15:07:30.230917Z
 PSA,urn:esa:psa:em16_tgo_cas:data_raw::36.0,Product_Collection,2023-11-14T15:11:19.263128Z
@@ -1996,5 +1998,3 @@ PSA,urn:esa:psa:bc_mpo_serena:browse_calibrated::0.1,Product_Collection,2023-09-
 PSA,urn:esa:psa:bc_mpo_serena:data_calibrated::0.15,Product_Collection,2023-09-20T15:39:32.998430Z
 PSA,urn:esa:psa:bc_mpo_serena:data_raw::0.15,Product_Collection,2023-09-20T15:36:32.758184Z
 PSA,urn:esa:psa:bc_mpo_serena:data_raw::0.3,Product_Collection,2023-09-20T15:20:00.252242Z
-PSA,urn:esa:psa:bc_mpo_sixs:calibration_files::3.0,Product_Collection,2023-09-21T05:52:36.234683Z
-PSA,urn:esa:psa:bc_mpo_sixs:calibration_files::3.1,Product_Collection,2023-09-21T05:52:37.938738Z
