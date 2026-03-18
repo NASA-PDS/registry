@@ -54,8 +54,8 @@ PDS_PPI,urn:nasa:pds:maven.anc:data.drf.usm4::2.22,Product_Collection,2026-03-17
 PDS_PPI,urn:nasa:pds:maven.anc:data.drf.usm5::2.22,Product_Collection,2026-03-17T05:15:43.181283Z
 PDS_PPI,urn:nasa:pds:maven.anc:data.drf.usm6::2.22,Product_Collection,2026-03-17T05:21:58.727741Z
 PDS_PPI,urn:nasa:pds:maven.mag.calibrated:data.ss::2.37,Product_Collection,2026-03-18T02:58:07.485590Z
-PDS_PPI,urn:nasa:pds:maven.sep.calibrated:data.anc::1.22,Product_Collection,2026-03-18T17:06:10.556580Z
 PDS_PPI,urn:nasa:pds:maven.sep.calibrated:data.spec::2.24,Product_Collection,2026-03-18T18:37:31.405528Z
+PDS_PPI,urn:nasa:pds:maven.sep.calibrated:data.anc::1.22,Product_Collection,2026-03-18T17:06:10.556580Z
 PSA,urn:esa:psa:em16_tgo_cas:data_raw::23.0,Product_Collection,2023-11-14T15:06:19.896660Z
 PSA,urn:esa:psa:em16_tgo_cas:data_raw::26.0,Product_Collection,2023-11-14T15:07:30.230917Z
 PSA,urn:esa:psa:em16_tgo_cas:data_raw::36.0,Product_Collection,2023-11-14T15:11:19.263128Z
@@ -1270,6 +1270,7 @@ PDS_PPI,urn:nasa:pds:ulysses-cospin:data-het::1.1,Product_Collection,2026-03-12T
 PDS_PPI,urn:nasa:pds:vg2-jupiter-pos-s3coords:document::1.0,Product_Collection,2026-03-13T06:40:08.151778Z
 PDS_PPI,urn:nasa:pds:maven.anc:data.drf.usm1::2.22,Product_Collection,2026-03-17T04:46:44.044362Z
 PDS_PPI,urn:nasa:pds:maven.anc:data.drf.pf::2.22,Product_Collection,2026-03-17T02:43:09.810694Z
+PDS_PPI,urn:nasa:pds:maven.static.c:data.2a_hkp::4.26,Product_Collection,2026-03-18T19:35:31.828569Z
 PSA,urn:esa:psa:em16:miscellaneous_ancillary::100.12,Product_Collection,2023-08-25T11:09:40.816455Z
 PSA,urn:esa:psa:em16:miscellaneous_ancillary::100.17,Product_Collection,2023-08-25T11:10:44.992484Z
 PSA,urn:esa:psa:em16:miscellaneous_ancillary::100.21,Product_Collection,2023-08-25T11:11:33.757581Z
