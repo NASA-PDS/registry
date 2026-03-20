@@ -29,18 +29,12 @@ pip install -e '.[dev]'
 
 ### Pre-commit Hooks
 
-**IMPORTANT: Pre-commit hooks must be installed before pushing to any branch.** Before working in this repo, run:
-
+Configure pre-commit hooks (runs on commit and push):
 ```bash
 pre-commit install
 pre-commit install -t pre-push
 pre-commit install -t prepare-commit-msg
 pre-commit install -t commit-msg
-```
-
-If pre-commit is not installed, run the full tox suite as an alternative before pushing:
-```bash
-tox
 ```
 
 The hooks check for:
@@ -117,7 +111,7 @@ The `docker/` directory contains the full application stack. Key profiles:
 **Start backend services (Elasticsearch + Registry API):**
 ```bash
 cd docker
-docker compose --profile=pds-core-registry up --detach
+docker compose --profile=pds-core-registry up -d
 ```
 
 **Start development environment with test data (no API):**
@@ -132,7 +126,7 @@ docker compose --profile=int-registry-batch-loader up
 
 **Clean up deployment:**
 ```bash
-docker compose --profile=int-registry-batch-loader down --volumes
+docker compose --profile=int-registry-batch-loader down --volume
 ```
 
 **Note:** Before first run, generate certificates:
@@ -197,52 +191,14 @@ Both use the NASA-PDS Roundup action for building and releasing.
 
 ### Registry Status Reporting
 
-`scripts/generate_registry_status_reports.py` — runs on a schedule to generate CSV reports in `docs/status/` tracking missing, staged, and loaded products, plus interactive burnup charts. Key details:
+`scripts/generate_registry_status_reports.py` — runs on a schedule to generate CSV reports in `docs/status/` tracking missing and staged products. Key details:
 
-**Running the script:**
-- Always run with the local `venv/`: `./venv/bin/python scripts/generate_registry_status_reports.py`
-- `pds-registry-client` is resolved from the **same venv as the running Python** (`sys.executable`); do not rely on shell PATH
 - Requires AWS/Cognito credentials via `~/.pds/.registry-client` or `.env`
-- Default behavior is **no commit**; pass `--commit` to push after generating
-
-**Query config files (`conf/status/*.json`):**
-Each file is an OpenSearch DSL body passed directly to `pds-registry-client`. There are four categories:
-
-| File | Endpoint | Purpose |
-|------|----------|---------|
-| `missing_bundles_per_node.json` | `/en-legacy-registry/_search` | All bundles from legacy Solr (includes `found_in_registry` field) |
-| `missing_collections_per_node.json` | `/en-legacy-registry/_search` | All collections from legacy Solr |
-| `staged_bundles_per_node.json` | `/*-registry/_search` | Bundles in new OpenSearch with `archive_status=staged` |
-| `staged_collections_per_node.json` | `/*-registry/_search` | Collections with `archive_status=staged` |
-| `loaded_bundles_per_node.json` | `/*-registry/_search` | **All** bundles in new OpenSearch (no `archive_status` filter); includes `sort` for pagination |
-| `loaded_collections_per_node.json` | `/*-registry/_search` | **All** collections in new OpenSearch; includes `sort` for pagination |
-
-**Data populations — critical distinction:**
-- `en-legacy-registry`: populated by the `legacy_registry_sync` sweeper from `https://pds.nasa.gov/services/search/search` (legacy Solr). Each doc has `found_in_registry=true/false` indicating whether that LIDVID is in the new OpenSearch registry.
-- `*-registry` (new OpenSearch): the target system. Contains products from legacy Solr migration **plus** products directly harvested from other sources (e.g., PSA/ESA ~900 bundles, ~4000 collections). The loaded count will therefore be **larger** than the legacy Solr count — do not compare them directly.
-- Staged products are a subset of loaded products (loaded but `archive_status != archived`). They are an operator concern, not a loading-progress metric.
-
-**Pagination:** The `loaded_*` queries use `run_query_paginated()` (search_after on `_id`) to page through results 10,000 at a time. The AOSS `max_result_window` hard limit is 10,000 — querying with `size > 10000` returns garbage results instead of an error. All other queries use a single-page `run_query()` and are currently limited to 10,000 records.
-
-**Outputs generated:**
-
-| File | Description |
-|------|-------------|
-| `missing_bundles_in_registry.csv` | Bundles in legacy Solr not yet in new registry, with `superseded` flag |
-| `missing_collections_in_registry.csv` | Collections in legacy Solr not yet in new registry, with `superseded` flag |
-| `staged_bundles_in_registry.csv` | Bundles in new registry with `archive_status=staged` |
-| `staged_collections_in_registry.csv` | Collections in new registry with `archive_status=staged` |
-| `loaded_bundles_in_registry.csv` | All bundles in new registry (paginated) |
-| `loaded_collections_in_registry.csv` | All collections in new registry (paginated) |
-| `counts_history.csv` | Append-only snapshot of missing/staged totals per run |
-| `burnup_history.csv` | Cumulative loaded counts by date (all versions) |
-| `burnup_by_node.csv` | Per-node cumulative loaded counts (all versions) |
-| `burnup_history_latest.csv` | Cumulative loaded counts (latest version per LID only) |
-| `burnup_by_node_latest.csv` | Per-node cumulative loaded counts (latest only) |
-| `burnup_chart.html` | Interactive Chart.js burnup chart with date-range filtering |
-| `README.md` | Auto-updated metrics summary table |
-
-**Burnup chart:** Generated by `generate_burnup_chart_html()`. Uses `ops:Harvest_Info/ops:harvest_date_time` from `loaded_*` CSVs as the time axis. Target = loaded count + missing count per node. Chart defaults to 1-year view; all data is embedded as JSON so filtering is client-side with no regeneration needed.
+- Uses `pds-registry-client` from the **same venv as the running Python** (resolved via `sys.executable`); do not rely on shell PATH
+- Queries `conf/status/*.json` OpenSearch DSL files against the legacy and current registry indices
+- For missing products, generates three CSVs per type: overall, `*_latest_*` (highest version per LID), `*_superseded_*` (older versions)
+- Appends one row to `docs/status/counts_history.csv` on every run for burndown tracking — this file is **append-only, never overwritten**
+- Run with `--no-commit` to generate locally without pushing
 
 `scripts/backfill_history.py` — one-off utility to populate `counts_history.csv` from git history of the status CSVs. Safe to re-run (skips dates already present).
 

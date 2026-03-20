@@ -47,9 +47,9 @@ HISTORY_FILE = "docs/status/counts_history.csv"
 
 # ── version splitting (mirrors generate_registry_status_reports.py) ──────────
 
-def split_by_version(rows: list[list[str]]) -> tuple[list[list[str]], list[list[str]]]:
+def split_by_version(rows: list[list[str]]) -> tuple[list, list]:
     """Split rows into (latest, superseded) by LID using numeric version comparison."""
-    by_lid: dict[str, list[tuple[tuple[int, ...], list[str]]]] = defaultdict(list)
+    by_lid: dict[str, list] = defaultdict(list)
     for row in rows:
         lidvid = row[1] if len(row) > 1 else ""
         if "::" in lidvid:
@@ -62,8 +62,7 @@ def split_by_version(rows: list[list[str]]) -> tuple[list[list[str]], list[list[
             ver_key = (0,)
         by_lid[lid].append((ver_key, row))
 
-    latest: list[list[str]] = []
-    superseded: list[list[str]] = []
+    latest, superseded = [], []
     for version_rows in by_lid.values():
         sorted_rows = sorted(version_rows, key=lambda x: x[0], reverse=True)
         latest.append(sorted_rows[0][1])
