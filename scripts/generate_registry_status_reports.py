@@ -5,6 +5,11 @@ Generate CSV status reports for missing and staged products in the PDS Registry.
 This script queries OpenSearch using pds-registry-client and generates CSV reports
 for missing and staged bundles and collections per node.
 
+For missing products, three CSVs are produced per product type:
+  - overall   (all versions)
+  - latest    (highest version per LID)
+  - superseded (all older versions per LID)
+
 Environment variables required:
     REQUEST_SIGNER_AWS_ACCOUNT
     REQUEST_SIGNER_AWS_REGION
@@ -32,6 +37,10 @@ from datetime import datetime
 from datetime import timezone
 from pathlib import Path
 from typing import Any
+
+# Resolve pds-registry-client relative to the running Python executable so the
+# correct venv binary is always used regardless of the shell PATH.
+_PDS_CLIENT = str(Path(sys.executable).parent / "pds-registry-client")
 
 
 # Color codes for terminal output
@@ -95,136 +104,214 @@ def check_required_vars() -> list[str]:
 
 def run_query(query_file: Path, endpoint: str) -> dict[str, Any]:
     """Run a query using pds-registry-client."""
-    cmd = ["pds-registry-client", "-d", f"@{query_file}", endpoint]
+    cmd = [_PDS_CLIENT, "-d", f"@{query_file}", endpoint]
     result = subprocess.run(cmd, capture_output=True, text=True, check=True)
     return json.loads(result.stdout)
 
 
-def write_csv(data: dict[str, Any], output_file: Path, include_harvest_date: bool = False) -> int:
-    """Write query results to CSV file."""
+def extract_rows(data: dict[str, Any], include_harvest_date: bool = False) -> list[tuple]:
+    """Extract result rows from an OpenSearch query response."""
+    rows = []
+    for hit in data.get("hits", {}).get("hits", []):
+        source = hit.get("_source", {})
+
+        # Try both field names for node (missing queries use "node", staged queries use "ops:Harvest_Info/ops:node_name")
+        node = source.get("node") or source.get("ops:Harvest_Info/ops:node_name")
+        # Handle node as a list (staged queries) or string (missing queries)
+        if isinstance(node, list):
+            node = node[0] if node else ""
+        elif node is None:
+            node = ""
+
+        lidvid = source.get("lidvid", "")
+
+        product_class = source.get("product_class", [])
+        # Handle product_class as a list or string
+        if isinstance(product_class, list):
+            product_class = ", ".join(product_class) if product_class else ""
+
+        if include_harvest_date:
+            harvest_date = source.get("ops:Harvest_Info/ops:harvest_date_time", "")
+            # Handle harvest_date as a list or string
+            if isinstance(harvest_date, list):
+                harvest_date = harvest_date[0] if harvest_date else ""
+            rows.append((node, lidvid, product_class, harvest_date))
+        else:
+            rows.append((node, lidvid, product_class))
+
+    return rows
+
+
+def write_rows_to_csv(rows: list[tuple], output_file: Path) -> int:
+    """Write rows to a CSV file. Returns the number of rows written."""
     with open(output_file, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
-        count = 0
-        for hit in data.get("hits", {}).get("hits", []):
-            source = hit.get("_source", {})
+        for row in rows:
+            writer.writerow(row)
+    return len(rows)
 
-            # Try both field names for node (missing queries use "node", staged queries use "ops:Harvest_Info/ops:node_name")
-            node = source.get("node") or source.get("ops:Harvest_Info/ops:node_name")
-            # Handle node as a list (staged queries) or string (missing queries)
-            if isinstance(node, list):
-                node = node[0] if node else ""
-            elif node is None:
-                node = ""
 
-            lidvid = source.get("lidvid", "")
+def split_by_version(rows: list[tuple]) -> tuple[list[tuple], list[tuple]]:
+    """Split rows into latest and superseded versions grouped by LID.
 
-            product_class = source.get("product_class", [])
-            # Handle product_class as a list or string
-            if isinstance(product_class, list):
-                product_class = ", ".join(product_class) if product_class else ""
+    Expects lidvid as the second element (index 1) of each row, in the form
+    ``urn:nasa:pds:<lid>::<major>.<minor>``.  Version comparison is numeric so
+    that e.g. ``3.9 < 3.13``.
 
-            if include_harvest_date:
-                harvest_date = source.get("ops:Harvest_Info/ops:harvest_date_time", "")
-                # Handle harvest_date as a list or string
-                if isinstance(harvest_date, list):
-                    harvest_date = harvest_date[0] if harvest_date else ""
-                writer.writerow([node, lidvid, product_class, harvest_date])
-            else:
-                writer.writerow([node, lidvid, product_class])
-            count += 1
-        return count
+    Returns:
+        (latest_rows, superseded_rows) where latest_rows contains only the
+        highest-versioned row per LID and superseded_rows contains all others.
+    """
+    by_lid: dict[str, list[tuple[tuple[int, ...], tuple]]] = defaultdict(list)
+
+    for row in rows:
+        lidvid = row[1]
+        if "::" in lidvid:
+            lid, ver_str = lidvid.rsplit("::", 1)
+        else:
+            lid, ver_str = lidvid, "0"
+
+        try:
+            ver_key: tuple[int, ...] = tuple(int(x) for x in ver_str.split("."))
+        except ValueError:
+            ver_key = (0,)
+
+        by_lid[lid].append((ver_key, row))
+
+    latest_rows: list[tuple] = []
+    superseded_rows: list[tuple] = []
+
+    for version_rows in by_lid.values():
+        sorted_rows = sorted(version_rows, key=lambda x: x[0], reverse=True)
+        latest_rows.append(sorted_rows[0][1])
+        superseded_rows.extend(r for _, r in sorted_rows[1:])
+
+    return latest_rows, superseded_rows
+
+
+def _count_by_node(csv_path: Path) -> dict[str, int]:
+    """Return a node→count mapping from a CSV file (node is the first column)."""
+    counts: dict[str, int] = defaultdict(int)
+    if csv_path.exists():
+        with open(csv_path, "r") as f:
+            for row in csv.reader(f):
+                if row:
+                    counts[row[0]] += 1
+    return counts
 
 
 def generate_metrics_from_csvs(csv_files: dict[str, Path]) -> str:
     """Generate metrics summary markdown from CSV files."""
-    # Count by node for each report type
-    missing_bundles_by_node = defaultdict(int)
-    missing_collections_by_node = defaultdict(int)
-    staged_bundles_by_node = defaultdict(int)
-    staged_collections_by_node = defaultdict(int)
+    mb = _count_by_node(csv_files["missing_bundles"])
+    mb_latest = _count_by_node(csv_files["missing_bundles_latest"])
+    mb_superseded = _count_by_node(csv_files["missing_bundles_superseded"])
+    mc = _count_by_node(csv_files["missing_collections"])
+    mc_latest = _count_by_node(csv_files["missing_collections_latest"])
+    mc_superseded = _count_by_node(csv_files["missing_collections_superseded"])
+    sb = _count_by_node(csv_files["staged_bundles"])
+    sc = _count_by_node(csv_files["staged_collections"])
 
-    # Read missing bundles
-    if csv_files["missing_bundles"].exists():
-        with open(csv_files["missing_bundles"], "r") as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if row:  # Skip empty rows
-                    node = row[0]
-                    missing_bundles_by_node[node] += 1
+    all_nodes = sorted(
+        set(mb) | set(mc) | set(sb) | set(sc)
+    )
 
-    # Read missing collections
-    if csv_files["missing_collections"].exists():
-        with open(csv_files["missing_collections"], "r") as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if row:
-                    node = row[0]
-                    missing_collections_by_node[node] += 1
-
-    # Read staged bundles
-    if csv_files["staged_bundles"].exists():
-        with open(csv_files["staged_bundles"], "r") as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if row:
-                    node = row[0]
-                    staged_bundles_by_node[node] += 1
-
-    # Read staged collections
-    if csv_files["staged_collections"].exists():
-        with open(csv_files["staged_collections"], "r") as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if row:
-                    node = row[0]
-                    staged_collections_by_node[node] += 1
-
-    # Get all unique nodes
-    all_nodes = set()
-    all_nodes.update(missing_bundles_by_node.keys())
-    all_nodes.update(missing_collections_by_node.keys())
-    all_nodes.update(staged_bundles_by_node.keys())
-    all_nodes.update(staged_collections_by_node.keys())
-    all_nodes = sorted(all_nodes)
-
-    # Generate timestamp
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
-    # Build markdown tables
     markdown = f"*Last updated: {timestamp}*\n\n"
+
+    # --- Missing Products table (expanded with latest/superseded columns) ---
     markdown += "### Missing Products by Node\n\n"
-    markdown += "| Node | Bundles | Collections |\n"
-    markdown += "|------|---------|-------------|\n"
+    markdown += (
+        "| Node "
+        "| Latest Bundles | Superseded Bundles | Total Bundles "
+        "| Latest Collections | Superseded Collections | Total Collections |\n"
+    )
+    markdown += (
+        "|------"
+        "|---------------:|-------------------:|--------------:"
+        "|-------------------:|-----------------------:|------------------:|\n"
+    )
 
-    missing_bundles_total = 0
-    missing_collections_total = 0
+    mb_t = mb_l_t = mb_s_t = mc_t = mc_l_t = mc_s_t = 0
     for node in all_nodes:
-        bundles = missing_bundles_by_node.get(node, 0)
-        collections = missing_collections_by_node.get(node, 0)
-        if bundles > 0 or collections > 0:
-            markdown += f"| {node} | {bundles} | {collections} |\n"
-            missing_bundles_total += bundles
-            missing_collections_total += collections
+        b_total = mb.get(node, 0)
+        b_latest = mb_latest.get(node, 0)
+        b_super = mb_superseded.get(node, 0)
+        c_total = mc.get(node, 0)
+        c_latest = mc_latest.get(node, 0)
+        c_super = mc_superseded.get(node, 0)
+        if b_total > 0 or c_total > 0:
+            markdown += (
+                f"| {node} "
+                f"| {b_latest} | {b_super} | {b_total} "
+                f"| {c_latest} | {c_super} | {c_total} |\n"
+            )
+            mb_t += b_total
+            mb_l_t += b_latest
+            mb_s_t += b_super
+            mc_t += c_total
+            mc_l_t += c_latest
+            mc_s_t += c_super
 
-    markdown += f"| **Total** | **{missing_bundles_total}** | **{missing_collections_total}** |\n\n"
+    markdown += (
+        f"| **Total** "
+        f"| **{mb_l_t}** | **{mb_s_t}** | **{mb_t}** "
+        f"| **{mc_l_t}** | **{mc_s_t}** | **{mc_t}** |\n\n"
+    )
 
+    # --- Staged Products table (unchanged) ---
     markdown += "### Staged Products by Node\n\n"
     markdown += "| Node | Bundles | Collections |\n"
-    markdown += "|------|---------|-------------|\n"
+    markdown += "|------|--------:|------------:|\n"
 
-    staged_bundles_total = 0
-    staged_collections_total = 0
+    sb_t = sc_t = 0
     for node in all_nodes:
-        bundles = staged_bundles_by_node.get(node, 0)
-        collections = staged_collections_by_node.get(node, 0)
+        bundles = sb.get(node, 0)
+        collections = sc.get(node, 0)
         if bundles > 0 or collections > 0:
             markdown += f"| {node} | {bundles} | {collections} |\n"
-            staged_bundles_total += bundles
-            staged_collections_total += collections
+            sb_t += bundles
+            sc_t += collections
 
-    markdown += f"| **Total** | **{staged_bundles_total}** | **{staged_collections_total}** |\n"
+    markdown += f"| **Total** | **{sb_t}** | **{sc_t}** |\n"
 
     return markdown
+
+
+HISTORY_HEADER = (
+    "date,"
+    "missing_bundles_total,missing_bundles_latest,missing_bundles_superseded,"
+    "missing_collections_total,missing_collections_latest,missing_collections_superseded,"
+    "staged_bundles_total,staged_collections_total"
+)
+
+
+def append_history_row(history_file: Path, csv_files: dict[str, Path]) -> None:
+    """Append one dated row of aggregate counts to the history CSV.
+
+    If the file does not yet exist, a header row is written first.  The file is
+    never truncated — only appended to — so historical data accumulates over time.
+    """
+    def total(path: Path) -> int:
+        return sum(_count_by_node(path).values())
+
+    row = ",".join([
+        datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        str(total(csv_files["missing_bundles"])),
+        str(total(csv_files["missing_bundles_latest"])),
+        str(total(csv_files["missing_bundles_superseded"])),
+        str(total(csv_files["missing_collections"])),
+        str(total(csv_files["missing_collections_latest"])),
+        str(total(csv_files["missing_collections_superseded"])),
+        str(total(csv_files["staged_bundles"])),
+        str(total(csv_files["staged_collections"])),
+    ])
+
+    write_header = not history_file.exists()
+    with open(history_file, "a", newline="") as f:
+        if write_header:
+            f.write(HISTORY_HEADER + "\n")
+        f.write(row + "\n")
 
 
 def update_readme_metrics(readme_path: Path, metrics_markdown: str) -> None:
@@ -365,12 +452,12 @@ def main() -> int:
     # Check if pds-registry-client is available
     try:
         subprocess.run(
-            ["pds-registry-client", "--help"],
+            [_PDS_CLIENT, "--help"],
             capture_output=True,
             check=True,
         )
     except (subprocess.CalledProcessError, FileNotFoundError):
-        print_error("pds-registry-client command not found")
+        print_error(f"pds-registry-client not found at {_PDS_CLIENT}")
         print_error("Please install pds-registry-client: pip install pds-registry-client")
         return 1
 
@@ -381,7 +468,11 @@ def main() -> int:
     # Create output directory if it doesn't exist
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Define queries to run: (query_file, endpoint, output_file, include_harvest_date, description)
+    # Define queries to run:
+    #   (query_file, endpoint, output_file, include_harvest_date, description, split_versions)
+    #
+    # split_versions=True generates additional *_latest_* and *_superseded_* CSVs
+    # by grouping LIDVIDs by LID and keeping only the highest version per LID.
     queries = [
         (
             conf_dir / "missing_bundles_per_node.json",
@@ -389,6 +480,7 @@ def main() -> int:
             output_dir / "missing_bundles_in_registry.csv",
             False,
             "missing bundles",
+            True,
         ),
         (
             conf_dir / "missing_collections_per_node.json",
@@ -396,6 +488,7 @@ def main() -> int:
             output_dir / "missing_collections_in_registry.csv",
             False,
             "missing collections",
+            True,
         ),
         (
             conf_dir / "staged_bundles_per_node.json",
@@ -403,6 +496,7 @@ def main() -> int:
             output_dir / "staged_bundles_in_registry.csv",
             True,
             "staged bundles",
+            False,
         ),
         (
             conf_dir / "staged_collections_per_node.json",
@@ -410,24 +504,49 @@ def main() -> int:
             output_dir / "staged_collections_in_registry.csv",
             True,
             "staged collections",
+            False,
         ),
     ]
 
     # Check if all query files exist
-    for query_file, _, _, _, description in queries:
+    for query_file, _, _, _, description, _ in queries:
         if not query_file.exists():
             print_error(f"Query file not found: {query_file}")
             return 1
 
-    # Run all queries
-    output_files = []
-    for query_file, endpoint, output_file, include_harvest_date, description in queries:
+    # Run all queries and write CSVs
+    output_files: list[Path] = []
+    for query_file, endpoint, output_file, include_harvest_date, description, split_versions in queries:
         try:
             print_info(f"Querying for {description}...")
             data = run_query(query_file, endpoint)
-            count = write_csv(data, output_file, include_harvest_date)
-            print_info(f"Successfully generated {output_file} ({count} records)")
+            rows = extract_rows(data, include_harvest_date)
+
+            # Always write the overall CSV
+            count = write_rows_to_csv(rows, output_file)
+            print_info(f"  overall  → {output_file.name} ({count} records)")
             output_files.append(output_file)
+
+            if split_versions:
+                # Derive sibling paths: missing_bundles_in_registry.csv
+                #   → missing_bundles_latest_in_registry.csv
+                #   → missing_bundles_superseded_in_registry.csv
+                stem = output_file.stem  # e.g. "missing_bundles_in_registry"
+                suffix = output_file.suffix
+                base = stem.replace("_in_registry", "")  # "missing_bundles"
+                latest_file = output_dir / f"{base}_latest_in_registry{suffix}"
+                superseded_file = output_dir / f"{base}_superseded_in_registry{suffix}"
+
+                latest_rows, superseded_rows = split_by_version(rows)
+
+                latest_count = write_rows_to_csv(latest_rows, latest_file)
+                print_info(f"  latest   → {latest_file.name} ({latest_count} records)")
+                output_files.append(latest_file)
+
+                superseded_count = write_rows_to_csv(superseded_rows, superseded_file)
+                print_info(f"  superseded → {superseded_file.name} ({superseded_count} records)")
+                output_files.append(superseded_file)
+
         except subprocess.CalledProcessError as e:
             print_error(f"Failed to generate {description} report: {e.stderr}")
             return 1
@@ -436,15 +555,16 @@ def main() -> int:
             return 1
 
     print_info("\nReport generation complete!")
-    print_info("Output files:")
-    for output_file in output_files:
-        print(f"  - {output_file}")
 
     # Generate and update metrics in README
-    print_info("\nUpdating metrics in README...")
+    print_info("Updating metrics in README...")
     csv_files = {
         "missing_bundles": output_dir / "missing_bundles_in_registry.csv",
+        "missing_bundles_latest": output_dir / "missing_bundles_latest_in_registry.csv",
+        "missing_bundles_superseded": output_dir / "missing_bundles_superseded_in_registry.csv",
         "missing_collections": output_dir / "missing_collections_in_registry.csv",
+        "missing_collections_latest": output_dir / "missing_collections_latest_in_registry.csv",
+        "missing_collections_superseded": output_dir / "missing_collections_superseded_in_registry.csv",
         "staged_bundles": output_dir / "staged_bundles_in_registry.csv",
         "staged_collections": output_dir / "staged_collections_in_registry.csv",
     }
@@ -454,10 +574,19 @@ def main() -> int:
         metrics_markdown = generate_metrics_from_csvs(csv_files)
         update_readme_metrics(readme_path, metrics_markdown)
         print_info(f"Successfully updated metrics in {readme_path}")
-        # Add README to list of files to commit
         output_files.append(readme_path)
     except Exception as e:
         print_error(f"Failed to update README metrics: {e}")
+        return 1
+
+    # Append a snapshot row to the history file for burndown tracking
+    history_file = output_dir / "counts_history.csv"
+    try:
+        append_history_row(history_file, csv_files)
+        print_info(f"Appended counts snapshot to {history_file}")
+        output_files.append(history_file)
+    except Exception as e:
+        print_error(f"Failed to append history row: {e}")
         return 1
 
     # Commit and push changes if requested

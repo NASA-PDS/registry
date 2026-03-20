@@ -106,3 +106,6 @@ venv/
 treks_xml/
 lola_xml/
 create-treks-pds4-log.log
+
+# IDE workspace files
+*.code-workspace
