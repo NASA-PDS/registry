@@ -196,7 +196,7 @@ Both use the NASA-PDS Roundup action for building and releasing.
 - Requires AWS/Cognito credentials via `~/.pds/.registry-client` or `.env`
 - Uses `pds-registry-client` from the **same venv as the running Python** (resolved via `sys.executable`); do not rely on shell PATH
 - Queries `conf/status/*.json` OpenSearch DSL files against the legacy and current registry indices
-- For missing products, generates three CSVs per type: overall, `*_latest_*` (highest version per LID), `*_superseded_*` (older versions)
+- For missing products, generates one CSV per type with a `superseded` column (`true`/`false`) indicating whether a LIDVID is the latest version for its LID or an older version
 - Appends one row to `docs/status/counts_history.csv` on every run for burndown tracking — this file is **append-only, never overwritten**
 - Run with `--no-commit` to generate locally without pushing
 
