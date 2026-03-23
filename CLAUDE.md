@@ -126,7 +126,7 @@ docker compose --profile=int-registry-batch-loader up
 
 **Clean up deployment:**
 ```bash
-docker compose --profile=int-registry-batch-loader down --volume
+docker compose --profile=int-registry-batch-loader down --volumes
 ```
 
 **Note:** Before first run, generate certificates:
