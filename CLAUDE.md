@@ -111,7 +111,7 @@ The `docker/` directory contains the full application stack. Key profiles:
 **Start backend services (Elasticsearch + Registry API):**
 ```bash
 cd docker
-docker compose --profile=pds-core-registry up -d
+docker compose --profile=pds-core-registry up --detach
 ```
 
 **Start development environment with test data (no API):**
