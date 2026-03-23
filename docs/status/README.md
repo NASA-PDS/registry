@@ -209,7 +209,7 @@ See the [scripts/README.md](../../scripts/README.md) for more details on running
 - **Missing products** are queried from the `/en-legacy-registry/_search` endpoint
 - **Staged products** are queried from the `/*-registry/_search` endpoint (all registry indices)
 
-Both queries return up to 2000 results per product type.
+Both queries return up to 10000 results per product type.
 
 ## Field Descriptions
 

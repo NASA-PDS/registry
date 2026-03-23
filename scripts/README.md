@@ -38,7 +38,7 @@ To isolate and be able to re-produce the environment for these scripts, you shou
 
 Install the dependencies:
 
-    pip install ./scripts/requirements.txt
+    pip install -r scripts/requirements.txt
 
 
 #### Configuration
@@ -91,22 +91,29 @@ Run from the repository root:
 
 #### Output
 
-Generates four CSV files in `docs/status/` and updates the metrics summary:
+Generates nine CSV files in `docs/status/`, updates the metrics summary, and appends a row to the burndown history:
 
 **Missing Products (queried from `/en-legacy-registry/_search`):**
-1. **`missing_bundles_in_registry.csv`** - Missing Product_Bundle records
-2. **`missing_collections_in_registry.csv`** - Missing Product_Collection records
+1. **`missing_bundles_in_registry.csv`** - All missing Product_Bundle records (all versions)
+2. **`missing_bundles_latest_in_registry.csv`** - Only the highest-versioned missing bundle per LID
+3. **`missing_bundles_superseded_in_registry.csv`** - Older versions of missing bundles (superseded by a newer version)
+4. **`missing_collections_in_registry.csv`** - All missing Product_Collection records (all versions)
+5. **`missing_collections_latest_in_registry.csv`** - Only the highest-versioned missing collection per LID
+6. **`missing_collections_superseded_in_registry.csv`** - Older versions of missing collections (superseded by a newer version)
 
 **Staged Products (queried from `/*-registry/_search`):**
-3. **`staged_bundles_in_registry.csv`** - Staged Product_Bundle records
-4. **`staged_collections_in_registry.csv`** - Staged Product_Collection records
+7. **`staged_bundles_in_registry.csv`** - Staged Product_Bundle records
+8. **`staged_collections_in_registry.csv`** - Staged Product_Collection records
+
+**Burndown History:**
+9. **`counts_history.csv`** - One row appended per run with total counts per category; never overwritten
 
 **Metrics Summary:**
-5. **`README.md`** - Updated with metrics tables showing counts by node
+10. **`README.md`** - Updated with metrics tables showing counts by node
 
 **CSV Formats:**
 
-Missing products (3 columns):
+Missing products — overall, latest, and superseded variants (3 columns each):
 ```
 "NODE_ID","LIDVID","PRODUCT_CLASS"
 ```
@@ -114,6 +121,11 @@ Missing products (3 columns):
 Staged products (4 columns):
 ```
 "NODE_ID","LIDVID","PRODUCT_CLASS","HARVEST_DATE_TIME"
+```
+
+Burndown history (one row per run, never overwritten):
+```
+date,missing_bundles_total,missing_bundles_latest,missing_bundles_superseded,missing_collections_total,missing_collections_latest,missing_collections_superseded,staged_bundles_total,staged_collections_total
 ```
 
 **Examples:**
@@ -140,21 +152,23 @@ Staged products:
    - `conf/status/staged_bundles_per_node.json` → `/*-registry/_search`
    - `conf/status/staged_collections_per_node.json` → `/*-registry/_search`
 4. Transforms JSON responses into CSV format
-5. Saves results to `docs/status/`
-6. Generates metrics summary and updates `docs/status/README.md` with counts by node
-7. Commits and pushes changes to GitHub (unless `--no-commit` is specified)
+5. For missing products, splits rows by version: the highest LIDVID per LID goes into `*_latest_*` files; older versions go into `*_superseded_*` files
+6. Saves all results to `docs/status/`
+7. Generates metrics summary and updates `docs/status/README.md` with counts by node
+8. Appends one row to `docs/status/counts_history.csv` for burndown tracking (never overwrites)
+9. Commits and pushes changes to GitHub (unless `--no-commit` is specified)
 
 #### Query Details
 
 **Missing Products Queries:**
-- Return up to 2000 results per query
+- Return up to 10000 results per query
 - Filter by `product_class` (Product_Bundle or Product_Collection)
 - Filter by `found_in_registry: false`
 - Return fields: `node`, `lidvid`, `product_class`
 - Query endpoint: `/en-legacy-registry/_search`
 
 **Staged Products Queries:**
-- Return up to 2000 results per query
+- Return up to 10000 results per query
 - Filter by `product_class` (Product_Bundle or Product_Collection)
 - Filter by `ops:Tracking_Meta/ops:archive_status: staged`
 - Return fields: `ops:Harvest_Info/ops:node_name`, `lidvid`, `product_class`, `ops:Harvest_Info/ops:harvest_date_time`
