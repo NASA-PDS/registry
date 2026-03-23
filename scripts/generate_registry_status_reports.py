@@ -36,13 +36,28 @@ from collections import defaultdict
 from datetime import datetime
 from datetime import timezone
 from pathlib import Path
+from shutil import which
 from typing import Any
 
-# Resolve pds-registry-client relative to the running Python executable so the
-# correct venv binary is always used regardless of the shell PATH.
-_PDS_CLIENT = str(Path(sys.executable).parent / "pds-registry-client")
+# Resolve pds-registry-client using shutil.which, preferring the directory
+# containing the running Python executable (to pick up the current venv),
+# but also searching the existing PATH.
+_PDS_CLIENT = which(
+    "pds-registry-client",
+    path=os.pathsep.join(
+        [
+            str(Path(sys.executable).parent),
+            os.environ.get("PATH", ""),
+        ]
+    ),
+)
 
-
+if _PDS_CLIENT is None:
+    raise RuntimeError(
+        "Unable to locate 'pds-registry-client' executable. Ensure it is "
+        "installed and available on PATH or in the same virtual environment "
+        "as this script."
+    )
 # Color codes for terminal output
 class Colors:
     RED = "\033[0;31m"
