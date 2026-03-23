@@ -215,16 +215,21 @@ def _count_by_node(csv_path: Path) -> dict[str, int]:
     return counts
 
 
-def generate_metrics_from_csvs(csv_files: dict[str, Path]) -> str:
-    """Generate metrics summary markdown from CSV files."""
-    mb = _count_by_node(csv_files["missing_bundles"])
-    mb_latest = _count_by_node(csv_files["missing_bundles_latest"])
-    mb_superseded = _count_by_node(csv_files["missing_bundles_superseded"])
-    mc = _count_by_node(csv_files["missing_collections"])
-    mc_latest = _count_by_node(csv_files["missing_collections_latest"])
-    mc_superseded = _count_by_node(csv_files["missing_collections_superseded"])
-    sb = _count_by_node(csv_files["staged_bundles"])
-    sc = _count_by_node(csv_files["staged_collections"])
+def _load_all_counts(csv_files: dict[str, Path]) -> dict[str, dict[str, int]]:
+    """Load node→count mappings for all CSV files at once, reading each file only once."""
+    return {key: _count_by_node(path) for key, path in csv_files.items()}
+
+
+def generate_metrics_from_csvs(counts: dict[str, dict[str, int]]) -> str:
+    """Generate metrics summary markdown from pre-computed node→count mappings."""
+    mb = counts["missing_bundles"]
+    mb_latest = counts["missing_bundles_latest"]
+    mb_superseded = counts["missing_bundles_superseded"]
+    mc = counts["missing_collections"]
+    mc_latest = counts["missing_collections_latest"]
+    mc_superseded = counts["missing_collections_superseded"]
+    sb = counts["staged_bundles"]
+    sc = counts["staged_collections"]
 
     all_nodes = sorted(
         set(mb) | set(mc) | set(sb) | set(sc)
@@ -301,25 +306,25 @@ HISTORY_HEADER = (
 )
 
 
-def append_history_row(history_file: Path, csv_files: dict[str, Path]) -> None:
+def append_history_row(history_file: Path, counts: dict[str, dict[str, int]]) -> None:
     """Append one dated row of aggregate counts to the history CSV.
 
     If the file does not yet exist, a header row is written first.  The file is
     never truncated — only appended to — so historical data accumulates over time.
     """
-    def total(path: Path) -> int:
-        return sum(_count_by_node(path).values())
+    def total(key: str) -> int:
+        return sum(counts[key].values())
 
     row = ",".join([
         datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-        str(total(csv_files["missing_bundles"])),
-        str(total(csv_files["missing_bundles_latest"])),
-        str(total(csv_files["missing_bundles_superseded"])),
-        str(total(csv_files["missing_collections"])),
-        str(total(csv_files["missing_collections_latest"])),
-        str(total(csv_files["missing_collections_superseded"])),
-        str(total(csv_files["staged_bundles"])),
-        str(total(csv_files["staged_collections"])),
+        str(total("missing_bundles")),
+        str(total("missing_bundles_latest")),
+        str(total("missing_bundles_superseded")),
+        str(total("missing_collections")),
+        str(total("missing_collections_latest")),
+        str(total("missing_collections_superseded")),
+        str(total("staged_bundles")),
+        str(total("staged_collections")),
     ])
 
     write_header = not history_file.exists()
@@ -585,8 +590,11 @@ def main() -> int:
     }
     readme_path = output_dir / "README.md"
 
+    # Load all node→count mappings once; reuse for both README metrics and history row.
+    counts = _load_all_counts(csv_files)
+
     try:
-        metrics_markdown = generate_metrics_from_csvs(csv_files)
+        metrics_markdown = generate_metrics_from_csvs(counts)
         update_readme_metrics(readme_path, metrics_markdown)
         print_info(f"Successfully updated metrics in {readme_path}")
         output_files.append(readme_path)
@@ -597,7 +605,7 @@ def main() -> int:
     # Append a snapshot row to the history file for burndown tracking
     history_file = output_dir / "counts_history.csv"
     try:
-        append_history_row(history_file, csv_files)
+        append_history_row(history_file, counts)
         print_info(f"Appended counts snapshot to {history_file}")
         output_files.append(history_file)
     except Exception as e:
