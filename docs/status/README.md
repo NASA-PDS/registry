@@ -5,7 +5,7 @@ This directory contains automatically generated CSV reports that track the statu
 ## Metrics Summary
 
 <!-- METRICS_START -->
-*Last updated: 2026-03-20 18:14:56 UTC*
+*Last updated: 2026-03-24 01:30:07 UTC*
 
 ### Missing Products by Node
 
@@ -15,10 +15,10 @@ This directory contains automatically generated CSV reports that track the statu
 | PDS_ATM | 22 | 4 | 26 | 156 | 59 | 215 |
 | PDS_ENG | 2 | 6 | 8 | 18 | 75 | 93 |
 | PDS_GEO | 27 | 9 | 36 | 306 | 224 | 530 |
-| PDS_IMG | 40 | 24 | 64 | 1642 | 191 | 1833 |
-| PDS_PPI | 38 | 175 | 213 | 222 | 1211 | 1433 |
+| PDS_IMG | 40 | 27 | 67 | 1642 | 205 | 1847 |
+| PDS_PPI | 38 | 174 | 212 | 222 | 1207 | 1429 |
 | PDS_SBN | 23 | 21 | 44 | 116 | 63 | 179 |
-| **Total** | **153** | **239** | **392** | **2463** | **1823** | **4286** |
+| **Total** | **153** | **241** | **394** | **2463** | **1833** | **4296** |
 
 ### Staged Products by Node
 
@@ -28,11 +28,11 @@ This directory contains automatically generated CSV reports that track the statu
 | PDS_GEO | 0 | 16 |
 | PDS_IMG | 0 | 64 |
 | PDS_NAIF | 0 | 183 |
-| PDS_PPI | 1 | 274 |
+| PDS_PPI | 1 | 4 |
 | PDS_RMS | 0 | 1 |
-| PDS_SBN | 26 | 142 |
+| PDS_SBN | 25 | 136 |
 | PSA | 902 | 4171 |
-| **Total** | **932** | **4881** |
+| **Total** | **931** | **4605** |
 
 <!-- METRICS_END -->
 
@@ -41,23 +41,19 @@ This directory contains automatically generated CSV reports that track the statu
 ### Missing Products
 
 These reports identify products that are marked as missing in the registry (`found_in_registry: false`).
-Three variants are generated per product type by comparing version numbers numerically within each LID:
+Version status is determined by comparing version numbers numerically within each LID; the `superseded` column indicates whether a LIDVID is the latest version (`false`) or an older version that has been superseded by a newer one (`true`).
 
 | File | Description |
 |------|-------------|
-| `missing_bundles_in_registry.csv` | All missing Product_Bundle records (overall) |
-| `missing_bundles_latest_in_registry.csv` | Only the highest-versioned missing bundle per LID |
-| `missing_bundles_superseded_in_registry.csv` | Older versions of missing bundles (superseded by a newer version) |
-| `missing_collections_in_registry.csv` | All missing Product_Collection records (overall) |
-| `missing_collections_latest_in_registry.csv` | Only the highest-versioned missing collection per LID |
-| `missing_collections_superseded_in_registry.csv` | Older versions of missing collections (superseded by a newer version) |
+| `missing_bundles_in_registry.csv` | All missing Product_Bundle records, with a `superseded` column |
+| `missing_collections_in_registry.csv` | All missing Product_Collection records, with a `superseded` column |
 
-**CSV Format:** `NODE_ID, LIDVID, PRODUCT_CLASS`
+**CSV Format:** `NODE_ID, LIDVID, PRODUCT_CLASS, SUPERSEDED`
 
 **Example:**
 ```
-"PDS_PPI","urn:nasa:pds:maven.rose.raw::1.21","Product_Bundle"
-"PDS_ENG","urn:nasa:pds:context::1.2","Product_Bundle"
+"PDS_PPI","urn:nasa:pds:maven.rose.raw::1.21","Product_Bundle","false"
+"PDS_ENG","urn:nasa:pds:context::1.2","Product_Bundle","true"
 ```
 
 ### Historical Counts (Burndown Tracking)
@@ -127,11 +123,7 @@ curl -O https://raw.githubusercontent.com/NASA-PDS/registry/main/docs/status/mis
 # Download all reports
 cd docs/status
 for file in missing_bundles_in_registry.csv \
-            missing_bundles_latest_in_registry.csv \
-            missing_bundles_superseded_in_registry.csv \
             missing_collections_in_registry.csv \
-            missing_collections_latest_in_registry.csv \
-            missing_collections_superseded_in_registry.csv \
             staged_bundles_in_registry.csv \
             staged_collections_in_registry.csv \
             counts_history.csv; do
@@ -182,13 +174,14 @@ import csv
 with open('missing_bundles_in_registry.csv', 'r') as f:
     reader = csv.reader(f)
     for row in reader:
-        node, lidvid, product_class = row
-        print(f"{node}: {lidvid}")
+        node, lidvid, product_class, superseded = row
+        print(f"{node}: {lidvid} (superseded={superseded})")
 
 # Or use pandas for analysis
 import pandas as pd
-df = pd.read_csv('missing_bundles_in_registry.csv', names=['node', 'lidvid', 'product_class'])
-print(df.groupby('node').size())
+df = pd.read_csv('missing_bundles_in_registry.csv', names=['node', 'lidvid', 'product_class', 'superseded'])
+# Count only latest (non-superseded) missing bundles per node
+print(df[df['superseded'] == 'false'].groupby('node').size())
 ```
 
 ## Report Generation
@@ -216,7 +209,8 @@ Both queries return up to 2000 results per product type.
 - **NODE_ID** - The PDS node responsible for the product (e.g., PDS_SBN, PDS_ENG, PDS_GEO)
 - **LIDVID** - Logical Identifier with Version ID in the format `urn:nasa:pds:bundle_name::version`
 - **PRODUCT_CLASS** - Type of product (Product_Bundle or Product_Collection)
-- **HARVEST_DATE_TIME** - Timestamp when the product was harvested into the registry (ISO 8601 format, UTC)
+- **SUPERSEDED** - (`true`/`false`) Whether this LIDVID has been superseded by a higher-versioned LIDVID for the same LID. `false` means it is the latest version; `true` means a newer version exists. Present only in missing-product CSVs.
+- **HARVEST_DATE_TIME** - Timestamp when the product was harvested into the registry (ISO 8601 format, UTC). Present only in staged-product CSVs.
 
 ## Questions or Issues
 
