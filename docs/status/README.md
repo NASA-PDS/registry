@@ -5,7 +5,7 @@ This directory contains automatically generated CSV reports that track the statu
 ## Metrics Summary
 
 <!-- METRICS_START -->
-*Last updated: 2026-03-24 19:45:49 UTC*
+*Last updated: 2026-03-24 20:54:52 UTC*
 
 ### Missing Products by Node
 
@@ -14,11 +14,11 @@ This directory contains automatically generated CSV reports that track the statu
 | KPDS | 1 | 0 | 1 | 3 | 0 | 3 |
 | PDS_ATM | 18 | 8 | 26 | 138 | 77 | 215 |
 | PDS_ENG | 2 | 6 | 8 | 5 | 88 | 93 |
-| PDS_GEO | 1 | 24 | 25 | 5 | 361 | 366 |
-| PDS_IMG | 48 | 32 | 80 | 1754 | 272 | 2026 |
+| PDS_GEO | 11 | 24 | 35 | 169 | 361 | 530 |
+| PDS_IMG | 37 | 32 | 69 | 1590 | 272 | 1862 |
 | PDS_PPI | 15 | 197 | 212 | 95 | 1334 | 1429 |
 | PDS_SBN | 15 | 29 | 44 | 86 | 93 | 179 |
-| **Total** | **100** | **296** | **396** | **2086** | **2225** | **4311** |
+| **Total** | **99** | **296** | **395** | **2086** | **2225** | **4311** |
 
 ### Staged Products by Node
 
