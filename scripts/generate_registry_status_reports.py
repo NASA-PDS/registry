@@ -5,10 +5,9 @@ Generate CSV status reports for missing and staged products in the PDS Registry.
 This script queries OpenSearch using pds-registry-client and generates CSV reports
 for missing and staged bundles and collections per node.
 
-For missing products, three CSVs are produced per product type:
-  - overall   (all versions)
-  - latest    (highest version per LID)
-  - superseded (all older versions per LID)
+For missing products, one CSV is produced per product type with a ``superseded``
+column (``true``/``false``) indicating whether a given LIDVID is the latest version
+for its LID or an older, superseded version.
 
 Environment variables required:
     REQUEST_SIGNER_AWS_ACCOUNT
@@ -36,28 +35,13 @@ from collections import defaultdict
 from datetime import datetime
 from datetime import timezone
 from pathlib import Path
-from shutil import which
 from typing import Any
 
-# Resolve pds-registry-client using shutil.which, preferring the directory
-# containing the running Python executable (to pick up the current venv),
-# but also searching the existing PATH.
-_PDS_CLIENT = which(
-    "pds-registry-client",
-    path=os.pathsep.join(
-        [
-            str(Path(sys.executable).parent),
-            os.environ.get("PATH", ""),
-        ]
-    ),
-)
+# Resolve pds-registry-client relative to the running Python executable so the
+# correct venv binary is always used regardless of the shell PATH.
+_PDS_CLIENT = str(Path(sys.executable).parent / "pds-registry-client")
 
-if _PDS_CLIENT is None:
-    raise RuntimeError(
-        "Unable to locate 'pds-registry-client' executable. Ensure it is "
-        "installed and available on PATH or in the same virtual environment "
-        "as this script."
-    )
+
 # Color codes for terminal output
 class Colors:
     RED = "\033[0;31m"
@@ -166,20 +150,20 @@ def write_rows_to_csv(rows: list[tuple], output_file: Path) -> int:
     return len(rows)
 
 
-def split_by_version(rows: list[tuple]) -> tuple[list[tuple], list[tuple]]:
-    """Split rows into latest and superseded versions grouped by LID.
+def annotate_version_status(rows: list[tuple]) -> list[tuple]:
+    """Annotate rows with a ``superseded`` column based on version comparison per LID.
 
     Expects lidvid as the second element (index 1) of each row, in the form
     ``urn:nasa:pds:<lid>::<major>.<minor>``.  Version comparison is numeric so
     that e.g. ``3.9 < 3.13``.
 
-    Returns:
-        (latest_rows, superseded_rows) where latest_rows contains only the
-        highest-versioned row per LID and superseded_rows contains all others.
+    Returns a new list of rows with an additional ``superseded`` column appended
+    (string ``"true"`` or ``"false"``).  The highest-versioned row per LID gets
+    ``"false"``; all others get ``"true"``.
     """
-    by_lid: dict[str, list[tuple[tuple[int, ...], tuple]]] = defaultdict(list)
+    by_lid: dict[str, list[tuple[tuple[int, ...], int]]] = defaultdict(list)
 
-    for row in rows:
+    for idx, row in enumerate(rows):
         lidvid = row[1]
         if "::" in lidvid:
             lid, ver_str = lidvid.rsplit("::", 1)
@@ -191,45 +175,50 @@ def split_by_version(rows: list[tuple]) -> tuple[list[tuple], list[tuple]]:
         except ValueError:
             ver_key = (0,)
 
-        by_lid[lid].append((ver_key, row))
+        by_lid[lid].append((ver_key, idx))
 
-    latest_rows: list[tuple] = []
-    superseded_rows: list[tuple] = []
+    superseded_indices: set[int] = set()
+    for version_entries in by_lid.values():
+        sorted_entries = sorted(version_entries, key=lambda x: x[0], reverse=True)
+        for _, idx in sorted_entries[1:]:
+            superseded_indices.add(idx)
 
-    for version_rows in by_lid.values():
-        sorted_rows = sorted(version_rows, key=lambda x: x[0], reverse=True)
-        latest_rows.append(sorted_rows[0][1])
-        superseded_rows.extend(r for _, r in sorted_rows[1:])
-
-    return latest_rows, superseded_rows
+    return [row + ("true" if idx in superseded_indices else "false",) for idx, row in enumerate(rows)]
 
 
-def _count_by_node(csv_path: Path) -> dict[str, int]:
-    """Return a node→count mapping from a CSV file (node is the first column)."""
+def _count_by_node(csv_path: Path, superseded: bool | None = None) -> dict[str, int]:
+    """Return a node→count mapping from a CSV file (node is the first column).
+
+    If ``superseded`` is ``None``, all rows are counted.  Pass ``True`` or
+    ``False`` to count only the rows whose last column matches ``"true"`` or
+    ``"false"`` respectively (used for missing-product CSVs which carry a
+    superseded annotation in their last column).
+    """
     counts: dict[str, int] = defaultdict(int)
     if csv_path.exists():
         with open(csv_path, "r") as f:
             for row in csv.reader(f):
-                if row:
-                    counts[row[0]] += 1
+                if not row:
+                    continue
+                if superseded is not None:
+                    if len(row) < 4:
+                        continue
+                    if (row[-1].lower() == "true") != superseded:
+                        continue
+                counts[row[0]] += 1
     return counts
 
 
-def _load_all_counts(csv_files: dict[str, Path]) -> dict[str, dict[str, int]]:
-    """Load node→count mappings for all CSV files at once, reading each file only once."""
-    return {key: _count_by_node(path) for key, path in csv_files.items()}
-
-
-def generate_metrics_from_csvs(counts: dict[str, dict[str, int]]) -> str:
-    """Generate metrics summary markdown from pre-computed node→count mappings."""
-    mb = counts["missing_bundles"]
-    mb_latest = counts["missing_bundles_latest"]
-    mb_superseded = counts["missing_bundles_superseded"]
-    mc = counts["missing_collections"]
-    mc_latest = counts["missing_collections_latest"]
-    mc_superseded = counts["missing_collections_superseded"]
-    sb = counts["staged_bundles"]
-    sc = counts["staged_collections"]
+def generate_metrics_from_csvs(csv_files: dict[str, Path]) -> str:
+    """Generate metrics summary markdown from CSV files."""
+    mb = _count_by_node(csv_files["missing_bundles"])
+    mb_latest = _count_by_node(csv_files["missing_bundles"], superseded=False)
+    mb_superseded = _count_by_node(csv_files["missing_bundles"], superseded=True)
+    mc = _count_by_node(csv_files["missing_collections"])
+    mc_latest = _count_by_node(csv_files["missing_collections"], superseded=False)
+    mc_superseded = _count_by_node(csv_files["missing_collections"], superseded=True)
+    sb = _count_by_node(csv_files["staged_bundles"])
+    sc = _count_by_node(csv_files["staged_collections"])
 
     all_nodes = sorted(
         set(mb) | set(mc) | set(sb) | set(sc)
@@ -306,25 +295,31 @@ HISTORY_HEADER = (
 )
 
 
-def append_history_row(history_file: Path, counts: dict[str, dict[str, int]]) -> None:
+def append_history_row(history_file: Path, csv_files: dict[str, Path]) -> None:
     """Append one dated row of aggregate counts to the history CSV.
 
     If the file does not yet exist, a header row is written first.  The file is
     never truncated — only appended to — so historical data accumulates over time.
     """
-    def total(key: str) -> int:
-        return sum(counts[key].values())
+    def total(path: Path) -> int:
+        return sum(_count_by_node(path).values())
+
+    def latest(path: Path) -> int:
+        return sum(_count_by_node(path, superseded=False).values())
+
+    def superseded_total(path: Path) -> int:
+        return sum(_count_by_node(path, superseded=True).values())
 
     row = ",".join([
         datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-        str(total("missing_bundles")),
-        str(total("missing_bundles_latest")),
-        str(total("missing_bundles_superseded")),
-        str(total("missing_collections")),
-        str(total("missing_collections_latest")),
-        str(total("missing_collections_superseded")),
-        str(total("staged_bundles")),
-        str(total("staged_collections")),
+        str(total(csv_files["missing_bundles"])),
+        str(latest(csv_files["missing_bundles"])),
+        str(superseded_total(csv_files["missing_bundles"])),
+        str(total(csv_files["missing_collections"])),
+        str(latest(csv_files["missing_collections"])),
+        str(superseded_total(csv_files["missing_collections"])),
+        str(total(csv_files["staged_bundles"])),
+        str(total(csv_files["staged_collections"])),
     ])
 
     write_header = not history_file.exists()
@@ -542,30 +537,14 @@ def main() -> int:
             data = run_query(query_file, endpoint)
             rows = extract_rows(data, include_harvest_date)
 
-            # Always write the overall CSV
+            if split_versions:
+                # Annotate each row with a superseded column before writing
+                rows = annotate_version_status(rows)
+
             count = write_rows_to_csv(rows, output_file)
-            print_info(f"  overall  → {output_file.name} ({count} records)")
+            print_info(f"  → {output_file.name} ({count} records)")
             output_files.append(output_file)
 
-            if split_versions:
-                # Derive sibling paths: missing_bundles_in_registry.csv
-                #   → missing_bundles_latest_in_registry.csv
-                #   → missing_bundles_superseded_in_registry.csv
-                stem = output_file.stem  # e.g. "missing_bundles_in_registry"
-                suffix = output_file.suffix
-                base = stem.replace("_in_registry", "")  # "missing_bundles"
-                latest_file = output_dir / f"{base}_latest_in_registry{suffix}"
-                superseded_file = output_dir / f"{base}_superseded_in_registry{suffix}"
-
-                latest_rows, superseded_rows = split_by_version(rows)
-
-                latest_count = write_rows_to_csv(latest_rows, latest_file)
-                print_info(f"  latest   → {latest_file.name} ({latest_count} records)")
-                output_files.append(latest_file)
-
-                superseded_count = write_rows_to_csv(superseded_rows, superseded_file)
-                print_info(f"  superseded → {superseded_file.name} ({superseded_count} records)")
-                output_files.append(superseded_file)
 
         except subprocess.CalledProcessError as e:
             print_error(f"Failed to generate {description} report: {e.stderr}")
@@ -580,21 +559,14 @@ def main() -> int:
     print_info("Updating metrics in README...")
     csv_files = {
         "missing_bundles": output_dir / "missing_bundles_in_registry.csv",
-        "missing_bundles_latest": output_dir / "missing_bundles_latest_in_registry.csv",
-        "missing_bundles_superseded": output_dir / "missing_bundles_superseded_in_registry.csv",
         "missing_collections": output_dir / "missing_collections_in_registry.csv",
-        "missing_collections_latest": output_dir / "missing_collections_latest_in_registry.csv",
-        "missing_collections_superseded": output_dir / "missing_collections_superseded_in_registry.csv",
         "staged_bundles": output_dir / "staged_bundles_in_registry.csv",
         "staged_collections": output_dir / "staged_collections_in_registry.csv",
     }
     readme_path = output_dir / "README.md"
 
-    # Load all node→count mappings once; reuse for both README metrics and history row.
-    counts = _load_all_counts(csv_files)
-
     try:
-        metrics_markdown = generate_metrics_from_csvs(counts)
+        metrics_markdown = generate_metrics_from_csvs(csv_files)
         update_readme_metrics(readme_path, metrics_markdown)
         print_info(f"Successfully updated metrics in {readme_path}")
         output_files.append(readme_path)
@@ -605,7 +577,7 @@ def main() -> int:
     # Append a snapshot row to the history file for burndown tracking
     history_file = output_dir / "counts_history.csv"
     try:
-        append_history_row(history_file, counts)
+        append_history_row(history_file, csv_files)
         print_info(f"Appended counts snapshot to {history_file}")
         output_files.append(history_file)
     except Exception as e:
