@@ -225,7 +225,6 @@ PSA,urn:esa:psa:em16_spice::5.0,Product_Bundle,2023-09-23T18:37:19.217810Z
 PSA,urn:esa:psa:juice::0.1,Product_Bundle,2023-09-21T06:49:14.031447Z
 PDS_SBN,urn:jaxa:darts:hyb2_lidar::1.0,Product_Bundle,2025-02-10T22:46:28.972744Z
 PDS_SBN,urn:nasa:pds:orex.otes::6.0,Product_Bundle,2022-08-09T12:23:19.105470Z
-PDS_SBN,urn:nasa:pds:orex.ovirs::11.0,Product_Bundle,2026-03-18T00:24:10.541396656Z
 PDS_ATM,urn:nasa:pds:dd_nnss-nv::1.0,Product_Bundle,2025-05-01T16:54:37.952137Z
 PSA,urn:esa:psa:bc_mpo_berm::1.1,Product_Bundle,2023-09-20T16:01:44.439878Z
 PSA,urn:esa:psa:bc_mpo_berm::1.14,Product_Bundle,2023-09-20T16:01:56.266247Z
@@ -350,7 +349,6 @@ PDS_SBN,urn:nasa:pds:orex.otes::4.0,Product_Bundle,2022-08-09T12:23:17.092549Z
 PDS_SBN,urn:nasa:pds:orex.ola::5.0,Product_Bundle,2025-02-27T23:21:18.864468Z
 PDS_SBN,urn:nasa:pds:gbo.ast.radar.arecibo.doppler_spectra_of_asteroids::1.0,Product_Bundle,2026-01-20T18:52:14.148190208Z
 PDS_SBN,urn:nasa:pds:ast_taxonomy::1.0,Product_Bundle,2026-01-20T17:10:27.075420180Z
-PDS_PPI,urn:nasa:pds:vg2-lecp-urn::1.0,Product_Bundle,2026-03-20T18:03:46.513954Z
 PSA,urn:esa:psa:bc_mpo_berm::1.36,Product_Bundle,2023-09-20T16:02:00.525348Z
 PSA,urn:esa:psa:bc_mpo_berm::1.41,Product_Bundle,2023-09-20T16:02:01.625827Z
 PSA,urn:esa:psa:bc_mpo_berm::1.43,Product_Bundle,2023-09-20T16:02:01.808773Z
@@ -829,6 +827,7 @@ PDS_SBN,urn:nasa:pds:gbo.ast.loneos.survey::1.0,Product_Bundle,2025-02-27T23:08:
 PDS_SBN,urn:nasa:pds:orex.otes::8.0,Product_Bundle,2022-08-09T12:23:21.116873Z
 PDS_ATM,urn:nasa:pds:juno_uvs::1.0,Product_Bundle,2025-05-10T03:39:43.282268Z
 PDS_ATM,urn:nasa:pds:maven.iuvs.processed::13.0,Product_Bundle,2025-05-14T21:55:39.627362Z
+PDS_PPI,urn:nasa:pds:maven.swea.calibrated::4.8,Product_Bundle,2026-03-21T23:31:48.428553Z
 PSA,urn:esa:psa:bc_mpo_berm::1.17,Product_Bundle,2023-09-20T16:01:56.702660Z
 PSA,urn:esa:psa:bc_mpo_berm::1.2,Product_Bundle,2023-09-20T16:01:44.666512Z
 PSA,urn:esa:psa:bc_mpo_berm::1.21,Product_Bundle,2023-09-20T16:01:57.606310Z
