@@ -108,7 +108,9 @@ def run_query(query_file: Path, endpoint: str) -> dict[str, Any]:
     return json.loads(result.stdout)
 
 
-def extract_rows(data: dict[str, Any], include_harvest_date: bool = False) -> list[tuple]:
+def extract_rows(
+    data: dict[str, Any], include_harvest_date: bool = False, include_found_in_registry: bool = False
+) -> list[tuple]:
     """Extract result rows from an OpenSearch query response."""
     rows = []
     for hit in data.get("hits", {}).get("hits", []):
@@ -135,16 +137,23 @@ def extract_rows(data: dict[str, Any], include_harvest_date: bool = False) -> li
             if isinstance(harvest_date, list):
                 harvest_date = harvest_date[0] if harvest_date else ""
             rows.append((node, lidvid, product_class, harvest_date))
+        elif include_found_in_registry:
+            found = source.get("found_in_registry", "")
+            if isinstance(found, list):
+                found = found[0] if found else ""
+            rows.append((node, lidvid, product_class, str(found).lower()))
         else:
             rows.append((node, lidvid, product_class))
 
     return rows
 
 
-def write_rows_to_csv(rows: list[tuple], output_file: Path) -> int:
+def write_rows_to_csv(rows: list[tuple], output_file: Path, header: tuple | None = None) -> int:
     """Write rows to a CSV file. Returns the number of rows written."""
     with open(output_file, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
+        if header:
+            writer.writerow(header)
         for row in rows:
             writer.writerow(row)
     return len(rows)
@@ -157,9 +166,13 @@ def annotate_version_status(rows: list[tuple]) -> list[tuple]:
     ``urn:nasa:pds:<lid>::<major>.<minor>``.  Version comparison is numeric so
     that e.g. ``3.9 < 3.13``.
 
+    Rows must include ``found_in_registry`` as the fourth element (index 3).
+    The highest-versioned LIDVID across *all* rows (missing or not) for each LID
+    determines the superseded flag.  A row is superseded if a higher version
+    exists anywhere in the full set.
+
     Returns a new list of rows with an additional ``superseded`` column appended
-    (string ``"true"`` or ``"false"``).  The highest-versioned row per LID gets
-    ``"false"``; all others get ``"true"``.
+    (string ``"true"`` or ``"false"``).
     """
     by_lid: dict[str, list[tuple[tuple[int, ...], int]]] = defaultdict(list)
 
@@ -186,6 +199,21 @@ def annotate_version_status(rows: list[tuple]) -> list[tuple]:
     return [row + ("true" if idx in superseded_indices else "false",) for idx, row in enumerate(rows)]
 
 
+def filter_missing_rows(rows: list[tuple]) -> list[tuple]:
+    """Filter rows to only those where found_in_registry is false.
+
+    Expects rows in the form (node, lidvid, product_class, found_in_registry, superseded).
+    Returns rows with the found_in_registry column removed, preserving the superseded column.
+    """
+    result = []
+    for row in rows:
+        # found_in_registry is at index 3; superseded is at index 4
+        found = str(row[3]).lower()
+        if found != "true":
+            result.append(row[:3] + row[4:])
+    return result
+
+
 def _count_by_node(csv_path: Path, superseded: bool | None = None) -> dict[str, int]:
     """Return a node→count mapping from a CSV file (node is the first column).
 
@@ -198,7 +226,7 @@ def _count_by_node(csv_path: Path, superseded: bool | None = None) -> dict[str, 
     if csv_path.exists():
         with open(csv_path, "r") as f:
             for row in csv.reader(f):
-                if not row:
+                if not row or row[0] == "node":
                     continue
                 if superseded is not None:
                     if len(row) < 4:
@@ -535,13 +563,20 @@ def main() -> int:
         try:
             print_info(f"Querying for {description}...")
             data = run_query(query_file, endpoint)
-            rows = extract_rows(data, include_harvest_date)
+            rows = extract_rows(data, include_harvest_date, include_found_in_registry=split_versions)
 
             if split_versions:
-                # Annotate each row with a superseded column before writing
+                # Annotate using all returned rows (including found_in_registry=true) so that
+                # version ordering is determined across the full set, then filter to missing only.
                 rows = annotate_version_status(rows)
+                rows = filter_missing_rows(rows)
+                header = ("node", "lidvid", "product_class", "superseded")
+            elif include_harvest_date:
+                header = ("node", "lidvid", "product_class", "harvest_date")
+            else:
+                header = ("node", "lidvid", "product_class")
 
-            count = write_rows_to_csv(rows, output_file)
+            count = write_rows_to_csv(rows, output_file, header=header)
             print_info(f"  → {output_file.name} ({count} records)")
             output_files.append(output_file)
 

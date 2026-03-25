@@ -1,6 +1,6 @@
 
 {
-  "_source": ["node", "lidvid", "product_class"],
+  "_source": ["node", "lidvid", "product_class", "found_in_registry"],
   "size": 10000,
   "query": {
     "bool": {
@@ -8,11 +8,6 @@
         {
           "match_phrase": {
             "product_class": "Product_Bundle"
-          }
-        },
-        {
-          "match_phrase": {
-            "found_in_registry": "false"
           }
         }
       ]
