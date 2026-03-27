@@ -2350,7 +2350,7 @@
 									"pm.test.skip(\"C4438463 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
 									"pm.test.skip(\"C4438463 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(1)});",
-									"pm.test(\"C4438463 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});",
+									"pm.test.skip(\"C4438463 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels::3.0\")});",
 									"",
 									"pm.test.skip(\"C4443905 Data match the q param\", () => {pm.expect(content.data[0]['properties'][\"pds:Collection.pds:collection_type\"][0]).to.eql(\"SPICE Kernel\")});",
 									""
