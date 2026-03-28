@@ -2,6 +2,9 @@ name: Generate Postman Collection Docs
 
 on:
   push:
+    branches-ignore:
+      - main
+      - develop
     paths:
       - 'docker/postman/postman_collection.json'
   workflow_dispatch:
