@@ -11,11 +11,6 @@ TESTRAIL_BASE_URL = "https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases
 GITHUB_BASE_URL = "https://github.com/"
 
 
-def extract_testrail_ids(test_script: str) -> list[str]:
-    """Extract TestRail case IDs (e.g. C2488906) from a test script string."""
-    return re.findall(r"\bC\d{5,}\b", test_script)
-
-
 def extract_test_names(test_script: str) -> list[tuple[str, list[str]]]:
     """Return list of (test_name, [testrail_ids]) from pm.test() calls."""
     results = []
@@ -124,24 +119,48 @@ def render_item(item: dict, depth: int, lines: list[str]) -> None:
         render_request(item, depth, lines)
 
 
-def generate_toc(items: list[dict], depth: int = 0) -> list[str]:
+def _build_anchor(heading_text: str, used_anchors: set[str]) -> str:
+    """Build a GitHub-style anchor from heading text, ensuring uniqueness."""
+    anchor = re.sub(r"[^\w\s-]", "", heading_text.lower()).strip()
+    anchor = re.sub(r"[\s]+", "-", anchor)
+
+    if anchor in used_anchors:
+        suffix = 2
+        unique_anchor = f"{anchor}-{suffix}"
+        while unique_anchor in used_anchors:
+            suffix += 1
+            unique_anchor = f"{anchor}-{suffix}"
+        anchor = unique_anchor
+
+    used_anchors.add(anchor)
+    return anchor
+
+
+def generate_toc(
+    items: list[dict],
+    depth: int = 0,
+    used_anchors: set[str] | None = None,
+) -> list[str]:
     """Generate a simple table of contents."""
-    toc = []
+    if used_anchors is None:
+        used_anchors = set()
+
+    toc: list[str] = []
     for item in items:
         indent = "  " * depth
-        anchor = re.sub(r"[^\w\s-]", "", item["name"].lower()).strip()
-        anchor = re.sub(r"[\s]+", "-", anchor)
         if "item" in item:
+            anchor = _build_anchor(item["name"], used_anchors)
             toc.append(f"{indent}- [{item['name']}](#{anchor})")
-            toc.extend(generate_toc(item["item"], depth + 1))
+            toc.extend(generate_toc(item["item"], depth + 1, used_anchors))
         else:
             method = item.get("request", {}).get("method", "GET")
+            anchor = _build_anchor(f"`{method}` {item['name']}", used_anchors)
             toc.append(f"{indent}- [`{method}`] [{item['name']}](#{anchor})")
     return toc
 
 
 def main(input_path: Path, output_path: Path) -> None:
-    with open(input_path) as f:
+    with open(input_path, encoding="utf-8") as f:
         collection = json.load(f)
 
     info = collection.get("info", {})
@@ -169,7 +188,7 @@ def main(input_path: Path, output_path: Path) -> None:
     for item in items:
         render_item(item, 1, lines)
 
-    output_path.write_text("\n".join(lines) + "\n")
+    output_path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     print(f"Written to {output_path}")
 
 

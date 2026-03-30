@@ -29,5 +29,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docker/postman/postman_collection.md
-          git diff --cached --quiet || git commit -m "docs: regenerate postman_collection.md [skip ci]"
+          git diff --cached --quiet || git commit -m "docs: regenerate postman_collection.md"
           git push
