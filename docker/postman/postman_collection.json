@@ -2417,7 +2417,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test.skip(\"C4438464 Status code is 200\", () => {pm.response.to.have.status(200)});",
+									"pm.test(\"C4438464 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
 									"pm.test.skip(\"C4438464 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(5)});",
 									"",
@@ -2461,7 +2461,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test.skip(\"C4438481 Status code is 200\", () => { pm.response.to.have.status(200) });",
+									"pm.test(\"C4438481 Status code is 200\", () => { pm.response.to.have.status(200) });",
 									"const content = pm.response.json();",
 									"const relevantHits = content.data.filter(hit => hit.properties.lid[0] === \"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020\")",
 									"pm.test.skip(\"C4438481 Correct hits returned\", () => { pm.expect(relevantHits.length).to.eql(1) });",
@@ -2557,7 +2557,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test.skip(\"C4438466 Status code is 200\", () => {pm.response.to.have.status(200)});",
+									"pm.test(\"C4438466 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
 									"pm.test.skip(\"C4438466 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(1)});",
 									"pm.test.skip(\"C4438466 Correct data returned\", () => {pm.expect(content.data[0].id).to.eql(\"urn:nasa:pds:mars2020.spice::3.0\")});",
@@ -2601,7 +2601,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test.skip(\"C4438483 Status code is 200\", () => {pm.response.to.have.status(200)});",
+									"pm.test(\"C4438483 Status code is 200\", () => {pm.response.to.have.status(200)});",
 									"const content = pm.response.json();",
 									"const relevantHits = content.data.filter(hit => hit.properties.lid[0] === \"urn:nasa:pds:mars2020.spice\")",
 									"pm.test.skip(\"C4438483 Correct hits returned\", () => { pm.expect(relevantHits.length).to.eql(1) });",
