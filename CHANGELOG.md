@@ -1,5 +1,26 @@
 # Changelog
 
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-04-02)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.6.0...«unknown»)
+
+**Requirements:**
+
+- As a PDS Node Operator, I want to validate that products listed as missing from the registry are truly absent from the PDS Search API [\#484](https://github.com/NASA-PDS/registry/issues/484)
+- As a PDS Node Operator, I want to track historical counts of missing and staged products over time [\#481](https://github.com/NASA-PDS/registry/issues/481)
+- As a user, I want to load date times as strings in order to support leap seconds [\#426](https://github.com/NASA-PDS/registry/issues/426)
+
+**Defects:**
+
+- generate\_registry\_status\_reports.py results incomplete [\#471](https://github.com/NASA-PDS/registry/issues/471) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
+- Can no longer load data into en-registry from staging EC2 [\#466](https://github.com/NASA-PDS/registry/issues/466) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+
+**Other closed issues:**
+
+- Investigate missing node RMS in metrics reports [\#477](https://github.com/NASA-PDS/registry/issues/477)
+- Filter bundles/collections by ingestion status and identify superseded vs latest versions [\#476](https://github.com/NASA-PDS/registry/issues/476)
+- Integrate latest sweeper/api upgrade with new ancestry property name [\#468](https://github.com/NASA-PDS/registry/issues/468)
+
 ## [v1.6.0](https://github.com/NASA-PDS/registry/tree/v1.6.0) (2026-01-12)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...v1.6.0)
