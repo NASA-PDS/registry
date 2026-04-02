@@ -240,3 +240,23 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a registry cog-e, I want to automate the deployment of the registry on AWS with terraform ([#480](https://github.com/NASA-PDS/registry/issues/480)) 
+
+
+This requirement is not impacted by the current version
+## As a PDS Node Operator, I want to track historical counts of missing and staged products over time ([#481](https://github.com/NASA-PDS/registry/issues/481)) 
+
+
+This requirement is not impacted by the current version
+## As a PDS Node Operator, I want to validate that products listed as missing from the registry are truly absent from the PDS Search API ([#484](https://github.com/NASA-PDS/registry/issues/484)) 
+
+
+This requirement is not impacted by the current version
+## As a developer, I want human-readable Postman collection docs auto-generated on update ([#497](https://github.com/NASA-PDS/registry/issues/497)) 
+
+
+This requirement is not impacted by the current version
+## Add auto-generated human-readable Postman collection docs ([#499](https://github.com/NASA-PDS/registry/issues/499)) 
+
+
+This requirement is not impacted by the current version
