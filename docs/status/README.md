@@ -5,6 +5,7 @@ This directory contains automatically generated CSV reports that track the statu
 ## Metrics Summary
 
 <!-- METRICS_START -->
+<<<<<<< Updated upstream
 *Last updated: 2025-11-21 22:50:21 UTC*
 
 ### Missing Products by Node
@@ -19,10 +20,27 @@ This directory contains automatically generated CSV reports that track the statu
 | PDS_PPI | 199 | 653 |
 | PDS_SBN | 72 | 117 |
 | **Total** | **397** | **2000** |
+=======
+*Last updated: 2026-04-02 21:33:36 UTC*
+
+### Missing Products by Node
+
+| Node | Latest Bundles | Superseded Bundles | Total Bundles | Latest Collections | Superseded Collections | Total Collections |
+|------|---------------:|-------------------:|--------------:|-------------------:|-----------------------:|------------------:|
+| KPDS | 1 | 0 | 1 | 3 | 0 | 3 |
+| PDS_ATM | 18 | 8 | 26 | 138 | 77 | 215 |
+| PDS_ENG | 2 | 6 | 8 | 5 | 88 | 93 |
+| PDS_GEO | 11 | 24 | 35 | 166 | 364 | 530 |
+| PDS_IMG | 37 | 32 | 69 | 1585 | 272 | 1857 |
+| PDS_PPI | 14 | 198 | 212 | 84 | 1345 | 1429 |
+| PDS_SBN | 15 | 29 | 44 | 86 | 93 | 179 |
+| **Total** | **98** | **297** | **395** | **2067** | **2239** | **4306** |
+>>>>>>> Stashed changes
 
 ### Staged Products by Node
 
 | Node | Bundles | Collections |
+<<<<<<< Updated upstream
 |------|---------|-------------|
 | PDS_ATM | 3 | 6 |
 | PDS_GEO | 0 | 11 |
@@ -32,6 +50,17 @@ This directory contains automatically generated CSV reports that track the statu
 | PDS_SBN | 35 | 57 |
 | PSA | 902 | 1463 |
 | **Total** | **961** | **2000** |
+=======
+|------|--------:|------------:|
+| PDS_ATM | 3 | 30 |
+| PDS_GEO | 0 | 7 |
+| PDS_IMG | 0 | 64 |
+| PDS_PPI | 1 | 4 |
+| PDS_RMS | 0 | 1 |
+| PDS_SBN | 25 | 137 |
+| PSA | 902 | 4171 |
+| **Total** | **931** | **4414** |
+>>>>>>> Stashed changes
 
 <!-- METRICS_END -->
 
