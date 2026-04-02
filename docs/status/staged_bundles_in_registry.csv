@@ -367,13 +367,8 @@ PDS_SBN,urn:nasa:pds:ast_taxonomy::1.0,Product_Bundle,2022-07-20T22:20:06.585338
 PDS_SBN,urn:nasa:pds:gbo.ast.neat.survey::1.0,Product_Bundle,2025-02-12T00:17:24.802244Z
 PDS_SBN,urn:nasa:pds:gbo.ast.radar.arecibo.doppler_spectra_of_asteroids::1.0,Product_Bundle,2025-02-11T00:10:01.233025Z
 PDS_SBN,urn:nasa:pds:orex.ola::5.0,Product_Bundle,2025-02-27T23:21:18.864468Z
-<<<<<<< Updated upstream
 PDS_SBN,urn:nasa:pds:orex.otes::4.0,Product_Bundle,2022-08-09T12:23:17.092549Z
 PDS_SBN,urn:nasa:pds:orex.tagcams::13.0,Product_Bundle,2025-04-11T17:03:36.693295Z
-=======
-PDS_SBN,urn:nasa:pds:gbo.ast.radar.arecibo.doppler_spectra_of_asteroids::1.0,Product_Bundle,2026-01-20T18:52:14.148190208Z
-PDS_SBN,urn:nasa:pds:ast_taxonomy::1.0,Product_Bundle,2026-03-26T18:04:26.294023307Z
->>>>>>> Stashed changes
 PSA,urn:esa:psa:bc_mpo_berm::1.36,Product_Bundle,2023-09-20T16:02:00.525348Z
 PSA,urn:esa:psa:bc_mpo_berm::1.41,Product_Bundle,2023-09-20T16:02:01.625827Z
 PSA,urn:esa:psa:bc_mpo_berm::1.43,Product_Bundle,2023-09-20T16:02:01.808773Z
@@ -484,26 +479,15 @@ PSA,urn:esa:psa:em16::8.9,Product_Bundle,2023-08-25T17:14:42.263365Z
 PSA,urn:esa:psa:em16::82.0,Product_Bundle,2023-08-25T17:15:28.025075Z
 PSA,urn:esa:psa:em16::88.0,Product_Bundle,2023-08-25T17:15:33.844542Z
 PSA,urn:esa:psa:em16::97.0,Product_Bundle,2023-08-25T17:15:34.079912Z
-<<<<<<< Updated upstream
 PDS_SBN,urn:nasa:pds:ladee_ldex::1.0,Product_Bundle,2022-08-10T06:28:58.308787Z
 PDS_SBN,urn:nasa:pds:ladee_ldex::2.0,Product_Bundle,2025-02-11T21:15:47.160029Z
 PDS_SBN,urn:nasa:pds:near.mag::1.0,Product_Bundle,2025-02-11T18:26:22.483148Z
-=======
-PDS_SBN,urn:nasa:pds:near.mag::1.0,Product_Bundle,2026-01-16T20:54:45.008603564Z
-PDS_SBN,urn:nasa:pds:near.nis::1.0,Product_Bundle,2026-01-16T21:02:57.261591975Z
->>>>>>> Stashed changes
 PDS_SBN,urn:nasa:pds:orex.otes::2.0,Product_Bundle,2022-08-09T12:23:15.076117Z
 PDS_SBN,urn:nasa:pds:orex.otes::3.0,Product_Bundle,2022-08-09T12:23:16.101920Z
 PDS_SBN,urn:nasa:pds:orex.otes::7.0,Product_Bundle,2022-08-09T12:23:20.108799Z
 PDS_SBN,urn:nasa:pds:orex.otes::9.0,Product_Bundle,2022-08-09T12:23:22.147534Z
-<<<<<<< Updated upstream
 PDS_IMG,urn:nasa:pds:insight_cameras::8.0,Product_Bundle,2023-06-07T02:01:07.546656Z
 PDS_PPI,urn:nasa:pds:maven.rose.derived::1.33,Product_Bundle,2025-06-27T21:22:09.602195Z
-=======
-PDS_SBN,urn:nasa:pds:ladee_ldex::1.0,Product_Bundle,2022-08-10T06:28:58.308787Z
-PDS_SBN,urn:nasa:pds:ladee_ldex::2.0,Product_Bundle,2025-02-11T21:15:47.160029Z
-PDS_SBN,urn:nasa:pds:near.xrs::1.0,Product_Bundle,2026-03-26T18:06:34.206135861Z
->>>>>>> Stashed changes
 PSA,urn:esa:psa:em16::100.36,Product_Bundle,2023-08-25T17:15:39.899531Z
 PSA,urn:esa:psa:em16::100.5,Product_Bundle,2023-08-25T17:15:34.293867Z
 PSA,urn:esa:psa:em16::101.2,Product_Bundle,2023-08-25T17:15:40.039394Z
