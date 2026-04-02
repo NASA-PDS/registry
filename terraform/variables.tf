@@ -132,8 +132,3 @@ variable "api_gateway_stage_name" {
   type        = string
   default     = "prod"
 }
-
-variable "permissions_boundary_arn" {
-  description = "ARN of the permissions boundary policy to attach to IAM roles"
-  type        = string
-}
