@@ -23,17 +23,36 @@ The PDS Registry Application
 The core functionality for the PDS Registry Application is satisfied by `OpenSearch <https://opensearch.org/>`_.
 
 
-API
-----
+Harvest
+--------
 
-Provides read-only REST APIs to search and access PDS data. You can call REST APIs directly or
-use Python or Java clients.
+Harvest is a software to crawl and extract metadata from PDS4 labels and to load
+extracted information into OpenSearch.
 
-The most popular client library is `peppi <https://nasa-pds.github.io/peppi>`_.
+This command-line tool doesn't require complex installation and configuration.
 
-For direct access, the API is documented `here <https://nasa-pds.github.io/pds-api/guides/search.html>`_.
+For more information, see `Loading Data into Registry <./user/load1.html>`_.
 
 
+Registry Manager
+-----------------
+
+A command-line tool to perform admin tasks on a Registry, such as:
+
+ * `Update product archive status <./user/update_status.html>`_.
+ * `Delete products <./user/delete_data.html>`_.
+ * `Create or delete registry indices in OpenSearch <./admin/create_reg.html>`_ (by Engineering Node administrators).
+ * Manage registry data dictionary (by Engineering Node administrators).
+
+
+
+Registry Client
+----------------
+
+A command-line tool which provides full access to the OpenSearch API to handle operations not supported by the previous tools.
+The application takes care of the authentication of the user and signs the queries as required by the AWS OpenSearch Serverless Managed Service.
+
+For more information, see the `Registry Client documentation <https://nasa-pds.github.io/registry-client/>`_.
 
 
 OpenSearch
@@ -44,35 +63,18 @@ optimized for text search. All metadata extracted from PDS4 labels is stored in 
 
 
 Authentication/Authorization
------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The access to the OpenSearch service is restricted using Cognito username and passwords provided by Engineering Node to the other PDS nodes.
 Using their login, discipline node can write in their own OpenSearch indexes and read from all the other indexes.
 
 
-Harvest
---------
+Registry API (PDS Search API)
+------------------------------
 
-Harvest is a software to crawl and extract metadata from PDS4 labels and to load
-extracted information into OpenSearch.
+Provides read-only REST APIs to search and access PDS data. You can call REST APIs directly or
+use Python or Java clients. The archive status of the data affects its visibility to the Registry API; see `Update Archive Status <./user/update_status.html>`_ for more information.
 
-This command-line tool doesn't require complex installation and configuration.
+The most popular client library is `peppi <https://nasa-pds.github.io/peppi>`_.
 
-
-Registry Manager
------------------
-
-A command-line tool to perform admin tasks on a Registry, such as:
-
- * Update product archive status.
- * Delete products.
- * Create or delete registry indices in OpenSearch (by Engineering Node administrators).
- * Manage registry data dictionary (by Engineering Node administrators).
-
-
-
-Registry Client
-----------------
-
-A command-line tool which provides full access to the OpenSearch API to handle operations not supported by the previous tools.
-The application takes care of the authentication of the user and signs the queries as required by the AWS OpenSearch Serverless Managed Service.
+For direct access, the API is documented `here <https://nasa-pds.github.io/pds-api/guides/search.html>`_.
