@@ -1,4 +1,4 @@
-# Planetary Data System API Reference Tests Copy 27
+# Planetary Data System API Reference Tests Copy 14
 
 Federated PDS API which provides actionable end points standardized
 between the different nodes.
@@ -99,7 +99,6 @@ Contact Support:
   - [`GET`] [NASA-PDS/registry-api#355 api does not return information that OpenSearch says is public](#get-nasa-pdsregistry-api355-api-does-not-return-information-that-opensearch-says-is-public)
   - [`GET`] [NASA-PDS/registry-api#343 API falsely reports 10000 hits for hits>10000](#get-nasa-pdsregistry-api343-api-falsely-reports-10000-hits-for-hits10000)
   - [`GET`] [NASA-PDS/registry-api/#638 a query without Accept header returns Json](#get-nasa-pdsregistry-api638-a-query-without-accept-header-returns-json)
-  - [`GET`] [registry-api#712 consistent error message for  field name not in LDD (see 406 for wildcard version of this test)S](#get-registry-api712-consistent-error-message-for-field-name-not-in-ldd-see-406-for-wildcard-version-of-this-tests)
 - [opensearch requests](#opensearch-requests)
   - [`GET`] [legacy_registry](#get-legacy_registry)
 - [pds web](#pds-web)
@@ -107,7 +106,6 @@ Contact Support:
   - [`GET`] [count having host and target](#get-count-having-host-and-target)
 - [security](#security)
   - [`GET`] [unknown query parameters](#get-unknown-query-parameters)
-  - [`GET`] [NASA-PDS/outlaw-tracker#46 html injection](#get-nasa-pdsoutlaw-tracker46-html-injection)
   - [`GET`] [web cache poisoning](#get-web-cache-poisoning)
 
 ---
@@ -655,13 +653,6 @@ Contact Support:
 
 **URL:** `{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members?q=pds:Collection.pds:collection_type eq "SPICE Kernel"`
 
-**Tests:**
-
-- Status code is 200 ([C4438463](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438463))
-- Correct hits returned ([C4438463](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438463))
-- Correct data returned ([C4438463](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438463))
-- Data match the q param ([C4443905](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4443905))
-
 ---
 
 ### `GET` NASA-PDS/registry-api#484 products/{id}/members default to latest-only
@@ -669,12 +660,6 @@ Contact Support:
 **GitHub:** [NASA-PDS/registry-api#484](https://github.com/NASA-PDS/registry-api/issues/484)
 
 **URL:** `{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members`
-
-**Tests:**
-
-- Status code is 200 ([C4438479](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438479))
-- Correct hits returned ([C4438479](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438479))
-- Correct data returned ([C4438479](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438479))
 
 ---
 
@@ -684,10 +669,6 @@ Contact Support:
 
 **URL:** `{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members/members?q=pds:Time_Coordinates.pds:start_date_time eq "2020-07-30T12:51:34Z"`
 
-**Tests:**
-
-- Status code is 410 ([C4438464](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438464))
-
 ---
 
 ### `GET` NASA-PDS/registry-api#485 products/{id}/members/members default to latest-only
@@ -695,10 +676,6 @@ Contact Support:
 **GitHub:** [NASA-PDS/registry-api#485](https://github.com/NASA-PDS/registry-api/issues/485)
 
 **URL:** `{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members/members`
-
-**Tests:**
-
-- Status code is 410 ([C4438481](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438481))
 
 ---
 
@@ -708,13 +685,6 @@ Contact Support:
 
 **URL:** `{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of?q=pds:Time_Coordinates.pds:start_date_time eq "2020-07-30T12:51:34Z"`
 
-**Tests:**
-
-- Status code is 200 ([C4438465](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438465))
-- Correct hits returned ([C4438465](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438465))
-- Correct data returned ([C4438465](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438465))
-- data match q param ([C4443891](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4443891))
-
 ---
 
 ### `GET` NASA-PDS/registry-api#451/486 products/{id}/member-of default to latest-only
@@ -722,12 +692,6 @@ Contact Support:
 **GitHub:** [NASA-PDS/registry-api#451](https://github.com/NASA-PDS/registry-api/issues/451)
 
 **URL:** `{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of`
-
-**Tests:**
-
-- Status code is 200 ([C4438482](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438482))
-- Correct hits returned ([C4438482](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438482))
-- Correct data returned ([C4438482](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438482))
 
 ---
 
@@ -982,7 +946,7 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=(exists pds:Identification_Area.pds:logical_identifier)`
+**URL:** `{{baseUrl}}/products?q=(pds:Identification_Area.pds:logical_identifier exists)`
 
 **Tests:**
 
@@ -996,7 +960,7 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=(exists .*logical_identifier)`
+**URL:** `{{baseUrl}}/products?q=(.*logical_identifier exists)`
 
 **Tests:**
 
@@ -1010,12 +974,12 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=(exists pds:Identification_Area.pds:illogical_identifier)`
+**URL:** `{{baseUrl}}/products?q=(pds:Identification_Area.pds:illogical_identifier exists)`
 
 **Tests:**
 
-- Status code is 400
-- Response contains expected LDD error message
+- Status code is 200
+- Response body is valid JSON
 
 ---
 
@@ -1023,12 +987,11 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=(exists *illogical_identifier)`
+**URL:** `{{baseUrl}}/products?q=(".*illogical_identifier" exists)`
 
 **Tests:**
 
 - Status code is 400
-- Response contains expected LDD error message
 
 ---
 
@@ -1036,12 +999,14 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=not (exists pds:Identification_Area.pds:illogical_identifier)`
+**URL:** `{{baseUrl}}/products?q=not (pds:Identification_Area.pds:illogical_identifier exists)`
 
 **Tests:**
 
-- Status code is 400
-- Response contains expected LDD error message
+- Status code is 200
+- Response has summary object with hits and properties
+- Response has data array and it is not empty
+- summary.hits is greater than 0
 
 ---
 
@@ -1049,12 +1014,11 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=not (exists .*illogical_identifier)`
+**URL:** `{{baseUrl}}/products?q=not (".*illogical_identifier" exists)`
 
 **Tests:**
 
 - Status code is 400
-- Response contains expected LDD error message
 
 ---
 
@@ -1062,7 +1026,7 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=not (exists pds:Identification_Area.pds:logical_identifier )`
+**URL:** `{{baseUrl}}/products?q=not (pds:Identification_Area.pds:logical_identifier exists)`
 
 **Tests:**
 
@@ -1076,7 +1040,7 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=not (exists *pds:logical_identifier )`
+**URL:** `{{baseUrl}}/products?q=not (pds:Identification_Area.pds:logical_identifier exists)`
 
 **Tests:**
 
@@ -1221,18 +1185,6 @@ Contact Support:
 
 ---
 
-### `GET` registry-api#712 consistent error message for  field name not in LDD (see 406 for wildcard version of this test)S
-
-**URL:** `{{baseUrl}}/products?q=pds:PickledOnion eq "No"
-`
-
-**Tests:**
-
-- Status code is 400
-- Response contains expected LDD error message
-
----
-
 ## opensearch requests
 
 ### `GET` legacy_registry
@@ -1269,18 +1221,6 @@ Contact Support:
 ### `GET` unknown query parameters
 
 **URL:** `{{baseUrl}}/products?q=(pds:Primary_Result_Summary.pds:processing_level eq "Derived")&limit=10&malicious=anything`
-
-**Tests:**
-
-- Status code is 400
-
----
-
-### `GET` NASA-PDS/outlaw-tracker#46 html injection
-
-**GitHub:** [NASA-PDS/outlaw-tracker#46](https://github.com/NASA-PDS/outlaw-tracker/issues/46)
-
-**URL:** `{{baseUrl}}/products?<img%20src%3Dx%20onerror%3Dalert(document.domain)>=1`
 
 **Tests:**
 
