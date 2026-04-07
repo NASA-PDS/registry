@@ -134,21 +134,14 @@ services:
     volumes:
       # make volume match how the spring-boot plugin deploys in docker
       - ${REG_API_APP_PROPERTIES_FILE}:/workspace/BOOT-INF/classes/application.properties
+      - ./scripts/registry-api.sh:/usr/local/registry-api-service/registry-api.sh
     networks:
       - pds
-    healthcheck:
-      test:
-        - CMD
-        - curl
-        - -f
-        - http://localhost:8080/health
-      interval: 10s
-      timeout: 2s
-      retries: 50
+    command: /usr/local/registry-api-service/registry-api.sh
     depends_on:
       registry-sweepers:
         condition: service_completed_successfully
-
+      
 
 
   # Executes an nginx service to expose the PDS4 archive
