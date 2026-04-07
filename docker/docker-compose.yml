@@ -89,6 +89,8 @@ services:
       nofile:
         soft: 65536
         hard: 65536
+    hostname: elasticsearch
+    container_name: elasticsearch
     environment:
       - discovery.type=${ES_DISCOVERY_TYPE}
     # Uncomment the following environment variable to use OpenSearch without security
