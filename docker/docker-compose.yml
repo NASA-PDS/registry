@@ -93,6 +93,7 @@ services:
     container_name: elasticsearch
     environment:
       - discovery.type=${ES_DISCOVERY_TYPE}
+      - _JAVA_OPTIONS=-XX:-UseContainerSupport
     # Uncomment the following environment variable to use OpenSearch without security
     # - plugins.security.disabled=true
     volumes:
