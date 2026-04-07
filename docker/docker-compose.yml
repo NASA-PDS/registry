@@ -133,10 +133,15 @@ services:
     volumes:
       # make volume match how the spring-boot plugin deploys in docker
       - ${REG_API_APP_PROPERTIES_FILE}:/workspace/BOOT-INF/classes/application.properties
-      - ./scripts/registry-api-waits-for-elasticsearch.sh:/usr/local/registry-api-service/registry-api-waits-for-elasticsearch.sh
+      - ./scripts/registry-api.sh:/usr/local/registry-api-service/registry-api.sh
     networks:
       - pds
-    command: /usr/local/registry-api-service/registry-api-waits-for-elasticsearch.sh
+    command: /usr/local/registry-api-service/registry-api.sh
+    depends_on:
+      registry-sweepers:
+        condition: service_completed_successfully
+      
+
 
   # Executes an nginx service to expose the PDS4 archive
   registry-web-archive:
