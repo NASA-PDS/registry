@@ -138,10 +138,19 @@ services:
     networks:
       - pds
     command: /usr/local/registry-api-service/registry-api.sh
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8080/health
+      interval: 10s
+      timeout: 2s
+      retries: 50
     depends_on:
       registry-sweepers:
         condition: service_completed_successfully
-      
+
 
 
   # Executes an nginx service to expose the PDS4 archive
@@ -155,6 +164,9 @@ services:
       - ${REG_DATA_VOLUME}:/usr/share/nginx/html/archive
     networks:
       - pds
+    depends_on:
+      registry-api:
+        condition: service_healthy
 
   # Executes Registry API integration test as a Postman collection with test data
   reg-api-integration-test:
