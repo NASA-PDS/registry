@@ -111,7 +111,7 @@ services:
       - LOGLEVEL=INFO
       - DEV_MODE=1
       - MULTITENANCY_NODE_ID=geo
-    command: ["--legacy-sync"]
+    command: ["/usr/local/bin/sweepers_driver.py", "--legacy-sync"]
     networks:
       - pds
     depends_on:
@@ -165,8 +165,8 @@ services:
     networks:
       - pds
     depends_on:
-      registry-api:
-        condition: service_healthy
+      registry-loader-test-init:
+        condition: service_completed_successfully
 
   # Executes Registry API integration test as a Postman collection with test data
   reg-api-integration-test:
