@@ -31,56 +31,6 @@
 version: "3.9"
 
 services:
-
-  # Executes the Registry Loader component, which contains Harvest and Registry Manager
-  registry-loader:
-    profiles: ["pds-batch-loader"]
-    image: ${REG_LOADER_IMAGE}
-    environment:
-      - ES_URL=${ES_URL}
-    volumes:
-      - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-config.xml
-      - ${REG_DATA_VOLUME}:${CONTAINER_HARVEST_data-volume}
-      - ./default-config/es-auth.cfg:/etc/es-auth.cfg
-      - ./default-config/local-registry.xml:/etc/local-registry.xml
-    networks:
-      - pds
-
-  # Downloads and harvests test data with the Registry loader
-  registry-loader-test-init:
-    profiles: ["dev-api", "int-registry-batch-loader"]
-    image: ${REG_LOADER_IMAGE}
-    environment:
-      - ES_URL=${ES_URL}
-      - RUN_TESTS=true
-      - TEST_DATA_URL=${TEST_DATA_URL}
-      - TEST_DATA_LIDVID=${TEST_DATA_LIDVID}
-    volumes:
-      - ${REG_DATA_VOLUME}:${CONTAINER_HARVEST_DATA_DIR}
-      - ./scripts/registry-loader-waits-for-elasticsearch.sh:/usr/local/bin/registry-loader-waits-for-elasticsearch.sh
-      - ./default-config/es-auth.cfg:/etc/es-auth.cfg
-      - ./custom-datasets.tar.gz:/etc/custom-datasets.tar.gz
-    networks:
-      - pds
-    entrypoint: /usr/local/bin/registry-loader-waits-for-elasticsearch.sh
-
-  # Runs provenance script
-  registry-sweepers:
-    profiles: ["dev-api", "int-registry-batch-loader"]
-    image: ${REG_SWEEPERS_IMAGE}
-    environment:
-      - PROV_ENDPOINT=${ES_URL}
-      - PROV_CREDENTIALS=${PROV_CREDENTIALS}
-      - LOGLEVEL=INFO
-      - DEV_MODE=1
-      - MULTITENANCY_NODE_ID=geo
-    command: ["/usr/local/bin/sweepers_driver.py", "--legacy-sync"]
-    networks:
-      - pds
-    depends_on:
-      registry-loader-test-init:
-        condition: service_completed_successfully
-
   # Starts Elasticsearch
   elasticsearch:
     profiles: ["dev-api", "dev-loader", "pds-core-registry", "int-registry-batch-loader", "os"]
@@ -104,6 +54,13 @@ services:
     ports:
       - "9200:9200"
       - "9600:9600" # required for Performance Analyzer
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl --insecure -f https://elasticsearch:9200/_cluster/health -u admin:admin
+      interval: 10s
+      timeout: 2s
+      retries: 50
     networks:
       - pds
 
@@ -121,6 +78,47 @@ services:
     networks:
       - pds
     entrypoint: ["bash", "/usr/local/bin/elasticsearch-init.sh"]
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  # Downloads and harvests test data with the Registry loader
+  registry-loader-test-init:
+    profiles: ["dev-api", "int-registry-batch-loader"]
+    image: ${REG_LOADER_IMAGE}
+    environment:
+      - ES_URL=${ES_URL}
+      - RUN_TESTS=true
+      - TEST_DATA_URL=${TEST_DATA_URL}
+      - TEST_DATA_LIDVID=${TEST_DATA_LIDVID}
+    volumes:
+      - ${REG_DATA_VOLUME}:${CONTAINER_HARVEST_DATA_DIR}
+      - ./default-config/es-auth.cfg:/etc/es-auth.cfg
+      - ./custom-datasets.tar.gz:/etc/custom-datasets.tar.gz
+    networks:
+      - pds
+    depends_on:
+      elasticsearch-init:
+        condition: service_completed_successfully
+
+  # Runs provenance script
+  registry-sweepers:
+    profiles: ["dev-api", "int-registry-batch-loader"]
+    image: ${REG_SWEEPERS_IMAGE}
+    environment:
+      - PROV_ENDPOINT=${ES_URL}
+      - PROV_CREDENTIALS=${PROV_CREDENTIALS}
+      - LOGLEVEL=INFO
+      - DEV_MODE=1
+      - MULTITENANCY_NODE_ID=geo
+    command: ["/usr/local/bin/sweepers_driver.py", "--legacy-sync"]
+    networks:
+      - pds
+    depends_on:
+      registry-loader-test-init:
+        condition: service_completed_successfully
+
+
 
   # Starts the Registry API
   registry-api:
@@ -165,8 +163,8 @@ services:
     networks:
       - pds
     depends_on:
-      registry-api:
-        condition: service_healthy
+      registry-loader-test-init:
+        condition: service_completed_successfully
 
   # Executes Registry API integration test as a Postman collection with test data
   reg-api-integration-test:
@@ -231,6 +229,24 @@ services:
       - PROXY_PORT=443
     ports:
       - "443:443"
+    networks:
+      - pds
+    depends_on:
+      registry-api:
+        condition: service_healthy
+
+
+  # Executes the Registry Loader component, which contains Harvest and Registry Manager
+  registry-loader:
+    profiles: ["pds-batch-loader"]
+    image: ${REG_LOADER_IMAGE}
+    environment:
+      - ES_URL=${ES_URL}
+    volumes:
+      - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-config.xml
+      - ${REG_DATA_VOLUME}:${CONTAINER_HARVEST_data-volume}
+      - ./default-config/es-auth.cfg:/etc/es-auth.cfg
+      - ./default-config/local-registry.xml:/etc/local-registry.xml
     networks:
       - pds
 

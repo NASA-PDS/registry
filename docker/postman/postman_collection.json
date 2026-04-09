@@ -2443,11 +2443,7 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"C4438464 Status code is 200\", () => {pm.response.to.have.status(200)});",
-                  "const content = pm.response.json();",
-                  "pm.test.skip(\"C4438464 Correct hits returned\", () => {pm.expect(content.summary.hits).to.eql(5)});",
-                  "",
-                  "pm.test.skip(\"C4443902 data match q param\", () => {pm.expect(content.data[0][\"properties\"][\"pds:Time_Coordinates.pds:start_date_time\"][0]).to.eql(\"2020-07-30T12:51:34Z\")});",
+                  "pm.test(\"C4438464 Status code is 410\", () => {pm.response.to.have.status(410)});",
                   ""
                 ],
                 "type": "text/javascript",
@@ -2487,11 +2483,7 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"C4438481 Status code is 200\", () => { pm.response.to.have.status(200) });",
-                  "const content = pm.response.json();",
-                  "const relevantHits = content.data.filter(hit => hit.properties.lid[0] === \"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020\")",
-                  "pm.test.skip(\"C4438481 Correct hits returned\", () => { pm.expect(relevantHits.length).to.eql(1) });",
-                  "pm.test.skip(\"C4438481 Correct data returned\", () => {pm.expect(relevantHits[0].id).to.eql(\"urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020::3.0\")});",
+                  "pm.test(\"C4438481 Status code is 410\", () => { pm.response.to.have.status(410) });",
                   ""
                 ],
                 "type": "text/javascript",
