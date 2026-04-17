@@ -40,20 +40,6 @@ module "lambda" {
 
 }
 
-# External IAM Policies Module
-# Depends on Lambda module (implicit via lambda_log_group_arn reference)
-# This ensures: 1. Lambda created -> 2. CloudWatch log group output -> 3. Policies created
-#module "external_policies" {
-#  source = "./modules/external_policies"
-#
-#  collection_name      = var.collection_name
-#  collection_arn       = module.opensearch.collection_arn
-#  aws_region           = var.aws_region
-#  account_id           = data.aws_caller_identity.current.account_id
-#  common_tags          = var.common_tags
-#  lambda_log_group_arn = module.lambda.lambda_log_group_arn
-#}
-
 # API Gateway Module
 # Integrates with Lambda function for /credentials endpoint
 module "api_gateway" {
@@ -68,3 +54,5 @@ module "api_gateway" {
   aws_region           = var.aws_region
   common_tags          = var.common_tags
 }
+
+module "registry-api"
