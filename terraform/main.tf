@@ -54,5 +54,3 @@ module "api_gateway" {
   aws_region           = var.aws_region
   common_tags          = var.common_tags
 }
-
-module "registry-api"

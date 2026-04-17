@@ -22,20 +22,12 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
   tags = var.common_tags
 }
 
-# Create build directory if it doesn't exist
-resource "null_resource" "create_build_dir" {
-  provisioner "local-exec" {
-    command = "mkdir -p ${path.module}/build"
-  }
-}
-
 resource "null_resource" "build_trigger" {
   triggers = {
     source_py_hash = filesha256(local.source_file)
     build_layer_exists = fileexists("${path.module}/build/${local.lambda_name}.zip") ? "yes" : "no"
   }
 
-  depends_on = [null_resource.create_build_dir]
 }
 
 # Package the lambda source file as a zip
@@ -57,7 +49,6 @@ resource "null_resource" "prepare_layer" {
     command = "rm -fr ${path.module}/build/layer/python && mkdir -p ${path.module}/build/layer/ && cp -r ${path.module}/src/layer ${path.module}/build/layer/python && pip install -r ${path.module}/build/layer/python/requirements.txt -t ${path.module}/build/layer/python"
   }
 
-  depends_on = [null_resource.create_build_dir]
 }
 
 # Package the layer as a zip
