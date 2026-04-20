@@ -31,25 +31,27 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 # ------------------------------------------------------------------------------------------------
-# This script is used to wait for Elasticsearch to start before starting the Registry Loader.
+# This script is used to wait for Elasticsearch to start before starting the Registry API service.
 # ------------------------------------------------------------------------------------------------
 
 # Check if the ES_URL environment variable is set
-if [ -z "$ES_URL" ]; then
-    echo "Error: 'ES_URL' (Elasticsearch URL) environment variable is not set. Use docker's -e option." 1>&2
-    exit 1
-fi
+#if [ -z "$ES_URL" ]; then
+#    echo "Error: 'ES_URL' (Elasticsearch URL) environment variable is not set. Use docker's -e option." 1>&2
+#    exit 1
+#fi
 
 echo "Waiting for Elasticsearch to launch..."  1>&2
 # TODO Warning: Use the default username and password only for testing purposes in local setup
-while ! curl --output /dev/null --silent --head --fail "$ES_URL" -u 'admin:admin' --insecure; do
-  echo "waiting for elasticsearch" 1>&2
-  sleep 1
-done
+#while ! curl --output /dev/null --silent --head --fail "$ES_URL" -u 'admin:admin' --insecure; do
+#  echo "waiting for elasticsearch" 1>&2
+#  sleep 1
+#done
 
-echo "Waiting for the creation of registry and data dictionary indices..."  1>&2
-sleep 60
+#echo "Waiting for the creation of registry and data dictionary indices..."  1>&2
+#sleep 60
 
-echo "Starting registry-loader..."  1>&2
-chmod a+x /usr/local/bin/entrypoint.sh
-/usr/local/bin/entrypoint.sh
+echo "Starting Registry API service..."  1>&2
+java -cp /usr/local/registry-api-service \
+     -jar /usr/local/registry-api-service/registry-api-service.jar \
+     --spring.config.location=file:///workspace/BOOT-INF/classes/application.properties \
+     gov.nasa.pds.api.engineering.SpringBootMain
