@@ -1,4 +1,4 @@
-# Planetary Data System API Reference Tests Copy 14
+# Planetary Data System API Reference Tests Copy 23
 
 Federated PDS API which provides actionable end points standardized
 between the different nodes.
@@ -99,6 +99,7 @@ Contact Support:
   - [`GET`] [NASA-PDS/registry-api#355 api does not return information that OpenSearch says is public](#get-nasa-pdsregistry-api355-api-does-not-return-information-that-opensearch-says-is-public)
   - [`GET`] [NASA-PDS/registry-api#343 API falsely reports 10000 hits for hits>10000](#get-nasa-pdsregistry-api343-api-falsely-reports-10000-hits-for-hits10000)
   - [`GET`] [NASA-PDS/registry-api/#638 a query without Accept header returns Json](#get-nasa-pdsregistry-api638-a-query-without-accept-header-returns-json)
+  - [`GET`] [New Request](#get-new-request)
 - [opensearch requests](#opensearch-requests)
   - [`GET`] [legacy_registry](#get-legacy_registry)
 - [pds web](#pds-web)
@@ -653,6 +654,13 @@ Contact Support:
 
 **URL:** `{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members?q=pds:Collection.pds:collection_type eq "SPICE Kernel"`
 
+**Tests:**
+
+- Status code is 200 ([C4438463](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438463))
+- Correct hits returned ([C4438463](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438463))
+- Correct data returned ([C4438463](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438463))
+- Data match the q param ([C4443905](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4443905))
+
 ---
 
 ### `GET` NASA-PDS/registry-api#484 products/{id}/members default to latest-only
@@ -660,6 +668,12 @@ Contact Support:
 **GitHub:** [NASA-PDS/registry-api#484](https://github.com/NASA-PDS/registry-api/issues/484)
 
 **URL:** `{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members`
+
+**Tests:**
+
+- Status code is 200 ([C4438479](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438479))
+- Correct hits returned ([C4438479](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438479))
+- Correct data returned ([C4438479](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438479))
 
 ---
 
@@ -669,6 +683,10 @@ Contact Support:
 
 **URL:** `{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members/members?q=pds:Time_Coordinates.pds:start_date_time eq "2020-07-30T12:51:34Z"`
 
+**Tests:**
+
+- Status code is 410 ([C4438464](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438464))
+
 ---
 
 ### `GET` NASA-PDS/registry-api#485 products/{id}/members/members default to latest-only
@@ -676,6 +694,10 @@ Contact Support:
 **GitHub:** [NASA-PDS/registry-api#485](https://github.com/NASA-PDS/registry-api/issues/485)
 
 **URL:** `{{baseUrl}}/products/urn:nasa:pds:mars2020.spice/members/members`
+
+**Tests:**
+
+- Status code is 410 ([C4438481](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438481))
 
 ---
 
@@ -685,6 +707,13 @@ Contact Support:
 
 **URL:** `{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of?q=pds:Time_Coordinates.pds:start_date_time eq "2020-07-30T12:51:34Z"`
 
+**Tests:**
+
+- Status code is 200 ([C4438465](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438465))
+- Correct hits returned ([C4438465](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438465))
+- Correct data returned ([C4438465](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438465))
+- data match q param ([C4443891](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4443891))
+
 ---
 
 ### `GET` NASA-PDS/registry-api#451/486 products/{id}/member-of default to latest-only
@@ -692,6 +721,12 @@ Contact Support:
 **GitHub:** [NASA-PDS/registry-api#451](https://github.com/NASA-PDS/registry-api/issues/451)
 
 **URL:** `{{baseUrl}}/products/urn:nasa:pds:mars2020.spice:spice_kernels:mk_m2020/member-of`
+
+**Tests:**
+
+- Status code is 200 ([C4438482](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438482))
+- Correct hits returned ([C4438482](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438482))
+- Correct data returned ([C4438482](https://cae-testrail.jpl.nasa.gov/testrail/index.php?/cases/view/4438482))
 
 ---
 
@@ -946,7 +981,7 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=(pds:Identification_Area.pds:logical_identifier exists)`
+**URL:** `{{baseUrl}}/products?q=(exists pds:Identification_Area.pds:logical_identifier)`
 
 **Tests:**
 
@@ -960,7 +995,7 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=(.*logical_identifier exists)`
+**URL:** `{{baseUrl}}/products?q=(exists .*logical_identifier)`
 
 **Tests:**
 
@@ -974,7 +1009,7 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=(pds:Identification_Area.pds:illogical_identifier exists)`
+**URL:** `{{baseUrl}}/products?q=(exists pds:Identification_Area.pds:illogical_identifier)`
 
 **Tests:**
 
@@ -987,7 +1022,7 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=(".*illogical_identifier" exists)`
+**URL:** `{{baseUrl}}/products?q=(exists *illogical_identifier)`
 
 **Tests:**
 
@@ -999,7 +1034,7 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=not (pds:Identification_Area.pds:illogical_identifier exists)`
+**URL:** `{{baseUrl}}/products?q=not (exists pds:Identification_Area.pds:illogical_identifier)`
 
 **Tests:**
 
@@ -1014,7 +1049,7 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=not (".*illogical_identifier" exists)`
+**URL:** `{{baseUrl}}/products?q=not (exists ".*illogical_identifier")`
 
 **Tests:**
 
@@ -1026,7 +1061,7 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=not (pds:Identification_Area.pds:logical_identifier exists)`
+**URL:** `{{baseUrl}}/products?q=not (exists pds:Identification_Area.pds:logical_identifier )`
 
 **Tests:**
 
@@ -1040,7 +1075,7 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=not (pds:Identification_Area.pds:logical_identifier exists)`
+**URL:** `{{baseUrl}}/products?q=not (exists *pds:logical_identifier )`
 
 **Tests:**
 
@@ -1182,6 +1217,18 @@ Contact Support:
 
 - ${testrailId} Status code is 200
 - ${testrailId} Content-Type is application/json
+
+---
+
+### `GET` New Request
+
+**URL:** `{{baseUrl}}/products?q=pds:PickledOnion eq "No"
+`
+
+**Tests:**
+
+- Status code is 400
+- Response contains expected LDD error message
 
 ---
 
