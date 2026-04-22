@@ -3801,7 +3801,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products?q=not (exists \".*illogical_identifier\")",
+							"raw": "{{baseUrl}}/products?q=not (exists .*illogical_identifier)",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -3811,7 +3811,7 @@
 							"query": [
 								{
 									"key": "q",
-									"value": "not (exists \".*illogical_identifier\")"
+									"value": "not (exists .*illogical_identifier)"
 								}
 							]
 						}
