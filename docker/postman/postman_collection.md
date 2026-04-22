@@ -99,7 +99,7 @@ Contact Support:
   - [`GET`] [NASA-PDS/registry-api#355 api does not return information that OpenSearch says is public](#get-nasa-pdsregistry-api355-api-does-not-return-information-that-opensearch-says-is-public)
   - [`GET`] [NASA-PDS/registry-api#343 API falsely reports 10000 hits for hits>10000](#get-nasa-pdsregistry-api343-api-falsely-reports-10000-hits-for-hits10000)
   - [`GET`] [NASA-PDS/registry-api/#638 a query without Accept header returns Json](#get-nasa-pdsregistry-api638-a-query-without-accept-header-returns-json)
-  - [`GET`] [New Request](#get-new-request)
+  - [`GET`] [registry-api#712 consistent error message for  field name not in LDD (see 406 for wildcard version of this test)S](#get-registry-api712-consistent-error-message-for-field-name-not-in-ldd-see-406-for-wildcard-version-of-this-tests)
 - [opensearch requests](#opensearch-requests)
   - [`GET`] [legacy_registry](#get-legacy_registry)
 - [pds web](#pds-web)
@@ -1013,8 +1013,8 @@ Contact Support:
 
 **Tests:**
 
-- Status code is 200
-- Response body is valid JSON
+- Status code is 400
+- Response contains expected LDD error message
 
 ---
 
@@ -1027,6 +1027,7 @@ Contact Support:
 **Tests:**
 
 - Status code is 400
+- Response contains expected LDD error message
 
 ---
 
@@ -1038,10 +1039,8 @@ Contact Support:
 
 **Tests:**
 
-- Status code is 200
-- Response has summary object with hits and properties
-- Response has data array and it is not empty
-- summary.hits is greater than 0
+- Status code is 400
+- Response contains expected LDD error message
 
 ---
 
@@ -1054,6 +1053,7 @@ Contact Support:
 **Tests:**
 
 - Status code is 400
+- Response contains expected LDD error message
 
 ---
 
@@ -1220,7 +1220,7 @@ Contact Support:
 
 ---
 
-### `GET` New Request
+### `GET` registry-api#712 consistent error message for  field name not in LDD (see 406 for wildcard version of this test)S
 
 **URL:** `{{baseUrl}}/products?q=pds:PickledOnion eq "No"
 `
