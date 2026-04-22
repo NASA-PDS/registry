@@ -1048,7 +1048,7 @@ Contact Support:
 
 **GitHub:** [NASA-PDS/registry-api#406](https://github.com/NASA-PDS/registry-api/issues/406)
 
-**URL:** `{{baseUrl}}/products?q=not (exists ".*illogical_identifier")`
+**URL:** `{{baseUrl}}/products?q=not (exists .*illogical_identifier)`
 
 **Tests:**
 
