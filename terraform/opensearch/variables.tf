@@ -1,11 +1,13 @@
-variable "region" {
+variable "aws_region" {
   type        = string
+  description = "Effective AWS Region"
   default     = "us-west-2"
 }
 
 variable "domain_name" {
   type        = string
   description = "Name of the provisioned opensearch domain."
+  # "domain_name=pds-mcp-registry-prod-mos" 
 }
 
 variable "data_node_instance_type" {
@@ -35,39 +37,52 @@ variable "master_node_count" {
 variable "ebs_volume_gb" {
   type        = number
   description = "The size of the ebs volume per data node, in GB"
+  # 2560
+}
+
+variable "ebs_volume_type" {
+  type        = string
+  description = "The EBS volume type"
+  default     = "gp3"
+}
+
+variable "n2n_encryption" {
+  type        = bool
+  description = "Node to node encryption"
+  default     = true
+}
+
+variable "encryption_at_rest" {
+  type        = bool
+  description = "Encryption at rest"
+  default     = true
 }
 
 variable "venue" {
   type        = string
-  description = "Value of venue as well as the venue tag"
+  description = "Tag value of venue"
 }
 
-variable "product_tag_value" {
+variable "tenant" {
   type        = string
-  description = "Value of product tag"
-  default     = "PDS Registry"
-}
-
-variable "tenant_tag_value" {
-  type        = string
-  description = "Value of tenant tag"
+  description = "Tag value of tenant"
   default     = "en"
 }
 
-variable "component_tag_value" {
+variable "component" {
   type        = string
-  description = "Value of component tag"
-  default     = "opensearch"
+  description = "Tag value of component"
+  default     = "registry"
 }
 
-variable "cicd_tag_value" {
+variable "cicd" {
   type        = string
-  description = "Value of cicd tag"
+  description = "Tag value of CICD deployment method"
   default     = "terraform"
 }
 
-variable "managedBy_tag_value" {
+variable "managedBy" {
   type        = string
-  description = "Value of managedBy tag"
+  description = "Tag value for owner managing the resource (E.g. for PDS Team we have PDS Team Email Distro)"
   default     = "pdsoperator@jpl.nasa.gov"
 }
