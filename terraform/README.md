@@ -114,7 +114,7 @@ Then set you python environment:
 
     python3.12 -m venv venv
     source venv/bin/activate
-    pip install jinja2 requests
+    pip install jinja2 requests boto3
 
 
 And run the script to initialize the registry:

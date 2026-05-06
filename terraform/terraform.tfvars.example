@@ -16,9 +16,12 @@ enable_public_access = true
 # Option 2: VPC-only access via VPC endpoint (recommended for production)
 # enable_public_access = false
 # create_vpc_endpoint = true
-# vpc_id = "vpc-1234567890abcdef0"
-# subnet_ids = ["subnet-1234567890abcdef0", "subnet-0987654321fedcba0"]
-# security_group_ids = []  # Leave empty to create a default security group
+
+# Needed for VPC end-point above and registry API load balancer and ECS service
+vpc_id = "vpc-1234567890abcdef0"
+subnet_ids = ["subnet-1234567890abcdef0", "subnet-0987654321fedcba0"]
+public_subnet_ids = ["subnet-3234567890abcdef0", "subnet-3987654321fedcba0"]
+security_group_id = []  # Leave empty to create a default security group
 
 # Admin roles configuration (see DEPLOYMENT_STAGES.md for deployment workflow)
 # Stage 1 (initial): Deploy without admin role

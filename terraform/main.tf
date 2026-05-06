@@ -14,7 +14,7 @@ module "opensearch" {
   vpc_id             = var.vpc_id
   subnet_ids         = var.subnet_ids
   admin_roles        = concat(var.admin_roles, [data.aws_ssm_parameter.opensearch_admin_role_arn.value])
-  readonly_roles     = [data.aws_ssm_parameter.opensearch_readonly_role_arn.value]
+  readonly_roles     = [data.aws_ssm_parameter.opensearch_readonly_role_arn.value, data.aws_ssm_parameter.registry_api_ecs_task_role_arn.value]
   node_list          = var.node_list
   aws_region         = var.aws_region
   common_tags        = var.common_tags
@@ -54,3 +54,23 @@ module "api_gateway" {
   aws_region           = var.aws_region
   common_tags          = var.common_tags
 }
+
+# module "registry_api" {
+#   source = "git::https://github.com/NASA-PDS/registry-api.git//terraform?ref=terraform_for_dev"
+#   count  = 0
+#
+#   aws_region = var.aws_region
+#   sprint_boot_args = "--openSearch.host=${module.opensearch.collection_endpoint} --openSearch.CCSEnabled=true --openSearch.username='' --openSearch.disciplineNodes=${join(",", var.node_list)} --registry.service.version=1.6.0-SNAPSHOT"
+#   aws_s3_bucket_logs_id=var.aws_s3_bucket_logs_id
+#   registry_api_docker_image=var.registry_api_docker_image
+#   ecs_task_role = data.aws_ssm_parameter.registry_api_ecs_task_role_arn
+#   ecs_task_execution_role = data.aws_ssm_parameter.registry_api_ecs_task_execution_role_arn
+#   aws_fg_vpc = var.vpc_id
+#   aws_fg_security_group = var.registry_api_ecs_service_security_group
+#   aws_fg_subnets = var.subnet_ids
+#   aws_lb_subnets = var.public_subnet_ids
+#   aws_acm_certificate_arn = var.acm_certificate_arn
+#
+#   common_tags = var.common_tags
+#
+# }

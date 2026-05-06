@@ -69,7 +69,13 @@ variable "vpc_id" {
 }
 
 variable "subnet_ids" {
-  description = "Subnet IDs for the VPC endpoint (required if create_vpc_endpoint is true)"
+  description = "Subnet IDs for the VPC endpoint (required if create_vpc_endpoint is true) and for the Registry API ECS Service"
+  type        = list(string)
+  default     = []
+}
+
+variable "public_subnet_ids" {
+  description = "Subnet IDs for the registry API load balancer"
   type        = list(string)
   default     = []
 }
@@ -131,4 +137,29 @@ variable "api_gateway_stage_name" {
   description = "API Gateway deployment stage name"
   type        = string
   default     = "prod"
+}
+
+variable "aws_s3_bucket_logs_id" {
+  description = "ID of the S3 bucket used for registry-api load balancer access logs"
+  type        = string
+  default     = ""
+}
+
+variable "registry_api_docker_image" {
+  description = "Docker image URI for the registry-api ECS service"
+  type        = string
+  default     = ""
+}
+
+variable "registry_api_ecs_service_security_group" {
+  description = "Security group associated ot the ECS Service"
+  type        = string
+  default     = ""
+}
+
+
+variable "acm_certificate_arn" {
+  description = "ACM Certificate ARN used for HTTPS access to the Registry API load balancer, re-use the certificate of the cloudfront distribution DNS"
+  type        = string
+  default     = ""
 }

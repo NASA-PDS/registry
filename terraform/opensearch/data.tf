@@ -9,3 +9,4 @@ data "aws_ssm_parameter" "opensearch_tenant_core_cloudops_role_arns" {
 }
 
 
+

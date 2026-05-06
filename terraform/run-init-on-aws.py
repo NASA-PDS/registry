@@ -14,10 +14,14 @@ import re
 import tarfile
 import zipfile
 import urllib.request
+import urllib.error
 from pathlib import Path
 from typing import Optional, Dict
 from datetime import datetime
 from jinja2 import Template
+import boto3
+from botocore.auth import SigV4Auth
+from botocore.awsrequest import AWSRequest
 
 
 class RegistryInitializer:
@@ -187,13 +191,17 @@ class RegistryInitializer:
                             self.env_vars[key] = value
         else:
             print("⚠️  Warning: .env file not found, using default values")
-            self.env_vars.setdefault("REG_LOADER_IMAGE", "nasapds/registry-loader:latest")
+            self.env_vars.setdefault("REG_LOADER_IMAGE", "nasapds/registry-loader-lite:latest")
             self.env_vars.setdefault("TEST_DATA_URL",
                 "https://github.com/NASA-PDS/registry-ref-data/releases/download/Latest/custom-datasets.tar.gz")
             self.env_vars.setdefault("TEST_DATA_LIDVID",
                 "urn:nasa:pds:mars2020.spice::1.0 urn:nasa:pds:mars2020.spice::2.0 urn:nasa:pds:mars2020.spice::3.0")
             self.env_vars.setdefault("CONTAINER_HARVEST_DATA_DIR", "/data")
             self.env_vars.setdefault("REG_DATA_VOLUME", "data-volume")
+
+    def add_locally_defined_env_vars(self) -> None:
+        for k , v in os.environ.items():
+            self.env_vars[k] = v
 
     def generate_registry_config(self):
         """Generate registry connection XML configuration."""
@@ -310,6 +318,45 @@ password = {self.env_vars[password_key]}
         self.run_command(docker_cmd, capture=False)
         print("-" * 50 + "\n")
 
+    def create_aliases(self):
+        """Create OpenSearch aliases, until registry-manager does it."""
+        self.print_section("🔗", "Create aliases, until registry-manager does it")
+
+        alias_file = self.docker_dir / "scripts" / "aliases" / "alias_registry.json"
+        if not alias_file.exists():
+            print(f"   Warning: Alias file not found: {alias_file}")
+            return
+
+        alias_content = alias_file.read_text()
+        url = f"{self.opensearch_endpoint}/_aliases"
+
+        session = boto3.Session(region_name=self.aws_region)
+        caller = session.client("sts").get_caller_identity()
+        print(f"   Calling as: {caller['Arn']}")
+        credentials = session.get_credentials().get_frozen_credentials()
+
+        aws_request = AWSRequest(
+            method="POST",
+            url=url,
+            data=alias_content,
+            headers={"Content-Type": "application/json"},
+        )
+        SigV4Auth(credentials, "aoss", self.aws_region).add_auth(aws_request)
+
+        req = urllib.request.Request(
+            url,
+            data=alias_content.encode("utf-8"),
+            headers=dict(aws_request.headers),
+            method="POST",
+        )
+
+        try:
+            with urllib.request.urlopen(req) as response:
+                print(f"   Aliases created: {response.read().decode()}\n")
+        except urllib.error.HTTPError as e:
+            print(f"   Error creating aliases: {e.read().decode()}\n")
+            raise
+
     def cleanup_temp_files(self):
         """Clean up temporary authentication configuration files."""
         temp_files = [
@@ -413,6 +460,7 @@ password = {self.env_vars[password_key]}
 
             # Setup
             self.load_env_file()
+            self.add_locally_defined_env_vars()
             self.generate_registry_config()
             self.generate_auth_configs()
 
@@ -426,6 +474,7 @@ password = {self.env_vars[password_key]}
             except subprocess.CalledProcessError:
                 print("\n⚠️  OpenSearch indexes probably already created, skip that step\n")
 
+            self.create_aliases()
             self.download_and_extract_test_data()
             self.generate_harvest_config()
             self.run_docker_container(
