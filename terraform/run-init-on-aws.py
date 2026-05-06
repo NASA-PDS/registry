@@ -473,8 +473,8 @@ password = {self.env_vars[password_key]}
                 )
             except subprocess.CalledProcessError:
                 print("\n⚠️  OpenSearch indexes probably already created, skip that step\n")
-
-            self.create_aliases()
+            # TODO fix authorization issue, alias created manually until fixed
+            #self.create_aliases()
             self.download_and_extract_test_data()
             self.generate_harvest_config()
             self.run_docker_container(
@@ -483,7 +483,11 @@ password = {self.env_vars[password_key]}
             )
 
             # set archive status
-            test_lidvids = ["urn:nasa:pds:mars2020.spice::1.0", "urn:nasa:pds:mars2020.spice::2.0",  "urn:nasa:pds:mars2020.spice::3.0"]
+            test_lidvids = [
+                "urn:nasa:pds:mars2020.spice::1.0",
+                "urn:nasa:pds:mars2020.spice::2.0",
+                "urn:nasa:pds:mars2020.spice::3.0"
+            ]
             for lidvid in test_lidvids:
                 self.run_docker_container(
                     "registry-manager set-archive-status",
