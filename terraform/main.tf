@@ -55,9 +55,9 @@ module "api_gateway" {
   common_tags          = var.common_tags
 }
 
+# TL: not ready for integration as we have a deadline for the ISRO node creation in dev, step done manuallyt
 # module "registry_api" {
 #   source = "git::https://github.com/NASA-PDS/registry-api.git//terraform?ref=terraform_for_dev"
-#   count  = 0
 #
 #   aws_region = var.aws_region
 #   sprint_boot_args = "--openSearch.host=${module.opensearch.collection_endpoint} --openSearch.CCSEnabled=true --openSearch.username='' --openSearch.disciplineNodes=${join(",", var.node_list)} --registry.service.version=1.6.0-SNAPSHOT"
