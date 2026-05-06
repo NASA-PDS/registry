@@ -5,34 +5,34 @@ This directory contains automatically generated CSV reports that track the statu
 ## Metrics Summary
 
 <!-- METRICS_START -->
-*Last updated: 2026-03-18 19:04:37 UTC*
+*Last updated: 2026-04-27 21:15:27 UTC*
 
 ### Missing Products by Node
 
-| Node | Bundles | Collections |
-|------|---------|-------------|
-| KPDS | 1 | 2 |
-| PDS_ATM | 23 | 97 |
-| PDS_ENG | 7 | 43 |
-| PDS_GEO | 37 | 258 |
-| PDS_IMG | 58 | 799 |
-| PDS_PPI | 215 | 703 |
-| PDS_SBN | 45 | 98 |
-| **Total** | **386** | **2000** |
+| Node | Latest Bundles | Superseded Bundles | Total Bundles | Latest Collections | Superseded Collections | Total Collections |
+|------|---------------:|-------------------:|--------------:|-------------------:|-----------------------:|------------------:|
+| KPDS | 1 | 0 | 1 | 3 | 0 | 3 |
+| PDS_ATM | 18 | 8 | 26 | 138 | 81 | 219 |
+| PDS_ENG | 2 | 6 | 8 | 5 | 88 | 93 |
+| PDS_GEO | 11 | 24 | 35 | 166 | 364 | 530 |
+| PDS_IMG | 36 | 33 | 69 | 1580 | 294 | 1874 |
+| PDS_PPI | 15 | 199 | 214 | 89 | 1347 | 1436 |
+| PDS_RMS | 8 | 0 | 8 | 23 | 0 | 23 |
+| PDS_SBN | 15 | 30 | 45 | 88 | 93 | 181 |
+| **Total** | **106** | **300** | **406** | **2092** | **2267** | **4359** |
 
 ### Staged Products by Node
 
 | Node | Bundles | Collections |
-|------|---------|-------------|
-| PDS_ATM | 3 | 9 |
-| PDS_GEO | 0 | 1 |
-| PDS_IMG | 5 | 38 |
-| PDS_NAIF | 0 | 93 |
-| PDS_PPI | 6 | 116 |
+|------|--------:|------------:|
+| PDS_ATM | 3 | 30 |
+| PDS_GEO | 0 | 7 |
+| PDS_IMG | 0 | 64 |
+| PDS_PPI | 0 | 16 |
 | PDS_RMS | 0 | 1 |
-| PDS_SBN | 26 | 42 |
-| PSA | 902 | 1700 |
-| **Total** | **942** | **2000** |
+| PDS_SBN | 26 | 137 |
+| PSA | 902 | 4171 |
+| **Total** | **931** | **4426** |
 
 <!-- METRICS_END -->
 
@@ -40,10 +40,17 @@ This directory contains automatically generated CSV reports that track the statu
 
 ### Missing Products
 
-These reports identify products that are marked as missing in the registry (`found_in_registry: false`):
+These reports identify products that are marked as missing in the registry (`found_in_registry: false`).
+Three variants are generated per product type by comparing version numbers numerically within each LID:
 
-- **`missing_bundles_in_registry.csv`** - Missing Product_Bundle records
-- **`missing_collections_in_registry.csv`** - Missing Product_Collection records
+| File | Description |
+|------|-------------|
+| `missing_bundles_in_registry.csv` | All missing Product_Bundle records (overall) |
+| `missing_bundles_latest_in_registry.csv` | Only the highest-versioned missing bundle per LID |
+| `missing_bundles_superseded_in_registry.csv` | Older versions of missing bundles (superseded by a newer version) |
+| `missing_collections_in_registry.csv` | All missing Product_Collection records (overall) |
+| `missing_collections_latest_in_registry.csv` | Only the highest-versioned missing collection per LID |
+| `missing_collections_superseded_in_registry.csv` | Older versions of missing collections (superseded by a newer version) |
 
 **CSV Format:** `NODE_ID, LIDVID, PRODUCT_CLASS`
 
@@ -51,6 +58,35 @@ These reports identify products that are marked as missing in the registry (`fou
 ```
 "PDS_PPI","urn:nasa:pds:maven.rose.raw::1.21","Product_Bundle"
 "PDS_ENG","urn:nasa:pds:context::1.2","Product_Bundle"
+```
+
+### Historical Counts (Burndown Tracking)
+
+**`counts_history.csv`** — one row is appended per run; the file is **never overwritten** so data accumulates over time. Use this to plot a burndown of missing/staged products.
+
+**CSV Format (header included):**
+```
+date,
+missing_bundles_total,missing_bundles_latest,missing_bundles_superseded,
+missing_collections_total,missing_collections_latest,missing_collections_superseded,
+staged_bundles_total,staged_collections_total
+```
+
+**Example:**
+```
+date,missing_bundles_total,missing_bundles_latest,missing_bundles_superseded,missing_collections_total,missing_collections_latest,missing_collections_superseded,staged_bundles_total,staged_collections_total
+2026-03-20,386,250,136,4233,2100,2133,942,4877
+2026-03-21,380,245,135,4190,2080,2110,938,4850
+```
+
+**Analyzing with Python/pandas:**
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv('counts_history.csv', parse_dates=['date'])
+df.plot(x='date', y=['missing_bundles_latest', 'missing_collections_latest'], title='Missing Products Burndown')
+plt.show()
 ```
 
 ### Staged Products
@@ -90,8 +126,15 @@ curl -O https://raw.githubusercontent.com/NASA-PDS/registry/main/docs/status/mis
 
 # Download all reports
 cd docs/status
-for file in missing_bundles_in_registry.csv missing_collections_in_registry.csv \
-            staged_bundles_in_registry.csv staged_collections_in_registry.csv; do
+for file in missing_bundles_in_registry.csv \
+            missing_bundles_latest_in_registry.csv \
+            missing_bundles_superseded_in_registry.csv \
+            missing_collections_in_registry.csv \
+            missing_collections_latest_in_registry.csv \
+            missing_collections_superseded_in_registry.csv \
+            staged_bundles_in_registry.csv \
+            staged_collections_in_registry.csv \
+            counts_history.csv; do
   curl -O https://raw.githubusercontent.com/NASA-PDS/registry/main/docs/status/$file
 done
 ```

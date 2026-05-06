@@ -1,18 +1,13 @@
 
 {
-  "_source": ["node", "lidvid", "product_class"],
-  "size": 2000,
+  "_source": ["node", "lidvid", "product_class", "found_in_registry"],
+  "size": 10000,
   "query": {
     "bool": {
       "filter": [
         {
           "match_phrase": {
             "product_class": "Product_Bundle"
-          }
-        },
-        {
-          "match_phrase": {
-            "found_in_registry": "false"
           }
         }
       ]
