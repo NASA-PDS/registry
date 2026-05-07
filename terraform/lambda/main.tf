@@ -46,7 +46,7 @@ resource "null_resource" "prepare_layer" {
   }
 
   provisioner "local-exec" {
-    command = "rm -fr ${path.module}/build/layer/python && mkdir -p ${path.module}/build/layer/ && cp -r ${path.module}/src/layer ${path.module}/build/layer/python && pip3 install -r ${path.module}/build/layer/python/requirements.txt -t ${path.module}/build/layer/python"
+    command = "rm -fr ${path.module}/build/layer/python && mkdir -p ${path.module}/build/layer/ && cp -r ${path.module}/src/layer ${path.module}/build/layer/python && pip3 install -r ${path.module}/build/layer/python/requirements.txt -t ${path.module}/build/layer/python 2>&1 | tee ${path.module}/build/layer-build.log"
   }
 
 }
