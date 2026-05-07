@@ -120,3 +120,14 @@ Then set you python environment:
 And run the script to initialize the registry:
 
     python run-init-on-aws.py
+
+#### Using terragrunt
+
+If the infrastructure was deployed via terragrunt instead of terraform directly, pass the `--terragrunt` flag. The script uses the current working directory by default, so you can either `cd` to the terragrunt directory first or pass it explicitly with `--working-dir`:
+
+    # option 1: cd to the terragrunt directory first
+    cd /path/to/terragrunt/working/directory
+    python /path/to/registry/terraform/run-init-on-aws.py --terragrunt
+
+    # option 2: pass the directory explicitly
+    python run-init-on-aws.py --terragrunt --working-dir /path/to/terragrunt/working/directory

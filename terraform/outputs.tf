@@ -73,3 +73,8 @@ output "credentials_endpoint" {
   description = "Full URL for the GET /credentials endpoint"
   value       = module.api_gateway.credentials_endpoint
 }
+
+output "node_list" {
+  description = "List of discipline nodes"
+  value       = var.node_list
+}

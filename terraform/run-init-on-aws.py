@@ -7,6 +7,8 @@ This script initializes an AWS-deployed registry with test data by:
 2. Running registry-loader-test-init container to load test data into AWS
 """
 
+import argparse
+import json
 import os
 import sys
 import subprocess
@@ -38,6 +40,10 @@ class RegistryInitializer:
         self.aws_region: Optional[str] = None
         self.cognito_idp_url: Optional[str] = None
         self.collection_name: Optional[str] = None
+        self.node_list: list = []
+
+        self.tf_cmd: str = "terraform"
+        self.tf_working_dir: Path = Path.cwd()
 
         # Environment variables
         self.env_vars: Dict[str, str] = {}
@@ -60,7 +66,7 @@ class RegistryInitializer:
             return False
         return True
 
-    def run_command(self, cmd: list, capture: bool = True, check: bool = True) -> Optional[str]:
+    def run_command(self, cmd: list, capture: bool = True, check: bool = True, cwd: Optional[Path] = None) -> Optional[str]:
         """
         Run a shell command and return output.
 
@@ -68,10 +74,12 @@ class RegistryInitializer:
             cmd: Command as a list of strings
             capture: Whether to capture output
             check: Whether to raise error on failure
+            cwd: Working directory (defaults to script_dir)
 
         Returns:
             Command output if capture=True, None otherwise
         """
+        working_dir = cwd or self.script_dir
         try:
             if capture:
                 result = subprocess.run(
@@ -79,11 +87,11 @@ class RegistryInitializer:
                     capture_output=True,
                     text=True,
                     check=check,
-                    cwd=self.script_dir
+                    cwd=working_dir
                 )
                 return result.stdout.strip()
             else:
-                subprocess.run(cmd, check=check, cwd=self.script_dir)
+                subprocess.run(cmd, check=check, cwd=working_dir)
                 return None
         except subprocess.CalledProcessError as e:
             if check:
@@ -97,18 +105,26 @@ class RegistryInitializer:
         """Extract required outputs from Terraform."""
         self.print_section("📋", "Extracting Terraform outputs...")
 
-        # Check if terraform has been applied
+        # Check if terraform/terragrunt has been applied
         try:
             self.opensearch_endpoint = self.run_command(
-                ["terraform", "output", "-raw", "collection_endpoint"]
+                [self.tf_cmd, "output", "-raw", "collection_endpoint"],
+                cwd=self.tf_working_dir,
             )
         except subprocess.CalledProcessError:
-            print("Error: Terraform outputs not found. Have you run 'terraform apply'?")
+            print(f"Error: Terraform outputs not found. Have you run '{self.tf_cmd} apply'?")
             return False
 
         self.credentials_endpoint = self.run_command(
-            ["terraform", "output", "-raw", "credentials_endpoint"]
+            [self.tf_cmd, "output", "-raw", "credentials_endpoint"],
+            cwd=self.tf_working_dir,
         )
+
+        node_list_json = self.run_command(
+            [self.tf_cmd, "output", "-json", "node_list"],
+            cwd=self.tf_working_dir,
+        )
+        self.node_list = json.loads(node_list_json)
 
         # Extract AWS region from OpenSearch endpoint
         region_match = re.search(
@@ -122,13 +138,10 @@ class RegistryInitializer:
         self.aws_region = region_match.group(1)
         self.cognito_idp_url = f"https://cognito-idp.{self.aws_region}.amazonaws.com"
 
-        # Get NODE_REGISTRY from environment
-        node_registry = os.environ.get("NODE_REGISTRY", "registry")
-
         # Print extracted values
         print(f"   OpenSearch Endpoint: {self.opensearch_endpoint}")
         print(f"   Credentials Endpoint: {self.credentials_endpoint}")
-        print(f"   Registry Name: {node_registry}")
+        print(f"   Node list: {self.node_list}")
         print(f"   AWS Region: {self.aws_region}")
         print(f"   Cognito IDP URL: {self.cognito_idp_url}\n")
 
@@ -203,14 +216,12 @@ class RegistryInitializer:
         for k , v in os.environ.items():
             self.env_vars[k] = v
 
-    def generate_registry_config(self):
+    def generate_registry_config(self, node_registry: str):
         """Generate registry connection XML configuration."""
         self.print_section("📝", "Generating registry connection configuration...")
 
         # Create config directory
         self.config_dir.mkdir(parents=True, exist_ok=True)
-
-        node_registry = os.environ.get("NODE_REGISTRY", "registry")
         config_file = self.config_dir / "registry-connection.xml"
 
         config_content = f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -461,52 +472,68 @@ password = {self.env_vars[password_key]}
             # Setup
             self.load_env_file()
             self.add_locally_defined_env_vars()
-            self.generate_registry_config()
             self.generate_auth_configs()
 
-            # Run Docker containers
-            try:
-                self.run_docker_container(
-                   "registry-manager create-registry",
-                   ["registry-manager", "create-registry",
-                    "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
-                )
-            except subprocess.CalledProcessError:
-                print("\n⚠️  OpenSearch indexes probably already created, skip that step\n")
-            # TODO fix authorization issue, alias created manually until fixed
-            #self.create_aliases()
-            self.download_and_extract_test_data()
-            self.generate_harvest_config()
-            self.run_docker_container(
-                "harvest",
-                ["harvest" , "-c", "/config/harvest-job-config.xml"]
-            )
+            node_registry_with_ref_data = os.environ.get("NODE_REGISTRY_WITH_REF_DATA")
 
-            # set archive status
-            test_lidvids = [
-                "urn:nasa:pds:mars2020.spice::1.0",
-                "urn:nasa:pds:mars2020.spice::2.0",
-                "urn:nasa:pds:mars2020.spice::3.0"
-            ]
-            for lidvid in test_lidvids:
+            # Download test data once before the node loop
+            self.download_and_extract_test_data()
+
+            # Per-node initialisation
+            for node in self.node_list:
+                node_registry = f"{node}-registry"
+                self.print_header(f"Node: {node_registry}")
+
+                self.generate_registry_config(node_registry)
+
+                try:
+                    self.run_docker_container(
+                        "registry-manager create-registry",
+                        ["registry-manager", "create-registry",
+                         "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
+                    )
+                except subprocess.CalledProcessError:
+                    print("\n⚠️  OpenSearch indexes probably already created, skip that step\n")
+
+                # Push data only for the node matching NODE_REGISTRY
+                if node_registry != node_registry_with_ref_data:
+                    print(f"   Skipping harvest for {node_registry} (NODE_REGISTRY={node_registry_with_ref_data})\n")
+                    continue
+
+                self.generate_harvest_config()
+                self.run_docker_container(
+                    "harvest",
+                    ["harvest", "-c", "/config/harvest-job-config.xml"]
+                )
+
+                # set archive status
+                test_lidvids = [
+                    "urn:nasa:pds:mars2020.spice::1.0",
+                    "urn:nasa:pds:mars2020.spice::2.0",
+                    "urn:nasa:pds:mars2020.spice::3.0"
+                ]
+                for lidvid in test_lidvids:
+                    self.run_docker_container(
+                        "registry-manager set-archive-status",
+                        ["registry-manager", "set-archive-status",
+                         "-status", "archived", "-lidvid", lidvid,
+                         "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
+                    )
                 self.run_docker_container(
                     "registry-manager set-archive-status",
                     ["registry-manager", "set-archive-status",
-                     "-status", "archived", "-lidvid", lidvid,
+                     "-status", "staged", "-lidvid", "urn:nasa:pds:mars2020.spice:document::1.0",
                      "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
                 )
-            self.run_docker_container(
-                "registry-manager set-archive-status",
-                ["registry-manager", "set-archive-status",
-                 "-status", "staged", "-lidvid", "urn:nasa:pds:mars2020.spice:document::1.0",
-                 "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
-            )
-            self.run_docker_container(
-                "registry-manager set-archive-status",
-                ["registry-manager", "set-archive-status",
-                 "-status", "archived", "-lidvid", "urn:nasa:pds:insight_rad::2.1",
-                 "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
-            )
+                self.run_docker_container(
+                    "registry-manager set-archive-status",
+                    ["registry-manager", "set-archive-status",
+                     "-status", "archived", "-lidvid", "urn:nasa:pds:insight_rad::2.1",
+                     "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
+                )
+
+            # TODO fix authorization issue, alias created manually until fixed
+            # self.create_aliases()
 
 
 
@@ -528,7 +555,25 @@ password = {self.env_vars[password_key]}
 
 def main():
     """Entry point for the script."""
+    parser = argparse.ArgumentParser(description="AWS Registry Initialization Script")
+    parser.add_argument(
+        "--terragrunt",
+        action="store_true",
+        help="Use terragrunt instead of terraform to retrieve outputs",
+    )
+    parser.add_argument(
+        "--working-dir",
+        type=Path,
+        default=None,
+        help="Working directory for terraform/terragrunt output commands (defaults to cwd)",
+    )
+    args = parser.parse_args()
+
     initializer = RegistryInitializer()
+    if args.terragrunt:
+        initializer.tf_cmd = "terragrunt"
+    if args.working_dir:
+        initializer.tf_working_dir = args.working_dir.resolve()
     sys.exit(initializer.run())
 
 
