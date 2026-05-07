@@ -42,7 +42,8 @@ data "archive_file" "lambda_zip" {
 # Prepare Lambda Layer with Python dependencies
 resource "null_resource" "prepare_layer" {
   triggers = {
-    files_hash = local.layer_files_hash
+    files_hash       = local.layer_files_hash
+    layer_zip_exists = fileexists("${path.module}/build/layer.zip") ? "exists" : "missing"
   }
 
   provisioner "local-exec" {
