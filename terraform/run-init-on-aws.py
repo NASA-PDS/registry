@@ -326,7 +326,7 @@ password = {self.env_vars[password_key]}
             self.env_vars["REG_LOADER_IMAGE"]] + command
 
 
-        self.run_command(docker_cmd, capture=False)
+        self.run_command(docker_cmd, capture=False, cwd=self.script_dir)
         print("-" * 50 + "\n")
 
     def create_aliases(self):
@@ -497,7 +497,7 @@ password = {self.env_vars[password_key]}
 
                 # Push data only for the node matching NODE_REGISTRY
                 if node_registry != node_registry_with_ref_data:
-                    print(f"   Skipping harvest for {node_registry} (NODE_REGISTRY={node_registry_with_ref_data})\n")
+                    print(f"   Skipping harvest for {node_registry} (NODE_REGISTRY_WITH_REF_DATA={node_registry_with_ref_data})\n")
                     continue
 
                 self.generate_harvest_config()
