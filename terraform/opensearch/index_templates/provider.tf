@@ -3,6 +3,15 @@
 #
 # Amazon Web Services: the basics.
 
+terraform {
+  required_providers {
+    opensearch = {
+      source  = "opensearch-project/opensearch"
+      version = "2.3.2"
+    }
+  }
+}
+
 provider "aws" {
   region = var.aws_region
 
@@ -15,4 +24,8 @@ provider "aws" {
       cicd      = var.cicd
     }
   }
+}
+
+provider "opensearch" {
+  url = "${var.opensearch_url}"
 }

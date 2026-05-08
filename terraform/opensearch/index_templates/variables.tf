@@ -4,6 +4,11 @@ variable "aws_region" {
   default     = "us-west-2"
 }
 
+variable "opensearch_url" {
+  type        = string
+  description = "Opensearch endpoint URL"
+}
+
 variable "template_file_pathname" {
   type        = string
   description = "Full path to the index template file."
