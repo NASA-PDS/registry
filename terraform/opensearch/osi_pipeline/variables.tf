@@ -8,37 +8,9 @@ variable "pipeline_name" {
   description = "Name of the pipeline (also the cloudwatch log group"
 }
 
-variable "pipeline_role_arn" {
+variable "pipeline_config_yaml_file" {
   type        = string
-  description = "ARN of the role the pipeline assumes to read from source and write to sink. Must have trust relationship w/ pipeline svc."
-}
-
-variable "source_opensearch_url" {
-  type        = string
-  description = "URI of the source opensearch endpoint."
-}
-
-variable "source_opensearch_serverless" {
-  type        = bool
-  description = "Boolean indicating if source is AOSS. Default is true."
-  default     = true
-}
-
-variable "source_batch_size" {
-  type        = string
-  description = "Size of the source batch reads"
-  default     = "1000"
-}
-
-variable "sink_opensearch_url" {
-  type        = string
-  description = "URI of the sink opensearch endpoint."
-}
-
-variable "sink_opensearch_serverless" {
-  type        = bool
-  description = "Boolean indicating if sink is AOSS. Default is false."
-  default     = false
+  description = "Full path to the pipeline config yaml file."
 }
 
 variable "pipeline_max_units" {
