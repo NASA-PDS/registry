@@ -8,13 +8,18 @@ variable "pipeline_name" {
   description = "Name of the pipeline (also the cloudwatch log group"
 }
 
+variable "pipeline_role_arn" {
+  type        = string
+  description = "ARN of the role the pipeline assumes to read from source and write to sink. Must have trust relationship w/ pipeline svc."
+}
+
 variable "source_opensearch_url" {
   type        = string
   description = "URI of the source opensearch endpoint."
 }
 
 variable "source_opensearch_serverless" {
-  type        = boolean
+  type        = bool
   description = "Boolean indicating if source is AOSS. Default is true."
   default     = true
 }
@@ -22,7 +27,7 @@ variable "source_opensearch_serverless" {
 variable "source_batch_size" {
   type        = string
   description = "Size of the source batch reads"
-  default     = '1000'
+  default     = "1000"
 }
 
 variable "sink_opensearch_url" {
@@ -31,7 +36,7 @@ variable "sink_opensearch_url" {
 }
 
 variable "sink_opensearch_serverless" {
-  type        = boolean
+  type        = bool
   description = "Boolean indicating if sink is AOSS. Default is false."
   default     = false
 }
@@ -41,13 +46,13 @@ variable "pipeline_max_units" {
   description = "Maximum number of pipeline ingestion units."
 }
 
-variable "pipeline_min_units: {
+variable "pipeline_min_units" {
   type        = number
   description = "Minimum number of pipeline ingestion units. Default = 1."
   default     = 1
 }
 
-variable "aws_venue" {
+variable "venue" {
   type        = string
   description = "Tag value of venue"
 }

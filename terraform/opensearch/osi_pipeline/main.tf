@@ -7,7 +7,7 @@ terraform {
 }
 
 resource "aws_osis_pipeline" "pds_osi_pipeline" {
-  pipeline_name              = "${var.pipeline_name}""
+  pipeline_name              = "${var.pipeline_name}"
   pipeline_configuration_body = <<EOF
 
     version: '2'
@@ -19,32 +19,32 @@ resource "aws_osis_pipeline" "pds_osi_pipeline" {
         opensearch:
           acknowledgments: true
           hosts:
-            - '${var.source_opensearch_uri}'
+            - '${var.source_opensearch_url}'
           aws:
-            serverless: var.source_opensearch_serverless
-            region: var.aws_region
+            serverless: ${var.source_opensearch_serverless}
+            region: '${var.aws_region}'
             serverless_options:
               network_policy_name: ''
           indices:
              include:
                - index_name_regex: '*'
           search_options:
-            batch_size: '${var.source_batch_size}''
+            batch_size: ${var.source_batch_size}
       processor: []
       sink:
         - opensearch:
             hosts:
-              - '${var.sink_opensearch_uri}'
+              - '${var.sink_opensearch_url}'
             aws:
-              serverless: var.sink_opensearch_serverless
-              region: var.aws_region
+              serverless: ${var.sink_opensearch_serverless}
+              region: '${var.aws_region}'
+              sts_role_arn: '${var.pipeline_role_arn}'
             index_type: custom
-            index: '${getMetadata("opensearch-index")}'
-            document_id: '${getMetadata("opensearch-document_id")}'
+            index: "${getMetadata("opensearch-index")}"
+            document_id: "${getMetadata("opensearch-document_id")}"
+EOF
       max_units                  = var.pipeline_max_units
       min_units                  = var.pipeline_min_units 
-
-EOF
 
   log_publishing_options {
     is_logging_enabled = true
