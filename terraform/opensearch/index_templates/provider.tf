@@ -1,8 +1,3 @@
-# AWS
-# ===
-#
-# Amazon Web Services: the basics.
-
 terraform {
   required_providers {
     opensearch = {
