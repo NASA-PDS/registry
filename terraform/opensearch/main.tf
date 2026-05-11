@@ -10,7 +10,7 @@ data "aws_caller_identity" "current" {}
 
 # Load external JSON files
 locals {
-  access_policies = jsondecode(file("${path.module}/policies/${var.venue}/data.json"))
+  access_policies = jsondecode(file("${var.policy_json_file}"))
 }
 
 resource "aws_opensearch_domain" "pds-opensearch-domain" {
