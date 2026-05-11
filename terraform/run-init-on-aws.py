@@ -14,7 +14,7 @@ import sys
 import subprocess
 import re
 import tarfile
-import zipfile
+import time
 import urllib.request
 import urllib.error
 from pathlib import Path
@@ -506,6 +506,9 @@ password = {self.env_vars[password_key]}
                     ["harvest", "-c", "/config/harvest-job-config.xml"]
                 )
 
+                # wait to make sure all the harvested products are properly indexed in opensearch
+                time.sleep(20)
+
                 # set archive status
                 test_lidvids = [
                     "urn:nasa:pds:mars2020.spice::1.0",
@@ -519,11 +522,12 @@ password = {self.env_vars[password_key]}
                          "-status", "archived", "-lidvid", lidvid,
                          "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
                     )
+
                 self.run_docker_container(
-                    "registry-manager set-archive-status",
-                    ["registry-manager", "set-archive-status",
-                     "-status", "staged", "-lidvid", "urn:nasa:pds:mars2020.spice:document::1.0",
-                     "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
+                   "registry-manager set-archive-status",
+                  ["registry-manager", "set-archive-status",
+                    "-status", "staged", "-lidvid", "urn:nasa:pds:mars2020.spice:document::1.0",
+                    "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
                 )
                 self.run_docker_container(
                     "registry-manager set-archive-status",
