@@ -4,6 +4,11 @@ variable "aws_region" {
   default     = "us-west-2"
 }
 
+variable "policy_json_file" {
+  type        = string
+  description = "Full path name to access policy json file."
+}
+
 variable "domain_name" {
   type        = string
   description = "Name of the provisioned opensearch domain."
