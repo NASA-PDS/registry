@@ -6,7 +6,7 @@ PDS_IMG,urn:nasa:pds:mars2020_edlcam_ops_raw:browse_sol0_rdc::4.0,Product_Collec
 PDS_IMG,urn:nasa:pds:m2020_edlcam_raw:data_audio::5.0,Product_Collection,2023-06-08T06:33:36.572195Z
 PDS_IMG,urn:nasa:pds:mars2020_cachecam_ops_calibrated:data::4.0,Product_Collection,2023-06-08T19:16:39.069970Z
 PDS_IMG,urn:nasa:pds:m2020_edlcam_raw:document_video::7.0,Product_Collection,2024-03-07T00:58:20.468744Z
-PDS_PPI,urn:nasa:pds:p11-cpi:data-1day::1.0,Product_Collection,2026-04-27T16:37:32.589654Z
+PDS_PPI,urn:nasa:pds:p11-cpi:data-1day::1.0,Product_Collection,2026-05-05T17:39:53.485513Z
 PSA,urn:esa:psa:em16_tgo_cas:data_raw::23.0,Product_Collection,2023-11-14T15:06:19.896660Z
 PSA,urn:esa:psa:em16_tgo_cas:data_raw::26.0,Product_Collection,2023-11-14T15:07:30.230917Z
 PSA,urn:esa:psa:em16_tgo_cas:data_raw::36.0,Product_Collection,2023-11-14T15:11:19.263128Z
@@ -535,6 +535,7 @@ PDS_IMG,urn:nasa:pds:m2020_edlcam_raw:document::8.0,Product_Collection,2024-03-0
 PDS_IMG,urn:nasa:pds:mars2020_edlcam_ops_calibrated:data::4.0,Product_Collection,2023-06-09T05:43:12.389842Z
 PDS_IMG,urn:nasa:pds:mars2020_imgops:data_mcc_imgops::5.0,Product_Collection,2023-06-13T06:14:07.043935Z
 PDS_PPI,urn:nasa:pds:p11-gtt-cal:data-highres-sat::1.0,Product_Collection,2026-04-27T17:20:10.998684Z
+PDS_PPI,urn:nasa:pds:galileo-pws-jup-der:data-ele-den::1.0,Product_Collection,2026-05-05T17:44:44.738158Z
 PSA,urn:esa:psa:em16_tgo_cas:data_partially_processed::10.0,Product_Collection,2023-10-30T08:36:29.931353Z
 PSA,urn:esa:psa:em16_tgo_cas:data_partially_processed::12.14,Product_Collection,2023-10-30T08:37:11.305365Z
 PSA,urn:esa:psa:em16_tgo_cas:data_partially_processed::12.16,Product_Collection,2023-10-30T08:37:21.559622Z
@@ -1104,9 +1105,11 @@ PDS_IMG,urn:nasa:pds:messenger_mdis_3001:wac_ddr::1.0,Product_Collection,2024-02
 PDS_IMG,urn:nasa:pds:messenger_mdis_7201:ancillary::1.0,Product_Collection,2024-02-16T03:00:50.481157Z
 PDS_IMG,urn:nasa:pds:mars2020_imgops:data_watson_imgops::5.0,Product_Collection,2023-06-13T06:45:55.026026Z
 PDS_IMG,urn:nasa:pds:mars2020_imgops:data_aci_imgops::5.0,Product_Collection,2023-06-13T06:13:55.370081Z
-PDS_PPI,urn:nasa:pds:maven.swea.calibrated:data.svy_3d::4.8,Product_Collection,2026-03-21T12:45:30.274818Z
-PDS_PPI,urn:nasa:pds:p11-cpi:data-1hr::1.0,Product_Collection,2026-04-27T16:37:06.866063Z
 PDS_PPI,urn:nasa:pds:p11-gtt-cal:data-15min::1.0,Product_Collection,2026-04-27T17:19:59.020474Z
+PDS_PPI,urn:nasa:pds:maven.swea.calibrated:data.svy_3d::4.8,Product_Collection,2026-03-21T12:45:30.274818Z
+PDS_PPI,urn:nasa:pds:p11-cpi:data-1hr::1.0,Product_Collection,2026-05-05T17:39:28.161633Z
+PDS_PPI,urn:nasa:pds:galileo-pws-jup-der:document::1.0,Product_Collection,2026-05-05T17:40:20.927951Z
+PDS_PPI,urn:nasa:pds:galileo-pws-jup-der:browse-ele-den::1.0,Product_Collection,2026-05-05T17:43:22.526852Z
 PSA,urn:esa:psa:em16:miscellaneous_ancillary::100.12,Product_Collection,2023-08-25T11:09:40.816455Z
 PSA,urn:esa:psa:em16:miscellaneous_ancillary::100.17,Product_Collection,2023-08-25T11:10:44.992484Z
 PSA,urn:esa:psa:em16:miscellaneous_ancillary::100.21,Product_Collection,2023-08-25T11:11:33.757581Z
@@ -1651,8 +1654,8 @@ PDS_IMG,urn:nasa:pds:mars2020_hazcam_ops_calibrated:data::4.0,Product_Collection
 PDS_IMG,urn:nasa:pds:messenger_mdis_3001:ancillary::1.0,Product_Collection,2024-02-29T14:45:55.223942Z
 PDS_IMG,urn:nasa:pds:messenger_mdis_5001:ancillary::1.0,Product_Collection,2024-02-21T02:33:43.376034Z
 PDS_IMG,urn:nasa:pds:messenger_mdis_7201:browse::1.0,Product_Collection,2024-02-16T03:00:49.917629Z
-PDS_PPI,urn:nasa:pds:p11-cpi:data-15min::1.0,Product_Collection,2026-04-27T16:37:17.124401Z
 PDS_PPI,urn:nasa:pds:p11-gtt-cal:data-1day::1.0,Product_Collection,2026-04-27T17:19:38.243002Z
+PDS_PPI,urn:nasa:pds:p11-cpi:data-15min::1.0,Product_Collection,2026-05-05T17:39:38.587458Z
 PSA,urn:esa:psa:em16_tgo_cas:data_partially_processed::22.13,Product_Collection,2023-10-30T12:02:07.644436Z
 PSA,urn:esa:psa:em16_tgo_cas:data_partially_processed::22.8,Product_Collection,2023-10-30T12:03:14.319401Z
 PSA,urn:esa:psa:em16_tgo_cas:data_partially_processed::3.1,Product_Collection,2023-10-30T12:04:08.308209Z
@@ -2254,9 +2257,9 @@ PDS_IMG,urn:nasa:pds:mars2020_edlcam_ops_raw:data_sol0_puc1::4.0,Product_Collect
 PDS_IMG,urn:nasa:pds:mars2020_hazcam_ops_stereo:data::4.0,Product_Collection,2023-06-12T05:42:54.366632Z
 PDS_IMG,urn:nasa:pds:mars2020_edlcam_ops_raw:data_sol0_puc2::4.0,Product_Collection,2023-06-09T08:23:16.080057Z
 PDS_PPI,urn:nasa:pds:maven.swea.calibrated:data.arc_pad::4.8,Product_Collection,2026-03-21T09:22:12.771716Z
-PDS_PPI,urn:nasa:pds:p11-cpi:document::1.0,Product_Collection,2026-04-27T16:37:17.847747Z
 PDS_PPI,urn:nasa:pds:vg2-pra-sat:data-lowband-6sec::1.0,Product_Collection,2026-04-27T16:38:20.654541Z
 PDS_PPI,urn:nasa:pds:p11-gtt-cal:data-highres-jup::1.0,Product_Collection,2026-04-27T17:20:07.317378Z
+PDS_PPI,urn:nasa:pds:p11-cpi:document::1.0,Product_Collection,2026-05-05T17:39:39.267668Z
 PSA,urn:esa:psa:em16_tgo_cas:data_partially_processed::12.10,Product_Collection,2023-10-30T08:36:50.739949Z
 PSA,urn:esa:psa:em16_tgo_cas:data_partially_processed::12.12,Product_Collection,2023-10-30T08:37:01.230756Z
 PSA,urn:esa:psa:em16_tgo_cas:data_partially_processed::12.4,Product_Collection,2023-10-30T08:37:45.861159Z
