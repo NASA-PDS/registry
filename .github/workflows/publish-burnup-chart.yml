@@ -16,10 +16,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout main
+      - name: Checkout triggering branch
         uses: actions/checkout@v6
         with:
-          ref: main
+          ref: ${{ github.ref }}
 
       - name: Save burnup chart before workspace is replaced
         run: cp docs/status/burnup_chart.html /tmp/burnup_chart.html
