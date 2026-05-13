@@ -260,3 +260,11 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a data engineer, I want to generate a list of product LIDVIDs tracked in inventory files but missing from the registry ([#508](https://github.com/NASA-PDS/registry/issues/508)) 
+
+
+This requirement is not impacted by the current version
+## As a registry operator, I want burnup charts and per-node tracking in status reports to monitor data loading progress over time ([#510](https://github.com/NASA-PDS/registry/issues/510)) 
+
+
+This requirement is not impacted by the current version
