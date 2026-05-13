@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - develop
     paths:
       - 'docs/status/burnup_chart.html'
   workflow_dispatch:
@@ -16,16 +15,13 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout triggering branch
-        uses: actions/checkout@v7
+      - name: Checkout main
+        uses: actions/checkout@v6
         with:
-          ref: ${{ github.ref }}
-
-      - name: Save burnup chart before workspace is replaced
-        run: cp docs/status/burnup_chart.html /tmp/burnup_chart.html
+          ref: main
 
       - name: Checkout gh-pages
-        uses: actions/checkout@v7
+        uses: actions/checkout@v6
         with:
           ref: gh-pages
           path: gh-pages
@@ -33,7 +29,7 @@ jobs:
       - name: Copy burnup chart
         run: |
           mkdir -p gh-pages/status
-          cp /tmp/burnup_chart.html gh-pages/status/burnup_chart.html
+          cp docs/status/burnup_chart.html gh-pages/status/burnup_chart.html
 
       - name: Commit and push to gh-pages
         run: |
