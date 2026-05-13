@@ -5,7 +5,7 @@ This directory contains automatically generated CSV reports that track the statu
 ## Metrics Summary
 
 <!-- METRICS_START -->
-*Last updated: 2026-05-11 20:35:12 UTC*
+*Last updated: 2026-05-13 20:00:31 UTC*
 
 ### Missing Products by Node
 
@@ -15,11 +15,11 @@ This directory contains automatically generated CSV reports that track the statu
 | PDS_ATM | 18 | 8 | 26 | 138 | 81 | 219 |
 | PDS_ENG | 2 | 6 | 8 | 5 | 88 | 93 |
 | PDS_GEO | 11 | 24 | 35 | 166 | 364 | 530 |
-| PDS_IMG | 36 | 35 | 71 | 1589 | 294 | 1883 |
-| PDS_PPI | 15 | 199 | 214 | 89 | 1347 | 1436 |
+| PDS_IMG | 36 | 35 | 71 | 1592 | 294 | 1886 |
+| PDS_PPI | 14 | 199 | 213 | 84 | 1347 | 1431 |
 | PDS_RMS | 8 | 0 | 8 | 23 | 0 | 23 |
-| PDS_SBN | 15 | 30 | 45 | 88 | 93 | 181 |
-| **Total** | **106** | **302** | **408** | **2101** | **2267** | **4368** |
+| PDS_SBN | 16 | 30 | 46 | 89 | 93 | 182 |
+| **Total** | **106** | **302** | **408** | **2100** | **2267** | **4367** |
 
 ### Staged Products by Node
 
@@ -28,11 +28,15 @@ This directory contains automatically generated CSV reports that track the statu
 | PDS_ATM | 3 | 30 |
 | PDS_GEO | 0 | 7 |
 | PDS_IMG | 0 | 64 |
-| PDS_PPI | 0 | 19 |
+| PDS_PPI | 2 | 30 |
 | PDS_RMS | 0 | 1 |
 | PDS_SBN | 26 | 137 |
 | PSA | 902 | 4171 |
-| **Total** | **931** | **4429** |
+| **Total** | **933** | **4440** |
+
+### Loading Progress
+
+[View Burnup Chart](burnup_chart.html) — cumulative products loaded over time vs. target
 
 <!-- METRICS_END -->
 
