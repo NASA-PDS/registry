@@ -20,6 +20,9 @@ jobs:
         with:
           ref: main
 
+      - name: Save burnup chart before workspace is replaced
+        run: cp docs/status/burnup_chart.html /tmp/burnup_chart.html
+
       - name: Checkout gh-pages
         uses: actions/checkout@v6
         with:
@@ -29,7 +32,7 @@ jobs:
       - name: Copy burnup chart
         run: |
           mkdir -p gh-pages/status
-          cp docs/status/burnup_chart.html gh-pages/status/burnup_chart.html
+          cp /tmp/burnup_chart.html gh-pages/status/burnup_chart.html
 
       - name: Commit and push to gh-pages
         run: |
