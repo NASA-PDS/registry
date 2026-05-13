@@ -1,0 +1,41 @@
+name: Publish Burnup Chart to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/status/burnup_chart.html'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Copy burnup chart to gh-pages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v6
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Copy burnup chart
+        run: |
+          mkdir -p gh-pages/status
+          cp docs/status/burnup_chart.html gh-pages/status/burnup_chart.html
+
+      - name: Commit and push to gh-pages
+        run: |
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add status/burnup_chart.html
+          git diff --cached --quiet || git commit -m "docs: update burnup chart"
+          git push
