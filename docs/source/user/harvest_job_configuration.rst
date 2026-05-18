@@ -2,17 +2,14 @@
 Detailed Harvest Configuration
 ==============================
 
-The following sections describe Harvest configuration file in more detail.
+Reference for all Harvest job configuration file options.
+For basic setup see :doc:`/user/load1`.
 
 
+Input: Directories
+******************
 
-Input Directories and Filters
-******************************
-
-Process Directories
-====================
-
-To process products from one or more directories, add the following section in Harvest configuration file:
+Load products from one or more directories:
 
 .. code-block:: xml
 
@@ -28,76 +25,43 @@ To process products from one or more directories, add the following section in H
   </harvest>
 
 .. note::
-   You could not have both <directories> and <bundles> sections at the same time.
+   ``<directories>`` and ``<bundles>`` cannot both be present in the same config.
 
 
-Process a List of Files
-========================
+Input: File Manifest
+********************
 
-First, create a manifest file and list all files you want to process. One file path per line.
+To load a specific list of files:
 
-.. code-block:: python
+1. Create a manifest file with one file path per line:
 
-  /data/d1/CCF_0088_0674757853_190FDR_N0040048CACH00100_0A10LLJ05.xml
-  /data/d1/CCF_0088_0674757853_190FDR_N0040048CACH00100_0A10LLJ07.xml
-  /data/d1/CCF_0088_0674757853_190FDR_N0040048CACH00100_0A10LLJ09.xml
+   .. code-block:: text
 
-Next, add the following section in Harvest configuration file:
+     /data/d1/CCF_0088_0674757853_190FDR_N0040048CACH00100_0A10LLJ05.xml
+     /data/d1/CCF_0088_0674757853_190FDR_N0040048CACH00100_0A10LLJ07.xml
+     /data/d1/CCF_0088_0674757853_190FDR_N0040048CACH00100_0A10LLJ09.xml
 
-.. code-block:: xml
+2. Reference the manifest in the config:
 
-  <harvest>
-    ...
-    <load>
-      <files>
-        <manifest>/some-directory/manifest.txt</manifest>
-      </files>
-    </load>
-    ...
-  </harvest>
+   .. code-block:: xml
 
-Filtering Products by Class
-============================
-
-You can include or exclude products of a particular class. For example, to only process documents, add following
-product filter in Harvest configuration file:
-
-.. code-block:: xml
-
-  <harvest>
-    ...
-    <productFilter>
-      <includeClass>Product_Document</includeClass>
-    </productFilter>
-    ...
-  </harvest>
+     <harvest>
+       ...
+       <load>
+         <files>
+           <manifest>/some-directory/manifest.txt</manifest>
+         </files>
+       </load>
+       ...
+     </harvest>
 
 
-To exclude documents, add following product filter:
+Input: Bundles
+**************
 
-.. code-block:: xml
+*(command-line Harvest only)*
 
-  <harvest>
-    ...
-    <productFilter>
-      <excludeClass>Product_Document</excludeClass>
-    </productFilter>
-    ...
-  </harvest>
-
-
-.. note::
-   You could not have both include and exclude filters at the same time.
-
-
-
-
-Process Bundles
-================
-
-(only applies to **command line harvest**)
-
-To process products from one or more bundles, add the following section in Harvest configuration file:
+Load products from one or more bundles:
 
 .. code-block:: xml
 
@@ -113,168 +77,152 @@ To process products from one or more bundles, add the following section in Harve
   </harvest>
 
 .. note::
-   You could not have both <directories> and <bundles> sections at the same time.
+   ``<directories>`` and ``<bundles>`` cannot both be present in the same config.
+
+
+Filtering by Product Class
+**************************
+
+Include only a specific class:
+
+.. code-block:: xml
+
+  <harvest>
+    ...
+    <productFilter>
+      <includeClass>Product_Document</includeClass>
+    </productFilter>
+    ...
+  </harvest>
+
+Exclude a specific class:
+
+.. code-block:: xml
+
+  <harvest>
+    ...
+    <productFilter>
+      <excludeClass>Product_Document</excludeClass>
+    </productFilter>
+    ...
+  </harvest>
+
+.. note::
+   ``<includeClass>`` and ``<excludeClass>`` cannot both be present at the same time.
 
 
 Filtering Bundle Versions
-=========================
+*************************
 
-(only applies to **command line harvest**)
+*(command-line Harvest only)*
 
-Use "versions" attribute of the <bundle> tag to list versions of bundles to process.
-You can separate versions by comma, semicolon or space.
-
-.. code-block:: xml
-
-  <harvest>
-    ...
-    <load>
-      <bundles>
-        <bundle dir="/data/OREX/orex_spice" versions="7.0;8.0" />
-      </bundles>
-    </load>
-    ...
-  </harvest>
-
-To process all versions you can use either versions="all" or no versions attribute at all.
+Use the ``versions`` attribute to limit which bundle versions are processed.
+Separate multiple versions with a comma, semicolon, or space:
 
 .. code-block:: xml
 
-  <harvest>
-    ...
-    <load>
-      <bundles>
-        <bundle dir="/data/OREX/orex_spice" versions="all" />
-      </bundles>
-    </load>
-    ...
-  </harvest>
+  <bundle dir="/data/OREX/orex_spice" versions="7.0;8.0" />
+
+To process all versions:
+
+.. code-block:: xml
+
+  <bundle dir="/data/OREX/orex_spice" versions="all" />
 
 
-Filtering Bundle's Collections
-===============================
+Filtering Bundle Collections
+****************************
 
-(only applies to **command line harvest**)
+*(command-line Harvest only)*
 
-By default Harvest will process all collections listed in <Bundle_Member_Entry>
-section of a bundle. To process a subset of collections you can provide a list of
-lids or lidvids as shown below.
+By default all collections in a bundle are processed. Filter by LID or LIDVID:
 
 .. code-block:: xml
 
   <!-- Filter by collection LID -->
   <bundle dir="/data/OREX/orex_spice" versions="8.0" >
-      <collection lid="urn:nasa:pds:orex.spice:spice_kernels" />
+    <collection lid="urn:nasa:pds:orex.spice:spice_kernels" />
   </bundle>
 
   <!-- Filter by collection LIDVID -->
   <bundle dir="/data/OREX/orex_spice" versions="8.0;7.0" >
-      <collection lidvid="urn:nasa:pds:orex.spice:spice_kernels::8.0" />
-      <collection lidvid="urn:nasa:pds:orex.spice:spice_kernels::7.0" />
+    <collection lidvid="urn:nasa:pds:orex.spice:spice_kernels::8.0" />
+    <collection lidvid="urn:nasa:pds:orex.spice:spice_kernels::7.0" />
   </bundle>
 
 
-Filtering Bundle's Product Directories
-=======================================
+Filtering Product Directories Within a Bundle
+*********************************************
 
-(only applies to **command line harvest**)
+*(command-line Harvest only)*
 
-By default Harvest will process all products listed in the collection inventory file.
-To process a subset of products you can provide a list of directories.
-
+To process only a subset of products, specify a substring of the relative directory path:
 
 .. code-block:: xml
 
   <bundle dir="/data/OREX/orex_spice" versions="8.0" >
-      <!-- Specify a substring in a relative (to the bundle root) directory name.  -->
-      <product dir="/fk/" />
+    <product dir="/fk/" />
   </bundle>
-
 
 
 File Reference / Access URL
 ****************************
 
-Harvest extracts absolute paths of product and label files, such as
+Harvest records the absolute local path of each file, e.g.:
 
-.. code-block:: javascript
+.. code-block:: text
 
- "ops:Label_File_Info/ops:file_ref":"/tmp/d5/naif0012.xml",
- "ops:Data_File_Info/ops:file_ref":"/tmp/d5/naif0012.tls",
+  "ops:Label_File_Info/ops:file_ref": "/tmp/d5/naif0012.xml"
 
-Note that on Windows, backslashes are replaced with forward slashes and disk letter is included.
-
-.. code-block:: javascript
-
- "ops:Label_File_Info/ops:file_ref":"C:/tmp/d4/bundle_orex_spice_v009.xml",
-
-To replace a file path prefix with another value, such as a URL, add <fileRef/> tag in Harvest configuration file:
+To replace a local path prefix with a public URL, add a ``<fileRef>`` entry:
 
 .. code-block:: xml
 
- <fileInfo>
-   <fileRef replacePrefix="/C:/tmp/d4/"
-            with="https://naif.jpl.nasa.gov/pub/naif/pds/pds4/orex/orex_spice/" />
- </fileInfo>
+  <fileInfo>
+    <fileRef replacePrefix="/tmp/d5/"
+             with="https://naif.jpl.nasa.gov/pub/naif/pds/pds4/orex/orex_spice/" />
+  </fileInfo>
 
-After running Harvest, you should get different *file_ref* value:
+Result:
 
-.. code-block:: javascript
+.. code-block:: text
 
- "ops:Label_File_Info/ops:file_ref":
-     "https://naif.jpl.nasa.gov/pub/naif/pds/pds4/orex/orex_spice/bundle_orex_spice_v009.xml"
+  "ops:Label_File_Info/ops:file_ref":
+      "https://naif.jpl.nasa.gov/pub/naif/pds/pds4/orex/orex_spice/bundle_orex_spice_v009.xml"
+
+.. note::
+   On Windows, backslashes in paths are automatically replaced with forward slashes,
+   and the drive letter is included (e.g. ``C:/tmp/d4/...``).
 
 
-Registry Integration
-*********************
+Registry Connection
+********************
 
-Harvest tool loads extracted PDS4 metadata into OpenSearch database.
-You have to configure following OpenSearch parameters:
-
-* **connection file** - externalized configuration of the connection to the Registry Service. See :doc:`/connection-setup`.
-* **auth** - Registry service authentication configuration file. See :doc:`/connection-setup`.
-
-As in the the following example:
+Configure the OpenSearch connection and auth files (see :doc:`/connection-setup`):
 
 .. code-block:: xml
 
- <harvest>
-   ...
-   <registry auth="/path/to/auth.cfg">file:///path/to/config/mcp_dev.xm</registry>
-   ...
- </harvest>
-
+  <harvest>
+    ...
+    <registry auth="$HOME/.pds/registry-auth-{venue}.txt">file://$HOME/.pds/registry-config-{node}-{venue}.xml</registry>
+    ...
+  </harvest>
 
 
 Label and Data File Information
 ********************************
 
-(only applies to **command line harvest**)
+*(command-line Harvest only)*
 
-By default, Harvest extracts label and data file information, such as file name, mime type, size, and MD5 hash.
+By default, Harvest extracts file metadata (name, MIME type, size, MD5 hash) for both label and data files:
 
-Label:
+.. code-block:: text
 
-.. code-block:: javascript
+  "ops:Label_File_Info/ops:file_name": "naif0012.xml",
+  "ops:Label_File_Info/ops:file_size": "3398",
+  "ops:Label_File_Info/ops:md5_checksum": "69ea2974a93854d90399b8b8fc3d1334"
 
-  "ops:Label_File_Info/ops:creation_date_time":"2020-11-18T22:25:05Z",
-  "ops:Label_File_Info/ops:file_name":"naif0012.xml",
-  "ops:Label_File_Info/ops:file_ref":"/C:/tmp/d5/naif0012.xml",
-  "ops:Label_File_Info/ops:file_size":"3398",
-  "ops:Label_File_Info/ops:md5_checksum":"69ea2974a93854d90399b8b8fc3d1334"
-
-Data file:
-
-.. code-block:: javascript
-
-  "ops:Data_File_Info/ops:creation_date_time":"2020-11-18T22:25:17Z",
-  "ops:Data_File_Info/ops:file_name":"naif0012.tls",
-  "ops:Data_File_Info/ops:file_ref":"/C:/tmp/d5/naif0012.tls",
-  "ops:Data_File_Info/ops:file_size":"5257",
-  "ops:Data_File_Info/ops:md5_checksum":"25a2fff30b0dedb4d76c06727b1895b1",
-  "ops:Data_File_Info/ops:mime_type":"text/plain",
-
-If you don't want to process data files, add the following flag in Harvest configuration file.
+To skip data file processing:
 
 .. code-block:: xml
 
@@ -284,25 +232,20 @@ If you don't want to process data files, add the following flag in Harvest confi
 BLOB Storage
 *************
 
-(only applies to **command line harvest**)
+*(command-line Harvest only)*
 
-By default, Harvest stores PDS product labels as BLOBs (Binary Large OBjects).
-Both original PDS product labels in XML format as well as product labels converted to JSON are stored.
-The data is compressed and stored in following fields: *"ops/Label_File_Info/ops/blob"* and *"ops/Label_File_Info/ops/json_blob"*.
+By default, Harvest stores each PDS4 label as a compressed BLOB in both XML and JSON formats
+(fields ``ops/Label_File_Info/ops/blob`` and ``ops/Label_File_Info/ops/json_blob``).
 
-You can expect up to 900% compression rate for some files.
-For example, many LADEE housekeeping labels are about 45KB. Compressed BLOB size is about 5KB.
-For smaller files, such as collection labels, compression rate is about 350% (5.5KB file is compressed to 1.6KB).
+To extract a stored label, use Registry Manager:
 
-After loading data into OpenSearch, you can extract original labels by running Registry Manager tool:
-
-.. code-block:: python
+.. code-block:: bash
 
   registry-manager export-file \
       -lidvid urn:nasa:pds:ladee_ldex:data_calibrated::1.2 \
       -file /tmp/data_calibrated.xml
 
-To disable BLOB storage, modify *fileInfo* section in Harvest configuration file.
+To disable BLOB storage:
 
 .. code-block:: xml
 
@@ -312,46 +255,27 @@ To disable BLOB storage, modify *fileInfo* section in Harvest configuration file
 Extract Metadata by XPath
 **************************
 
-(only applies to **command line harvest**)
+*(command-line Harvest only)*
 
-To extract metadata by XPath, you have to create one or more mapping files and list them
-in Harvest configuration file as shown below.
+To extract custom fields using XPath, create one or more mapping files and reference them in the config:
 
 .. code-block:: xml
 
   <harvest>
-  ...
+    ...
     <xpathMaps baseDir="/home/pds/harvest/conf">
       <xpathMap filePath="common.xml" />
       <xpathMap rootElement="Product_Observational" filePath="observational.xml" />
     </xpathMaps>
   </harvest>
 
-In the example above there are two *xpathMap* entries. Each entry must have *filePath* attribute
-pointing to a mapping file. A path can be either absolute or relative to the *baseDir* attribute
-of the *xpathMaps* tag. The *baseDir* attribute is optional. The same example with absolute paths
-is shown below.
+- ``filePath`` — path to a mapping file (absolute, or relative to ``baseDir``).
+- ``rootElement`` — if set, only XML documents with that root element are processed by this mapping.
 
-.. code-block:: xml
+Mapping File Format
+===================
 
-  <xpathMaps>
-    <xpathMap filePath="/home/pds/harvest/conf/common.xml" />
-    <xpathMap rootElement="Product_Observational"
-              filePath="/home/pds/harvest/conf/observational.xml" />
-  </xpathMaps>
-
-An *xpathMap* entry can have optional *rootElement* attribute.
-Without this attribute, XPaths queries defined in a mapping file (*common.xml*),
-will run against every XML document processed by Harvest.
-With *rootElement* attribute, only XMLs with that root element will be processed.
-
-
-Mapping Files
-==============
-
-A mapping file has one or more entries which map an output field name to an XPath query.
-For example, to extract *start_date_time* and *stop_date_time* from observational products,
-you can use the following file.
+Each entry maps an output field name to an XPath expression:
 
 .. code-block:: xml
 
@@ -360,36 +284,29 @@ you can use the following file.
     <xpath fieldName="start_date_time">/Product_Observational/Observation_Area/Time_Coordinates/start_date_time</xpath>
     <xpath fieldName="stop_date_time">/Product_Observational/Observation_Area/Time_Coordinates/stop_date_time</xpath>
   </xpaths>
-  </source>
 
-You can use optional *dataType="date"* attribute to convert valid PDS dates to
-ISO-8601 "instant" format (e.g., "2013-10-24T00:49:37.457Z").
+Add ``dataType="date"`` to convert PDS date strings to ISO-8601 format:
 
 .. code-block:: xml
 
   <xpaths>
     <xpath fieldName="start_date_time"
            dataType="date">/Product_Observational/Observation_Area/Time_Coordinates/start_date_time</xpath>
-    <xpath fieldName="stop_date_time"
-           dataType="date">/Product_Observational/Observation_Area/Time_Coordinates/stop_date_time</xpath>
   </xpaths>
 
+XML Namespaces
+==============
 
-XML Name Spaces
-================
-
-Harvest ignores namespaces when extracting metadata by XPath.
-Below is a fragment of LADEE UVS product label which uses "ladee" namespace for mission area fields.
+Harvest ignores namespaces in XPath expressions. For example, given a label with:
 
 .. code-block:: xml
 
-  <Observation_Area>
-    <Mission_Area>
-      <ladee:latitude>17.2367925372247</ladee:latitude>
-      <ladee:longitude>194.054477731391</ladee:longitude>
-      ...
+  <Mission_Area>
+    <ladee:latitude>17.2367925372247</ladee:latitude>
+    <ladee:longitude>194.054477731391</ladee:longitude>
+  </Mission_Area>
 
-To extract latitude and longitude you can use the following XPaths without namespaces.
+Use namespace-free XPaths:
 
 .. code-block:: xml
 
