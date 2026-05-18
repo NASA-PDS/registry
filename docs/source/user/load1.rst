@@ -93,17 +93,6 @@ Run Harvest
 Next Steps
 **********
 
-You can see additional harvest options by running:
-
-.. code:: bash
-
-  ./bin/harvest -help
-
-The harvest job configuration file provides also additional options described in :doc:`/user/harvest_job_configuration`.
-
-You can validate the products loaded in the registry using `registry-client <https://nasa-pds.github.io/registry-client/>`_.
-
-.. warning::
-    Due to refresh rates and indexation delays, it may take up to a few hours before the data becomes visible.
-
-When ready for public release, you need to `update the archive status <update_status.html>`_
+- See all Harvest options: ``harvest -help``
+- Additional job config options: :doc:`/user/harvest_job_configuration`
+- Publish loaded data: :doc:`/user/update_status`
