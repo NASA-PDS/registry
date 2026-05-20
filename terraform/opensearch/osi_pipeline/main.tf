@@ -9,7 +9,7 @@ terraform {
 resource "aws_osis_pipeline" "pds_osi_pipeline" {
   pipeline_name               = "${var.pipeline_name}"
   pipeline_configuration_body = file("${var.pipeline_config_yaml_file}")
-  pipeline_role_arn           = "{var.pipeline_role_arn}"
+  pipeline_role_arn           = "${var.pipeline_role_arn}"
 
   max_units                   = var.pipeline_max_units
   min_units                   = var.pipeline_min_units 
