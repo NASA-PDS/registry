@@ -21,10 +21,7 @@ resource "opensearch_composable_index_template" "pds_index_templates" {
     index_patterns = each.value.index_pattern
     priority       = each.value.priority
     template = {
-      settings = {
-          "index.number_of_shards"   = each.value.shards
-          "index.number_of_replicas" = each.value.replicas
-      }
+      settings = each.value.settings
     }
   })
 }
