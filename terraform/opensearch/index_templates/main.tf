@@ -22,6 +22,7 @@ resource "opensearch_composable_index_template" "pds_index_templates" {
     priority       = each.value.priority
     template = {
       settings = each.value.settings
+      aliases = each.value.aliases
     }
   })
 }
