@@ -5,6 +5,7 @@ User Tasks
 User tasks describes the everyday processes such as load data, change data status (for example publish data) and delete data from the registry.
 
 .. toctree::
+   test_connection
    load1
    harvest_job_configuration
    update_status
