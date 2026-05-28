@@ -24,7 +24,7 @@ def lambda_handler(event, context):
     # and Token signing Key URL for validation
     COGNITO_USER_POOL_ID = os.environ['COGNITO_USER_POOL_ID']
     COGNITO_IDENTITY_POOL_ID = os.environ['COGNITO_IDENTITY_POOL_ID']
-    COGNITO_ALLOWED_GROUPS = set(os.environ['COGNITO_ALLOWED_GROUPS'].split(','))
+    COGNITO_ALLOWED_GROUPS = {g.strip() for g in os.environ['COGNITO_ALLOWED_GROUPS'].split(',')}
     COGNITO_JWKS_URL = os.environ['COGNITO_JWKS_URL']
 
     # Extract tokens from the HTTP headers
