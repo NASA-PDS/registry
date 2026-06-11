@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-05-13)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-06-11)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.6.0...«unknown»)
 
@@ -11,6 +11,10 @@
 - As a PDS Node Operator, I want to validate that products listed as missing from the registry are truly absent from the PDS Search API [\#484](https://github.com/NASA-PDS/registry/issues/484)
 - As a PDS Node Operator, I want to track historical counts of missing and staged products over time [\#481](https://github.com/NASA-PDS/registry/issues/481)
 - As a user, I want to load date times as strings in order to support leap seconds [\#426](https://github.com/NASA-PDS/registry/issues/426)
+
+**Improvements:**
+
+- Improve user documentation with procedural step-by-step instructions [\#515](https://github.com/NASA-PDS/registry/issues/515)
 
 **Defects:**
 
