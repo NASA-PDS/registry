@@ -24,7 +24,7 @@ def lambda_handler(event, context):
     # and Token signing Key URL for validation
     COGNITO_USER_POOL_ID = os.environ['COGNITO_USER_POOL_ID']
     COGNITO_IDENTITY_POOL_ID = os.environ['COGNITO_IDENTITY_POOL_ID']
-    COGNITO_ALLOWED_GROUPS = os.environ['COGNITO_ALLOWED_GROUPS']
+    COGNITO_ALLOWED_GROUPS = {g.strip() for g in os.environ['COGNITO_ALLOWED_GROUPS'].split(',')}
     COGNITO_JWKS_URL = os.environ['COGNITO_JWKS_URL']
 
     # Extract tokens from the HTTP headers
@@ -76,10 +76,11 @@ def lambda_handler(event, context):
         # Get the role ARN associated with the user's group
         role_arn = get_role_arn_for_group(user_groups)
         logger.debug("Role allocated %s", role_arn)
+        cognito_provider_region = COGNITO_USER_POOL_ID.split('_', 1)[0]
         identity_id_response = cognito_identity_client.get_id(
             IdentityPoolId=COGNITO_IDENTITY_POOL_ID,
             Logins={
-                f'cognito-idp.us-west-2.amazonaws.com/' + COGNITO_USER_POOL_ID: id_token
+                'cognito-idp.' + cognito_provider_region + '.amazonaws.com/' + COGNITO_USER_POOL_ID: id_token
             }
         )
         identity_id = identity_id_response['IdentityId']
