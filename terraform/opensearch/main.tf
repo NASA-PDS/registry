@@ -50,7 +50,7 @@ resource "aws_security_group" "vpce" {
 # VPC Endpoint for OpenSearch Serverless
 resource "aws_vpc_endpoint" "opensearch_serverless" {
   vpc_id            = var.vpc_id
-  service_name      = "com.amazonaws.${var.aws_region}.aoss"
+  service_name      = "com.amazonaws.${var.aws_region}.aoss-${var.collection_name}"
   vpc_endpoint_type = "Interface"
   subnet_ids        = var.subnet_ids
 

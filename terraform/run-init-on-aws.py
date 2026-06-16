@@ -488,6 +488,16 @@ password = {self.env_vars[password_key]}
 
                 try:
                     self.run_docker_container(
+                        "registry-manager delete-registry",
+                        ["registry-manager", "delete-registry",
+                         "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
+                    )
+                    print("\n⚠️  Pre-existing registry indexes deleted...\n")
+                except subprocess.CalledProcessError:
+                    print("\n⚠️  Could not delete registry, it may not exist yet, continuing...\n")
+
+                try:
+                    self.run_docker_container(
                         "registry-manager create-registry",
                         ["registry-manager", "create-registry",
                          "-auth", "/config/es-admin-auth.cfg", "-registry", "file:///config/registry-connection.xml"]
@@ -501,9 +511,12 @@ password = {self.env_vars[password_key]}
                     continue
 
                 self.generate_harvest_config()
+                #exit()
+                time.sleep(60)
                 self.run_docker_container(
                     "harvest",
-                    ["harvest", "-c", "/config/harvest-job-config.xml"]
+                    ["harvest", "-c", "/config/harvest-job-config.xml"
+                     ]
                 )
 
                 # wait to make sure all the harvested products are properly indexed in opensearch
