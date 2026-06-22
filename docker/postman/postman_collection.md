@@ -1,4 +1,4 @@
-# Planetary Data System API Reference Tests Copy 23
+# Planetary Data System API Reference Tests Copy 27
 
 Federated PDS API which provides actionable end points standardized
 between the different nodes.
@@ -107,6 +107,7 @@ Contact Support:
   - [`GET`] [count having host and target](#get-count-having-host-and-target)
 - [security](#security)
   - [`GET`] [unknown query parameters](#get-unknown-query-parameters)
+  - [`GET`] [NASA-PDS/outlaw-tracker#46 html injection](#get-nasa-pdsoutlaw-tracker46-html-injection)
   - [`GET`] [web cache poisoning](#get-web-cache-poisoning)
 
 ---
@@ -1268,6 +1269,18 @@ Contact Support:
 ### `GET` unknown query parameters
 
 **URL:** `{{baseUrl}}/products?q=(pds:Primary_Result_Summary.pds:processing_level eq "Derived")&limit=10&malicious=anything`
+
+**Tests:**
+
+- Status code is 400
+
+---
+
+### `GET` NASA-PDS/outlaw-tracker#46 html injection
+
+**GitHub:** [NASA-PDS/outlaw-tracker#46](https://github.com/NASA-PDS/outlaw-tracker/issues/46)
+
+**URL:** `{{baseUrl}}/products?<img%20src%3Dx%20onerror%3Dalert(document.domain)>=1`
 
 **Tests:**
 
