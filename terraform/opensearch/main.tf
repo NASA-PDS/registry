@@ -84,7 +84,9 @@ data "aws_iam_policy_document" "domain_access_policy_document" {
 }
 
 resource "aws_opensearch_domain_policy" "domain_access_policy" {
-  domain_name = "${var.domain_name}"
+  domain_name     = "${var.domain_name}"
   access_policies = data.aws_iam_policy_document.domain_access_policy_document.json
+
+  depends_on = [aws_opensearch_domain.pds-opensearch-domain]
 }
 
