@@ -124,6 +124,7 @@ services:
   registry-api:
     profiles: ["pds-core-registry", "int-registry-batch-loader"]
     image: ${REG_API_IMAGE}
+    pull_policy: missing
     environment:
       - ES_URL=${ES_URL}
       - SERVER_PORT=8080
