@@ -17,7 +17,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout triggering branch
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.ref }}
 
@@ -25,7 +25,7 @@ jobs:
         run: cp docs/status/burnup_chart.html /tmp/burnup_chart.html
 
       - name: Checkout gh-pages
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: gh-pages
           path: gh-pages
