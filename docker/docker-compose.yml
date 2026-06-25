@@ -111,7 +111,7 @@ services:
       - LOGLEVEL=INFO
       - DEV_MODE=1
       - MULTITENANCY_NODE_ID=geo
-    command: ["/usr/local/bin/sweepers_driver.py", "--legacy-sync"]
+    command: ["--legacy-sync"]
     networks:
       - pds
     depends_on:
@@ -124,6 +124,7 @@ services:
   registry-api:
     profiles: ["pds-core-registry", "int-registry-batch-loader"]
     image: ${REG_API_IMAGE}
+    pull_policy: missing
     environment:
       - ES_URL=${ES_URL}
       - SERVER_PORT=8080
