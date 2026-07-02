@@ -267,7 +267,12 @@ def print_status_report(checkpoint: dict[str, Any]) -> None:
     results = checkpoint.get("results", {})
     sentinels = checkpoint.get("sentinels", [])
     checked = len(results)
-    total = len(sentinels)
+    # Use unique (index, ns) pairs as the denominator — multiple raw hits can share the same key
+    total = len({
+        _checkpoint_key(h.get("_index", ""), h.get("_source", {}).get("attr_ns", ""))
+        for h in sentinels
+        if h.get("_source", {}).get("attr_ns")
+    }) if sentinels else checked
     stale = [v for v in results.values() if v.get("stale")]
     ok_count = sum(1 for v in results.values() if not v.get("stale"))
 
