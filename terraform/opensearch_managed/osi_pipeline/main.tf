@@ -12,7 +12,7 @@ resource "aws_osis_pipeline" "pds_osi_pipeline" {
   pipeline_role_arn           = "${var.pipeline_role_arn}"
 
   max_units                   = var.pipeline_max_units
-  min_units                   = var.pipeline_min_units 
+  min_units                   = var.pipeline_min_units
 
   log_publishing_options {
     is_logging_enabled = true
