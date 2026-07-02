@@ -10,30 +10,11 @@ collection_name = "registry-collection"
 standby_replicas = "DISABLED"
 
 # Network Access Configuration
-# Option 1: Public access (easier for development/testing)
-enable_public_access = true
-
-# Option 2: VPC-only access via VPC endpoint (recommended for production)
-# enable_public_access = false
-# create_vpc_endpoint = true
-
-# Needed for VPC end-point above and registry API load balancer and ECS service
+# Needed for the registry API load balancer and ECS service
 vpc_id = "vpc-1234567890abcdef0"
 subnet_ids = ["subnet-1234567890abcdef0", "subnet-0987654321fedcba0"]
 public_subnet_ids = ["subnet-3234567890abcdef0", "subnet-3987654321fedcba0"]
-security_group_id = []  # Leave empty to create a default security group
-
-# Admin roles configuration (see DEPLOYMENT_STAGES.md for deployment workflow)
-# Stage 1 (initial): Deploy without admin role
-admin_console_role = []
-use_ssm_for_admin_role = false
-
-# Stage 2 (after IAM role created in separate terraform): Enable SSM to read role ARN
-# The IAM role ARN should be stored at: /pds/infra/iam/roles/pds_cognito_cds_admin_role_arn
-# use_ssm_for_admin_role = true
-
-# Alternative: Directly specify admin role ARNs for console access
-# admin_console_role = ["arn:aws:iam::123456789012:role/pds-registry-admin"]
+security_group_ids = []  # Leave empty to create a default security group
 
 # Common tags applied to all resources
 common_tags = {
