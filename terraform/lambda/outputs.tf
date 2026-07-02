@@ -35,4 +35,3 @@ output "lambda_layer_version" {
   description = "Version of the Lambda layer"
   value       = aws_lambda_layer_version.layer.version
 }
-
