@@ -43,8 +43,7 @@ class RegistryInitializer:
         self.node_list: list = []
 
         self.tf_cmd: str = "terraform"
-        self.tf_opensearch_dir: Path = self.script_dir / "opensearch_serverless"
-        self.tf_applications_dir: Path = self.script_dir / "applications"
+        self.tf_working_dir: Path = Path.cwd()
 
         # Environment variables
         self.env_vars: Dict[str, str] = {}
@@ -60,11 +59,11 @@ class RegistryInitializer:
         print(f"{emoji} {message}")
 
     def check_terraform_directory(self) -> bool:
-        """Check that the opensearch_serverless and applications Terraform state directories exist."""
-        for tf_dir in (self.tf_opensearch_dir, self.tf_applications_dir):
-            if not (tf_dir / "main.tf").exists():
-                print(f"Error: Terraform directory not found or missing main.tf: {tf_dir}")
-                return False
+        """Check if we're in a valid terraform directory."""
+        main_tf = self.script_dir / "main.tf"
+        if not main_tf.exists():
+            print("Error: This script must be run from the terraform directory or main.tf must exist")
+            return False
         return True
 
     def run_command(self, cmd: list, capture: bool = True, check: bool = True, cwd: Optional[Path] = None) -> Optional[str]:
@@ -103,32 +102,27 @@ class RegistryInitializer:
             return None
 
     def extract_terraform_outputs(self) -> bool:
-        """Extract required outputs from the opensearch_serverless and applications Terraform states."""
+        """Extract required outputs from Terraform."""
         self.print_section("📋", "Extracting Terraform outputs...")
 
-        # collection_endpoint lives in the opensearch_serverless state
+        # Check if terraform/terragrunt has been applied
         try:
             self.opensearch_endpoint = self.run_command(
                 [self.tf_cmd, "output", "-raw", "collection_endpoint"],
-                cwd=self.tf_opensearch_dir,
+                cwd=self.tf_working_dir,
             )
         except subprocess.CalledProcessError:
-            print(f"Error: Terraform outputs not found in {self.tf_opensearch_dir}. Have you run '{self.tf_cmd} apply'?")
+            print(f"Error: Terraform outputs not found. Have you run '{self.tf_cmd} apply'?")
             return False
 
-        # credentials_endpoint and node_list live in the applications state
-        try:
-            self.credentials_endpoint = self.run_command(
-                [self.tf_cmd, "output", "-raw", "credentials_endpoint"],
-                cwd=self.tf_applications_dir,
-            )
-        except subprocess.CalledProcessError:
-            print(f"Error: Terraform outputs not found in {self.tf_applications_dir}. Have you run '{self.tf_cmd} apply'?")
-            return False
+        self.credentials_endpoint = self.run_command(
+            [self.tf_cmd, "output", "-raw", "credentials_endpoint"],
+            cwd=self.tf_working_dir,
+        )
 
         node_list_json = self.run_command(
             [self.tf_cmd, "output", "-json", "node_list"],
-            cwd=self.tf_applications_dir,
+            cwd=self.tf_working_dir,
         )
         self.node_list = json.loads(node_list_json)
 
@@ -517,7 +511,7 @@ password = {self.env_vars[password_key]}
                     continue
 
                 self.generate_harvest_config()
-
+                #exit()
                 time.sleep(60)
                 self.run_docker_container(
                     "harvest",
@@ -588,7 +582,7 @@ def main():
         "--working-dir",
         type=Path,
         default=None,
-        help="Base directory containing the opensearch_serverless and applications Terraform states (defaults to script directory)",
+        help="Working directory for terraform/terragrunt output commands (defaults to cwd)",
     )
     args = parser.parse_args()
 
@@ -596,9 +590,7 @@ def main():
     if args.terragrunt:
         initializer.tf_cmd = "terragrunt"
     if args.working_dir:
-        working_dir = args.working_dir.resolve()
-        initializer.tf_opensearch_dir = working_dir / "opensearch_serverless"
-        initializer.tf_applications_dir = working_dir / "applications"
+        initializer.tf_working_dir = args.working_dir.resolve()
     sys.exit(initializer.run())
 
 
