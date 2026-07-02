@@ -1,12 +1,40 @@
 # Changelog
 
-## [release/1.5.0](https://github.com/NASA-PDS/registry/tree/release/1.5.0) (2026-01-08)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-06-17)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.6.0...release/1.5.0)
 
 ## [release/1.6.0](https://github.com/NASA-PDS/registry/tree/release/1.6.0) (2026-01-07)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...release/1.6.0)
+- As a registry operator, I want burnup charts and per-node tracking in status reports to monitor data loading progress over time [\#510](https://github.com/NASA-PDS/registry/issues/510)
+- As a developer, I want human-readable Postman collection docs auto-generated on update [\#497](https://github.com/NASA-PDS/registry/issues/497)
+- As a PDS Node Operator, I want to validate that products listed as missing from the registry are truly absent from the PDS Search API [\#484](https://github.com/NASA-PDS/registry/issues/484)
+- As a PDS Node Operator, I want to track historical counts of missing and staged products over time [\#481](https://github.com/NASA-PDS/registry/issues/481)
+- As a user, I want to load date times as strings in order to support leap seconds [\#426](https://github.com/NASA-PDS/registry/issues/426)
+
+**Improvements:**
+
+- Improve user documentation with procedural step-by-step instructions [\#515](https://github.com/NASA-PDS/registry/issues/515)
+
+**Defects:**
+
+- set-archive-status does not apply to secondary products in a collection [\#509](https://github.com/NASA-PDS/registry/issues/509) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
+- generate\_registry\_status\_reports.py results incomplete [\#471](https://github.com/NASA-PDS/registry/issues/471) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
+- Can no longer load data into en-registry from staging EC2 [\#466](https://github.com/NASA-PDS/registry/issues/466) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+- Registry documentation could use updates to support new users [\#392](https://github.com/NASA-PDS/registry/issues/392) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
+
+**Other closed issues:**
+
+- Investigate missing node RMS in metrics reports [\#477](https://github.com/NASA-PDS/registry/issues/477)
+- Filter bundles/collections by ingestion status and identify superseded vs latest versions [\#476](https://github.com/NASA-PDS/registry/issues/476)
+- Integrate latest sweeper/api upgrade with new ancestry property name [\#468](https://github.com/NASA-PDS/registry/issues/468)
+- Documentation for registry-manager is not updated for connected configuration [\#394](https://github.com/NASA-PDS/registry/issues/394)
+- Documentation improvement suggestions [\#393](https://github.com/NASA-PDS/registry/issues/393)
+- Registry documentation does not clearly link to documentation for its components [\#391](https://github.com/NASA-PDS/registry/issues/391)
+
+## [v1.6.0](https://github.com/NASA-PDS/registry/tree/v1.6.0) (2026-01-12)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.4.0...v1.6.0)
 
 **Requirements:**
 
