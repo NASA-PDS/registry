@@ -12,7 +12,7 @@ variable "policy_json_file" {
 variable "domain_name" {
   type        = string
   description = "Name of the provisioned opensearch domain."
-  # "domain_name=pds-mcp-registry-prod-mos" 
+  # "domain_name=pds-mcp-registry-prod-mos"
 }
 
 variable "data_node_instance_type" {

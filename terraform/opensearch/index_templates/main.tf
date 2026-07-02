@@ -26,4 +26,3 @@ resource "opensearch_composable_index_template" "pds_index_templates" {
     }
   })
 }
-

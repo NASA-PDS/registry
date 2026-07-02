@@ -63,11 +63,11 @@ data "aws_iam_policy_document" "domain_access_policy_document" {
       effect      = statement.value.Effect
       actions     = statement.value.Action
       resources   = [
-        for resource in statement.value.Resource : 
+        for resource in statement.value.Resource :
           replace(
             replace(
               replace(
-                resource, 
+                resource,
                 "{account_id}", data.aws_caller_identity.current.account_id
               ),
               "{region}", "${var.aws_region}"
@@ -89,4 +89,3 @@ resource "aws_opensearch_domain_policy" "domain_access_policy" {
 
   depends_on = [aws_opensearch_domain.pds-opensearch-domain]
 }
-
