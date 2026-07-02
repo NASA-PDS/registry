@@ -50,7 +50,7 @@ resource "aws_security_group" "vpce" {
 # VPC Endpoint for OpenSearch Serverless
 resource "aws_vpc_endpoint" "opensearch_serverless" {
   vpc_id            = var.vpc_id
-  service_name      = "com.amazonaws.${var.aws_region}.aoss-${var.collection_name}"
+  service_name      = "com.amazonaws.${var.aws_region}.aoss"
   vpc_endpoint_type = "Interface"
   subnet_ids        = var.subnet_ids
 
@@ -181,10 +181,13 @@ resource "aws_opensearchserverless_access_policy" "data_access" {
             "ResourceType" : "index"
           }
         ],
-        "Principal" : [
-          data.aws_ssm_parameter.opensearch_node_limited_writer_role_arns[node].value,
-          data.aws_ssm_parameter.opensearch_tenant_core_cloudops_role_arns[node].value
-        ],
+        "Principal" : concat(
+          [
+            data.aws_ssm_parameter.opensearch_node_limited_writer_role_arns[node].value,
+            data.aws_ssm_parameter.opensearch_tenant_core_cloudops_role_arns[node].value
+          ],
+          contains(keys(var.node_nucleus_harvest_iam_roles), node) ? [var.node_nucleus_harvest_iam_roles[node]] : []
+        ),
         "Description" : "PDS ${upper(node)} - OpenSearch Limited-Write Access"
       }
     ]
