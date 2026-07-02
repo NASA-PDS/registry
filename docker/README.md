@@ -1,5 +1,16 @@
 # 🪐 Docker Compose for Registry Components
 
+We provide resources to run registry components with docker compose for development and testing purposes.
+
+The use cases covered are:
+- ALL-IN-ONE: Start a local registry with reference data available and integration tests.
+- INIT: Initialize a pre-deployed remote Registry with reference data
+- TEST: Run integration tests against a local or remote Registry with reference data.
+
+
+
+
+
 This directory contains the files related with docker compose for Registry Container. To learn more about docker compose,
 please refer to [https://docs.docker.com/compose/](https://docs.docker.com/compose/).
 

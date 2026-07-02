@@ -179,6 +179,9 @@ services:
     networks:
       - pds
     command: "run /postman/postman-collection.json  --insecure --env-var baseUrl=${REG_API_URL} --env-var opensearchUrl=${ES_URL}"
+    depends_on:
+      registry-api:
+        condition: service_healthy
 
   # Executes Registry API integration tests as a Postman collection and reports the results into JPL TestRail
   testrail-reporting-test:
