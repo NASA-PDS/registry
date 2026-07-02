@@ -149,7 +149,7 @@ def load_checkpoint(path: Path) -> dict[str, Any]:
                 return json.load(f)
         except json.JSONDecodeError:
             print_warning(f"Corrupt checkpoint file at {path} — discarding. Use --reset to start fresh.")
-    return {"sentinels": [], "results": {}}
+    return {"results": {}}
 
 
 def save_checkpoint(path: Path, data: dict[str, Any]) -> None:
