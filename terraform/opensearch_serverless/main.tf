@@ -48,9 +48,11 @@ resource "aws_security_group" "vpce" {
 }
 
 # VPC Endpoint for OpenSearch Serverless
+# TODO this end-point in dev would be shared by multiple opensearch service
+# we need to check if that is useful and how to make it re-usable
 resource "aws_vpc_endpoint" "opensearch_serverless" {
   vpc_id            = var.vpc_id
-  service_name      = "com.amazonaws.${var.aws_region}.aoss-${var.collection_name}"
+  service_name      = "com.amazonaws.${var.aws_region}.aoss"
   vpc_endpoint_type = "Interface"
   subnet_ids        = var.subnet_ids
 
