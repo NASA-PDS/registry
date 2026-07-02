@@ -17,8 +17,7 @@ Prerequisites
 
 Java
 ~~~~
-
-Harvest, Registry Manager, and API Server require **Java 17–25**. Java 1.8 and 11 are not supported.
+Harvest, Registry Manager, and API Server require **Java 17–25**. Java 8 and 11 are not supported.
 
 1. Check whether a supported version is already installed:
 
@@ -34,8 +33,10 @@ Harvest, Registry Manager, and API Server require **Java 17–25**. Java 1.8 and
       Java(TM) SE Runtime Environment (build 25+37-LTS-3491)
       Java HotSpot(TM) 64-Bit Server VM (build 25+37-LTS-3491, mixed mode, sharing)
 
-   .. note::
-      If multiple Java versions are installed and none defaults to 17–25, set ``JAVA_HOME`` to point to a supported version before running Harvest or Registry Manager.
+.. note::
+   Your system might have multiple versions of Java installed, for example, JDK 11 and JDK 25.
+   If JDK 25 is not the default, then set **JAVA_HOME** environment variable to point to JDK 25 before running
+   Harvest or Registry Manager.
 
 2. If a supported version is not installed, download and install **OpenJDK** (recommended) from one of:
 

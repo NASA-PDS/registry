@@ -229,6 +229,7 @@ PSA,urn:esa:psa:em16_spice::5.0,Product_Bundle,2023-09-23T18:37:19.217810Z
 PSA,urn:esa:psa:juice::0.1,Product_Bundle,2023-09-21T06:49:14.031447Z
 PDS_SBN,urn:jaxa:darts:hyb2_lidar::1.0,Product_Bundle,2025-02-10T22:46:28.972744Z
 PDS_SBN,urn:nasa:pds:orex.otes::6.0,Product_Bundle,2022-08-09T12:23:19.105470Z
+PDS_SBN,urn:nasa:pds:orex.ovirs::11.0,Product_Bundle,2026-03-18T00:24:10.541396656Z
 PDS_ATM,urn:nasa:pds:dd_nnss-nv::1.0,Product_Bundle,2025-05-01T16:54:37.952137Z
 PDS_PPI,urn:nasa:pds:cassini-rpws-electron_density::1.0,Product_Bundle,2026-06-02T18:19:26.775323Z
 PSA,urn:esa:psa:bc_mpo_berm::1.1,Product_Bundle,2023-09-20T16:01:44.439878Z
