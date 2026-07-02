@@ -106,7 +106,7 @@ export COGNITO_ADMIN_PASSWORD={their password}
 export COGNITO_WRITER_USERNAME={a valid user name to load data in the registry(writer user)}
 export COGNITO_WRITER_PASSWORD={their password}
 export TEST_DATA_URL=https://github.com/NASA-PDS/registry-ref-data/releases/download/Latest/custom-datasets.tar.gz
-export NODE_REGISTRY=geo-registry
+export NODE_REGISTRY_WITH_REF_DATA=geo-registry
 export REG_LOADER_IMAGE=nasapds/registry-loader-lite:latest
 ```
 
