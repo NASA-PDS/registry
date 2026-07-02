@@ -15,8 +15,9 @@ module "opensearch" {
   subnet_ids         = var.subnet_ids
   admin_roles        = concat(var.admin_roles, [data.aws_ssm_parameter.opensearch_admin_role_arn.value])
   readonly_roles     = [data.aws_ssm_parameter.opensearch_readonly_role_arn.value, data.aws_ssm_parameter.registry_api_ecs_task_role_arn.value]
-  node_list          = var.node_list
-  aws_region         = var.aws_region
+  node_list                      = var.node_list
+  node_nucleus_harvest_iam_roles = var.node_nucleus_harvest_iam_roles
+  aws_region                     = var.aws_region
   common_tags        = var.common_tags
 }
 

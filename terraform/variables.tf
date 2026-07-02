@@ -52,6 +52,12 @@ variable "node_list" {
   default     = []
 }
 
+variable "node_nucleus_harvest_iam_roles" {
+  description = "Map of discipline node names to their IAM role ARNs (e.g., { geo = 'arn:aws:iam::...' }). Keys should match entries in node_list."
+  type        = map(string)
+  default     = {}
+}
+
 variable "common_tags" {
   description = "Common tags to apply to all resources"
   type        = map(string)
