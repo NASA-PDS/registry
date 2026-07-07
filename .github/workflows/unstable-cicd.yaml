@@ -33,7 +33,7 @@ on:
     push:
         branches:
              - develop
-    workflow_dispatch:
+    workflow_dispatch: 
 concurrency: roundup
 
 
