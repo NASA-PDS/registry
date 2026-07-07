@@ -9,6 +9,11 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
   - package-ecosystem: "docker" # See documentation for possible values
     directory: "/docker/" # Location of package manifests
     schedule:
