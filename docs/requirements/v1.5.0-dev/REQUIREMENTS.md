@@ -236,3 +236,39 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a part time operator of the Registry, I would like to have the overall PDS Registry status to be visible at all time from my laptop ([#467](https://github.com/NASA-PDS/registry/issues/467)) 
+
+
+This requirement is not impacted by the current version
+## As a registry cog-e, I want to automate the deployment of the registry on AWS with terraform ([#480](https://github.com/NASA-PDS/registry/issues/480)) 
+
+
+This requirement is not impacted by the current version
+## As a PDS Node Operator, I want to track historical counts of missing and staged products over time ([#481](https://github.com/NASA-PDS/registry/issues/481)) 
+
+
+This requirement is not impacted by the current version
+## As a PDS Node Operator, I want to validate that products listed as missing from the registry are truly absent from the PDS Search API ([#484](https://github.com/NASA-PDS/registry/issues/484)) 
+
+
+This requirement is not impacted by the current version
+## As a developer, I want human-readable Postman collection docs auto-generated on update ([#497](https://github.com/NASA-PDS/registry/issues/497)) 
+
+
+This requirement is not impacted by the current version
+## Add auto-generated human-readable Postman collection docs ([#499](https://github.com/NASA-PDS/registry/issues/499)) 
+
+
+This requirement is not impacted by the current version
+## As a data engineer, I want to generate a list of product LIDVIDs tracked in inventory files but missing from the registry ([#508](https://github.com/NASA-PDS/registry/issues/508)) 
+
+
+This requirement is not impacted by the current version
+## As a registry operator, I want burnup charts and per-node tracking in status reports to monitor data loading progress over time ([#510](https://github.com/NASA-PDS/registry/issues/510)) 
+
+
+This requirement is not impacted by the current version
+## As a PDS System Admin, I want to have distinct AWS security groups for the ECS service and the load balancer ([#543](https://github.com/NASA-PDS/registry/issues/543)) 
+
+
+This requirement is not impacted by the current version
