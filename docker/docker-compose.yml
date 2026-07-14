@@ -111,7 +111,7 @@ services:
       - LOGLEVEL=INFO
       - DEV_MODE=1
       - MULTITENANCY_NODE_ID=geo
-    command: ["/usr/local/bin/sweepers_driver.py", "--legacy-sync"]
+    command: ["--legacy-sync"]
     networks:
       - pds
     depends_on:
