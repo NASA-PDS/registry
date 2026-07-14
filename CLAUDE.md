@@ -29,12 +29,18 @@ pip install -e '.[dev]'
 
 ### Pre-commit Hooks
 
-Configure pre-commit hooks (runs on commit and push):
+**IMPORTANT: Pre-commit hooks must be installed before pushing to any branch.** Before working in this repo, run:
+
 ```bash
 pre-commit install
 pre-commit install -t pre-push
 pre-commit install -t prepare-commit-msg
 pre-commit install -t commit-msg
+```
+
+If pre-commit is not installed, run the full tox suite as an alternative before pushing:
+```bash
+tox
 ```
 
 The hooks check for:
