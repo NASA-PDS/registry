@@ -18,6 +18,7 @@
 
 **Defects:**
 
+- Operations team cannot access OpenSearch from staging EC2 to update context products [\#536](https://github.com/NASA-PDS/registry/issues/536) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
 - Some fields are not indexed as expected in Registry Opensearch [\#518](https://github.com/NASA-PDS/registry/issues/518) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - set-archive-status does not apply to secondary products in a collection [\#509](https://github.com/NASA-PDS/registry/issues/509) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - generate\_registry\_status\_reports.py results incomplete [\#471](https://github.com/NASA-PDS/registry/issues/471) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
