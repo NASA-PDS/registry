@@ -7,6 +7,7 @@ data "aws_caller_identity" "current" {}
 # OpenSearch Serverless Collection Module
 module "opensearch" {
   source = "./opensearch_serverless"
+  count  = var.recreate_opensearch ? 1 : 0
 
   component_name  = "registry"
   collection_name    = var.collection_name

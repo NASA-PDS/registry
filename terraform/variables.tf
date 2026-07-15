@@ -1,3 +1,9 @@
+variable "recreate_opensearch" {
+  description = "When true, the opensearch_serverless module is called to create/update the OpenSearch collection. Set to false to skip OpenSearch provisioning and reuse an existing collection."
+  type        = bool
+  default     = false
+}
+
 variable "aws_region" {
   description = "AWS region for resources"
   type        = string
