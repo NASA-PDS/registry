@@ -2337,7 +2337,6 @@ PDS_ATM,urn:nasa:pds:ladee_uvs:raw::2.1,Product_Collection,2024-10-22T15:10:01.1
 PDS_ATM,urn:nasa:pds:mer_imu:context::1.2,Product_Collection,2024-10-23T16:58:40.578636Z
 PDS_ATM,urn:nasa:pds:mer_imu:document::1.1,Product_Collection,2024-10-23T16:58:43.108525Z
 PDS_ATM,urn:nasa:pds:mer_imu:xml_schema::1.1,Product_Collection,2024-10-23T16:58:43.695697Z
-PDS_ENG,urn:isro:isda:ch2_cho:schema::1.0,Product_Collection,2026-05-17T04:54:14.675274Z
 PDS_GEO,urn:nasa:pds:relab:data_ancillary_image::2.1,Product_Collection,2024-09-16T16:19:06.520232800Z
 PDS_IMG,urn:nasa:pds:m2020_edlcam_raw:document_video::5.0,Product_Collection,2023-06-08T07:19:42.418531Z
 PDS_IMG,urn:nasa:pds:m2020_edlcam_raw:document_video::6.0,Product_Collection,2023-10-05T20:28:57.360196Z
@@ -2890,7 +2889,6 @@ PDS_SBN,urn:nasa:pds:psyche.grs:document::4.0,Product_Collection,2026-05-18T17:0
 PDS_SBN,urn:nasa:pds:bopps2014:calibrated::1.0,Product_Collection,2025-07-01T23:10:54.583596681Z
 PDS_SBN,urn:nasa:pds:bopps2014:scoadded::1.0,Product_Collection,2025-06-27T19:52:16.639035417Z
 PDS_SBN,urn:nasa:pds:bopps2014:biassub::1.0,Product_Collection,2025-11-04T22:20:10.677217629Z
-PDS_SBN,urn:nasa:pds:nh_mvic:kem2_cal::1.0,Product_Collection,2026-06-29T20:59:55.569955858Z
 PDS_ATM,urn:nasa:pds:insight_erp:xml_schema::1.0,Product_Collection,2024-10-22T22:15:18.097882Z
 PDS_GEO,urn:nasa:pds:jpl.dsn.mmm:wea::11.0,Product_Collection,2024-09-16T21:24:41.709232400Z
 PDS_IMG,urn:nasa:pds:mars2020_edlcam_ops_raw:data_sol0_rdc::4.0,Product_Collection,2023-06-09T19:44:32.083441Z
@@ -4044,7 +4042,6 @@ PDS_SBN,urn:nasa:pds:near.xrs:browse::1.0,Product_Collection,2026-03-26T18:06:34
 PDS_SBN,urn:nasa:pds:psyche.grs:data_raw::4.0,Product_Collection,2026-05-18T17:09:20.735443429Z
 PDS_SBN,urn:nasa:pds:psyche.ns:data_raw::4.0,Product_Collection,2026-05-18T17:10:04.530326767Z
 PDS_SBN,urn:nasa:pds:psyche.ns:document::4.0,Product_Collection,2026-05-18T17:10:09.117245452Z
-PDS_SBN,urn:nasa:pds:nh_mvic:kem2_raw::1.0,Product_Collection,2026-06-29T20:41:40.010370113Z
 PDS_ATM,urn:nasa:pds:mer_imu:derived::1.1,Product_Collection,2024-10-23T16:58:41.893780Z
 PDS_GEO,urn:nasa:pds:relab:document::4.0,Product_Collection,2024-11-06T23:55:15.288674Z
 PDS_GEO,urn:nasa:pds:chand1-orb_mini_rf:data_level1::1.0,Product_Collection,2024-11-25T23:13:20.051271Z
