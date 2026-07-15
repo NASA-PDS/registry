@@ -134,10 +134,8 @@ services:
     volumes:
       # make volume match how the spring-boot plugin deploys in docker
       - ${REG_API_APP_PROPERTIES_FILE}:/workspace/BOOT-INF/classes/application.properties
-      - ./scripts/registry-api.sh:/usr/local/registry-api-service/registry-api.sh
     networks:
       - pds
-    command: /usr/local/registry-api-service/registry-api.sh
     healthcheck:
       test:
         - CMD
