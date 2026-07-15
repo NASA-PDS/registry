@@ -200,10 +200,10 @@ Both use the NASA-PDS Roundup action for building and releasing.
 `scripts/generate_registry_status_reports.py` — runs on a schedule to generate CSV reports in `docs/status/` tracking missing, staged, and loaded products, plus interactive burnup charts. Key details:
 
 **Running the script:**
-- Always run with the local `venv/`: `./venv/bin/python scripts/generate_registry_status_reports.py --no-commit`
+- Always run with the local `venv/`: `./venv/bin/python scripts/generate_registry_status_reports.py`
 - `pds-registry-client` is resolved from the **same venv as the running Python** (`sys.executable`); do not rely on shell PATH
 - Requires AWS/Cognito credentials via `~/.pds/.registry-client` or `.env`
-- Run with `--no-commit` to generate locally without pushing
+- Default behavior is **no commit**; pass `--commit` to push after generating
 
 **Query config files (`conf/status/*.json`):**
 Each file is an OpenSearch DSL body passed directly to `pds-registry-client`. There are four categories:
