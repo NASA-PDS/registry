@@ -3,15 +3,19 @@
 
 # OpenSearch Collection Outputs
 
+locals {
+  opensearch_pre_created_message = "unknown refer to SSM parameter /pds/registry/opensearch_serverless/collection_arn to find out about the opensearch instance used"
+}
+
 
 output "collection_endpoint" {
   description = "The endpoint URL for the OpenSearch Serverless collection"
-  value       = module.opensearch.collection_endpoint
+  value       = var.recreate_opensearch ? module.opensearch[0].collection_endpoint : local.opensearch_pre_created_message
 }
 
 output "dashboard_endpoint" {
   description = "The OpenSearch Dashboards endpoint URL"
-  value       = module.opensearch.dashboard_endpoint
+  value       = var.recreate_opensearch ? module.opensearch[0].dashboard_endpoint : local.opensearch_pre_created_message
 }
 
 # Lambda Outputs
