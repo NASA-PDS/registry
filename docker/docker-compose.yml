@@ -128,15 +128,14 @@ services:
     environment:
       - ES_URL=${ES_URL}
       - SERVER_PORT=8080
+      - SPRING_BOOT_APP_ARGS=--openSearch.host=elasticsearch:9200 --logging.level.root=DEBUG
     ports:
       - "8080:8080"
     volumes:
       # make volume match how the spring-boot plugin deploys in docker
       - ${REG_API_APP_PROPERTIES_FILE}:/workspace/BOOT-INF/classes/application.properties
-      - ./scripts/registry-api.sh:/usr/local/registry-api-service/registry-api.sh
     networks:
       - pds
-    command: /usr/local/registry-api-service/registry-api.sh
     healthcheck:
       test:
         - CMD
