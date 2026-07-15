@@ -14,23 +14,6 @@ output "dashboard_endpoint" {
   value       = module.opensearch.dashboard_endpoint
 }
 
-output "security_group_id" {
-  description = "The ID of the security group created for the VPC endpoint (if created)"
-  value       = module.opensearch.security_group_id
-}
-
-# Security Policy Outputs
-output "network_policy_name" {
-  description = "The name of the network security policy (update this in AWS Console to change Access Type)"
-  value       = module.opensearch.network_policy_name
-}
-
-output "network_policy_version" {
-  description = "The version of the network security policy"
-  value       = module.opensearch.network_policy_version
-}
-
-
 # Lambda Outputs
 output "lambda_function_name" {
   description = "Name of the Lambda function"
