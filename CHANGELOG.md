@@ -6,6 +6,7 @@
 
 **Requirements:**
 
+- As a PDS System Admin, I want to have distinct AWS security groups for the ECS service and the load balancer [\#543](https://github.com/NASA-PDS/registry/issues/543)
 - As a registry operator, I want burnup charts and per-node tracking in status reports to monitor data loading progress over time [\#510](https://github.com/NASA-PDS/registry/issues/510)
 - As a developer, I want human-readable Postman collection docs auto-generated on update [\#497](https://github.com/NASA-PDS/registry/issues/497)
 - As a PDS Node Operator, I want to validate that products listed as missing from the registry are truly absent from the PDS Search API [\#484](https://github.com/NASA-PDS/registry/issues/484)
