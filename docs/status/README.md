@@ -39,37 +39,111 @@ This directory contains automatically generated CSV reports that track the statu
 
 <!-- METRICS_END -->
 
+## How These Reports Work
+
+### Source of Truth: PDS Keyword Search
+
+The baseline for what bundles and collections *should* exist in the registry is the
+**[PDS Keyword Search](https://pds.nasa.gov/datasearch/keyword-search/)**, which is populated by the
+Engineering Node (EN) each time a formal data release occurs. This is the authoritative, agreed-upon
+inventory of PDS archive data.
+
+The reports compare that baseline against what is actually available through the
+**[PDS Registry API](https://pds.mcp.nasa.gov/api/search/1/products/)** to identify gaps.
+
+A product is considered **missing** when it appears in the PDS Keyword Search (i.e., EN has released it)
+but is not yet present in the new OpenSearch-based registry.
+
+### Report Categories
+
+| Category | What it means |
+|----------|---------------|
+| **Missing** | In PDS Keyword Search (released by EN) but not yet in the new registry |
+| **Staged** | In the new registry but `archive_status = staged` — loaded but not yet transitioned to `archived` |
+| **Loaded** | All products currently in the new registry, regardless of archive status |
+
+> **Note:** Loaded counts will exceed missing-products baseline counts because the new registry also
+> contains products harvested directly from non-EN sources (e.g., PSA/ESA ~900 bundles, ~4,000
+> collections). Do not compare loaded totals directly to the Keyword Search totals.
+
+---
+
 ## Reports
 
 ### Missing Products
 
-These reports identify products that are marked as missing in the registry (`found_in_registry: false`):
+Products present in the PDS Keyword Search but **not yet loaded** into the new OpenSearch registry.
 
-- **`missing_bundles_in_registry.csv`** - Missing Product_Bundle records
-- **`missing_collections_in_registry.csv`** - Missing Product_Collection records
+- **[`missing_bundles_in_registry.csv`](missing_bundles_in_registry.csv)** — Missing Product_Bundle records
+- **[`missing_collections_in_registry.csv`](missing_collections_in_registry.csv)** — Missing Product_Collection records
 
-**CSV Format:** `NODE_ID, LIDVID, PRODUCT_CLASS`
+**Columns:** `node, lidvid, product_class, superseded`
 
-**Example:**
-```
-"PDS_PPI","urn:nasa:pds:maven.rose.raw::1.21","Product_Bundle"
-"PDS_ENG","urn:nasa:pds:context::1.2","Product_Bundle"
-```
+The `superseded` flag is `true` when a newer version of the same LID exists elsewhere in the dataset,
+meaning this particular version has been superseded by a later release.
 
 ### Staged Products
 
-These reports identify products that have an archive status of "staged" in the registry:
+Products in the new registry with `archive_status = staged` (loaded but not yet archived).
+These require operator action to advance their status.
 
-- **`staged_bundles_in_registry.csv`** - Staged Product_Bundle records
-- **`staged_collections_in_registry.csv`** - Staged Product_Collection records
+- **[`staged_bundles_in_registry.csv`](staged_bundles_in_registry.csv)** — Staged Product_Bundle records
+- **[`staged_collections_in_registry.csv`](staged_collections_in_registry.csv)** — Staged Product_Collection records
 
-**CSV Format:** `NODE_ID, LIDVID, PRODUCT_CLASS, HARVEST_DATE_TIME`
+**Columns:** `node, lidvid, product_class, harvest_date`
 
-**Example:**
+### Loaded Products
+
+All products currently in the new OpenSearch registry, regardless of archive status.
+Queried with pagination so counts are not capped at 10,000.
+
+- **[`loaded_bundles_in_registry.csv`](loaded_bundles_in_registry.csv)** — All Product_Bundle records in new OpenSearch
+- **[`loaded_collections_in_registry.csv`](loaded_collections_in_registry.csv)** — All Product_Collection records in new OpenSearch
+
+**Columns:** `node, lidvid, product_class, harvest_date`
+
+---
+
+## Frequently Asked Questions
+
+**Q: How can I find the bundles or collections that are applicable to my node?**
+
+Filter the relevant CSV file on the `node` column (e.g., `PDS_SBN`, `PDS_GEO`, `PDS_IMG`).
+For example, to find all missing bundles for the Small Bodies Node:
+
+```bash
+grep "^PDS_SBN," missing_bundles_in_registry.csv
 ```
-"PDS_SBN","urn:nasa:pds:bopps2014::1.0","Product_Bundle","2025-07-22T22:48:09.852492089Z"
-"PDS_ATM","urn:nasa:pds:insight_rad::1.0","Product_Bundle","2024-03-15T10:30:00Z"
-```
+
+Or in a spreadsheet application, use the filter/sort feature on column A.
+
+---
+
+**Q: A bundle or collection appears in the missing CSVs and `superseded = true`. What does that mean?**
+
+It means a newer version of that LID has already been released. The older version shown is no longer
+the latest — however, *both* versions are absent from the registry.
+If the newest version also needs to be loaded, verify it appears in the missing CSV as well.
+
+---
+
+**Q: A bundle or collection appears in the loaded CSVs but `superseded = true`. Why is it showing there?**
+
+The newer version was likely never formally released through EN. All version updates of bundles or
+collections must be delivered to EN in order to maintain the Keyword Search as the source of truth
+for the archive. Submit a ticket to the EN Operations team to request a data release for the new version:
+
+[Submit a Data Release Request](https://github.com/NASA-PDS/operations/issues/new?template=-data-release.yml)
+
+---
+
+**Q: Why are there products in the loaded CSV that have no corresponding entry in the missing CSV?**
+
+The new registry contains products harvested from non-EN sources (e.g., PSA/ESA data). These were
+never in the PDS Keyword Search baseline, so they don't appear as "missing" — they simply arrived
+through a different pipeline.
+
+---
 
 ## How to Use These Files
 
