@@ -8,6 +8,27 @@ They track migration progress from the legacy PDS Solr registry to the new OpenS
    Reports update automatically whenever the scheduled workflow runs (typically daily).
    The burnup chart is published to GitHub Pages on every push to ``main`` or ``develop``.
 
+How These Reports Work
+----------------------
+
+The baseline for what bundles and collections *should* exist in the registry is the
+`PDS Keyword Search <https://pds.nasa.gov/datasearch/keyword-search/>`_, which is populated by the
+Engineering Node (EN) each time a formal data release occurs.  This is the authoritative inventory of
+PDS archive data — a product that EN has released is the agreed-upon source of truth for what belongs
+in the archive.
+
+These reports compare that baseline against what is actually accessible through the
+`PDS Registry API <https://pds.mcp.nasa.gov/api/search/1/products/>`_ to surface gaps.
+
+A product is **missing** when it appears in the PDS Keyword Search but is not yet present in the new
+OpenSearch-based registry.  A product is **staged** when it is in the new registry but its
+``archive_status`` has not yet been advanced to ``archived`` — it has been loaded but requires
+operator action to complete the transition.
+
+For detailed guidance on interpreting the reports, filtering by node, and understanding the
+``superseded`` flag, see the
+`docs/status README on GitHub <https://github.com/NASA-PDS/registry/blob/main/docs/status/README.md>`_.
+
 
 Burnup Chart
 ------------
