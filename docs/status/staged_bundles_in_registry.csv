@@ -1,4 +1,8 @@
+node,lidvid,product_class,harvest_date
 PDS_PPI,urn:nasa:pds:clps_to_19d_lms::1.0,Product_Bundle,2026-05-15T06:09:24.322916Z
+PDS_PPI,urn:nasa:pds:maven.lpw.calibrated::8.5,Product_Bundle,2026-07-03T02:13:10.358201Z
+PDS_PPI,urn:nasa:pds:maven.swea.calibrated::4.9,Product_Bundle,2026-07-04T19:08:35.780718Z
+PDS_PPI,urn:nasa:pds:maven.anc::2.25,Product_Bundle,2026-07-05T09:56:40.960368Z
 PSA,urn:esa:psa:bc_mpo_berm::1.0,Product_Bundle,2023-09-20T15:18:34.188293Z
 PSA,urn:esa:psa:bc_mpo_berm::1.18,Product_Bundle,2023-09-20T16:01:57.036861Z
 PSA,urn:esa:psa:bc_mpo_berm::1.20,Product_Bundle,2023-09-20T16:01:57.489181Z
@@ -122,6 +126,7 @@ PDS_SBN,urn:nasa:pds:orex.otes::10.0,Product_Bundle,2022-08-09T12:23:14.080450Z
 PDS_PPI,urn:nasa:pds:jno-jad-fitted-tofsp::0.1,Product_Bundle,2026-05-15T16:18:41.286890Z
 PDS_PPI,urn:nasa:pds:kmag-model::1.0,Product_Bundle,2026-05-15T16:26:42.125145Z
 PDS_PPI,urn:nasa:pds:mercury-simulation::1.0,Product_Bundle,2026-05-15T16:28:15.929796Z
+PDS_PPI,urn:nasa:pds:maven.static.c::4.27,Product_Bundle,2026-07-05T15:18:56.367588Z
 PSA,urn:esa:psa:bc_mpo_berm::1.13,Product_Bundle,2023-09-20T16:01:56.176255Z
 PSA,urn:esa:psa:bc_mpo_berm::1.23,Product_Bundle,2023-09-20T16:01:57.827034Z
 PSA,urn:esa:psa:bc_mpo_berm::1.25,Product_Bundle,2023-09-20T16:01:58.598863Z
@@ -229,9 +234,9 @@ PSA,urn:esa:psa:em16_spice::5.0,Product_Bundle,2023-09-23T18:37:19.217810Z
 PSA,urn:esa:psa:juice::0.1,Product_Bundle,2023-09-21T06:49:14.031447Z
 PDS_SBN,urn:jaxa:darts:hyb2_lidar::1.0,Product_Bundle,2025-02-10T22:46:28.972744Z
 PDS_SBN,urn:nasa:pds:orex.otes::6.0,Product_Bundle,2022-08-09T12:23:19.105470Z
-PDS_SBN,urn:nasa:pds:orex.ovirs::11.0,Product_Bundle,2026-03-18T00:24:10.541396656Z
 PDS_ATM,urn:nasa:pds:dd_nnss-nv::1.0,Product_Bundle,2025-05-01T16:54:37.952137Z
-PDS_PPI,urn:nasa:pds:cassini-rpws-electron_density::1.0,Product_Bundle,2026-06-02T18:19:26.775323Z
+PDS_PPI,urn:nasa:pds:maven.euv.modelled::24.1,Product_Bundle,2026-07-03T03:00:55.054317Z
+PDS_PPI,urn:nasa:pds:maven.euv.derived::3.1,Product_Bundle,2026-07-03T04:00:42.575856Z
 PSA,urn:esa:psa:bc_mpo_berm::1.1,Product_Bundle,2023-09-20T16:01:44.439878Z
 PSA,urn:esa:psa:bc_mpo_berm::1.14,Product_Bundle,2023-09-20T16:01:56.266247Z
 PSA,urn:esa:psa:bc_mpo_berm::1.15,Product_Bundle,2023-09-20T16:01:56.360429Z
@@ -477,6 +482,8 @@ PDS_SBN,urn:nasa:pds:ladee_ldex::2.0,Product_Bundle,2025-02-11T21:15:47.160029Z
 PDS_SBN,urn:nasa:pds:near.xrs::1.0,Product_Bundle,2026-03-26T18:06:34.206135861Z
 PDS_PPI,urn:nasa:pds:jupiter-csheet-mod-khurana2022::3.0,Product_Bundle,2026-05-15T16:26:10.040763Z
 PDS_PPI,urn:nasa:pds:venus-solar-wind-interactions::1.0,Product_Bundle,2026-05-15T16:28:42.787011Z
+PDS_PPI,urn:nasa:pds:maven.euv.calibrated::26.1,Product_Bundle,2026-07-03T05:23:40.739180Z
+PDS_PPI,urn:nasa:pds:maven.swia.calibrated::2.16,Product_Bundle,2026-07-05T06:02:22.546855Z
 PSA,urn:esa:psa:em16::100.36,Product_Bundle,2023-08-25T17:15:39.899531Z
 PSA,urn:esa:psa:em16::100.5,Product_Bundle,2023-08-25T17:15:34.293867Z
 PSA,urn:esa:psa:em16::101.2,Product_Bundle,2023-08-25T17:15:40.039394Z

@@ -29,12 +29,18 @@ pip install -e '.[dev]'
 
 ### Pre-commit Hooks
 
-Configure pre-commit hooks (runs on commit and push):
+**IMPORTANT: Pre-commit hooks must be installed before pushing to any branch.** Before working in this repo, run:
+
 ```bash
 pre-commit install
 pre-commit install -t pre-push
 pre-commit install -t prepare-commit-msg
 pre-commit install -t commit-msg
+```
+
+If pre-commit is not installed, run the full tox suite as an alternative before pushing:
+```bash
+tox
 ```
 
 The hooks check for:
@@ -194,10 +200,10 @@ Both use the NASA-PDS Roundup action for building and releasing.
 `scripts/generate_registry_status_reports.py` — runs on a schedule to generate CSV reports in `docs/status/` tracking missing, staged, and loaded products, plus interactive burnup charts. Key details:
 
 **Running the script:**
-- Always run with the local `venv/`: `./venv/bin/python scripts/generate_registry_status_reports.py --no-commit`
+- Always run with the local `venv/`: `./venv/bin/python scripts/generate_registry_status_reports.py`
 - `pds-registry-client` is resolved from the **same venv as the running Python** (`sys.executable`); do not rely on shell PATH
 - Requires AWS/Cognito credentials via `~/.pds/.registry-client` or `.env`
-- Run with `--no-commit` to generate locally without pushing
+- Default behavior is **no commit**; pass `--commit` to push after generating
 
 **Query config files (`conf/status/*.json`):**
 Each file is an OpenSearch DSL body passed directly to `pds-registry-client`. There are four categories:

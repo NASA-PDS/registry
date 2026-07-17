@@ -32,7 +32,8 @@ name: 🤪 Unstable integration & delivery
 on:
     push:
         branches:
-             - main
+             - develop
+    workflow_dispatch:
 concurrency: roundup
 
 

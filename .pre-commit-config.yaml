@@ -49,7 +49,7 @@ repos:
         name: Tests
         entry: pytest
         language: system
-        stages: [push]
+        stages: [pre-push]
         pass_filenames: false
 
 -   repo: local

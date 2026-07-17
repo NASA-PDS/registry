@@ -9,12 +9,20 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    target-branch: "develop"
+
   - package-ecosystem: "docker" # See documentation for possible values
     directory: "/docker/" # Location of package manifests
     schedule:
       interval: "weekly"
+    target-branch: "develop"
 
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    target-branch: "develop"
