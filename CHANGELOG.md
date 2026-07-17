@@ -1,11 +1,12 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-06-17)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-07-15)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.6.0...release/1.5.0)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.6.0...«unknown»)
 
-## [release/1.6.0](https://github.com/NASA-PDS/registry/tree/release/1.6.0) (2026-01-07)
+**Requirements:**
 
+- As a PDS System Admin, I want to have distinct AWS security groups for the ECS service and the load balancer [\#543](https://github.com/NASA-PDS/registry/issues/543)
 - As a registry operator, I want burnup charts and per-node tracking in status reports to monitor data loading progress over time [\#510](https://github.com/NASA-PDS/registry/issues/510)
 - As a developer, I want human-readable Postman collection docs auto-generated on update [\#497](https://github.com/NASA-PDS/registry/issues/497)
 - As a PDS Node Operator, I want to validate that products listed as missing from the registry are truly absent from the PDS Search API [\#484](https://github.com/NASA-PDS/registry/issues/484)
@@ -18,6 +19,8 @@
 
 **Defects:**
 
+- Operations team cannot access OpenSearch from staging EC2 to update context products [\#536](https://github.com/NASA-PDS/registry/issues/536) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
+- Some fields are not indexed as expected in Registry Opensearch [\#518](https://github.com/NASA-PDS/registry/issues/518) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 - set-archive-status does not apply to secondary products in a collection [\#509](https://github.com/NASA-PDS/registry/issues/509) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - generate\_registry\_status\_reports.py results incomplete [\#471](https://github.com/NASA-PDS/registry/issues/471) [[s.medium](https://github.com/NASA-PDS/registry/labels/s.medium)]
 - Can no longer load data into en-registry from staging EC2 [\#466](https://github.com/NASA-PDS/registry/issues/466) [[s.critical](https://github.com/NASA-PDS/registry/labels/s.critical)]
@@ -25,8 +28,10 @@
 
 **Other closed issues:**
 
+- Add Prototype Terraform deployment for Provisioned OpenSearch [\#531](https://github.com/NASA-PDS/registry/issues/531)
 - Investigate missing node RMS in metrics reports [\#477](https://github.com/NASA-PDS/registry/issues/477)
 - Filter bundles/collections by ingestion status and identify superseded vs latest versions [\#476](https://github.com/NASA-PDS/registry/issues/476)
+- Create an IAM policy for tenant data operator [\#472](https://github.com/NASA-PDS/registry/issues/472)
 - Integrate latest sweeper/api upgrade with new ancestry property name [\#468](https://github.com/NASA-PDS/registry/issues/468)
 - Documentation for registry-manager is not updated for connected configuration [\#394](https://github.com/NASA-PDS/registry/issues/394)
 - Documentation improvement suggestions [\#393](https://github.com/NASA-PDS/registry/issues/393)
@@ -66,11 +71,7 @@
 
 ## [v1.4.0](https://github.com/NASA-PDS/registry/tree/v1.4.0) (2025-07-16)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.4.0...v1.4.0)
-
-## [release/1.4.0](https://github.com/NASA-PDS/registry/tree/release/1.4.0) (2025-07-16)
-
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...release/1.4.0)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.1...v1.4.0)
 
 **Requirements:**
 
@@ -150,11 +151,7 @@
 
 ## [v1.3.1](https://github.com/NASA-PDS/registry/tree/v1.3.1) (2023-11-16)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/release/1.3.1...v1.3.1)
-
-## [release/1.3.1](https://github.com/NASA-PDS/registry/tree/release/1.3.1) (2023-11-16)
-
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...release/1.3.1)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.3.0...v1.3.1)
 
 **Requirements:**
 

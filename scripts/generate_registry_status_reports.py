@@ -645,7 +645,8 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
     )
 
     # TOC
-    toc_items = ['<li><a href="#overall">Overall Summary</a></li>']
+    toc_items = ['<li><a href="#overall">Overall Summary</a></li>',
+                 '<li><a href="#node-pct">% Completion by Node</a></li>']
     for node in all_nodes:
         toc_items.append(f'<li><a href="#node-{node}">{node}</a></li>')
     toc_html = (
@@ -663,6 +664,24 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         + chart_block("latest", "overall", "chart-overall-latest", "Latest Versions Only",
                       "Only the highest-versioned LIDVID per LID is counted. Targets use latest-missing counts.")
         + '<p class="back-to-top"><a href="#toc">Back to top</a></p>\n'
+        '</section>\n'
+    )
+
+    # % Completion by Node section
+    pct_section_html = (
+        '<section id="node-pct">\n'
+        '<h2>% Completion by Node</h2>\n'
+        '<p class="section-desc">Each line shows cumulative loading progress for one node, normalized to 0–100% of its own target. '
+        'Small nodes and large nodes are directly comparable.</p>\n'
+        '<h3>All Versions — Bundles</h3>\n'
+        '<div class="chart-container"><canvas id="chart-pct-all-bundles"></canvas></div>\n'
+        '<h3>All Versions — Collections</h3>\n'
+        '<div class="chart-container"><canvas id="chart-pct-all-collections"></canvas></div>\n'
+        '<h3>Latest Versions Only — Bundles</h3>\n'
+        '<div class="chart-container"><canvas id="chart-pct-latest-bundles"></canvas></div>\n'
+        '<h3>Latest Versions Only — Collections</h3>\n'
+        '<div class="chart-container"><canvas id="chart-pct-latest-collections"></canvas></div>\n'
+        '<p class="back-to-top"><a href="#toc">Back to top</a></p>\n'
         '</section>\n'
     )
 
@@ -755,11 +774,18 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         + controls_html
         + toc_html
         + overall_html
+        + pct_section_html
         + node_sections_html
         + f'<footer>Last updated: {timestamp}</footer>\n'
         + '<script>\n'
         + f'const chartData = {json.dumps(chart_js_data)};\n'
         + 'const charts = {};\n'
+        + 'const pctCharts = {};\n'
+        + 'const NODE_COLORS = [\n'
+        + '  "#003087","#e25822","#2ca02c","#9467bd","#8c564b",\n'
+        + '  "#e377c2","#7f7f7f","#bcbd22","#17becf","#1f77b4",\n'
+        + '  "#ff7f0e","#d62728"\n'
+        + '];\n'
         + '\n'
         + 'function isoDate(d) { return d.toISOString().split("T")[0]; }\n'
         + '\n'
@@ -824,6 +850,76 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         + '  charts[id] = {instance, data: d};\n'
         + '}\n'
         + '\n'
+        + 'function makePctChart(id, key, productType, title) {\n'
+        + '  const el = document.getElementById(id);\n'
+        + '  if (!el) return;\n'
+        + '  const start = document.getElementById("start-date").value;\n'
+        + '  const end   = document.getElementById("end-date").value;\n'
+        + '  const {unit, stepSize} = timeScaleUnit(start, end);\n'
+        + '  const byNode = chartData[key].by_node;\n'
+        + '  const cumKey    = productType === "b" ? "cum_b"    : "cum_c";\n'
+        + '  const targetKey = productType === "b" ? "target_b" : "target_c";\n'
+        + '  const datasets = [];\n'
+        + '  let colorIdx = 0;\n'
+        + '  const nodeEntries = Object.entries(byNode).sort((a, b) => a[0].localeCompare(b[0]));\n'
+        + '  // Collect the full date union so the 100% reference line spans all data\n'
+        + '  const allDateSet = new Set();\n'
+        + '  for (const [, nd] of nodeEntries) { nd.labels.forEach(l => allDateSet.add(l)); }\n'
+        + '  const allDatesArr = [...allDateSet].sort();\n'
+        + '  const tMin = start || allDatesArr[0];\n'
+        + '  const tMax = end   || allDatesArr[allDatesArr.length - 1];\n'
+        + '  for (const [node, nd] of nodeEntries) {\n'
+        + '    const target = nd[targetKey];\n'
+        + '    if (!target) continue;\n'
+        + '    const pctValues = nd[cumKey].map(v => Math.min(100, v / target * 100));\n'
+        + '    const color = NODE_COLORS[colorIdx % NODE_COLORS.length];\n'
+        + '    colorIdx++;\n'
+        + '    datasets.push({\n'
+        + '      label: node,\n'
+        + '      data: toPoints(nd.labels, pctValues),\n'
+        + '      borderColor: color,\n'
+        + '      backgroundColor: "transparent",\n'
+        + '      fill: false,\n'
+        + '      tension: 0.3,\n'
+        + '      pointRadius: 2,\n'
+        + '    });\n'
+        + '  }\n'
+        + '  // 100% reference line\n'
+        + '  datasets.push({\n'
+        + '    label: "100% target",\n'
+        + '    data: [{x: tMin, y: 100}, {x: tMax, y: 100}],\n'
+        + '    borderColor: "#aaa",\n'
+        + '    borderDash: [4, 4],\n'
+        + '    pointRadius: 0,\n'
+        + '    fill: false,\n'
+        + '    backgroundColor: "transparent",\n'
+        + '  });\n'
+        + '  const instance = new Chart(el, {\n'
+        + '    type: "line",\n'
+        + '    data: {datasets},\n'
+        + '    options: {\n'
+        + '      responsive: true,\n'
+        + '      interaction: {mode: "index", intersect: false},\n'
+        + '      plugins: {\n'
+        + '        title: {display: true, text: title, font: {size: 14}},\n'
+        + '        legend: {position: "bottom"},\n'
+        + '      },\n'
+        + '      scales: {\n'
+        + '        x: {\n'
+        + '          type: "time",\n'
+        + '          min: start || undefined,\n'
+        + '          max: end   || undefined,\n'
+        + '          time: {unit, stepSize, tooltipFormat: "yyyy-MM-dd", displayFormats: {week: "MMM d", month: "MMM yyyy", year: "yyyy"}},\n'
+        + '          ticks: {maxRotation: 45, source: "auto"},\n'
+        + '          title: {display: true, text: "Harvest Date"},\n'
+        + '        },\n'
+        + '        y: {min: 0, max: 100, title: {display: true, text: "% Loaded"}},\n'
+        + '      },\n'
+        + '    },\n'
+        + '  });\n'
+        + '  pctCharts[id] = instance;\n'
+        + '}\n'
+        + '\n'
         + 'function updateAllCharts() {\n'
         + '  const start = document.getElementById("start-date").value;\n'
         + '  const end   = document.getElementById("end-date").value;\n'
@@ -839,6 +935,14 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         + '    instance.data.datasets[2].data = [{x: tMin, y: d.target_b}, {x: tMax, y: d.target_b}];\n'
         + '    instance.data.datasets[3].data = [{x: tMin, y: d.target_c}, {x: tMax, y: d.target_c}];\n'
         + '    instance.update();\n'
+        + '  }\n'
+        + '  // Update % completion charts (no target-line datasets to anchor)\n'
+        + '  for (const inst of Object.values(pctCharts)) {\n'
+        + '    inst.options.scales.x.min = start || undefined;\n'
+        + '    inst.options.scales.x.max = end   || undefined;\n'
+        + '    inst.options.scales.x.time.unit = unit;\n'
+        + '    inst.options.scales.x.time.stepSize = stepSize;\n'
+        + '    inst.update();\n'
         + '  }\n'
         + '}\n'
         + '\n'
@@ -876,6 +980,10 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         + 'for (const [node, d] of Object.entries(chartData.latest.by_node)) {\n'
         + '  makeChart("chart-" + node + "-latest", d, node + " — Latest Versions");\n'
         + '}\n'
+        + 'makePctChart("chart-pct-all-bundles",       "all",    "b", "All Versions — Bundles % Loaded by Node");\n'
+        + 'makePctChart("chart-pct-all-collections",   "all",    "c", "All Versions — Collections % Loaded by Node");\n'
+        + 'makePctChart("chart-pct-latest-bundles",    "latest", "b", "Latest Versions Only — Bundles % Loaded by Node");\n'
+        + 'makePctChart("chart-pct-latest-collections","latest", "c", "Latest Versions Only — Collections % Loaded by Node");\n'
         + '</script>\n'
         + '</body>\n</html>'
     )
@@ -960,28 +1068,28 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Generate reports only (no git commit)
-  %(prog)s --no-commit
-
-  # Generate reports and commit/push to GitHub (default)
+  # Generate reports only, no git commit (default)
   %(prog)s
 
   # Same as above, explicit flag
+  %(prog)s --no-commit
+
+  # Generate reports and commit/push to GitHub
   %(prog)s --commit
         """,
     )
     parser.add_argument(
         "--commit",
         action="store_true",
-        default=True,
+        default=False,
         dest="commit",
-        help="Commit and push changes to GitHub (default)",
+        help="Commit and push changes to GitHub",
     )
     parser.add_argument(
         "--no-commit",
         action="store_false",
         dest="commit",
-        help="Do not commit or push changes to GitHub",
+        help="Do not commit or push changes to GitHub (default)",
     )
     return parser.parse_args()
 
