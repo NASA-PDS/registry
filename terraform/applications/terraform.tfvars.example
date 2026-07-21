@@ -1,0 +1,31 @@
+# Example Terraform variables
+# Copy this file to terraform.tfvars and customize the values
+
+aws_region = "<aws_region>"
+
+node_list = ["<node_1>", "<node_2>"]
+
+aws_s3_bucket_logs_id     = "<s3_bucket_logs_id>"
+registry_api_docker_image = "<aws_account_id>.dkr.ecr.<aws_region>.amazonaws.com/<image_name>:<tag>"
+
+# VPC IDs for private access (leave empty if using public access)
+vpc_id = "<vpc_id>"
+
+subnet_ids       = ["<private_subnet_id_1>", "<private_subnet_id_2>"]
+public_subnet_id = ["<public_subnet_id_1>", "<public_subnet_id_2>"]
+
+permissions_boundary_arn                = "arn:aws:iam::<aws_account_id>:policy/<permissions_boundary_policy_name>"
+cognito_allowed_groups                  = ["<cognito_group_1>", "<cognito_group_2>"]
+cognito_user_pool_id                    = "<aws_region>_<user_pool_id>"
+cognito_identity_pool_id                = "<aws_region>:<identity_pool_uuid>"
+registry_api_ecs_service_security_group = "<security_group_id>"
+acm_certificate_arn                     = "arn:aws:acm:<aws_region>:<aws_account_id>:certificate/<certificate_id>"
+
+# Common tags applied to all resources
+common_tags = {
+  tenant    = "<tenant>"
+  venue     = "<venue>"
+  component = "registry"
+  cicd      = "iac"
+  managedby = "<owner_email>"
+}
