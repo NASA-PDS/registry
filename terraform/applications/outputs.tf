@@ -1,34 +1,6 @@
 # Root Outputs
 # These outputs expose values from the sub-modules
 
-# OpenSearch Collection Outputs
-
-
-output "collection_endpoint" {
-  description = "The endpoint URL for the OpenSearch Serverless collection"
-  value       = module.opensearch.collection_endpoint
-}
-
-output "dashboard_endpoint" {
-  description = "The OpenSearch Dashboards endpoint URL"
-  value       = module.opensearch.dashboard_endpoint
-}
-
-output "security_group_id" {
-  description = "The ID of the security group created for the VPC endpoint (if created)"
-  value       = module.opensearch.security_group_id
-}
-
-# Security Policy Outputs
-output "network_policy_name" {
-  description = "The name of the network security policy (update this in AWS Console to change Access Type)"
-  value       = module.opensearch.network_policy_name
-}
-
-output "network_policy_version" {
-  description = "The version of the network security policy"
-  value       = module.opensearch.network_policy_version
-}
 
 
 # Lambda Outputs

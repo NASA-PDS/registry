@@ -1,6 +1,15 @@
 # AWS OpenSearch Serverless Terraform Configuration
 
-This Terraform configuration creates an AWS OpenSearch Serverless collection with configurable backend state management.
+This Terraform configuration creates a PDS Registry with configurable backend state management.
+
+It is divided into 3 scripts to match the lifecycle and update frequencies of the resources:
+
+- `opensearch_<serverless|managed>` : to create the opensearch server containing the registry data
+- `security`: to create or update the opensearch data access policy, as needed
+- `applications`: to continuously deploy the upgraded applications (credentials, TODO: sweepers and api)
+
+For development or test deployment we deploy the 3 scripts always.
+For production we only deploy `security` and `applications`, as needed.
 
 ## Prerequisites
 
@@ -23,7 +32,6 @@ Edit `backend-config.tfvars` with your S3 bucket details:
 
 ```hcl
 bucket         = "your-terraform-state-bucket"
-key            = "registry/opensearch/terraform.tfstate"
 region         = "us-east-1"
 dynamodb_table = "terraform-state-lock"
 encrypt        = true
@@ -31,43 +39,29 @@ encrypt        = true
 
 ### 2. Configure Variables
 
+In each script sub-directory (opensearch_*, security, applications)
+
 Create a `terraform.tfvars` file from the example:
 
 ```bash
 cp terraform.tfvars.example terraform.tfvars
 ```
 
-Edit `terraform.tfvars` with your desired configuration:
+Edit `terraform.tfvars` with your desired configuration
 
-```hcl
-aws_region      = "us-east-1"
-collection_name = "my-registry-collection"
-environment     = "dev"
-
-# Add IAM principals that can access the collection
-allowed_principals = [
-  "arn:aws:iam::123456789012:user/your-user",
-  "arn:aws:iam::123456789012:role/your-role"
-]
-
-# For public access
-enable_public_access = true
-
-# OR for VPC-only access
-enable_public_access = false
-allowed_vpcs = ["vpce-1234567890abcdef0"]
-```
 
 ### 3. Initialize Terraform
 
+In each sub-directory (security, opensearch_*, applications), in this order, as needed:
+
 ```bash
-terraform init -backend-config=backend-config.tfvars
+terraform init -backend-config=../backend-config.tfvars
 ```
 
 For local state (not recommended for production):
 
 ```bash
-terraform init
+terraform init  -backend-config=.../backend-config.tfvars
 ```
 
 ### 4. Plan and Apply
@@ -94,7 +88,7 @@ Edit it to change the access to public.
 
 ### Initialize the registry
 
-The registry needs a schema to be intialized and for integration test purpose we also want to load some reference data in it. To do so, you can use the registry-loader utility as described in
+The registry needs a schema to be initialized and for integration test purpose we also want to load some reference data in it. To do so, you can use the registry-loader utility as described in
 
 Most of the needed configuration is pulled from the terraform output but additional environment is required:
 
