@@ -5,6 +5,10 @@ Generate CSV status reports for missing and staged products in the PDS Registry.
 This script queries OpenSearch using pds-registry-client and generates CSV reports
 for missing and staged bundles and collections per node.
 
+For missing products, one CSV is produced per product type with a ``superseded``
+column (``true``/``false``) indicating whether a given LIDVID is the latest version
+for its LID or an older, superseded version.
+
 Environment variables required:
     REQUEST_SIGNER_AWS_ACCOUNT
     REQUEST_SIGNER_AWS_REGION
@@ -27,11 +31,17 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
+from collections import Counter
 from collections import defaultdict
 from datetime import datetime
 from datetime import timezone
 from pathlib import Path
 from typing import Any
+
+# Resolve pds-registry-client relative to the running Python executable so the
+# correct venv binary is always used regardless of the shell PATH.
+_PDS_CLIENT = str(Path(sys.executable).parent / "pds-registry-client")
 
 
 # Color codes for terminal output
@@ -95,136 +105,891 @@ def check_required_vars() -> list[str]:
 
 def run_query(query_file: Path, endpoint: str) -> dict[str, Any]:
     """Run a query using pds-registry-client."""
-    cmd = ["pds-registry-client", "-d", f"@{query_file}", endpoint]
+    cmd = [_PDS_CLIENT, "-d", f"@{query_file}", endpoint]
     result = subprocess.run(cmd, capture_output=True, text=True, check=True)
     return json.loads(result.stdout)
 
 
-def write_csv(data: dict[str, Any], output_file: Path, include_harvest_date: bool = False) -> int:
-    """Write query results to CSV file."""
+def run_query_paginated(query_file: Path, endpoint: str) -> dict[str, Any]:
+    """Run a query with search_after pagination to retrieve all results past the 10 000-hit window.
+
+    The query file must include a ``sort`` clause so OpenSearch can produce a
+    stable cursor.  Pages are fetched until a page returns fewer hits than
+    ``size``, at which point all pages are merged and returned as a single
+    synthetic response with the same shape as a normal query response.
+    """
+    with open(query_file) as f:
+        base_query = json.load(f)
+
+    page_size = base_query.get("size", 10000)
+    all_hits: list[dict] = []
+    query = base_query
+
+    while True:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as tmp:
+            json.dump(query, tmp)
+            tmp_path = Path(tmp.name)
+        try:
+            data = run_query(tmp_path, endpoint)
+        finally:
+            tmp_path.unlink(missing_ok=True)
+
+        hits = data.get("hits", {}).get("hits", [])
+        all_hits.extend(hits)
+
+        if len(hits) < page_size:
+            break
+
+        last_sort = hits[-1].get("sort")
+        if not last_sort:
+            break
+
+        query = {**base_query, "search_after": last_sort}
+
+    return {"hits": {"hits": all_hits}}
+
+
+def extract_rows(
+    data: dict[str, Any], include_harvest_date: bool = False, include_found_in_registry: bool = False
+) -> list[tuple]:
+    """Extract result rows from an OpenSearch query response."""
+    rows = []
+    for hit in data.get("hits", {}).get("hits", []):
+        source = hit.get("_source", {})
+
+        # Try both field names for node (missing queries use "node", staged queries use "ops:Harvest_Info/ops:node_name")
+        node = source.get("node") or source.get("ops:Harvest_Info/ops:node_name")
+        # Handle node as a list (staged queries) or string (missing queries)
+        if isinstance(node, list):
+            node = node[0] if node else ""
+        elif node is None:
+            node = ""
+
+        lidvid = source.get("lidvid", "")
+
+        product_class = source.get("product_class", [])
+        # Handle product_class as a list or string
+        if isinstance(product_class, list):
+            product_class = ", ".join(product_class) if product_class else ""
+
+        if include_harvest_date:
+            harvest_date = source.get("ops:Harvest_Info/ops:harvest_date_time", "")
+            # Handle harvest_date as a list or string
+            if isinstance(harvest_date, list):
+                harvest_date = harvest_date[0] if harvest_date else ""
+            rows.append((node, lidvid, product_class, harvest_date))
+        elif include_found_in_registry:
+            found = source.get("found_in_registry", "")
+            if isinstance(found, list):
+                found = found[0] if found else ""
+            rows.append((node, lidvid, product_class, str(found).lower()))
+        else:
+            rows.append((node, lidvid, product_class))
+
+    return rows
+
+
+def write_rows_to_csv(rows: list[tuple], output_file: Path, header: tuple | None = None) -> int:
+    """Write rows to a CSV file. Returns the number of rows written."""
     with open(output_file, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
-        count = 0
-        for hit in data.get("hits", {}).get("hits", []):
-            source = hit.get("_source", {})
+        if header:
+            writer.writerow(header)
+        for row in rows:
+            writer.writerow(row)
+    return len(rows)
 
-            # Try both field names for node (missing queries use "node", staged queries use "ops:Harvest_Info/ops:node_name")
-            node = source.get("node") or source.get("ops:Harvest_Info/ops:node_name")
-            # Handle node as a list (staged queries) or string (missing queries)
-            if isinstance(node, list):
-                node = node[0] if node else ""
-            elif node is None:
-                node = ""
 
-            lidvid = source.get("lidvid", "")
+def annotate_version_status(rows: list[tuple]) -> list[tuple]:
+    """Annotate rows with a ``superseded`` column based on version comparison per LID.
 
-            product_class = source.get("product_class", [])
-            # Handle product_class as a list or string
-            if isinstance(product_class, list):
-                product_class = ", ".join(product_class) if product_class else ""
+    Expects lidvid as the second element (index 1) of each row, in the form
+    ``urn:nasa:pds:<lid>::<major>.<minor>``.  Version comparison is numeric so
+    that e.g. ``3.9 < 3.13``.
 
-            if include_harvest_date:
-                harvest_date = source.get("ops:Harvest_Info/ops:harvest_date_time", "")
-                # Handle harvest_date as a list or string
-                if isinstance(harvest_date, list):
-                    harvest_date = harvest_date[0] if harvest_date else ""
-                writer.writerow([node, lidvid, product_class, harvest_date])
-            else:
-                writer.writerow([node, lidvid, product_class])
-            count += 1
-        return count
+    Rows must include ``found_in_registry`` as the fourth element (index 3).
+    The highest-versioned LIDVID across *all* rows (missing or not) for each LID
+    determines the superseded flag.  A row is superseded if a higher version
+    exists anywhere in the full set.
+
+    Returns a new list of rows with an additional ``superseded`` column appended
+    (string ``"true"`` or ``"false"``).
+    """
+    by_lid: dict[str, list[tuple[tuple[int, ...], int]]] = defaultdict(list)
+
+    for idx, row in enumerate(rows):
+        lidvid = row[1]
+        if "::" in lidvid:
+            lid, ver_str = lidvid.rsplit("::", 1)
+        else:
+            lid, ver_str = lidvid, "0"
+
+        try:
+            ver_key: tuple[int, ...] = tuple(int(x) for x in ver_str.split("."))
+        except ValueError:
+            ver_key = (0,)
+
+        by_lid[lid].append((ver_key, idx))
+
+    superseded_indices: set[int] = set()
+    for version_entries in by_lid.values():
+        sorted_entries = sorted(version_entries, key=lambda x: x[0], reverse=True)
+        for _, idx in sorted_entries[1:]:
+            superseded_indices.add(idx)
+
+    return [row + ("true" if idx in superseded_indices else "false",) for idx, row in enumerate(rows)]
+
+
+def filter_missing_rows(rows: list[tuple]) -> list[tuple]:
+    """Filter rows to only those where found_in_registry is false.
+
+    Expects rows in the form (node, lidvid, product_class, found_in_registry, superseded).
+    Returns rows with the found_in_registry column removed, preserving the superseded column.
+    """
+    result = []
+    for row in rows:
+        # found_in_registry is at index 3; superseded is at index 4
+        found = str(row[3]).lower()
+        if found != "true":
+            result.append(row[:3] + row[4:])
+    return result
+
+
+def _count_by_node(csv_path: Path, superseded: bool | None = None) -> dict[str, int]:
+    """Return a node→count mapping from a CSV file (node is the first column).
+
+    If ``superseded`` is ``None``, all rows are counted.  Pass ``True`` or
+    ``False`` to count only the rows whose last column matches ``"true"`` or
+    ``"false"`` respectively (used for missing-product CSVs which carry a
+    superseded annotation in their last column).
+    """
+    counts: dict[str, int] = defaultdict(int)
+    if csv_path.exists():
+        with open(csv_path, "r") as f:
+            for row in csv.reader(f):
+                if not row or row[0] == "node":
+                    continue
+                if superseded is not None:
+                    if len(row) < 4:
+                        continue
+                    if (row[-1].lower() == "true") != superseded:
+                        continue
+                counts[row[0]] += 1
+    return counts
 
 
 def generate_metrics_from_csvs(csv_files: dict[str, Path]) -> str:
     """Generate metrics summary markdown from CSV files."""
-    # Count by node for each report type
-    missing_bundles_by_node = defaultdict(int)
-    missing_collections_by_node = defaultdict(int)
-    staged_bundles_by_node = defaultdict(int)
-    staged_collections_by_node = defaultdict(int)
+    mb = _count_by_node(csv_files["missing_bundles"])
+    mb_latest = _count_by_node(csv_files["missing_bundles"], superseded=False)
+    mb_superseded = _count_by_node(csv_files["missing_bundles"], superseded=True)
+    mc = _count_by_node(csv_files["missing_collections"])
+    mc_latest = _count_by_node(csv_files["missing_collections"], superseded=False)
+    mc_superseded = _count_by_node(csv_files["missing_collections"], superseded=True)
+    sb = _count_by_node(csv_files["staged_bundles"])
+    sc = _count_by_node(csv_files["staged_collections"])
 
-    # Read missing bundles
-    if csv_files["missing_bundles"].exists():
-        with open(csv_files["missing_bundles"], "r") as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if row:  # Skip empty rows
-                    node = row[0]
-                    missing_bundles_by_node[node] += 1
+    all_nodes = sorted(
+        set(mb) | set(mc) | set(sb) | set(sc)
+    )
 
-    # Read missing collections
-    if csv_files["missing_collections"].exists():
-        with open(csv_files["missing_collections"], "r") as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if row:
-                    node = row[0]
-                    missing_collections_by_node[node] += 1
-
-    # Read staged bundles
-    if csv_files["staged_bundles"].exists():
-        with open(csv_files["staged_bundles"], "r") as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if row:
-                    node = row[0]
-                    staged_bundles_by_node[node] += 1
-
-    # Read staged collections
-    if csv_files["staged_collections"].exists():
-        with open(csv_files["staged_collections"], "r") as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if row:
-                    node = row[0]
-                    staged_collections_by_node[node] += 1
-
-    # Get all unique nodes
-    all_nodes = set()
-    all_nodes.update(missing_bundles_by_node.keys())
-    all_nodes.update(missing_collections_by_node.keys())
-    all_nodes.update(staged_bundles_by_node.keys())
-    all_nodes.update(staged_collections_by_node.keys())
-    all_nodes = sorted(all_nodes)
-
-    # Generate timestamp
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
-    # Build markdown tables
     markdown = f"*Last updated: {timestamp}*\n\n"
+
+    # --- Missing Products table (expanded with latest/superseded columns) ---
     markdown += "### Missing Products by Node\n\n"
-    markdown += "| Node | Bundles | Collections |\n"
-    markdown += "|------|---------|-------------|\n"
+    markdown += (
+        "| Node "
+        "| Latest Bundles | Superseded Bundles | Total Bundles "
+        "| Latest Collections | Superseded Collections | Total Collections |\n"
+    )
+    markdown += (
+        "|------"
+        "|---------------:|-------------------:|--------------:"
+        "|-------------------:|-----------------------:|------------------:|\n"
+    )
 
-    missing_bundles_total = 0
-    missing_collections_total = 0
+    mb_t = mb_l_t = mb_s_t = mc_t = mc_l_t = mc_s_t = 0
     for node in all_nodes:
-        bundles = missing_bundles_by_node.get(node, 0)
-        collections = missing_collections_by_node.get(node, 0)
-        if bundles > 0 or collections > 0:
-            markdown += f"| {node} | {bundles} | {collections} |\n"
-            missing_bundles_total += bundles
-            missing_collections_total += collections
+        b_total = mb.get(node, 0)
+        b_latest = mb_latest.get(node, 0)
+        b_super = mb_superseded.get(node, 0)
+        c_total = mc.get(node, 0)
+        c_latest = mc_latest.get(node, 0)
+        c_super = mc_superseded.get(node, 0)
+        if b_total > 0 or c_total > 0:
+            markdown += (
+                f"| {node} "
+                f"| {b_latest} | {b_super} | {b_total} "
+                f"| {c_latest} | {c_super} | {c_total} |\n"
+            )
+            mb_t += b_total
+            mb_l_t += b_latest
+            mb_s_t += b_super
+            mc_t += c_total
+            mc_l_t += c_latest
+            mc_s_t += c_super
 
-    markdown += f"| **Total** | **{missing_bundles_total}** | **{missing_collections_total}** |\n\n"
+    markdown += (
+        f"| **Total** "
+        f"| **{mb_l_t}** | **{mb_s_t}** | **{mb_t}** "
+        f"| **{mc_l_t}** | **{mc_s_t}** | **{mc_t}** |\n\n"
+    )
 
+    # --- Staged Products table (unchanged) ---
     markdown += "### Staged Products by Node\n\n"
     markdown += "| Node | Bundles | Collections |\n"
-    markdown += "|------|---------|-------------|\n"
+    markdown += "|------|--------:|------------:|\n"
 
-    staged_bundles_total = 0
-    staged_collections_total = 0
+    sb_t = sc_t = 0
     for node in all_nodes:
-        bundles = staged_bundles_by_node.get(node, 0)
-        collections = staged_collections_by_node.get(node, 0)
+        bundles = sb.get(node, 0)
+        collections = sc.get(node, 0)
         if bundles > 0 or collections > 0:
             markdown += f"| {node} | {bundles} | {collections} |\n"
-            staged_bundles_total += bundles
-            staged_collections_total += collections
+            sb_t += bundles
+            sc_t += collections
 
-    markdown += f"| **Total** | **{staged_bundles_total}** | **{staged_collections_total}** |\n"
+    markdown += f"| **Total** | **{sb_t}** | **{sc_t}** |\n"
+
+    markdown += "\n### Loading Progress\n\n"
+    markdown += "[View Burnup Chart](burnup_chart.html) — cumulative products loaded over time vs. target\n"
 
     return markdown
+
+
+HISTORY_HEADER = (
+    "date,"
+    "missing_bundles_total,missing_bundles_latest,missing_bundles_superseded,"
+    "missing_collections_total,missing_collections_latest,missing_collections_superseded,"
+    "staged_bundles_total,staged_collections_total"
+)
+
+
+def append_history_row(history_file: Path, csv_files: dict[str, Path]) -> None:
+    """Append one dated row of aggregate counts to the history CSV.
+
+    If the file does not yet exist, a header row is written first.  The file is
+    never truncated — only appended to — so historical data accumulates over time.
+    """
+    def total(path: Path) -> int:
+        return sum(_count_by_node(path).values())
+
+    def latest(path: Path) -> int:
+        return sum(_count_by_node(path, superseded=False).values())
+
+    def superseded_total(path: Path) -> int:
+        return sum(_count_by_node(path, superseded=True).values())
+
+    row = ",".join([
+        datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        str(total(csv_files["missing_bundles"])),
+        str(latest(csv_files["missing_bundles"])),
+        str(superseded_total(csv_files["missing_bundles"])),
+        str(total(csv_files["missing_collections"])),
+        str(latest(csv_files["missing_collections"])),
+        str(superseded_total(csv_files["missing_collections"])),
+        str(total(csv_files["staged_bundles"])),
+        str(total(csv_files["staged_collections"])),
+    ])
+
+    write_header = not history_file.exists()
+    with open(history_file, "a", newline="") as f:
+        if write_header:
+            f.write(HISTORY_HEADER + "\n")
+        f.write(row + "\n")
+
+
+def _extract_loaded_dates(
+    loaded_csv: Path,
+    latest_only: bool,
+) -> tuple[list[str], dict[str, list[str]]]:
+    """Read a loaded-products CSV and return (all_dates, dates_by_node).
+
+    If latest_only=True, for each LID keep only the highest-versioned LIDVID's
+    harvest_date (one entry per unique LID).  Otherwise every row contributes.
+    """
+    if latest_only:
+        best: dict[str, tuple[tuple[int, ...], str, str]] = {}  # lid → (ver_key, node, date)
+        if loaded_csv.exists():
+            with open(loaded_csv) as f:
+                for row in csv.reader(f):
+                    if not row or row[0] == "node" or len(row) < 4:
+                        continue
+                    date_str = row[3].strip()
+                    if not date_str or len(date_str) < 10:
+                        continue
+                    node = row[0].strip()
+                    lidvid = row[1].strip()
+                    date = date_str[:10]
+                    lid, _, ver_str = lidvid.rpartition("::")
+                    if not lid:
+                        lid, ver_str = lidvid, "0"
+                    try:
+                        ver_key: tuple[int, ...] = tuple(int(x) for x in ver_str.split("."))
+                    except ValueError:
+                        ver_key = (0,)
+                    if lid not in best or ver_key > best[lid][0]:
+                        best[lid] = (ver_key, node, date)
+        all_dates = [v[2] for v in best.values()]
+        node_dates: dict[str, list[str]] = defaultdict(list)
+        for _, node, date in best.values():
+            node_dates[node].append(date)
+        return all_dates, dict(node_dates)
+    else:
+        all_dates_list: list[str] = []
+        node_dates_d: dict[str, list[str]] = defaultdict(list)
+        if loaded_csv.exists():
+            with open(loaded_csv) as f:
+                for row in csv.reader(f):
+                    if not row or row[0] == "node" or len(row) < 4:
+                        continue
+                    date_str = row[3].strip()
+                    if date_str and len(date_str) >= 10:
+                        date = date_str[:10]
+                        node = row[0].strip()
+                        all_dates_list.append(date)
+                        node_dates_d[node].append(date)
+        return all_dates_list, dict(node_dates_d)
+
+
+def _build_burnup_series(
+    bundle_dates: list[str],
+    collection_dates: list[str],
+    node_bundle_dates: dict[str, list[str]],
+    node_collection_dates: dict[str, list[str]],
+    loaded_b_by_node: dict[str, int],
+    loaded_c_by_node: dict[str, int],
+    missing_b_by_node: dict[str, int],
+    missing_c_by_node: dict[str, int],
+) -> dict[str, Any]:
+    """Build overall and per-node cumulative burnup rows from pre-collected date lists."""
+    bundle_daily: Counter[str] = Counter(bundle_dates)
+    collection_daily: Counter[str] = Counter(collection_dates)
+    all_dates = sorted(set(bundle_daily) | set(collection_daily))
+
+    overall_rows: list[dict[str, Any]] = []
+    cum_b = cum_c = 0
+    for date in all_dates:
+        cum_b += bundle_daily.get(date, 0)
+        cum_c += collection_daily.get(date, 0)
+        overall_rows.append({"date": date, "cumulative_bundles": cum_b, "cumulative_collections": cum_c})
+
+    target_b = sum(loaded_b_by_node.values()) + sum(missing_b_by_node.values())
+    target_c = sum(loaded_c_by_node.values()) + sum(missing_c_by_node.values())
+
+    all_nodes = sorted(
+        set(node_bundle_dates) | set(node_collection_dates)
+        | set(missing_b_by_node) | set(missing_c_by_node)
+    )
+    by_node: dict[str, Any] = {}
+    for node in all_nodes:
+        nb_daily: Counter[str] = Counter(node_bundle_dates.get(node, []))
+        nc_daily: Counter[str] = Counter(node_collection_dates.get(node, []))
+        node_dates = sorted(set(nb_daily) | set(nc_daily))
+
+        node_rows: list[dict[str, Any]] = []
+        n_cum_b = n_cum_c = 0
+        for d in node_dates:
+            n_cum_b += nb_daily.get(d, 0)
+            n_cum_c += nc_daily.get(d, 0)
+            node_rows.append({"date": d, "cumulative_bundles": n_cum_b, "cumulative_collections": n_cum_c})
+
+        by_node[node] = {
+            "rows": node_rows,
+            "target_b": loaded_b_by_node.get(node, 0) + missing_b_by_node.get(node, 0),
+            "target_c": loaded_c_by_node.get(node, 0) + missing_c_by_node.get(node, 0),
+        }
+
+    return {
+        "overall": {"rows": overall_rows, "target_b": target_b, "target_c": target_c},
+        "by_node": by_node,
+    }
+
+
+def generate_burnup_data(csv_files: dict[str, Path]) -> dict[str, Any]:
+    """Compute overall and per-node burnup series for all-versions and latest-only views.
+
+    Returns ``{"all": series, "latest": series}`` where each series is
+    ``{"overall": {"rows": [...], "target_b": int, "target_c": int},
+       "by_node": {node: {"rows": [...], "target_b": int, "target_c": int}}}``.
+
+    ``"all"``    counts every LIDVID loaded.
+    ``"latest"`` counts only the highest-versioned LIDVID per LID; targets use the
+    missing_*_latest (superseded=false) counts so the goal is one up-to-date entry
+    per LID rather than every historical version.
+    """
+    all_b_dates, all_nb_dates = _extract_loaded_dates(csv_files["loaded_bundles"], latest_only=False)
+    all_c_dates, all_nc_dates = _extract_loaded_dates(csv_files["loaded_collections"], latest_only=False)
+    lat_b_dates, lat_nb_dates = _extract_loaded_dates(csv_files["loaded_bundles"], latest_only=True)
+    lat_c_dates, lat_nc_dates = _extract_loaded_dates(csv_files["loaded_collections"], latest_only=True)
+
+    loaded_b_by_node = _count_by_node(csv_files["loaded_bundles"])
+    loaded_c_by_node = _count_by_node(csv_files["loaded_collections"])
+    missing_b_by_node = _count_by_node(csv_files["missing_bundles"])
+    missing_c_by_node = _count_by_node(csv_files["missing_collections"])
+    missing_b_latest = _count_by_node(csv_files["missing_bundles"], superseded=False)
+    missing_c_latest = _count_by_node(csv_files["missing_collections"], superseded=False)
+
+    # Latest loaded count per node = number of unique LIDs with any version loaded
+    lat_loaded_b_by_node: dict[str, int] = {n: len(dates) for n, dates in lat_nb_dates.items()}
+    lat_loaded_c_by_node: dict[str, int] = {n: len(dates) for n, dates in lat_nc_dates.items()}
+
+    return {
+        "all": _build_burnup_series(
+            all_b_dates, all_c_dates, all_nb_dates, all_nc_dates,
+            loaded_b_by_node, loaded_c_by_node, missing_b_by_node, missing_c_by_node,
+        ),
+        "latest": _build_burnup_series(
+            lat_b_dates, lat_c_dates, lat_nb_dates, lat_nc_dates,
+            lat_loaded_b_by_node, lat_loaded_c_by_node, missing_b_latest, missing_c_latest,
+        ),
+    }
+
+
+def write_burnup_csvs(data: dict[str, Any], output_dir: Path) -> list[Path]:
+    """Write burnup history CSVs for all-versions and latest-only series.
+
+    Produces four files: burnup_history.csv, burnup_by_node.csv,
+    burnup_history_latest.csv, burnup_by_node_latest.csv.
+    Returns the list of files written.
+    """
+    files: list[Path] = []
+    for key, fname_overall, fname_node in [
+        ("all", "burnup_history.csv", "burnup_by_node.csv"),
+        ("latest", "burnup_history_latest.csv", "burnup_by_node_latest.csv"),
+    ]:
+        series = data[key]
+        overall = series["overall"]
+
+        overall_file = output_dir / fname_overall
+        with open(overall_file, "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(["date", "cumulative_bundles", "cumulative_collections", "target_bundles", "target_collections"])
+            for row in overall["rows"]:
+                writer.writerow([row["date"], row["cumulative_bundles"], row["cumulative_collections"], overall["target_b"], overall["target_c"]])
+        files.append(overall_file)
+
+        node_file = output_dir / fname_node
+        with open(node_file, "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(["node", "date", "cumulative_bundles", "cumulative_collections", "target_bundles", "target_collections"])
+            for node, nd in sorted(series["by_node"].items()):
+                for row in nd["rows"]:
+                    writer.writerow([node, row["date"], row["cumulative_bundles"], row["cumulative_collections"], nd["target_b"], nd["target_c"]])
+        files.append(node_file)
+
+    return files
+
+
+def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
+    """Generate a standalone HTML burnup chart using Chart.js (CDN).
+
+    Page layout: sticky date-range controls → TOC → Overall Summary → one section
+    per node (All + Latest each).  All charts are full-width.  The date range
+    defaults to the last 12 months from today and can be changed interactively
+    without regenerating the file.  Each section has a Back-to-top link.
+    """
+    if not data["all"]["overall"]["rows"] and not data["latest"]["overall"]["rows"]:
+        return
+
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    all_nodes = sorted(set(data["all"]["by_node"]) | set(data["latest"]["by_node"]))
+
+    def stat_cards(loaded_b: int, loaded_c: int, target_b: int, target_c: int) -> str:
+        pct_b = round(100 * loaded_b / target_b) if target_b else 0
+        pct_c = round(100 * loaded_c / target_c) if target_c else 0
+        total = target_b + target_c
+        pct_total = round(100 * (loaded_b + loaded_c) / total) if total else 0
+        return (
+            '<div class="stats">'
+            f'<div class="stat"><div class="label">Progress</div><div class="value">{pct_total}%</div><div class="sub">{loaded_b + loaded_c:,} / {total:,}</div></div>'
+            f'<div class="stat"><div class="label">Bundles</div><div class="value">{pct_b}%</div><div class="sub">{loaded_b:,} / {target_b:,}</div></div>'
+            f'<div class="stat"><div class="label">Collections</div><div class="value">{pct_c}%</div><div class="sub">{loaded_c:,} / {target_c:,}</div></div>'
+            '</div>\n'
+        )
+
+    def chart_block(key: str, node_or_overall: str, canvas_id: str, subsection_title: str, desc: str = "") -> str:
+        if node_or_overall == "overall":
+            series = data[key]["overall"]
+            rows = series["rows"]
+            tb, tc = series["target_b"], series["target_c"]
+        else:
+            nd = data[key]["by_node"].get(node_or_overall, {"rows": [], "target_b": 0, "target_c": 0})
+            rows, tb, tc = nd["rows"], nd["target_b"], nd["target_c"]
+        loaded_b = rows[-1]["cumulative_bundles"] if rows else 0
+        loaded_c = rows[-1]["cumulative_collections"] if rows else 0
+        cards = stat_cards(loaded_b, loaded_c, tb, tc)
+        desc_html = f'<p class="section-desc">{desc}</p>\n' if desc else ""
+        if rows:
+            chart_el = f'<div class="chart-container"><canvas id="{canvas_id}"></canvas></div>\n'
+        else:
+            chart_el = '<div class="no-data">No products loaded yet</div>\n'
+        return f'<h3>{subsection_title}</h3>\n' + desc_html + cards + chart_el
+
+    # Controls bar (sticky, rendered before TOC in the DOM so it stays on screen)
+    controls_html = (
+        '<div class="controls" id="controls">\n'
+        '  <span class="controls-label">Date range:</span>\n'
+        '  <input type="date" id="start-date" aria-label="Start date">\n'
+        '  <span class="controls-sep">to</span>\n'
+        '  <input type="date" id="end-date" aria-label="End date">\n'
+        '  <div class="quick-ranges">\n'
+        '    <button id="btn-6"   onclick="setRange(6)">6 months</button>\n'
+        '    <button id="btn-12"  onclick="setRange(12)">1 year</button>\n'
+        '    <button id="btn-24"  onclick="setRange(24)">2 years</button>\n'
+        '    <button id="btn-all" onclick="setRange(null)">All time</button>\n'
+        '  </div>\n'
+        '</div>\n'
+    )
+
+    # TOC
+    toc_items = ['<li><a href="#overall">Overall Summary</a></li>',
+                 '<li><a href="#node-pct">% Completion by Node</a></li>']
+    for node in all_nodes:
+        toc_items.append(f'<li><a href="#node-{node}">{node}</a></li>')
+    toc_html = (
+        '<nav id="toc">\n<h2>Contents</h2>\n<ul>\n'
+        + "".join(f"  {item}\n" for item in toc_items)
+        + "</ul>\n</nav>\n"
+    )
+
+    # Overall section
+    overall_html = (
+        '<section id="overall">\n'
+        '<h2>Overall Summary</h2>\n'
+        + chart_block("all", "overall", "chart-overall-all", "All Products",
+                      "Counts every LIDVID loaded, including older versions of the same LID.")
+        + chart_block("latest", "overall", "chart-overall-latest", "Latest Versions Only",
+                      "Only the highest-versioned LIDVID per LID is counted. Targets use latest-missing counts.")
+        + '<p class="back-to-top"><a href="#toc">Back to top</a></p>\n'
+        '</section>\n'
+    )
+
+    # % Completion by Node section
+    pct_section_html = (
+        '<section id="node-pct">\n'
+        '<h2>% Completion by Node</h2>\n'
+        '<p class="section-desc">Each line shows cumulative loading progress for one node, normalized to 0–100% of its own target. '
+        'Small nodes and large nodes are directly comparable.</p>\n'
+        '<h3>All Versions — Bundles</h3>\n'
+        '<div class="chart-container"><canvas id="chart-pct-all-bundles"></canvas></div>\n'
+        '<h3>All Versions — Collections</h3>\n'
+        '<div class="chart-container"><canvas id="chart-pct-all-collections"></canvas></div>\n'
+        '<h3>Latest Versions Only — Bundles</h3>\n'
+        '<div class="chart-container"><canvas id="chart-pct-latest-bundles"></canvas></div>\n'
+        '<h3>Latest Versions Only — Collections</h3>\n'
+        '<div class="chart-container"><canvas id="chart-pct-latest-collections"></canvas></div>\n'
+        '<p class="back-to-top"><a href="#toc">Back to top</a></p>\n'
+        '</section>\n'
+    )
+
+    # Per-node sections
+    node_sections_html = ""
+    for node in all_nodes:
+        node_sections_html += (
+            f'<section id="node-{node}">\n'
+            f'<h2>{node}</h2>\n'
+            + chart_block("all", node, f"chart-{node}-all", "All Products")
+            + chart_block("latest", node, f"chart-{node}-latest", "Latest Versions Only")
+            + '<p class="back-to-top"><a href="#toc">Back to top</a></p>\n'
+            f'</section>\n'
+        )
+
+    # Chart JS data
+    chart_js_data: dict[str, Any] = {}
+    for key in ("all", "latest"):
+        series = data[key]
+        overall = series["overall"]
+        chart_js_data[key] = {
+            "overall": {
+                "labels": [r["date"] for r in overall["rows"]],
+                "cum_b": [r["cumulative_bundles"] for r in overall["rows"]],
+                "cum_c": [r["cumulative_collections"] for r in overall["rows"]],
+                "target_b": overall["target_b"],
+                "target_c": overall["target_c"],
+            },
+            "by_node": {
+                node: {
+                    "labels": [r["date"] for r in nd["rows"]],
+                    "cum_b": [r["cumulative_bundles"] for r in nd["rows"]],
+                    "cum_c": [r["cumulative_collections"] for r in nd["rows"]],
+                    "target_b": nd["target_b"],
+                    "target_c": nd["target_c"],
+                }
+                for node, nd in series["by_node"].items()
+                if nd["rows"]
+            },
+        }
+
+    html = (
+        '<!DOCTYPE html>\n'
+        '<html lang="en">\n'
+        '<head>\n'
+        '  <meta charset="UTF-8">\n'
+        '  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+        '  <title>PDS Registry Loading Progress</title>\n'
+        '  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>\n'
+        '  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js"></script>\n'
+        '  <style>\n'
+        '    body { font-family: system-ui, sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1rem; background: #f8f9fa; }\n'
+        '    h1 { color: #003087; }\n'
+        '    h2 { color: #003087; margin-top: 2.5rem; border-top: 2px solid #003087; padding-top: 1rem; }\n'
+        '    h3 { color: #555; margin: 1.5rem 0 .4rem; font-size: .85rem; text-transform: uppercase; letter-spacing: .07em; }\n'
+        '    .controls { position: sticky; top: 0; z-index: 100; background: white; border-radius: 8px;\n'
+        '                padding: .8rem 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,.15); margin: 1rem 0 1.5rem;\n'
+        '                display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; }\n'
+        '    .controls-label { font-weight: 600; font-size: .9rem; color: #003087; white-space: nowrap; }\n'
+        '    .controls-sep { font-size: .9rem; color: #666; }\n'
+        '    .controls input[type="date"] { border: 1px solid #ccc; border-radius: 5px; padding: .3rem .6rem;\n'
+        '                                   font-size: .9rem; color: #333; }\n'
+        '    .quick-ranges { display: flex; gap: .4rem; margin-left: .25rem; }\n'
+        '    .quick-ranges button { background: #f0f2f5; border: 1px solid #ccc; border-radius: 5px;\n'
+        '                           padding: .3rem .75rem; cursor: pointer; font-size: .82rem; color: #444;\n'
+        '                           transition: background .12s; }\n'
+        '    .quick-ranges button:hover { background: #dde2e8; }\n'
+        '    .quick-ranges button.active { background: #003087; color: white; border-color: #003087; }\n'
+        '    nav#toc { background: white; border-radius: 8px; padding: 1.25rem 1.75rem; box-shadow: 0 1px 3px rgba(0,0,0,.12); margin: 1.5rem 0; }\n'
+        '    nav#toc h2 { margin-top: 0; border: none; padding: 0; font-size: 1.1rem; }\n'
+        '    nav#toc ul { margin: .5rem 0 0; padding-left: 1.25rem; columns: 3; gap: 1rem; }\n'
+        '    nav#toc li { margin-bottom: .35rem; }\n'
+        '    nav#toc a, .back-to-top a { color: #003087; text-decoration: none; }\n'
+        '    nav#toc a:hover, .back-to-top a:hover { text-decoration: underline; }\n'
+        '    section { margin-bottom: 1rem; }\n'
+        '    .section-desc { color: #666; margin: .1rem 0 .6rem; font-size: .88rem; }\n'
+        '    .stats { display: flex; gap: 1.25rem; margin: .5rem 0 .75rem; flex-wrap: wrap; }\n'
+        '    .stat { background: white; border-radius: 8px; padding: .9rem 1.4rem; box-shadow: 0 1px 3px rgba(0,0,0,.12); min-width: 140px; }\n'
+        '    .stat .label { font-size: .75rem; color: #666; text-transform: uppercase; letter-spacing: .05em; }\n'
+        '    .stat .value { font-size: 1.9rem; font-weight: 700; color: #003087; }\n'
+        '    .stat .sub { font-size: .8rem; color: #444; margin-top: .2rem; }\n'
+        '    .chart-container { background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,.12); margin-bottom: .5rem; }\n'
+        '    .no-data { background: white; border-radius: 8px; padding: 2.5rem 1rem; text-align: center; color: #bbb; font-style: italic; box-shadow: 0 1px 3px rgba(0,0,0,.12); margin-bottom: .5rem; }\n'
+        '    .back-to-top { text-align: right; font-size: .82rem; margin-top: .75rem; padding-bottom: .5rem; }\n'
+        '    footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: .8rem; color: #888; text-align: right; }\n'
+        '  </style>\n'
+        '</head>\n'
+        '<body>\n'
+        '<h1>PDS Registry Loading Progress</h1>\n'
+        + controls_html
+        + toc_html
+        + overall_html
+        + pct_section_html
+        + node_sections_html
+        + f'<footer>Last updated: {timestamp}</footer>\n'
+        + '<script>\n'
+        + f'const chartData = {json.dumps(chart_js_data)};\n'
+        + 'const charts = {};\n'
+        + 'const pctCharts = {};\n'
+        + 'const NODE_COLORS = [\n'
+        + '  "#003087","#e25822","#2ca02c","#9467bd","#8c564b",\n'
+        + '  "#e377c2","#7f7f7f","#bcbd22","#17becf","#1f77b4",\n'
+        + '  "#ff7f0e","#d62728"\n'
+        + '];\n'
+        + '\n'
+        + 'function isoDate(d) { return d.toISOString().split("T")[0]; }\n'
+        + '\n'
+        + '// Pick the Chart.js time unit and tick step that fits a given day span.\n'
+        + '// Chart.js time scale uses these to generate evenly-spaced calendar ticks\n'
+        + '// independently of where the data points actually fall.\n'
+        + 'function timeScaleUnit(start, end) {\n'
+        + '  if (!start || !end) return {unit: "year",  stepSize: 1};\n'
+        + '  const days = (new Date(end) - new Date(start)) / 86400000;\n'
+        + '  if (days <=  92) return {unit: "week",  stepSize: 1};\n'
+        + '  if (days <= 184) return {unit: "week",  stepSize: 2};\n'
+        + '  if (days <= 366) return {unit: "month", stepSize: 1};\n'
+        + '  if (days <= 731) return {unit: "month", stepSize: 2};\n'
+        + '  return                        {unit: "month", stepSize: 6};\n'
+        + '}\n'
+        + '\n'
+        + '// Convert parallel-array data into {x, y} point objects for the time scale.\n'
+        + 'function toPoints(labels, values) {\n'
+        + '  return labels.map((lbl, i) => ({x: lbl, y: values[i]}));\n'
+        + '}\n'
+        + '\n'
+        + 'function makeChart(id, d, title) {\n'
+        + '  const el = document.getElementById(id);\n'
+        + '  if (!el) return;\n'
+        + '  const start = document.getElementById("start-date").value;\n'
+        + '  const end   = document.getElementById("end-date").value;\n'
+        + '  const {unit, stepSize} = timeScaleUnit(start, end);\n'
+        + '  // Target lines need two anchor points so the time scale can draw them\n'
+        + '  const allDates = d.labels;\n'
+        + '  const tMin = start || allDates[0];\n'
+        + '  const tMax = end   || allDates[allDates.length - 1];\n'
+        + '  const instance = new Chart(el, {\n'
+        + '    type: "line",\n'
+        + '    data: {\n'
+        + '      datasets: [\n'
+        + '        {label: "Bundles",     data: toPoints(d.labels, d.cum_b), borderColor: "#003087", backgroundColor: "rgba(0,48,135,0.08)", fill: true, tension: 0.3, pointRadius: 2},\n'
+        + '        {label: "Collections", data: toPoints(d.labels, d.cum_c), borderColor: "#e25822", backgroundColor: "rgba(226,88,34,0.06)", fill: true, tension: 0.3, pointRadius: 2},\n'
+        + '        {label: "Bundle Target ("     + d.target_b.toLocaleString() + ")", data: [{x: tMin, y: d.target_b}, {x: tMax, y: d.target_b}], borderColor: "#003087", borderDash: [6,3], pointRadius: 0, fill: false},\n'
+        + '        {label: "Collection Target (" + d.target_c.toLocaleString() + ")", data: [{x: tMin, y: d.target_c}, {x: tMax, y: d.target_c}], borderColor: "#e25822", borderDash: [6,3], pointRadius: 0, fill: false},\n'
+        + '      ],\n'
+        + '    },\n'
+        + '    options: {\n'
+        + '      responsive: true,\n'
+        + '      interaction: {mode: "index", intersect: false},\n'
+        + '      plugins: {\n'
+        + '        title: {display: true, text: title, font: {size: 14}},\n'
+        + '        legend: {position: "bottom"},\n'
+        + '      },\n'
+        + '      scales: {\n'
+        + '        x: {\n'
+        + '          type: "time",\n'
+        + '          min: start || undefined,\n'
+        + '          max: end   || undefined,\n'
+        + '          time: {unit, stepSize, tooltipFormat: "yyyy-MM-dd", displayFormats: {week: "MMM d", month: "MMM yyyy", year: "yyyy"}},\n'
+        + '          ticks: {maxRotation: 45, source: "auto"},\n'
+        + '          title: {display: true, text: "Harvest Date"},\n'
+        + '        },\n'
+        + '        y: {title: {display: true, text: "Count"}, beginAtZero: true},\n'
+        + '      },\n'
+        + '    },\n'
+        + '  });\n'
+        + '  charts[id] = {instance, data: d};\n'
+        + '}\n'
+        + '\n'
+        + 'function makePctChart(id, key, productType, title) {\n'
+        + '  const el = document.getElementById(id);\n'
+        + '  if (!el) return;\n'
+        + '  const start = document.getElementById("start-date").value;\n'
+        + '  const end   = document.getElementById("end-date").value;\n'
+        + '  const {unit, stepSize} = timeScaleUnit(start, end);\n'
+        + '  const byNode = chartData[key].by_node;\n'
+        + '  const cumKey    = productType === "b" ? "cum_b"    : "cum_c";\n'
+        + '  const targetKey = productType === "b" ? "target_b" : "target_c";\n'
+        + '  const datasets = [];\n'
+        + '  let colorIdx = 0;\n'
+        + '  const nodeEntries = Object.entries(byNode).sort((a, b) => a[0].localeCompare(b[0]));\n'
+        + '  // Collect the full date union so the 100% reference line spans all data\n'
+        + '  const allDateSet = new Set();\n'
+        + '  for (const [, nd] of nodeEntries) { nd.labels.forEach(l => allDateSet.add(l)); }\n'
+        + '  const allDatesArr = [...allDateSet].sort();\n'
+        + '  const tMin = start || allDatesArr[0];\n'
+        + '  const tMax = end   || allDatesArr[allDatesArr.length - 1];\n'
+        + '  for (const [node, nd] of nodeEntries) {\n'
+        + '    const target = nd[targetKey];\n'
+        + '    if (!target) continue;\n'
+        + '    const pctValues = nd[cumKey].map(v => Math.min(100, v / target * 100));\n'
+        + '    const color = NODE_COLORS[colorIdx % NODE_COLORS.length];\n'
+        + '    colorIdx++;\n'
+        + '    datasets.push({\n'
+        + '      label: node,\n'
+        + '      data: toPoints(nd.labels, pctValues),\n'
+        + '      borderColor: color,\n'
+        + '      backgroundColor: "transparent",\n'
+        + '      fill: false,\n'
+        + '      tension: 0.3,\n'
+        + '      pointRadius: 2,\n'
+        + '    });\n'
+        + '  }\n'
+        + '  // 100% reference line\n'
+        + '  datasets.push({\n'
+        + '    label: "100% target",\n'
+        + '    data: [{x: tMin, y: 100}, {x: tMax, y: 100}],\n'
+        + '    borderColor: "#aaa",\n'
+        + '    borderDash: [4, 4],\n'
+        + '    pointRadius: 0,\n'
+        + '    fill: false,\n'
+        + '    backgroundColor: "transparent",\n'
+        + '  });\n'
+        + '  const instance = new Chart(el, {\n'
+        + '    type: "line",\n'
+        + '    data: {datasets},\n'
+        + '    options: {\n'
+        + '      responsive: true,\n'
+        + '      interaction: {mode: "index", intersect: false},\n'
+        + '      plugins: {\n'
+        + '        title: {display: true, text: title, font: {size: 14}},\n'
+        + '        legend: {position: "bottom"},\n'
+        + '      },\n'
+        + '      scales: {\n'
+        + '        x: {\n'
+        + '          type: "time",\n'
+        + '          min: start || undefined,\n'
+        + '          max: end   || undefined,\n'
+        + '          time: {unit, stepSize, tooltipFormat: "yyyy-MM-dd", displayFormats: {week: "MMM d", month: "MMM yyyy", year: "yyyy"}},\n'
+        + '          ticks: {maxRotation: 45, source: "auto"},\n'
+        + '          title: {display: true, text: "Harvest Date"},\n'
+        + '        },\n'
+        + '        y: {min: 0, max: 100, title: {display: true, text: "% Loaded"}},\n'
+        + '      },\n'
+        + '    },\n'
+        + '  });\n'
+        + '  pctCharts[id] = instance;\n'
+        + '}\n'
+        + '\n'
+        + 'function updateAllCharts() {\n'
+        + '  const start = document.getElementById("start-date").value;\n'
+        + '  const end   = document.getElementById("end-date").value;\n'
+        + '  const {unit, stepSize} = timeScaleUnit(start, end);\n'
+        + '  for (const {instance, data: d} of Object.values(charts)) {\n'
+        + '    const tMin = start || d.labels[0];\n'
+        + '    const tMax = end   || d.labels[d.labels.length - 1];\n'
+        + '    instance.options.scales.x.min = start || undefined;\n'
+        + '    instance.options.scales.x.max = end   || undefined;\n'
+        + '    instance.options.scales.x.time.unit = unit;\n'
+        + '    instance.options.scales.x.time.stepSize = stepSize;\n'
+        + '    // Update target line anchors to match new range\n'
+        + '    instance.data.datasets[2].data = [{x: tMin, y: d.target_b}, {x: tMax, y: d.target_b}];\n'
+        + '    instance.data.datasets[3].data = [{x: tMin, y: d.target_c}, {x: tMax, y: d.target_c}];\n'
+        + '    instance.update();\n'
+        + '  }\n'
+        + '  // Update % completion charts (no target-line datasets to anchor)\n'
+        + '  for (const inst of Object.values(pctCharts)) {\n'
+        + '    inst.options.scales.x.min = start || undefined;\n'
+        + '    inst.options.scales.x.max = end   || undefined;\n'
+        + '    inst.options.scales.x.time.unit = unit;\n'
+        + '    inst.options.scales.x.time.stepSize = stepSize;\n'
+        + '    inst.update();\n'
+        + '  }\n'
+        + '}\n'
+        + '\n'
+        + 'function setActiveBtn(id) {\n'
+        + '  document.querySelectorAll(".quick-ranges button").forEach(b => b.classList.remove("active"));\n'
+        + '  const b = document.getElementById(id);\n'
+        + '  if (b) b.classList.add("active");\n'
+        + '}\n'
+        + '\n'
+        + 'function setRange(months) {\n'
+        + '  const today = new Date();\n'
+        + '  document.getElementById("end-date").value = isoDate(today);\n'
+        + '  if (months === null) {\n'
+        + '    document.getElementById("start-date").value = "";\n'
+        + '    setActiveBtn("btn-all");\n'
+        + '  } else {\n'
+        + '    const s = new Date(today);\n'
+        + '    s.setMonth(s.getMonth() - months);\n'
+        + '    document.getElementById("start-date").value = isoDate(s);\n'
+        + '    setActiveBtn("btn-" + months);\n'
+        + '  }\n'
+        + '  updateAllCharts();\n'
+        + '}\n'
+        + '\n'
+        + 'document.getElementById("start-date").addEventListener("change", () => { setActiveBtn(""); updateAllCharts(); });\n'
+        + 'document.getElementById("end-date").addEventListener("change",   () => { setActiveBtn(""); updateAllCharts(); });\n'
+        + '\n'
+        + '// Initialize to 1-year default then build all charts\n'
+        + 'setRange(12);\n'
+        + 'makeChart("chart-overall-all",    chartData.all.overall,    "All Products — Cumulative Loading Over Time");\n'
+        + 'makeChart("chart-overall-latest", chartData.latest.overall, "Latest Versions Only — Cumulative Loading Over Time");\n'
+        + 'for (const [node, d] of Object.entries(chartData.all.by_node)) {\n'
+        + '  makeChart("chart-" + node + "-all", d, node + " — All Products");\n'
+        + '}\n'
+        + 'for (const [node, d] of Object.entries(chartData.latest.by_node)) {\n'
+        + '  makeChart("chart-" + node + "-latest", d, node + " — Latest Versions");\n'
+        + '}\n'
+        + 'makePctChart("chart-pct-all-bundles",       "all",    "b", "All Versions — Bundles % Loaded by Node");\n'
+        + 'makePctChart("chart-pct-all-collections",   "all",    "c", "All Versions — Collections % Loaded by Node");\n'
+        + 'makePctChart("chart-pct-latest-bundles",    "latest", "b", "Latest Versions Only — Bundles % Loaded by Node");\n'
+        + 'makePctChart("chart-pct-latest-collections","latest", "c", "Latest Versions Only — Collections % Loaded by Node");\n'
+        + '</script>\n'
+        + '</body>\n</html>'
+    )
+
+    with open(output_file, "w") as f:
+        f.write(html)
 
 
 def update_readme_metrics(readme_path: Path, metrics_markdown: str) -> None:
@@ -303,28 +1068,28 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Generate reports only (no git commit)
-  %(prog)s --no-commit
-
-  # Generate reports and commit/push to GitHub (default)
+  # Generate reports only, no git commit (default)
   %(prog)s
 
   # Same as above, explicit flag
+  %(prog)s --no-commit
+
+  # Generate reports and commit/push to GitHub
   %(prog)s --commit
         """,
     )
     parser.add_argument(
         "--commit",
         action="store_true",
-        default=True,
+        default=False,
         dest="commit",
-        help="Commit and push changes to GitHub (default)",
+        help="Commit and push changes to GitHub",
     )
     parser.add_argument(
         "--no-commit",
         action="store_false",
         dest="commit",
-        help="Do not commit or push changes to GitHub",
+        help="Do not commit or push changes to GitHub (default)",
     )
     return parser.parse_args()
 
@@ -365,12 +1130,12 @@ def main() -> int:
     # Check if pds-registry-client is available
     try:
         subprocess.run(
-            ["pds-registry-client", "--help"],
+            [_PDS_CLIENT, "--help"],
             capture_output=True,
             check=True,
         )
     except (subprocess.CalledProcessError, FileNotFoundError):
-        print_error("pds-registry-client command not found")
+        print_error(f"pds-registry-client not found at {_PDS_CLIENT}")
         print_error("Please install pds-registry-client: pip install pds-registry-client")
         return 1
 
@@ -381,7 +1146,12 @@ def main() -> int:
     # Create output directory if it doesn't exist
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Define queries to run: (query_file, endpoint, output_file, include_harvest_date, description)
+    # Define queries to run:
+    #   (query_file, endpoint, output_file, include_harvest_date, description, split_versions)
+    #
+    # split_versions=True generates additional *_latest_* and *_superseded_* CSVs
+    # by grouping LIDVIDs by LID and keeping only the highest version per LID.
+    # Tuple fields: (query_file, endpoint, output_file, include_harvest_date, description, split_versions, paginate)
     queries = [
         (
             conf_dir / "missing_bundles_per_node.json",
@@ -389,6 +1159,8 @@ def main() -> int:
             output_dir / "missing_bundles_in_registry.csv",
             False,
             "missing bundles",
+            True,
+            False,
         ),
         (
             conf_dir / "missing_collections_per_node.json",
@@ -396,6 +1168,8 @@ def main() -> int:
             output_dir / "missing_collections_in_registry.csv",
             False,
             "missing collections",
+            True,
+            False,
         ),
         (
             conf_dir / "staged_bundles_per_node.json",
@@ -403,6 +1177,8 @@ def main() -> int:
             output_dir / "staged_bundles_in_registry.csv",
             True,
             "staged bundles",
+            False,
+            False,
         ),
         (
             conf_dir / "staged_collections_per_node.json",
@@ -410,24 +1186,59 @@ def main() -> int:
             output_dir / "staged_collections_in_registry.csv",
             True,
             "staged collections",
+            False,
+            False,
+        ),
+        (
+            conf_dir / "loaded_bundles_per_node.json",
+            "/*-registry/_search",
+            output_dir / "loaded_bundles_in_registry.csv",
+            True,
+            "loaded bundles",
+            False,
+            True,
+        ),
+        (
+            conf_dir / "loaded_collections_per_node.json",
+            "/*-registry/_search",
+            output_dir / "loaded_collections_in_registry.csv",
+            True,
+            "loaded collections",
+            False,
+            True,
         ),
     ]
 
     # Check if all query files exist
-    for query_file, _, _, _, description in queries:
+    for query_file, _, _, _, description, _, _ in queries:
         if not query_file.exists():
             print_error(f"Query file not found: {query_file}")
             return 1
 
-    # Run all queries
-    output_files = []
-    for query_file, endpoint, output_file, include_harvest_date, description in queries:
+    # Run all queries and write CSVs
+    output_files: list[Path] = []
+    for query_file, endpoint, output_file, include_harvest_date, description, split_versions, paginate in queries:
         try:
             print_info(f"Querying for {description}...")
-            data = run_query(query_file, endpoint)
-            count = write_csv(data, output_file, include_harvest_date)
-            print_info(f"Successfully generated {output_file} ({count} records)")
+            data = run_query_paginated(query_file, endpoint) if paginate else run_query(query_file, endpoint)
+            rows = extract_rows(data, include_harvest_date, include_found_in_registry=split_versions)
+
+            if split_versions:
+                # Annotate using all returned rows (including found_in_registry=true) so that
+                # version ordering is determined across the full set, then filter to missing only.
+                rows = annotate_version_status(rows)
+                rows = filter_missing_rows(rows)
+                header = ("node", "lidvid", "product_class", "superseded")
+            elif include_harvest_date:
+                header = ("node", "lidvid", "product_class", "harvest_date")
+            else:
+                header = ("node", "lidvid", "product_class")
+
+            count = write_rows_to_csv(rows, output_file, header=header)
+            print_info(f"  → {output_file.name} ({count} records)")
             output_files.append(output_file)
+
+
         except subprocess.CalledProcessError as e:
             print_error(f"Failed to generate {description} report: {e.stderr}")
             return 1
@@ -436,17 +1247,16 @@ def main() -> int:
             return 1
 
     print_info("\nReport generation complete!")
-    print_info("Output files:")
-    for output_file in output_files:
-        print(f"  - {output_file}")
 
     # Generate and update metrics in README
-    print_info("\nUpdating metrics in README...")
+    print_info("Updating metrics in README...")
     csv_files = {
         "missing_bundles": output_dir / "missing_bundles_in_registry.csv",
         "missing_collections": output_dir / "missing_collections_in_registry.csv",
         "staged_bundles": output_dir / "staged_bundles_in_registry.csv",
         "staged_collections": output_dir / "staged_collections_in_registry.csv",
+        "loaded_bundles": output_dir / "loaded_bundles_in_registry.csv",
+        "loaded_collections": output_dir / "loaded_collections_in_registry.csv",
     }
     readme_path = output_dir / "README.md"
 
@@ -454,10 +1264,35 @@ def main() -> int:
         metrics_markdown = generate_metrics_from_csvs(csv_files)
         update_readme_metrics(readme_path, metrics_markdown)
         print_info(f"Successfully updated metrics in {readme_path}")
-        # Add README to list of files to commit
         output_files.append(readme_path)
     except Exception as e:
         print_error(f"Failed to update README metrics: {e}")
+        return 1
+
+    # Append a snapshot row to the history file for burndown tracking
+    history_file = output_dir / "counts_history.csv"
+    try:
+        append_history_row(history_file, csv_files)
+        print_info(f"Appended counts snapshot to {history_file}")
+        output_files.append(history_file)
+    except Exception as e:
+        print_error(f"Failed to append history row: {e}")
+        return 1
+
+    # Generate burnup charts (all-versions + latest-only, overall + per-node)
+    burnup_chart_file = output_dir / "burnup_chart.html"
+    try:
+        print_info("Generating burnup charts...")
+        burnup_data = generate_burnup_data(csv_files)
+        burnup_csvs = write_burnup_csvs(burnup_data, output_dir)
+        generate_burnup_chart_html(burnup_data, burnup_chart_file)
+        for f in burnup_csvs:
+            print_info(f"  → {f.name}")
+        print_info(f"  → {burnup_chart_file.name}")
+        output_files.extend(burnup_csvs)
+        output_files.append(burnup_chart_file)
+    except Exception as e:
+        print_error(f"Failed to generate burnup charts: {e}")
         return 1
 
     # Commit and push changes if requested

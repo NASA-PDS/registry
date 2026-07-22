@@ -40,12 +40,6 @@ if [ -z "$ES_URL" ]; then
     exit 1
 fi
 
-echo "Waiting for Elasticsearch to launch..."  1>&2
-# TODO Warning: Use the default username and password only for testing purposes in local setup
-while ! curl --output /dev/null --silent --head --fail "$ES_URL" -u 'admin:admin' --insecure; do
-  sleep 1
-done
-
 echo "Creating registry and data dictionary indices..." 1>&2
 registry-manager create-registry -registry file:///etc/local_registry.xml  -auth /etc/es-auth.cfg
 

@@ -31,62 +31,19 @@
 version: "3.9"
 
 services:
-
-  # Executes the Registry Loader component, which contains Harvest and Registry Manager
-  registry-loader:
-    profiles: ["pds-batch-loader"]
-    image: ${REG_LOADER_IMAGE}
-    environment:
-      - ES_URL=${ES_URL}
-    volumes:
-      - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-config.xml
-      - ${REG_DATA_VOLUME}:${CONTAINER_HARVEST_data-volume}
-      - ./default-config/es-auth.cfg:/etc/es-auth.cfg
-      - ./default-config/local-registry.xml:/etc/local-registry.xml
-    networks:
-      - pds
-
-  # Downloads and harvests test data with the Registry loader
-  registry-loader-test-init:
-    profiles: ["dev-api", "int-registry-batch-loader"]
-    image: ${REG_LOADER_IMAGE}
-    environment:
-      - ES_URL=${ES_URL}
-      - RUN_TESTS=true
-      - TEST_DATA_URL=${TEST_DATA_URL}
-      - TEST_DATA_LIDVID=${TEST_DATA_LIDVID}
-    volumes:
-      - ${REG_DATA_VOLUME}:${CONTAINER_HARVEST_DATA_DIR}
-      - ./scripts/registry-loader-waits-for-elasticsearch.sh:/usr/local/bin/registry-loader-waits-for-elasticsearch.sh
-      - ./default-config/es-auth.cfg:/etc/es-auth.cfg
-      - ./custom-datasets.tar.gz:/etc/custom-datasets.tar.gz
-    networks:
-      - pds
-    entrypoint: /usr/local/bin/registry-loader-waits-for-elasticsearch.sh
-
-  # Runs provenance script
-  registry-sweepers:
-    profiles: ["dev-api", "int-registry-batch-loader"]
-    image: ${REG_SWEEPERS_IMAGE}
-    environment:
-      - PROV_ENDPOINT=${ES_URL}
-      - PROV_CREDENTIALS=${PROV_CREDENTIALS}
-      - LOGLEVEL=INFO
-      - DEV_MODE=1
-      - MULTITENANCY_NODE_ID=geo
-    command: ["/usr/local/bin/sweepers_driver.py", "--legacy-sync"]
-    networks:
-      - pds
-    depends_on:
-      registry-loader-test-init:
-        condition: service_completed_successfully
-
   # Starts Elasticsearch
   elasticsearch:
     profiles: ["dev-api", "dev-loader", "pds-core-registry", "int-registry-batch-loader", "os"]
     image: ${ES_IMAGE}
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    hostname: elasticsearch
+    container_name: elasticsearch
     environment:
       - discovery.type=${ES_DISCOVERY_TYPE}
+      - _JAVA_OPTIONS=-XX:-UseContainerSupport
     # Uncomment the following environment variable to use OpenSearch without security
     # - plugins.security.disabled=true
     volumes:
@@ -97,6 +54,13 @@ services:
     ports:
       - "9200:9200"
       - "9600:9600" # required for Performance Analyzer
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl --insecure -f https://elasticsearch:9200/_cluster/health -u admin:admin
+      interval: 10s
+      timeout: 2s
+      retries: 50
     networks:
       - pds
 
@@ -114,23 +78,78 @@ services:
     networks:
       - pds
     entrypoint: ["bash", "/usr/local/bin/elasticsearch-init.sh"]
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  # Downloads and harvests test data with the Registry loader
+  registry-loader-test-init:
+    profiles: ["dev-api", "int-registry-batch-loader"]
+    image: ${REG_LOADER_IMAGE}
+    environment:
+      - ES_URL=${ES_URL}
+      - RUN_TESTS=true
+      - TEST_DATA_URL=${TEST_DATA_URL}
+      - TEST_DATA_LIDVID=${TEST_DATA_LIDVID}
+    volumes:
+      - ${REG_DATA_VOLUME}:${CONTAINER_HARVEST_DATA_DIR}
+      - ./default-config/es-auth.cfg:/etc/es-auth.cfg
+      - ./custom-datasets.tar.gz:/etc/custom-datasets.tar.gz
+    networks:
+      - pds
+    depends_on:
+      elasticsearch-init:
+        condition: service_completed_successfully
+
+  # Runs provenance script
+  registry-sweepers:
+    profiles: ["dev-api", "int-registry-batch-loader"]
+    image: ${REG_SWEEPERS_IMAGE}
+    environment:
+      - PROV_ENDPOINT=${ES_URL}
+      - PROV_CREDENTIALS=${PROV_CREDENTIALS}
+      - LOGLEVEL=INFO
+      - DEV_MODE=1
+      - MULTITENANCY_NODE_ID=geo
+    command: ["--legacy-sync"]
+    networks:
+      - pds
+    depends_on:
+      registry-loader-test-init:
+        condition: service_completed_successfully
+
+
 
   # Starts the Registry API
   registry-api:
     profiles: ["pds-core-registry", "int-registry-batch-loader"]
     image: ${REG_API_IMAGE}
+    pull_policy: missing
     environment:
       - ES_URL=${ES_URL}
       - SERVER_PORT=8080
+      - SPRING_BOOT_APP_ARGS=--openSearch.host=elasticsearch:9200 --logging.level.root=DEBUG
     ports:
       - "8080:8080"
     volumes:
       # make volume match how the spring-boot plugin deploys in docker
       - ${REG_API_APP_PROPERTIES_FILE}:/workspace/BOOT-INF/classes/application.properties
-      - ./scripts/registry-api-waits-for-elasticsearch.sh:/usr/local/registry-api-service/registry-api-waits-for-elasticsearch.sh
     networks:
       - pds
-    command: /usr/local/registry-api-service/registry-api-waits-for-elasticsearch.sh
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8080/health
+      interval: 10s
+      timeout: 2s
+      retries: 50
+    depends_on:
+      registry-sweepers:
+        condition: service_completed_successfully
+
+
 
   # Executes an nginx service to expose the PDS4 archive
   registry-web-archive:
@@ -143,6 +162,9 @@ services:
       - ${REG_DATA_VOLUME}:/usr/share/nginx/html/archive
     networks:
       - pds
+    depends_on:
+      registry-loader-test-init:
+        condition: service_completed_successfully
 
   # Executes Registry API integration test as a Postman collection with test data
   reg-api-integration-test:
@@ -156,6 +178,9 @@ services:
     networks:
       - pds
     command: "run /postman/postman-collection.json  --insecure --env-var baseUrl=${REG_API_URL} --env-var opensearchUrl=${ES_URL}"
+    depends_on:
+      registry-api:
+        condition: service_healthy
 
   # Executes Registry API integration tests as a Postman collection and reports the results into JPL TestRail
   testrail-reporting-test:
@@ -202,11 +227,29 @@ services:
     profiles: ["pds-core-registry", "int-registry-batch-loader", "int-registry-service-loader"]
     image: ${PROXYCRYPT_IMAGE}
     environment:
-      - PROXY_URL=https://registry-api:8080/
+      - PROXY_URL=https://${COMPOSE_PROJECT_NAME}-registry-api-1:8080/
       - PROXY_PATH=/api/search/1/
       - PROXY_PORT=443
     ports:
       - "443:443"
+    networks:
+      - pds
+    depends_on:
+      registry-api:
+        condition: service_healthy
+
+
+  # Executes the Registry Loader component, which contains Harvest and Registry Manager
+  registry-loader:
+    profiles: ["pds-batch-loader"]
+    image: ${REG_LOADER_IMAGE}
+    environment:
+      - ES_URL=${ES_URL}
+    volumes:
+      - ${HARVEST_JOB_CONFIG_FILE}:/cfg/harvest-config.xml
+      - ${REG_DATA_VOLUME}:${CONTAINER_HARVEST_data-volume}
+      - ./default-config/es-auth.cfg:/etc/es-auth.cfg
+      - ./default-config/local-registry.xml:/etc/local-registry.xml
     networks:
       - pds
 

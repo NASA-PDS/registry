@@ -17,6 +17,7 @@ on:
         branches:
             -   '**'
             -   '!main'
+            -   '!develop'
 
 
 # What to Do
@@ -33,7 +34,7 @@ jobs:
         steps:
             -
                 name: 💳 Checkout
-                uses: actions/checkout@v5
+                uses: actions/checkout@v7
                 with:
                     lfs: true
                     fetch-depth: 0
@@ -45,7 +46,7 @@ jobs:
                     python-version: '3.13'
             -
                 name: 💵 Python Cache
-                uses: actions/cache@v4
+                uses: actions/cache@v6
                 with:
                     path: ~/.cache/pip
                     # The "key" used to indicate a set of cached files is the operating system runner

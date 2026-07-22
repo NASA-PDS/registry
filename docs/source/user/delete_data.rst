@@ -2,92 +2,68 @@
 Delete Data
 ===========
 
-Overview
-********
+Before You Begin
+****************
 
-You can delete data from PDS Registry (OpenSearch) with Registry Manager command-line tool.
-
-Prerequisites
-*************
-
- * You have access to the Registry Service, see :doc:`/connection-setup`
- * Registry Manager command-line tool is installed, see :doc:`/install/install`
+- Access to the Registry Service configured per :doc:`/connection-setup`
+- Registry Manager installed per :doc:`/install/install`
 
 
-Delete Data
-***********
+Run the Delete Command
+**********************
 
-To delete data, run Registry Manager's "delete-data" command.
+Run Registry Manager's ``delete-data`` command. Replace ``{venue}``, ``{node}``, and the
+identifier with your values.
 
-You have to pass one of the following parameters:
-
- * **-lidvid <id>** - Delete data by lidvid
- * **-lid <id>** - Delete data by lid
- * **-packageId <id>** - Delete data by package / job id
- * **-all** - Delete all data
- * **-es <url>** - link to the connection configuration file described in :doc:`/connection-setup`
- * **-auth <file>** - OpenSearch authentication configuration file. See :doc:`/connection-setup`.
-
-Examples
-********
-
-On MacOS/Linux
-~~~~~~~~~~~~~~~
-
-**Delete by LIDVID**
+**Linux / macOS — delete by LIDVID:**
 
 .. code-block:: bash
 
-  registry-manager delete-data \
-      -lidvid urn:nasa:pds:context:target:asteroid.4_vesta::1.1 \
-      -auth /Users/loubrieu/Documents/pds/registry/registry-auth.txt \
-      -es file:/Users/loubrieu/Documents/pds/registry/mcp_dev.xml
+   registry-manager delete-data \
+       -auth $HOME/.pds/registry-auth-{venue}.txt \
+       -es file://$HOME/.pds/registry-config-{node}-{venue}.xml \
+       -lidvid urn:nasa:pds:context:target:asteroid.4_vesta::1.1
 
-
-**Delete by LID**
-
-.. code-block:: bash
-
-  registry-manager delete-data \
-      -lid urn:nasa:pds:context:target:asteroid.4_vesta
-      -auth /Users/loubrieu/Documents/pds/registry/registry-auth.txt \
-      -es file:/Users/loubrieu/Documents/pds/registry/mcp_dev.xml
-
-**Delete by Package / Job ID**
+**Linux / macOS — delete by LID:**
 
 .. code-block:: bash
 
-  registry-manager delete-data \
-    -auth /Users/loubrieu/Documents/pds/registry/registry-auth.txt \
-    -es file:/Users/loubrieu/Documents/pds/registry/mcp_dev.xml \
-    -packageId 8d12a9ba-2ba0-4d80-8ce9-65da271ecf89
+   registry-manager delete-data \
+       -auth $HOME/.pds/registry-auth-{venue}.txt \
+       -es file://$HOME/.pds/registry-config-{node}-{venue}.xml \
+       -lid urn:nasa:pds:context:target:asteroid.4_vesta
 
-
-**Delete all Data**
+**Linux / macOS — delete by package / job ID:**
 
 .. code-block:: bash
 
-  registry-manager delete-data -all \
-    -auth /Users/loubrieu/Documents/pds/registry/registry-auth.txt \
-    -es file:/Users/loubrieu/Documents/pds/registry/mcp_dev.xml
+   registry-manager delete-data \
+       -auth $HOME/.pds/registry-auth-{venue}.txt \
+       -es file://$HOME/.pds/registry-config-{node}-{venue}.xml \
+       -packageId 8d12a9ba-2ba0-4d80-8ce9-65da271ecf89
 
-On Windows
-~~~~~~~~~~~
+**Linux / macOS — delete all data:**
 
-**Delete by LIDVID**
+.. code-block:: bash
+
+   registry-manager delete-data -all \
+       -auth $HOME/.pds/registry-auth-{venue}.txt \
+       -es file://$HOME/.pds/registry-config-{node}-{venue}.xml
+
+**Windows — delete by LIDVID:**
 
 .. code-block:: powershell
 
-  .\registry-manager.bat delete-data
-    -auth 'C:\Users\loubrieu\Documents\es-auth.txt'
-    -es 'file:///C:\Users\loubrieu\Documents\mcp_dev.xml'
-    -lidvid 'urn:nasa:pds:insight_rad:data_derived::7.0'
+   .\registry-manager.bat delete-data `
+       -auth '%USERPROFILE%\.pds\registry-auth-{venue}.txt' `
+       -es 'file:///%USERPROFILE%\.pds\registry-config-{node}-{venue}.xml' `
+       -lidvid 'urn:nasa:pds:insight_rad:data_derived::7.0'
 
-**Delete by Package / Job ID**
+**Windows — delete by package / job ID:**
 
 .. code-block:: powershell
 
-  .\registry-manager delete-data \
-    -auth /Users/loubrieu/Documents/pds/registry/registry-auth.txt \
-    -es file:///C:\Users\loubrieu\Documents\mcp_dev.xml \
-    -packageId 8d12a9ba-2ba0-4d80-8ce9-65da271ecf89
+   .\registry-manager.bat delete-data `
+       -auth '%USERPROFILE%\.pds\registry-auth-{venue}.txt' `
+       -es 'file:///%USERPROFILE%\.pds\registry-config-{node}-{venue}.xml' `
+       -packageId 8d12a9ba-2ba0-4d80-8ce9-65da271ecf89
