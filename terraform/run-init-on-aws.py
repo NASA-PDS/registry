@@ -61,9 +61,10 @@ class RegistryInitializer:
 
     def check_terraform_directory(self) -> bool:
         """Check that the opensearch_serverless and applications Terraform state directories exist."""
+        marker = "terragrunt.hcl" if self.tf_cmd == "terragrunt" else "main.tf"
         for tf_dir in (self.tf_opensearch_dir, self.tf_applications_dir):
-            if not (tf_dir / "main.tf").exists():
-                print(f"Error: Terraform directory not found or missing main.tf: {tf_dir}")
+            if not (tf_dir / marker).exists():
+                print(f"Error: Terraform directory not found or missing {marker}: {tf_dir}")
                 return False
         return True
 
@@ -597,6 +598,11 @@ def main():
         initializer.tf_cmd = "terragrunt"
     if args.working_dir:
         working_dir = args.working_dir.resolve()
+    elif args.terragrunt:
+        working_dir = Path.cwd()
+    else:
+        working_dir = None
+    if working_dir:
         initializer.tf_opensearch_dir = working_dir / "opensearch_serverless"
         initializer.tf_applications_dir = working_dir / "applications"
     sys.exit(initializer.run())
