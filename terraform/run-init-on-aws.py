@@ -603,6 +603,7 @@ def main():
         working_dir = args.working_dir.resolve()
     else:
         working_dir = Path.cwd()
+
     if working_dir:
         initializer.tf_opensearch_dir = working_dir / "opensearch_serverless"
         initializer.tf_applications_dir = working_dir / "applications"
