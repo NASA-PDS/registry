@@ -91,7 +91,8 @@ resource "aws_opensearchserverless_access_policy" "data_access" {
         "Principal" : concat(
           [
             data.aws_ssm_parameter.opensearch_node_limited_writer_role_arns[node].value,
-            data.aws_ssm_parameter.opensearch_tenant_core_cloudops_role_arns[node].value
+            # deactivated as we don't want the cloudops roles yet in the script
+            #data.aws_ssm_parameter.opensearch_tenant_core_cloudops_role_arns[node].value
           ],
           contains(keys(var.node_nucleus_harvest_iam_roles), node) ? [var.node_nucleus_harvest_iam_roles[node]] : []
         ),
