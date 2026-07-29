@@ -1,3 +1,8 @@
+variable "aws_region" {
+  description = "AWS region for resources"
+  type        = string
+}
+
 variable "collection_name" {
   description = "Name of the OpenSearch Serverless collection"
   type        = string
