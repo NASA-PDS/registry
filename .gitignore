@@ -72,6 +72,13 @@ var/
 *.swp
 bin/
 typescript
+
+# Terraform local state and temporary files
+**/.terraform/
+**/.terraform.lock.hcl
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/backend_override.tf
 .env
 
 # Java stuff

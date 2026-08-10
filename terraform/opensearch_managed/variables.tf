@@ -6,7 +6,8 @@ variable "aws_region" {
 
 variable "policy_json_file" {
   type        = string
-  description = "Full path name to access policy json file."
+  description = "Optional path to access policy JSON file. If provided, uses static policy. If empty, uses dynamic policy generation from admin_roles/readonly_roles/node_list."
+  default     = ""
 }
 
 variable "domain_name" {
@@ -90,4 +91,42 @@ variable "managedBy" {
   type        = string
   description = "Tag value for owner managing the resource (E.g. for PDS Team we have PDS Team Email Distro)"
   default     = "pdsoperator@jpl.nasa.gov"
+}
+
+# IAM-related variables for dynamic access policy generation
+
+variable "admin_roles" {
+  description = "List of AWS principals (ARNs) for admin access to the OpenSearch domain"
+  type        = list(string)
+  default     = []
+}
+
+variable "readonly_roles" {
+  description = "List of AWS principals (ARNs) for readonly access to the OpenSearch domain"
+  type        = list(string)
+  default     = []
+}
+
+variable "node_list" {
+  description = "List of discipline nodes (e.g., ['geo', 'atm', 'img']). Each node gets write access to its own index pattern."
+  type        = list(string)
+  default     = []
+}
+
+variable "node_nucleus_harvest_iam_roles" {
+  description = "Map of discipline node names to their external harvester IAM role ARNs"
+  type        = map(string)
+  default     = {}
+}
+
+variable "component_name" {
+  description = "Component name for SSM path construction (e.g., 'registry')"
+  type        = string
+  default     = "registry"
+}
+
+variable "common_tags" {
+  description = "Common tags to apply to all resources"
+  type        = map(string)
+  default     = {}
 }

@@ -8,9 +8,61 @@ terraform {
 
 data "aws_caller_identity" "current" {}
 
-# Load external JSON files
+# Access policy generation - supports two modes:
+# 1. Static: If policy_json_file is provided, load policy from JSON file
+# 2. Dynamic: If policy_json_file is empty, generate policy from admin_roles/readonly_roles/node_list
+
 locals {
-  access_policies = jsondecode(file("${var.policy_json_file}"))
+  # Determine which mode to use
+  use_static_policy = var.policy_json_file != ""
+
+  # Static policy from JSON file (only loaded if policy_json_file is provided)
+  # Example policy file: cds-infra-deploy/terraform/opensearch/dev/policies/dev_policies.json
+  # try() guards against Terraform's eager file() evaluation when policy_json_file is empty
+  static_policy_statements = local.use_static_policy ? jsondecode(try(file(var.policy_json_file), "[]")) : []
+
+  # Dynamic policy generation (three-tier model)
+  # Per-node IAM role ARNs are looked up from SSM parameters created by:
+  # pds-cds-infra/terraform/iam/roles/outputs.tf
+
+  # Admin policy statements - full access
+  admin_statements = length(var.admin_roles) > 0 ? [{
+    Sid        = "AdminAccess"
+    Effect     = "Allow"
+    Principal  = var.admin_roles
+    Action     = ["es:*"]
+    Resource   = ["arn:aws:es:${var.aws_region}:${data.aws_caller_identity.current.account_id}:domain/${var.domain_name}/*"]
+  }] : []
+
+  # Read-only policy statements
+  readonly_statements = length(var.readonly_roles) > 0 ? [{
+    Sid        = "ReadOnlyAccess"
+    Effect     = "Allow"
+    Principal  = var.readonly_roles
+    Action     = ["es:ESHttpGet", "es:ESHttpHead"]
+    Resource   = ["arn:aws:es:${var.aws_region}:${data.aws_caller_identity.current.account_id}:domain/${var.domain_name}/*"]
+  }] : []
+
+  # Per-node write access statements (one per discipline node)
+  node_statements = [
+    for node in var.node_list : {
+      Sid       = "NodeAccess_${node}"
+      Effect    = "Allow"
+      Principal = compact([
+        try(data.aws_ssm_parameter.opensearch_node_limited_writer_role_arns[node].value, ""),
+        try(data.aws_ssm_parameter.opensearch_tenant_core_cloudops_role_arns[node].value, ""),
+        try(var.node_nucleus_harvest_iam_roles[node], "")
+      ])
+      Action    = ["es:ESHttpGet", "es:ESHttpHead", "es:ESHttpPost", "es:ESHttpPut", "es:ESHttpDelete"]
+      Resource  = ["arn:aws:es:${var.aws_region}:${data.aws_caller_identity.current.account_id}:domain/${var.domain_name}/${node}-*"]
+    }
+  ]
+
+  # Combine dynamic policy statements
+  dynamic_policy_statements = concat(local.admin_statements, local.readonly_statements, local.node_statements)
+
+  # Choose which policy to use
+  all_policy_statements = local.use_static_policy ? local.static_policy_statements : local.dynamic_policy_statements
 }
 
 resource "aws_opensearch_domain" "pds-opensearch-domain" {
@@ -56,28 +108,33 @@ resource "aws_opensearch_domain" "pds-opensearch-domain" {
 
 data "aws_iam_policy_document" "domain_access_policy_document" {
   dynamic "statement" {
-    for_each = local.access_policies
+    for_each = local.all_policy_statements
 
     content {
-      sid         = statement.value.Sid
-      effect      = statement.value.Effect
-      actions     = statement.value.Action
-      resources   = [
+      sid       = statement.value.Sid
+      effect    = statement.value.Effect
+      actions   = statement.value.Action
+
+      # For static policies, substitute placeholders in resource ARNs
+      # For dynamic policies, resources are already fully formed
+      resources = local.use_static_policy ? [
         for resource in statement.value.Resource :
           replace(
             replace(
-              replace(
-                resource,
-                "{account_id}", data.aws_caller_identity.current.account_id
-              ),
-              "{region}", "${var.aws_region}"
+              replace(resource, "{account_id}", data.aws_caller_identity.current.account_id),
+              "{region}", var.aws_region
             ),
-            "{domain_name}", "${var.domain_name}"
+            "{domain_name}", var.domain_name
           )
-      ]
+      ] : statement.value.Resource
+
       principals {
-          type        = "AWS"
-          identifiers = [ for principal in statement.value.Principal : replace(principal, "{account_id}", data.aws_caller_identity.current.account_id) ]
+        type = "AWS"
+        # For static policies, substitute {account_id} in principal ARNs
+        identifiers = local.use_static_policy ? [
+          for principal in statement.value.Principal :
+            replace(principal, "{account_id}", data.aws_caller_identity.current.account_id)
+        ] : statement.value.Principal
       }
     }
   }
