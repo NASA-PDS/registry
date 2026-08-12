@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-07-17)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-07-31)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.6.0...«unknown»)
 
@@ -11,6 +11,7 @@
 - As a developer, I want human-readable Postman collection docs auto-generated on update [\#497](https://github.com/NASA-PDS/registry/issues/497)
 - As a PDS Node Operator, I want to validate that products listed as missing from the registry are truly absent from the PDS Search API [\#484](https://github.com/NASA-PDS/registry/issues/484)
 - As a PDS Node Operator, I want to track historical counts of missing and staged products over time [\#481](https://github.com/NASA-PDS/registry/issues/481)
+- As a registry cog-e, I want to automate the deployment of the registry on AWS with terraform [\#480](https://github.com/NASA-PDS/registry/issues/480)
 - As a user, I want to load date times as strings in order to support leap seconds [\#426](https://github.com/NASA-PDS/registry/issues/426)
 
 **Improvements:**

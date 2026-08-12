@@ -5,6 +5,8 @@ AWS Registry Initialization Script
 This script initializes an AWS-deployed registry with test data by:
 1. Extracting Terraform outputs (OpenSearch endpoint, credentials endpoint)
 2. Running registry-loader-test-init container to load test data into AWS
+
+Prerequisites: terraform or terragrunt must be in the PATH
 """
 
 import argparse
@@ -61,9 +63,10 @@ class RegistryInitializer:
 
     def check_terraform_directory(self) -> bool:
         """Check that the opensearch_serverless and applications Terraform state directories exist."""
+        marker = "terragrunt.hcl" if self.tf_cmd == "terragrunt" else "main.tf"
         for tf_dir in (self.tf_opensearch_dir, self.tf_applications_dir):
-            if not (tf_dir / "main.tf").exists():
-                print(f"Error: Terraform directory not found or missing main.tf: {tf_dir}")
+            if not (tf_dir / marker).exists():
+                print(f"Error: Terraform directory not found or missing {marker}: {tf_dir}")
                 return False
         return True
 
@@ -578,7 +581,7 @@ password = {self.env_vars[password_key]}
 
 def main():
     """Entry point for the script."""
-    parser = argparse.ArgumentParser(description="AWS Registry Initialization Script")
+    parser = argparse.ArgumentParser(description="AWS Registry Initialization Script, your IaC command (terraform or terragrunt must be in the PATH). Only tested on Unix-like systems.")
     parser.add_argument(
         "--terragrunt",
         action="store_true",
@@ -595,8 +598,12 @@ def main():
     initializer = RegistryInitializer()
     if args.terragrunt:
         initializer.tf_cmd = "terragrunt"
+
     if args.working_dir:
         working_dir = args.working_dir.resolve()
+    else:
+        working_dir = Path.cwd()
+    if working_dir:
         initializer.tf_opensearch_dir = working_dir / "opensearch_serverless"
         initializer.tf_applications_dir = working_dir / "applications"
     sys.exit(initializer.run())
