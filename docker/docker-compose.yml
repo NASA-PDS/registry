@@ -168,7 +168,7 @@ services:
 
   # Executes Registry API integration test as a Postman collection with test data
   reg-api-integration-test:
-    profiles: ["int-test", "int-registry-batch-loader"]
+    profiles: ["int-test"]
     image: ${POSTMAN_NEWMAN_IMAGE}
     environment:
       - REG_API_URL=${REG_API_URL}
