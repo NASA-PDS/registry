@@ -128,7 +128,7 @@ services:
     environment:
       - ES_URL=${ES_URL}
       - SERVER_PORT=8080
-      - SPRING_BOOT_APP_ARGS=--openSearch.host=elasticsearch:9200 --logging.level.root=DEBUG
+      - SPRING_BOOT_APP_ARGS=--openSearch.host=elasticsearch:9200 --logging.level.root=DEBUG --server.authorizedForwardedHost=localhost,registry-api
     ports:
       - "8080:8080"
     volumes:
