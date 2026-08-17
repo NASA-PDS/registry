@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-07-31)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-08-17)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.6.0...«unknown»)
 
@@ -29,6 +29,7 @@
 
 **Other closed issues:**
 
+- Deployment of stable Registry in Test [\#542](https://github.com/NASA-PDS/registry/issues/542)
 - Add Prototype Terraform deployment for Provisioned OpenSearch [\#531](https://github.com/NASA-PDS/registry/issues/531)
 - Investigate missing node RMS in metrics reports [\#477](https://github.com/NASA-PDS/registry/issues/477)
 - Filter bundles/collections by ingestion status and identify superseded vs latest versions [\#476](https://github.com/NASA-PDS/registry/issues/476)
