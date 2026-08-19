@@ -1,5 +1,6 @@
-# SSM Parameter lookups for per-node IAM role ARNs
+data "aws_caller_identity" "current" {}
 
+# Per-node IAM role ARNs from pds-cds-infra/terraform/iam/roles/outputs.tf
 data "aws_ssm_parameter" "opensearch_node_limited_writer_role_arns" {
   for_each = toset(var.node_list)
   name     = "/pds/cds-infra/iam/roles/pds-node-limited-writer/${each.value}"
