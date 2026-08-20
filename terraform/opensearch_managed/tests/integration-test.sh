@@ -486,7 +486,60 @@ else
 fi
 
 # -----------------------------------------------------------------------------
-# Test 13: Endpoint reachability (optional)
+# Test 13: IAM role SSM parameters - node-limited-writer
+# -----------------------------------------------------------------------------
+
+log_info "Test: IAM role SSM parameters - node-limited-writer"
+
+NODE_WRITER_PATH="/pds/cds-infra/iam/roles/pds-node-limited-writer"
+NODE_WRITER_PARAMS=$(aws ssm get-parameters-by-path \
+    --path "$NODE_WRITER_PATH" \
+    --region "$REGION" \
+    --query 'Parameters[].Name' \
+    --output text 2>&1) || NODE_WRITER_PARAMS=""
+
+if [ -n "$NODE_WRITER_PARAMS" ]; then
+    NODE_WRITER_COUNT=$(echo "$NODE_WRITER_PARAMS" | wc -w | tr -d ' ')
+    log_pass "node-limited-writer SSM params exist ($NODE_WRITER_COUNT nodes)"
+    echo "  Path: $NODE_WRITER_PATH"
+    for param in $NODE_WRITER_PARAMS; do
+        node_name=$(basename "$param")
+        echo "    - $node_name"
+    done
+else
+    log_fail "No node-limited-writer SSM params found at $NODE_WRITER_PATH"
+    echo "  These are required for per-node access policies"
+fi
+
+# -----------------------------------------------------------------------------
+# Test 14: IAM role SSM parameters - core-cloudops
+# -----------------------------------------------------------------------------
+
+log_info "Test: IAM role SSM parameters - core-cloudops"
+
+CLOUDOPS_PATH="/pds/cds-infra/iam/roles/pds-core-cloudops"
+CLOUDOPS_PARAMS=$(aws ssm get-parameters-by-path \
+    --path "$CLOUDOPS_PATH" \
+    --region "$REGION" \
+    --query 'Parameters[].Name' \
+    --output text 2>&1) || CLOUDOPS_PARAMS=""
+
+if [ -n "$CLOUDOPS_PARAMS" ]; then
+    CLOUDOPS_COUNT=$(echo "$CLOUDOPS_PARAMS" | wc -w | tr -d ' ')
+    log_pass "core-cloudops SSM params exist ($CLOUDOPS_COUNT nodes)"
+    echo "  Path: $CLOUDOPS_PATH"
+    for param in $CLOUDOPS_PARAMS; do
+        node_name=$(basename "$param")
+        echo "    - $node_name"
+    done
+else
+    log_fail "No core-cloudops SSM params found at $CLOUDOPS_PATH"
+    echo "  These roles are not yet provisioned in pds-cds-infra/iam/roles"
+    echo "  When created, they will automatically be included in the access policy"
+fi
+
+# -----------------------------------------------------------------------------
+# Test 15: Endpoint reachability (optional)
 # -----------------------------------------------------------------------------
 
 if [ "$SKIP_SMOKE" = true ]; then

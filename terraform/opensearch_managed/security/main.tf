@@ -34,8 +34,8 @@ locals {
       Sid       = "NodeAccess_${node}"
       Effect    = "Allow"
       Principal = compact([
-        try(data.aws_ssm_parameter.opensearch_node_limited_writer_role_arns[node].value, ""),
-        try(data.aws_ssm_parameter.opensearch_tenant_core_cloudops_role_arns[node].value, ""),
+        try(local.node_limited_writer_role_map[node], ""),
+        try(local.core_cloudops_role_map[node], ""),
         try(var.node_nucleus_harvest_iam_roles[node], "")
       ])
       Action   = ["es:ESHttpGet", "es:ESHttpHead", "es:ESHttpPost", "es:ESHttpPut", "es:ESHttpDelete"]
