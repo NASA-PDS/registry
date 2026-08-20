@@ -31,7 +31,7 @@ locals {
   # compact() removes any empty strings (e.g. when a node has no nucleus harvester role)
   node_statements = [
     for node in var.node_list : {
-      Sid       = "NodeAccess_${node}"
+      Sid       = "NodeAccess${title(node)}"
       Effect    = "Allow"
       Principal = compact([
         try(local.node_limited_writer_role_map[node], ""),
