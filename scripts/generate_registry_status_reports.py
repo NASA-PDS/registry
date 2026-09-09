@@ -255,6 +255,85 @@ def filter_missing_rows(rows: list[tuple]) -> list[tuple]:
     return result
 
 
+def reannotate_superseded_from_loaded(missing_csv: Path, loaded_csv: Path) -> int:
+    """Re-annotate the superseded column in a missing CSV using versions present in the loaded CSV.
+
+    The initial annotation in annotate_version_status only considers versions found in the legacy
+    Solr index.  A LIDVID can be superseded by a newer version that was never in legacy Solr (e.g.,
+    products harvested directly into the new registry from PSA/ESA), so we must also check the
+    loaded CSV for higher versions of the same LID.
+
+    Reads missing_csv (columns: node, lidvid, product_class, superseded), builds a map of the
+    maximum version seen per LID from both CSVs, and rewrites missing_csv with corrected superseded
+    values.  Returns the number of rows whose superseded flag was changed from "false" to "true".
+    """
+    if not missing_csv.exists() or not loaded_csv.exists():
+        return 0
+
+    def _parse_version(lidvid: str) -> tuple[int, ...]:
+        if "::" in lidvid:
+            _, ver_str = lidvid.rsplit("::", 1)
+        else:
+            ver_str = "0"
+        try:
+            return tuple(int(x) for x in ver_str.split("."))
+        except ValueError:
+            return (0,)
+
+    def _lid(lidvid: str) -> str:
+        return lidvid.rsplit("::", 1)[0] if "::" in lidvid else lidvid
+
+    # Build max-version map from loaded CSV (lidvid is column index 1)
+    max_loaded: dict[str, tuple[int, ...]] = {}
+    with open(loaded_csv, newline="") as f:
+        reader = csv.reader(f)
+        header_row = next(reader, None)
+        if header_row is None:
+            return 0
+        for row in reader:
+            if len(row) < 2:
+                continue
+            lid = _lid(row[1])
+            ver = _parse_version(row[1])
+            if lid not in max_loaded or ver > max_loaded[lid]:
+                max_loaded[lid] = ver
+
+    # Read missing CSV
+    with open(missing_csv, newline="") as f:
+        reader = csv.reader(f)
+        missing_header = next(reader, None)
+        missing_rows = list(reader)
+
+    if missing_header is None:
+        return 0
+
+    superseded_col = missing_header.index("superseded") if "superseded" in missing_header else -1
+    if superseded_col == -1:
+        return 0
+
+    changed = 0
+    updated_rows = []
+    for row in missing_rows:
+        if len(row) <= superseded_col or len(row) < 2:
+            updated_rows.append(row)
+            continue
+        lid = _lid(row[1])
+        ver = _parse_version(row[1])
+        max_ver = max_loaded.get(lid, (0,))
+        if max_ver > ver and row[superseded_col].lower() != "true":
+            row = list(row)
+            row[superseded_col] = "true"
+            changed += 1
+        updated_rows.append(row)
+
+    with open(missing_csv, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(missing_header)
+        writer.writerows(updated_rows)
+
+    return changed
+
+
 def _count_by_node(csv_path: Path, superseded: bool | None = None) -> dict[str, int]:
     """Return a node→count mapping from a CSV file (node is the first column).
 
@@ -1313,6 +1392,18 @@ def main() -> int:
             return 1
 
     print_info("\nReport generation complete!")
+
+    # Re-annotate superseded flags in missing CSVs using loaded CSVs.
+    # The initial annotation only sees versions present in the legacy Solr index; newer versions
+    # loaded directly into the new registry (e.g., from PSA/ESA harvest) won't appear there and
+    # would otherwise leave older versions incorrectly marked superseded=false.
+    for missing_key, loaded_key in (
+        ("missing_bundles_in_registry.csv", "loaded_bundles_in_registry.csv"),
+        ("missing_collections_in_registry.csv", "loaded_collections_in_registry.csv"),
+    ):
+        changed = reannotate_superseded_from_loaded(output_dir / missing_key, output_dir / loaded_key)
+        if changed:
+            print_info(f"  → re-annotated {changed} superseded rows in {missing_key}")
 
     # Generate and update metrics in README
     print_info("Updating metrics in README...")

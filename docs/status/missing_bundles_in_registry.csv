@@ -65,7 +65,7 @@ PDS_PPI,urn:nasa:pds:maven.euv.calibrated::22.3,Product_Bundle,true
 PDS_PPI,urn:nasa:pds:maven.rose.raw::1.18,Product_Bundle,true
 PDS_IMG,urn:nasa:pds:lro-l-lroc-2-edr::38.0,Product_Bundle,true
 PDS_SBN,urn:nasa:pds:lucy.leisa::2.0,Product_Bundle,false
-PDS_SBN,urn:nasa:pds:near_rss_derived::1.0,Product_Bundle,false
+PDS_SBN,urn:nasa:pds:near_rss_derived::1.0,Product_Bundle,true
 PDS_SBN,urn:nasa:pds:near.mission::1.0,Product_Bundle,true
 PDS_SBN,urn:nasa:pds:orex.ovirs::9.0,Product_Bundle,true
 PDS_IMG,urn:nasa:pds:lro-l-lroc-2-edr::33.0,Product_Bundle,true
@@ -166,7 +166,7 @@ PDS_IMG,urn:nasa:pds:msl_hazcam_processed::41.0,Product_Bundle,false
 PDS_PPI,urn:nasa:pds:pvo-oetp::1.0,Product_Bundle,true
 PDS_PPI,urn:nasa:pds:insight-ifg-mars::2.3,Product_Bundle,true
 PDS_PPI,urn:nasa:pds:maven.rose.calibrated::1.26,Product_Bundle,true
-PDS_PPI,urn:nasa:pds:go-pls-jup-fitted-parameters::1.0,Product_Bundle,false
+PDS_PPI,urn:nasa:pds:go-pls-jup-fitted-parameters::1.0,Product_Bundle,true
 PDS_ATM,urn:nasa:pds:lab.hydrocarbon_spectra::2.1,Product_Bundle,true
 PDS_IMG,urn:nasa:pds:msl_navcam_mosaic::39.0,Product_Bundle,true
 PDS_PPI,urn:nasa:pds:lro-crater::1.3,Product_Bundle,true
@@ -269,7 +269,7 @@ PDS_IMG,urn:nasa:pds:lro-l-lroc-3-cdr::29.0,Product_Bundle,true
 PDS_IMG,urn:nasa:pds:mro_hirise::2.0,Product_Bundle,true
 PDS_IMG,urn:nasa:pds:lro-l-lroc-2-edr::32.0,Product_Bundle,true
 PDS_SBN,urn:nasa:pds:lucy.ttcam::1.0,Product_Bundle,true
-PDS_SBN,urn:nasa:pds:near_rss_raw::1.0,Product_Bundle,false
+PDS_SBN,urn:nasa:pds:near_rss_raw::1.0,Product_Bundle,true
 PDS_SBN,urn:nasa:pds:orex.tagcams::8.0,Product_Bundle,true
 PDS_SBN,urn:nasa:pds:orex.ocams::10.0,Product_Bundle,true
 PDS_SBN,urn:nasa:pds:lucy.mvic::1.0,Product_Bundle,true
@@ -323,7 +323,7 @@ PDS_PPI,urn:nasa:pds:maven.lpw.calibrated::7.1,Product_Bundle,true
 PDS_PPI,urn:nasa:pds:maven.rose.raw::1.20,Product_Bundle,true
 PDS_PPI,urn:nasa:pds:maven.static.c::4.13,Product_Bundle,true
 PDS_PPI,urn:nasa:pds:maven.anc::2.9,Product_Bundle,true
-PDS_ATM,urn:nasa:pds:msledl::1.0,Product_Bundle,false
+PDS_ATM,urn:nasa:pds:msledl::1.0,Product_Bundle,true
 PDS_IMG,urn:nasa:pds:lro-l-lroc-3-cdr::14.0,Product_Bundle,true
 PDS_IMG,urn:nasa:pds:nearmsi.gbl::1.0,Product_Bundle,false
 PDS_IMG,urn:nasa:pds:messenger_mdis_5001::1.0,Product_Bundle,false
