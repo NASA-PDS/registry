@@ -3652,6 +3652,7 @@ PDS_GEO,urn:nasa:pds:mars2020_rover_places::13.0,Product_Bundle,2025-08-05T18:50
 PDS_GEO,urn:nasa:pds:mars2020_rover_places::14.0,Product_Bundle,2025-12-04T15:15:47.312389Z
 ,urn:nasa:pds:mars2020_rover_places::15.0,Product_Bundle,
 PDS_GEO,urn:nasa:pds:mars2020_rover_places::15.0,Product_Bundle,2026-04-06T20:39:36.074336700Z
+,urn:nasa:pds:mars2020_rover_places::16.0,Product_Bundle,
 PDS_GEO,urn:nasa:pds:mars2020_rover_places::16.0,Product_Bundle,2026-08-11T15:11:09.783620800Z
 ,urn:nasa:pds:mars2020_rover_places::3.0,Product_Bundle,
 ,urn:nasa:pds:mars2020_rover_places::4.0,Product_Bundle,
