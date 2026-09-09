@@ -272,3 +272,7 @@ This requirement is not impacted by the current version
 
 
 This requirement is not impacted by the current version
+## As a PDS Data Curator, I want to see the completion status of every collection in the registry ([#564](https://github.com/NASA-PDS/registry/issues/564)) 
+
+
+This requirement is not impacted by the current version
