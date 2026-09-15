@@ -8,21 +8,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Load Data - Harvest &mdash; PDS Registry 1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css?v=303734b9" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=c55cb9cb"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Detailed Harvest Configuration" href="harvest_job_configuration.html" />
-    <link rel="prev" title="User Tasks" href="tasks.html" /> 
+    <link rel="prev" title="Test Your Registry Connection" href="test_connection.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -50,10 +50,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../connection-setup.html">Connection Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install/install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="tasks.html">User Tasks</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="test_connection.html">Test Your Registry Connection</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Load Data - Harvest</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#harvest-quick-start">Harvest Quick Start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#before-you-begin">Before You Begin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configure-a-harvest-job">Configure a Harvest Job</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-harvest">Run Harvest</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 </ul>
 </li>
@@ -66,6 +67,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../admin/tasks.html">Admin Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/developer.html">Developer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../support/support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Registry Loading Status</a></li>
 </ul>
 
         </div>
@@ -95,94 +97,93 @@
              
   <section id="load-data-harvest">
 <h1>Load Data - Harvest<a class="headerlink" href="#load-data-harvest" title="Link to this heading"></a></h1>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-<p>To load PDS4 data into Registry you have to use Harvest software to extract metadata from PDS4 products (labels) and load extracted
-metadata into OpenSearch database.</p>
-<p>This document describes how to load data with Harvest command-line tool.</p>
-</section>
-<section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
-<blockquote>
-<div><ul class="simple">
-<li><p>Your connection to the registry service is setup, see <a class="reference internal" href="../connection-setup.html"><span class="doc">Connection Setup</span></a>.</p></li>
-<li><p>Harvest command-line tool is <a class="reference external" href="../install/tools.html#harvest">installed</a>.</p></li>
+<p>Harvest extracts metadata from PDS4 product labels and loads it into the Registry (OpenSearch).</p>
+<section id="before-you-begin">
+<h2>Before You Begin<a class="headerlink" href="#before-you-begin" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Connection to the registry service configured per <a class="reference internal" href="../connection-setup.html"><span class="doc">Connection Setup</span></a></p></li>
+<li><p>Harvest installed per <a class="reference internal" href="../install/install.html"><span class="doc">Installation</span></a></p></li>
 </ul>
-</div></blockquote>
 </section>
-<section id="harvest-quick-start">
-<h2>Harvest Quick Start<a class="headerlink" href="#harvest-quick-start" title="Link to this heading"></a></h2>
-<p>To run Harvest you need a job configuration file (XML).
-The configuration file has several sections such as Registry (OpenSearch) configuration
-and the path to the data.</p>
-<p>Example configuration files are located in <em>&lt;INSTALL_DIR&gt;/conf/examples</em>.</p>
-<p>The most useful configuration for an Harvest’s job is <em>conf/examples/directories.xml</em>.</p>
-<p>Registry (OpenSearch) acess configuration:</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;registry</span><span class="w"> </span><span class="na">auth=</span><span class="s">&quot;/path/to/auth.cfg&quot;</span><span class="nt">&gt;</span>file:///path/to/config/mcp_dev.xm<span class="nt">&lt;/registry&gt;</span>
+<section id="configure-a-harvest-job">
+<h2>Configure a Harvest Job<a class="headerlink" href="#configure-a-harvest-job" title="Link to this heading"></a></h2>
+<p>Harvest uses an XML job configuration file. Example configs ship with the Harvest installation
+under <code class="docutils literal notranslate"><span class="pre">$HARVEST_HOME/conf/examples/</span></code> (where <code class="docutils literal notranslate"><span class="pre">$HARVEST_HOME</span></code> is the directory you extracted
+Harvest into per <a class="reference internal" href="../install/install.html"><span class="doc">Installation</span></a>).</p>
+<ol class="arabic">
+<li><p>Copy the example config to <code class="docutils literal notranslate"><span class="pre">$HOME/.pds/</span></code>, naming it to include the venue
+(<code class="docutils literal notranslate"><span class="pre">dev</span></code>, <code class="docutils literal notranslate"><span class="pre">test</span></code>, or <code class="docutils literal notranslate"><span class="pre">prod</span></code>) and the job (e.g. a mission name like <code class="docutils literal notranslate"><span class="pre">lro</span></code> or <code class="docutils literal notranslate"><span class="pre">mars2020</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span><span class="nv">$HARVEST_HOME</span>/conf/examples/directories.xml<span class="w"> </span><span class="nv">$HOME</span>/.pds/registry-harvest-config-<span class="o">{</span>venue<span class="o">}</span>-<span class="o">{</span>job<span class="o">}</span>.xml
 </pre></div>
 </div>
-<p>Use the paths of the files identified in <a class="reference internal" href="../connection-setup.html"><span class="doc">Connection Setup</span></a>.</p>
-<p>The path to the data:</p>
+</li>
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">$HOME/.pds/registry-harvest-config-{venue}-{job}.xml</span></code> and set the <code class="docutils literal notranslate"><span class="pre">&lt;registry&gt;</span></code> element
+to point to your auth file and connection config file for this venue:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;registry</span><span class="w"> </span><span class="na">auth=</span><span class="s">&quot;$HOME/.pds/registry-auth-{venue}.txt&quot;</span><span class="nt">&gt;</span>file://$HOME/.pds/registry-config-{node}-{venue}.xml<span class="nt">&lt;/registry&gt;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Set the path to your PDS4 data:</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;load&gt;</span>
 <span class="w">  </span><span class="nt">&lt;directories&gt;</span>
-<span class="w">    </span><span class="nt">&lt;path&gt;</span>/data/geo/urn-nasa-pds-kaguya_grs_spectra<span class="nt">&lt;/path&gt;</span>
+<span class="w">    </span><span class="nt">&lt;path&gt;</span>/path/to/your/data<span class="nt">&lt;/path&gt;</span>
 <span class="w">  </span><span class="nt">&lt;/directories&gt;</span>
 <span class="nt">&lt;/load&gt;</span>
 </pre></div>
 </div>
-<p>And the URL prefix for the data:</p>
+</li>
+<li><p>Set the URL prefix to replace local file paths with the publicly accessible base URL
+where your archive is published:</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;fileInfo&gt;</span>
-<span class="w">  </span><span class="cm">&lt;!-- UPDATE with your own local path and base url where pds4 archive is published --&gt;</span>
-<span class="w">  </span><span class="nt">&lt;fileRef</span><span class="w"> </span><span class="na">replacePrefix=</span><span class="s">&quot;/data/geo/&quot;</span><span class="w"> </span><span class="na">with=</span><span class="s">&quot;https://pds-geosciences.wustl.edu/lunar/&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;fileRef</span><span class="w"> </span><span class="na">replacePrefix=</span><span class="s">&quot;/local/data/path/&quot;</span><span class="w"> </span><span class="na">with=</span><span class="s">&quot;https://your-node.example.com/data/&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/fileInfo&gt;</span>
 </pre></div>
 </div>
-<p>If you save this file as <em>/tmp/kaguya.xml</em> and run Harvest</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">harvest</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">kaguya</span><span class="o">.</span><span class="n">xml</span>
-</pre></div>
-</div>
-<p>All XML files in <em>/data/geo/urn-nasa-pds-kaguya_grs_spectra</em> folder and its subfolders will be processed.
-All metadata from PDS4 labels will be extracted and loaded into Registry (OpenSearch).</p>
-<p>You will see multiple log messages similar to these:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
-<span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Processing</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Geo</span>\<span class="n">kaguya_grs_spectra</span>\<span class="n">data_ephemerides</span>\<span class="n">kgrs_ephemerides</span><span class="o">.</span><span class="n">xml</span>
-<span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Processing</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Geo</span>\<span class="n">kaguya_grs_spectra</span>\<span class="n">data_spectra</span>\<span class="n">kgrs_calibrated_spectra_per1</span><span class="o">.</span><span class="n">xml</span>
-<span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Processing</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Geo</span>\<span class="n">kaguya_grs_spectra</span>\<span class="n">data_spectra</span>\<span class="n">kgrs_calibrated_spectra_per2</span><span class="o">.</span><span class="n">xml</span>
-<span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Processing</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Geo</span>\<span class="n">kaguya_grs_spectra</span>\<span class="n">data_spectra</span>\<span class="n">kgrs_calibrated_spectra_per3</span><span class="o">.</span><span class="n">xml</span>
-<span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Processing</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Geo</span>\<span class="n">kaguya_grs_spectra</span>\<span class="n">data_spectra</span>\<span class="n">spectra_data_collection_inventory</span><span class="o">.</span><span class="n">xml</span>
-<span class="o">...</span>
-<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span> <span class="n">Summary</span><span class="p">:</span>
-<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span> <span class="n">Skipped</span> <span class="n">files</span><span class="p">:</span> <span class="mi">0</span>
-<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span> <span class="n">Processed</span> <span class="n">files</span><span class="p">:</span> <span class="mi">14</span>
-<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span> <span class="n">File</span> <span class="n">counts</span> <span class="n">by</span> <span class="nb">type</span><span class="p">:</span>
-<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span>   <span class="n">Product_Bundle</span><span class="p">:</span> <span class="mi">1</span>
-<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span>   <span class="n">Product_Collection</span><span class="p">:</span> <span class="mi">4</span>
-<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span>   <span class="n">Product_Context</span><span class="p">:</span> <span class="mi">3</span>
-<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span>   <span class="n">Product_Document</span><span class="p">:</span> <span class="mi">2</span>
-<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span>   <span class="n">Product_Observational</span><span class="p">:</span> <span class="mi">4</span>
-<span class="p">[</span><span class="n">SUMMARY</span><span class="p">]</span> <span class="n">Package</span> <span class="n">ID</span><span class="p">:</span> <span class="n">e46f6ba9</span><span class="o">-</span><span class="mi">6151</span><span class="o">-</span><span class="mi">48</span><span class="n">ee</span><span class="o">-</span><span class="n">b822</span><span class="o">-</span><span class="n">b0536e3e4bd9</span>
-</pre></div>
-</div>
-<p>To quickly check that data was loaded you can query Registry indices using <a class="reference external" href="https://nasa-pds.github.io/registry-client/">Registry Client</a></p>
+<p>See <a class="reference internal" href="harvest_job_configuration.html"><span class="doc">Detailed Harvest Configuration</span></a> for all available configuration options.</p>
+</li>
+</ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>On Windows, the harvest job configuration file would look as follows:</p>
-</div>
+<p>On Windows, use backslash-style paths. See the example screenshot below:</p>
 <img alt="../_images/windows_harvest_conf_file.png" src="../_images/windows_harvest_conf_file.png" />
+</div>
+</section>
+<section id="run-harvest">
+<h2>Run Harvest<a class="headerlink" href="#run-harvest" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Run Harvest with your job config:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>harvest<span class="w"> </span>-c<span class="w"> </span><span class="nv">$HOME</span>/.pds/registry-harvest-config-<span class="o">{</span>venue<span class="o">}</span>-<span class="o">{</span>job<span class="o">}</span>.xml
+</pre></div>
+</div>
+</li>
+<li><p>Review the log output. A successful run ends with a summary similar to:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[SUMMARY] Summary:
+[SUMMARY] Skipped files: 0
+[SUMMARY] Processed files: 14
+[SUMMARY] File counts by type:
+[SUMMARY]   Product_Bundle: 1
+[SUMMARY]   Product_Collection: 4
+[SUMMARY]   Product_Context: 3
+[SUMMARY]   Product_Document: 2
+[SUMMARY]   Product_Observational: 4
+[SUMMARY] Package ID: e46f6ba9-6151-48ee-b822-b0536e3e4bd9
+</pre></div>
+</div>
+</li>
+<li><p>Optionally, verify data was loaded by querying your index per <a class="reference internal" href="test_connection.html"><span class="doc">Test Your Registry Connection</span></a>.</p></li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Due to indexation delays, loaded data may take up to a few hours to become visible.</p>
+</div>
 </section>
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
-<p>You can see additional harvest options by running:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./bin/harvest<span class="w"> </span>-help
-</pre></div>
-</div>
-<p>The harvest job configuration file provides also additional options described in <a class="reference internal" href="harvest_job_configuration.html"><span class="doc">Detailed Harvest Configuration</span></a>.</p>
-<p>You can validate the products uploaded in the registry using <a class="reference external" href="https://nasa-pds.github.io/registry-client/">registry-client</a>.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Due to refresh rates and indexation delays, it may take up to a few hours before the data becomes visible.</p>
-</div>
-<p>When ready for public release, you need to <a class="reference external" href="update_status.html">update the archive status</a></p>
+<ul class="simple">
+<li><p>See all Harvest options: <code class="docutils literal notranslate"><span class="pre">harvest</span> <span class="pre">-help</span></code></p></li>
+<li><p>Additional job config options: <a class="reference internal" href="harvest_job_configuration.html"><span class="doc">Detailed Harvest Configuration</span></a></p></li>
+<li><p>Publish loaded data: <a class="reference internal" href="update_status.html"><span class="doc">Update Archive Status</span></a></p></li>
+</ul>
 </section>
 </section>
 
@@ -190,7 +191,7 @@ All metadata from PDS4 labels will be extracted and loaded into Registry (OpenSe
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tasks.html" class="btn btn-neutral float-left" title="User Tasks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="test_connection.html" class="btn btn-neutral float-left" title="Test Your Registry Connection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="harvest_job_configuration.html" class="btn btn-neutral float-right" title="Detailed Harvest Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

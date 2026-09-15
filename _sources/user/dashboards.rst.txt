@@ -2,51 +2,44 @@
 Dashboards
 ===========
 
-.. warning:: The dashboards are not available with the latest version of the Registry Service.
+.. warning:: Dashboards are not available with the latest version of the Registry Service.
 
-Overview
-********
-
-You can view summaries of the datasets available in your registry with Dashboards.
-
-Prerequisites
-*************
-
-You need to be on a whitelisted IP address to access the Registry's OpenSearch database, see :doc:`/connection-setup`
+View summaries of the datasets available in your registry using OpenSearch Dashboards.
 
 
-View the dashboards
+Before You Begin
+****************
+
+Your IP address must be on the access whitelist. See :doc:`/connection-setup`.
+
+
+View the Dashboards
 ********************
 
-#. Go to your dashboard in you favorite web browser, using the URL of your OpenSearch database suffixed by ``/_dashboards``
+1. Open ``https://{your-opensearch-url}/_dashboards`` in a browser.
+2. Log in with the username and password provided by the Engineering Node.
+3. Select **Global** tenant.
+4. Click the menu icon in the upper-left.
+5. Under **OpenSearch Dashboards**, select **Dashboard**.
+6. Choose a dashboard from the list below.
 
-#. Log in with the username/password provided by Engineering Node (see :doc:`/connection-setup`)
-
-#. Select global tenant
-
-#. Click on the menu on the upper-left
-
-#. In `OpenSearch Dashboards` section, select `Dashboard`
-
-#. You are getting a list of default dashbaords provided to you (see table below)
-
-#. Optionally: You can update the dashboard and see the underlying OpenSearch requests by clicking the wheel on the top right of each dashboard
-
-#. Optionally: You can request a new dashboard or any update by creating a ticket in this repository https://github.com/NASA-PDS/archive-analytics/issues
-
-.. list-table:: List of dashboard available by default
-   :widths: 25 50
+.. list-table:: Default dashboards
+   :widths: 25 75
    :header-rows: 1
 
    * - Name
      - Description
    * - Archive Metrics Dashboard
-     - List all products and pie charts and table sorted on various product properties (class, science discipline...)
+     - All products with pie charts and tables sorted by class and science discipline.
    * - Data Type Metrics Dashboard
-     - Pie charts and table sorted on various product attributes (class, science discipline...)
+     - Pie charts and tables sorted by product attributes (class, discipline, etc.).
    * - Data Volume Dashboard
-     - Monthly labels and data volumes time series
+     - Monthly label and data volume time series.
    * - Node Operator Dashboard
-     - Bundles and Collections listed by status (staged, archived)
+     - Bundles and collections listed by status (staged, archived).
    * - Product Count Metrics
-     - Products counts by references (e.g. target, investigation, instruments...)
+     - Product counts by reference type (target, investigation, instrument, etc.).
+
+.. note::
+   To inspect the underlying OpenSearch queries for a dashboard, click the gear icon in the top-right of any dashboard panel.
+   To request a new or updated dashboard, open an issue at https://github.com/NASA-PDS/archive-analytics/issues.

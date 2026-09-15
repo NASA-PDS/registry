@@ -1,0 +1,301 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registry Loading Status &mdash; PDS Registry 1.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css?v=303734b9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c55cb9cb"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Contribute" href="support/contribute.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PDS Registry
+              <img src="_static/PDS_Planets.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About PDS Registry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connection-setup.html">Connection Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/tasks.html">User Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin/tasks.html">Admin Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer/developer.html">Developer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support/support.html">Support</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Registry Loading Status</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#how-these-reports-work">How These Reports Work</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#burnup-chart">Burnup Chart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#status-reports">Status Reports</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#missing-products">Missing Products</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#loaded-products">Loaded Products</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#staged-products">Staged Products</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#historical-counts">Historical Counts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#report-generation">Report Generation</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PDS Registry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Registry Loading Status</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/nasa-pds/registry/blob/main/docs/source/status.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="registry-loading-status">
+<h1>Registry Loading Status<a class="headerlink" href="#registry-loading-status" title="Link to this heading"></a></h1>
+<p>Reports are automatically generated on a schedule, committed to this repository, and published to GitHub Pages.
+They track migration progress from the legacy PDS Solr registry to the new OpenSearch-based registry.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reports update automatically whenever the scheduled workflow runs (typically daily).
+The burnup chart is published to GitHub Pages on every push to <code class="docutils literal notranslate"><span class="pre">main</span></code> or <code class="docutils literal notranslate"><span class="pre">develop</span></code>.</p>
+</div>
+<section id="how-these-reports-work">
+<h2>How These Reports Work<a class="headerlink" href="#how-these-reports-work" title="Link to this heading"></a></h2>
+<p>The baseline for what bundles and collections <em>should</em> exist in the registry is the
+<a class="reference external" href="https://pds.nasa.gov/datasearch/keyword-search/">PDS Keyword Search</a>, which is populated by the
+Engineering Node (EN) each time a formal data release occurs.  This is the authoritative inventory of
+PDS archive data — a product that EN has released is the agreed-upon source of truth for what belongs
+in the archive.</p>
+<p>These reports compare that baseline against what is actually accessible through the
+<a class="reference external" href="https://pds.mcp.nasa.gov/api/search/1/products/">PDS Registry API</a> to surface gaps.</p>
+<p>A product is <strong>missing</strong> when it appears in the PDS Keyword Search but is not yet present in the new
+OpenSearch-based registry.  A product is <strong>staged</strong> when it is in the new registry but its
+<code class="docutils literal notranslate"><span class="pre">archive_status</span></code> has not yet been advanced to <code class="docutils literal notranslate"><span class="pre">archived</span></code> — it has been loaded but requires
+operator action to complete the transition.</p>
+<p>For detailed guidance on interpreting the reports, filtering by node, and understanding the
+<code class="docutils literal notranslate"><span class="pre">superseded</span></code> flag, see the
+<a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docs/status/README.md">docs/status README on GitHub</a>.</p>
+</section>
+<section id="burnup-chart">
+<h2>Burnup Chart<a class="headerlink" href="#burnup-chart" title="Link to this heading"></a></h2>
+<p>The <a class="reference external" href="https://nasa-pds.github.io/registry/status/burnup_chart.html">Burnup Chart</a> shows cumulative products loaded
+into the new registry over time, broken down by PDS node. It includes:</p>
+<ul class="simple">
+<li><p>Overall and per-node loading progress vs. target</p></li>
+<li><p>Both “all versions” and “latest version per LID” views</p></li>
+<li><p>An interactive date-range filter (defaults to the last 12 months)</p></li>
+</ul>
+<p>
+  <a href="https://nasa-pds.github.io/registry/status/burnup_chart.html" target="_blank">
+    &#x1F4CA; Open Burnup Chart in full page
+  </a>
+</p>
+<iframe
+  src="https://nasa-pds.github.io/registry/status/burnup_chart.html"
+  width="100%"
+  height="600"
+  style="border:1px solid #ccc; border-radius:4px;"
+  title="PDS Registry Burnup Chart">
+</iframe></section>
+<section id="status-reports">
+<h2>Status Reports<a class="headerlink" href="#status-reports" title="Link to this heading"></a></h2>
+<p>All CSV reports and the full metrics summary are in the
+<a class="reference external" href="https://github.com/NASA-PDS/registry/tree/main/docs/status">docs/status directory on GitHub</a>.
+The <a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docs/status/README.md">README in that directory</a>
+contains the latest metrics table and detailed field descriptions.</p>
+<section id="missing-products">
+<h3>Missing Products<a class="headerlink" href="#missing-products" title="Link to this heading"></a></h3>
+<p>Products present in the legacy Solr registry but <strong>not yet loaded</strong> into the new OpenSearch registry.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 45.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docs/status/missing_bundles_in_registry.csv">missing_bundles_in_registry.csv</a></p></td>
+<td><p>All missing Product_Bundle records (all versions)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docs/status/missing_collections_in_registry.csv">missing_collections_in_registry.csv</a></p></td>
+<td><p>All missing Product_Collection records (all versions)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Each row includes <code class="docutils literal notranslate"><span class="pre">NODE_ID</span></code>, <code class="docutils literal notranslate"><span class="pre">LIDVID</span></code>, <code class="docutils literal notranslate"><span class="pre">PRODUCT_CLASS</span></code>, and a <code class="docutils literal notranslate"><span class="pre">SUPERSEDED</span></code> flag
+(<code class="docutils literal notranslate"><span class="pre">true</span></code> if a newer version of the same LID exists anywhere in the dataset).</p>
+</section>
+<section id="loaded-products">
+<h3>Loaded Products<a class="headerlink" href="#loaded-products" title="Link to this heading"></a></h3>
+<p>All products currently in the new OpenSearch registry, regardless of archive status.
+Queried with <code class="docutils literal notranslate"><span class="pre">search_after</span></code> pagination so counts are not capped at 10,000.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 45.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docs/status/loaded_bundles_in_registry.csv">loaded_bundles_in_registry.csv</a></p></td>
+<td><p>All Product_Bundle records in new OpenSearch</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docs/status/loaded_collections_in_registry.csv">loaded_collections_in_registry.csv</a></p></td>
+<td><p>All Product_Collection records in new OpenSearch</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Loaded counts will exceed the legacy Solr counts because the new registry also contains products
+harvested directly from non-Solr sources (e.g., PSA/ESA ~900 bundles, ~4,000 collections).</p>
+</div>
+</section>
+<section id="staged-products">
+<h3>Staged Products<a class="headerlink" href="#staged-products" title="Link to this heading"></a></h3>
+<p>Products loaded into the new registry but with <code class="docutils literal notranslate"><span class="pre">archive_status</span> <span class="pre">=</span> <span class="pre">staged</span></code>
+(loaded but not yet transitioned to <code class="docutils literal notranslate"><span class="pre">archived</span></code>). These require operator action.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 45.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docs/status/staged_bundles_in_registry.csv">staged_bundles_in_registry.csv</a></p></td>
+<td><p>Staged Product_Bundle records</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docs/status/staged_collections_in_registry.csv">staged_collections_in_registry.csv</a></p></td>
+<td><p>Staged Product_Collection records</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="historical-counts">
+<h3>Historical Counts<a class="headerlink" href="#historical-counts" title="Link to this heading"></a></h3>
+<p>Append-only snapshots of missing and staged totals per script run.
+Use these files to plot burndown charts externally.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 45.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docs/status/counts_history.csv">counts_history.csv</a></p></td>
+<td><p>Missing/staged totals per run (append-only)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docs/status/burnup_history.csv">burnup_history.csv</a></p></td>
+<td><p>Cumulative loaded counts by date (all versions)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docs/status/burnup_history_latest.csv">burnup_history_latest.csv</a></p></td>
+<td><p>Cumulative loaded counts by date (latest version per LID only)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docs/status/burnup_by_node.csv">burnup_by_node.csv</a></p></td>
+<td><p>Per-node cumulative loaded counts (all versions)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/NASA-PDS/registry/blob/main/docs/status/burnup_by_node_latest.csv">burnup_by_node_latest.csv</a></p></td>
+<td><p>Per-node cumulative loaded counts (latest version per LID only)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="report-generation">
+<h2>Report Generation<a class="headerlink" href="#report-generation" title="Link to this heading"></a></h2>
+<p>Reports are generated by <code class="docutils literal notranslate"><span class="pre">scripts/generate_registry_status_reports.py</span></code>.
+To regenerate locally without committing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./venv/bin/python<span class="w"> </span>scripts/generate_registry_status_reports.py<span class="w"> </span>--no-commit
+</pre></div>
+</div>
+<p>Requires AWS/Cognito credentials configured in <code class="docutils literal notranslate"><span class="pre">~/.pds/.registry-client</span></code> or <code class="docutils literal notranslate"><span class="pre">.env</span></code>.
+See <a class="reference internal" href="developer/developer.html"><span class="doc">Developer</span></a> for environment setup details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="support/contribute.html" class="btn btn-neutral float-left" title="Contribute" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022 California Institute of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

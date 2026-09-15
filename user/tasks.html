@@ -8,20 +8,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Tasks &mdash; PDS Registry 1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css?v=303734b9" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=c55cb9cb"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Load Data - Harvest" href="load1.html" />
+    <link rel="next" title="Test Your Registry Connection" href="test_connection.html" />
     <link rel="prev" title="Installation" href="../install/install.html" /> 
 </head>
 
@@ -50,6 +50,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../connection-setup.html">Connection Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install/install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">User Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="test_connection.html">Test Your Registry Connection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="load1.html">Load Data - Harvest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html">Detailed Harvest Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="update_status.html">Update Archive Status</a></li>
@@ -60,6 +61,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../admin/tasks.html">Admin Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/developer.html">Developer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../support/support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Registry Loading Status</a></li>
 </ul>
 
         </div>
@@ -91,59 +93,56 @@
 <p>User tasks describes the everyday processes such as load data, change data status (for example publish data) and delete data from the registry.</p>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="test_connection.html">Test Your Registry Connection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="test_connection.html#before-you-begin">Before You Begin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_connection.html#activate-the-virtual-environment">Activate the Virtual Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_connection.html#run-a-heartbeat-check">Run a Heartbeat Check</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="load1.html">Load Data - Harvest</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="load1.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="load1.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="load1.html#harvest-quick-start">Harvest Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load1.html#before-you-begin">Before You Begin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load1.html#configure-a-harvest-job">Configure a Harvest Job</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load1.html#run-harvest">Run Harvest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="load1.html#next-steps">Next Steps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="harvest_job_configuration.html">Detailed Harvest Configuration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#input-directories-and-filters">Input Directories and Filters</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="harvest_job_configuration.html#process-directories">Process Directories</a></li>
-<li class="toctree-l3"><a class="reference internal" href="harvest_job_configuration.html#process-a-list-of-files">Process a List of Files</a></li>
-<li class="toctree-l3"><a class="reference internal" href="harvest_job_configuration.html#filtering-products-by-class">Filtering Products by Class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="harvest_job_configuration.html#process-bundles">Process Bundles</a></li>
-<li class="toctree-l3"><a class="reference internal" href="harvest_job_configuration.html#filtering-bundle-versions">Filtering Bundle Versions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="harvest_job_configuration.html#filtering-bundle-s-collections">Filtering Bundle’s Collections</a></li>
-<li class="toctree-l3"><a class="reference internal" href="harvest_job_configuration.html#filtering-bundle-s-product-directories">Filtering Bundle’s Product Directories</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#input-directories">Input: Directories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#input-file-manifest">Input: File Manifest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#input-bundles">Input: Bundles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#filtering-by-product-class">Filtering by Product Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#filtering-bundle-versions">Filtering Bundle Versions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#filtering-bundle-collections">Filtering Bundle Collections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#filtering-product-directories-within-a-bundle">Filtering Product Directories Within a Bundle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#file-reference-access-url">File Reference / Access URL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#registry-integration">Registry Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#registry-connection">Registry Connection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#label-and-data-file-information">Label and Data File Information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#blob-storage">BLOB Storage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="harvest_job_configuration.html#extract-metadata-by-xpath">Extract Metadata by XPath</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="harvest_job_configuration.html#mapping-files">Mapping Files</a></li>
-<li class="toctree-l3"><a class="reference internal" href="harvest_job_configuration.html#xml-name-spaces">XML Name Spaces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="harvest_job_configuration.html#mapping-file-format">Mapping File Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="harvest_job_configuration.html#xml-namespaces">XML Namespaces</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="update_status.html">Update Archive Status</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="update_status.html#registry-manager">Registry Manager</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="update_status.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="update_status.html#set-status">Set status</a></li>
+<li class="toctree-l2"><a class="reference internal" href="update_status.html#archive-status-values">Archive Status Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="update_status.html#set-archive-status">Set Archive Status</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="update_status.html#before-you-begin">Before You Begin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="update_status.html#run-the-command">Run the Command</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="update_status.html#registry-api">Registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="update_status.html#verify-via-the-registry-api">Verify via the Registry API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="delete_data.html">Delete Data</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="delete_data.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="delete_data.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="delete_data.html#id1">Delete Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="delete_data.html#examples">Examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="delete_data.html#on-macos-linux">On MacOS/Linux</a></li>
-<li class="toctree-l3"><a class="reference internal" href="delete_data.html#on-windows">On Windows</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="delete_data.html#before-you-begin">Before You Begin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delete_data.html#run-the-delete-command">Run the Delete Command</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dashboards.html">Dashboards</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dashboards.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dashboards.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dashboards.html#view-the-dashboards">View the dashboards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboards.html#before-you-begin">Before You Begin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboards.html#view-the-dashboards">View the Dashboards</a></li>
 </ul>
 </li>
 </ul>
@@ -155,7 +154,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../install/install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="load1.html" class="btn btn-neutral float-right" title="Load Data - Harvest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="test_connection.html" class="btn btn-neutral float-right" title="Test Your Registry Connection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

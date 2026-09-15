@@ -25,3 +25,4 @@ Sitemap
    admin/tasks
    developer/developer
    support/support
+   status

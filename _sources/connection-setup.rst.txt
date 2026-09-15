@@ -5,139 +5,153 @@ Connection Setup
 Overview
 ********
 
-This page provides the steps necessary to get going with data ingestion and
-querying of the PDS Registry Service on the cloud from the perspective of a Discipline
-Node (DN).
-
-Initial Set-up
-**************
-
-To get things going, you should have provided the Engineering Node contact with the following:
-
-  * A list of user email addresses which will be authorized to perform data ingestion.
-  * A list of IP addresses or blocks of addresses from which data ingestion will occur.
-
-The IP addresses are added to an access whitelist.
-
-Opensearch accounts will be set up for each user and their username and (temporary)
-password will be sent to them.
-
-Along with your Opensearch user credentials you will receive configuration inputs for your tools to connect to the registry services.
-
-The following sections provide the steps to follow to have your connection set up.
-
-Changing Your Opensearch Password
-*********************************
-
-To update your user password click `here <https://pds-prod-nucleus-dum.auth.us-west-2.amazoncognito.com/login?client_id=3rgdgts818hdrkas4q66lebum0&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2Fnasa-pds.github.io%2Fnucleus%2F>`_ and select "Forgot your password".
+Steps to connect a Discipline Node (DN) to the PDS Registry Service for data ingestion and querying.
 
 
-Registry Tools Configurations
-******************************
+Prerequisites
+*************
 
-Have a Secure Directory For Your Configurations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Before starting, contact the Engineering Node (pds-operator@jpl.nasa.gov) and provide:
 
-Create a secure directory to place config files: Two of the config files you will be creating should be placed in a secure location accessible only by the current user.
+1. A list of user email addresses that need data ingestion access.
+2. A list of IP addresses or CIDR blocks from which ingestion will occur.
 
-On **Linux** and Linux-like Operating Systems:
+The Engineering Node will:
 
-Create new ``$HOME/.auth directory``
-
-Change access to this directory to be only current user accessible only:
-
-.. code:: bash
-
-    chmod 700 $HOME/.auth
+- Add your IPs to the access whitelist.
+- Create OpenSearch accounts and send each user their username and temporary password.
+- Send configuration inputs for connecting your tools to the registry.
 
 
-On **Windows**:
+Change Your OpenSearch Password
+********************************
 
-Take the necessary precautions so that the directory is not readable by anyone but its owner.
-
-
-Authentication file
-~~~~~~~~~~~~~~~~~~~~
-
-Create Harvest authentication file
-Create a ``registry-auth.txt`` file with your username and password, and place it in the secure location created above.
-
-.. code:: javascript
-
-    user = {username sent by Engineering Node}
-    password = {your password}
+1. Go to the `OpenSearch password reset page <https://pds-prod-nucleus-dum.auth.us-west-2.amazoncognito.com/login?client_id=3rgdgts818hdrkas4q66lebum0&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2Fnasa-pds.github.io%2Fnucleus%2F>`_.
+2. Select **Forgot your password** and follow the prompts.
 
 
-Registry Client Environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Registry Tools Configuration
+*****************************
 
-Create Registry Client environment variables file (registry-client.env):
+Create a Secure Configuration Directory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Engineering Node (pds-operator@jpl.nasa.gov) will provide you with a config file containing necessary Registry OpenSearch configuration information.
+Config files containing credentials must be stored in a directory accessible only by the current user.
 
-On **Linux** and Linux-like Operating Systems:
+**Linux / macOS:**
 
-Update this file with your username and password.
+1. Create the directory:
 
-As needed, update the setting of the environment variables to match the shell you are using.
+   .. code:: bash
 
-Place in the secure location created above.
+       mkdir -p $HOME/.pds
 
-On **Windows**:
+2. Restrict access to the current user only:
 
-The environment variables noted will need to be set manually through the Windows console.
+   .. code:: bash
 
-OpenSearch Connection Configuration File, For Harvest and Registry Manager
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       chmod 700 $HOME/.pds
 
-Create OpenSearch connection configuration file, e.g.  sbn_mcp_prod.xml or sbn_mcp_test.xml.
+**Windows:**
+
+1. Create the ``%USERPROFILE%\.pds`` directory.
+2. Set folder permissions so only your user account has read/write access.
+
+
+Create the Authentication File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Name the file to include the venue (``dev``, ``test``, or ``prod``) so credentials for each environment are kept separate, e.g. ``registry-auth-prod.txt``.
+
+1. Create ``$HOME/.pds/registry-auth-{venue}.txt`` with the credentials provided by the Engineering Node:
+
+   .. code:: text
+
+       user = {username sent by Engineering Node}
+       password = {your password}
+
+2. Restrict the file to the current user:
+
+   .. code:: bash
+
+       chmod 600 $HOME/.pds/registry-auth-{venue}.txt
+
+
+Create the Registry Client Environment File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Engineering Node will provide a ``registry-client.env`` file with OpenSearch connection settings. Rename it to include the venue (e.g. ``registry-client-prod.env``) before placing it in ``$HOME/.pds/``.
+
+**Linux / macOS:**
+
+1. Open the provided ``registry-client-{venue}.env`` file.
+2. Update the ``user`` and ``password`` fields with your credentials.
+3. Adjust the environment variable export syntax if needed for your shell (``bash``, ``zsh``, etc.).
+4. Place the file in ``$HOME/.pds/``.
+
+**Windows:**
+
+1. Open the provided ``registry-client-{venue}.env`` file.
+2. Set each variable listed in the file as a Windows environment variable via **System Properties → Environment Variables**.
+
+
+Create the OpenSearch Connection Configuration File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Engineering Node will send you this file, already named using the pattern ``registry-config-{node}-{venue}.xml`` (e.g. ``registry-config-sbn-dev.xml``, ``registry-config-sbn-test.xml``, ``registry-config-sbn-prod.xml``).
+
+1. Place the file in ``$HOME/.pds/``.
 
 .. note::
-    Engineering Node (pds-operator@jpl.nasa.gov) will provide you with the content of the file.
+    Contact pds-operator@jpl.nasa.gov if you have not received this file.
 
 
-Run Registry Tools on AWS
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Next Steps
+~~~~~~~~~~
 
-You can run harvest on AWS, on ECS or EC2 directly.
-
-Run Harvest On EC2
--------------------
-
-You can run Harvest on EC2, as anywhere else, using the Cognito authentication and configurations described above.
-
-However, to be able to access the PDS Registry which is also hosted on AWS, on a different AWS account, you must disable “Private DNS names” in the VPC endpoint of the API gateway, otherwise the PDS Registry API gateway requests will be redirected to your own account and fail.
-
-See the AWS console screenshot, you should have **No** instead of **Yes** here:
-
-.. image:: _static/images/aws_console_vpc.png
-
-If you need to change that in your AWS account, double check that all your other applications still work.
-
-
-
-Run Harest On ECS
--------------------
-
-You can run harvest on ECS, as on EC2 using the Cognito authentication.
-
-Alternatively if you run harvest, on ECS, on the same AWS account as the Registry service, you can also configure the connexion to the Registry without Cognito authentication, as follows:
-
-.. code:: xml
-
-   <?xml version="1.0" encoding="UTF-8"?>
-   <registry_connection index="en-registry">
-     <ec2_credential_url endpoint="https://<abcdefg>.us-west-2.aoss.amazonaws.com">http://169.254.170.2/AWS_CONTAINER_CREDENTIALS_RELATIVE_URI</ec2_credential_url>
-   </registry_connection>
-
-vThe ECS task role must give you access to the Registry Opensearch Serverless Collection.
-
-
-Next steps
-~~~~~~~~~~~
-
-Once the above setup is complete, the Registry Tools are used to process and ingest product
-metadata into the Registry. Details on how to install and run these tools are found in:
+Once setup is complete, proceed to:
 
 - :doc:`Install </install/install>`
 - :doc:`User Tasks </user/tasks>`
+
+.. note::
+   If you are running Harvest on AWS EC2 or ECS, see :ref:`connection-setup:Additional Setup for AWS` before proceeding.
+
+
+Additional Setup for AWS
+************************
+
+Run Harvest on EC2
+~~~~~~~~~~~~~~~~~~
+
+Harvest on EC2 uses the same Cognito authentication and config files described above.
+
+If your EC2 instance is on a **different AWS account** than the PDS Registry, you must disable **Private DNS names** on the VPC endpoint for the API gateway. Without this change, API gateway requests are redirected to your own account and will fail.
+
+1. In the AWS Console, open the VPC endpoint for the API gateway.
+2. Set **Enable private DNS names** to **No**.
+
+.. image:: _static/images/aws_console_vpc.png
+
+3. Verify that your other applications still function after this change.
+
+
+Run Harvest on ECS
+~~~~~~~~~~~~~~~~~~
+
+**Option A — Cognito authentication (cross-account or external):**
+
+Use the same Cognito authentication and config files described above.
+
+**Option B — IAM role authentication (same AWS account as the Registry):**
+
+1. Configure the connection file as follows, replacing the endpoint with the one provided by the Engineering Node:
+
+   .. code:: xml
+
+      <?xml version="1.0" encoding="UTF-8"?>
+      <registry_connection index="en-registry">
+        <ec2_credential_url endpoint="https://<abcdefg>.us-west-2.aoss.amazonaws.com">http://169.254.170.2/AWS_CONTAINER_CREDENTIALS_RELATIVE_URI</ec2_credential_url>
+      </registry_connection>
+
+2. Ensure the ECS task role has access to the Registry OpenSearch Serverless Collection.
