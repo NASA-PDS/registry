@@ -1,8 +1,8 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-09-09)
+## [v1.7.0](https://github.com/NASA-PDS/registry/tree/v1.7.0) (2026-09-15)
 
-[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.6.0...«unknown»)
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.6.0...v1.7.0)
 
 **Requirements:**
 
@@ -37,6 +37,7 @@
 - Filter bundles/collections by ingestion status and identify superseded vs latest versions [\#476](https://github.com/NASA-PDS/registry/issues/476)
 - Create an IAM policy for tenant data operator [\#472](https://github.com/NASA-PDS/registry/issues/472)
 - Integrate latest sweeper/api upgrade with new ancestry property name [\#468](https://github.com/NASA-PDS/registry/issues/468)
+- Re-index geo-registry to finalized fix for \#422 [\#457](https://github.com/NASA-PDS/registry/issues/457)
 - Documentation for registry-manager is not updated for connected configuration [\#394](https://github.com/NASA-PDS/registry/issues/394)
 - Documentation improvement suggestions [\#393](https://github.com/NASA-PDS/registry/issues/393)
 - Registry documentation does not clearly link to documentation for its components [\#391](https://github.com/NASA-PDS/registry/issues/391)
