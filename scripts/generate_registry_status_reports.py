@@ -255,6 +255,85 @@ def filter_missing_rows(rows: list[tuple]) -> list[tuple]:
     return result
 
 
+def reannotate_superseded_from_loaded(missing_csv: Path, loaded_csv: Path) -> int:
+    """Re-annotate the superseded column in a missing CSV using versions present in the loaded CSV.
+
+    The initial annotation in annotate_version_status only considers versions found in the legacy
+    Solr index.  A LIDVID can be superseded by a newer version that was never in legacy Solr (e.g.,
+    products harvested directly into the new registry from PSA/ESA), so we must also check the
+    loaded CSV for higher versions of the same LID.
+
+    Reads missing_csv (columns: node, lidvid, product_class, superseded), builds a map of the
+    maximum version seen per LID from both CSVs, and rewrites missing_csv with corrected superseded
+    values.  Returns the number of rows whose superseded flag was changed from "false" to "true".
+    """
+    if not missing_csv.exists() or not loaded_csv.exists():
+        return 0
+
+    def _parse_version(lidvid: str) -> tuple[int, ...]:
+        if "::" in lidvid:
+            _, ver_str = lidvid.rsplit("::", 1)
+        else:
+            ver_str = "0"
+        try:
+            return tuple(int(x) for x in ver_str.split("."))
+        except ValueError:
+            return (0,)
+
+    def _lid(lidvid: str) -> str:
+        return lidvid.rsplit("::", 1)[0] if "::" in lidvid else lidvid
+
+    # Build max-version map from loaded CSV (lidvid is column index 1)
+    max_loaded: dict[str, tuple[int, ...]] = {}
+    with open(loaded_csv, newline="") as f:
+        reader = csv.reader(f)
+        header_row = next(reader, None)
+        if header_row is None:
+            return 0
+        for row in reader:
+            if len(row) < 2:
+                continue
+            lid = _lid(row[1])
+            ver = _parse_version(row[1])
+            if lid not in max_loaded or ver > max_loaded[lid]:
+                max_loaded[lid] = ver
+
+    # Read missing CSV
+    with open(missing_csv, newline="") as f:
+        reader = csv.reader(f)
+        missing_header = next(reader, None)
+        missing_rows = list(reader)
+
+    if missing_header is None:
+        return 0
+
+    superseded_col = missing_header.index("superseded") if "superseded" in missing_header else -1
+    if superseded_col == -1:
+        return 0
+
+    changed = 0
+    updated_rows = []
+    for row in missing_rows:
+        if len(row) <= superseded_col or len(row) < 2:
+            updated_rows.append(row)
+            continue
+        lid = _lid(row[1])
+        ver = _parse_version(row[1])
+        max_ver = max_loaded.get(lid, (0,))
+        if max_ver > ver and row[superseded_col].lower() != "true":
+            row = list(row)
+            row[superseded_col] = "true"
+            changed += 1
+        updated_rows.append(row)
+
+    with open(missing_csv, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(missing_header)
+        writer.writerows(updated_rows)
+
+    return changed
+
+
 def _count_by_node(csv_path: Path, superseded: bool | None = None) -> dict[str, int]:
     """Return a node→count mapping from a CSV file (node is the first column).
 
@@ -626,7 +705,8 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
             chart_el = f'<div class="chart-container"><canvas id="{canvas_id}"></canvas></div>\n'
         else:
             chart_el = '<div class="no-data">No products loaded yet</div>\n'
-        return f'<h3>{subsection_title}</h3>\n' + desc_html + cards + chart_el
+        title_html = f'<h3>{subsection_title}</h3>\n' if subsection_title else ""
+        return title_html + desc_html + cards + chart_el
 
     # Controls bar (sticky, rendered before TOC in the DOM so it stays on screen)
     controls_html = (
@@ -655,7 +735,7 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         + "</ul>\n</nav>\n"
     )
 
-    # Overall section
+    # Overall section — summary charts + overlaid per-node burnup
     overall_html = (
         '<section id="overall">\n'
         '<h2>Overall Summary</h2>\n'
@@ -663,6 +743,12 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
                       "Counts every LIDVID loaded, including older versions of the same LID.")
         + chart_block("latest", "overall", "chart-overall-latest", "Latest Versions Only",
                       "Only the highest-versioned LIDVID per LID is counted. Targets use latest-missing counts.")
+        + '<h3>All Products — By Node (Overlaid)</h3>\n'
+        + '<p class="section-desc">Cumulative bundles + collections loaded over time, one line per node.</p>\n'
+        + '<div class="chart-container"><canvas id="chart-overlay-all"></canvas></div>\n'
+        + '<h3>Latest Versions Only — By Node (Overlaid)</h3>\n'
+        + '<p class="section-desc">Cumulative bundles + collections loaded over time (latest version per LID only), one line per node.</p>\n'
+        + '<div class="chart-container"><canvas id="chart-overlay-latest"></canvas></div>\n'
         + '<p class="back-to-top"><a href="#toc">Back to top</a></p>\n'
         '</section>\n'
     )
@@ -671,7 +757,7 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
     pct_section_html = (
         '<section id="node-pct">\n'
         '<h2>% Completion by Node</h2>\n'
-        '<p class="section-desc">Each line shows cumulative loading progress for one node, normalized to 0–100% of its own target. '
+        '<p class="section-desc">Current loading progress per node as a percentage of today\'s known total (loaded + missing). '
         'Small nodes and large nodes are directly comparable.</p>\n'
         '<h3>All Versions — Bundles</h3>\n'
         '<div class="chart-container"><canvas id="chart-pct-all-bundles"></canvas></div>\n'
@@ -732,11 +818,13 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         '  <title>PDS Registry Loading Progress</title>\n'
         '  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>\n'
         '  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js"></script>\n'
+        '  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2/dist/chartjs-plugin-datalabels.min.js"></script>\n'
         '  <style>\n'
         '    body { font-family: system-ui, sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1rem; background: #f8f9fa; }\n'
         '    h1 { color: #003087; }\n'
         '    h2 { color: #003087; margin-top: 2.5rem; border-top: 2px solid #003087; padding-top: 1rem; }\n'
         '    h3 { color: #555; margin: 1.5rem 0 .4rem; font-size: .85rem; text-transform: uppercase; letter-spacing: .07em; }\n'
+        '    h4 { color: #444; margin: 1rem 0 .2rem; font-size: .9rem; font-weight: 600; }\n'
         '    .controls { position: sticky; top: 0; z-index: 100; background: white; border-radius: 8px;\n'
         '                padding: .8rem 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,.15); margin: 1rem 0 1.5rem;\n'
         '                display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; }\n'
@@ -781,6 +869,7 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         + f'const chartData = {json.dumps(chart_js_data)};\n'
         + 'const charts = {};\n'
         + 'const pctCharts = {};\n'
+        + 'const overlayCh = {};\n'
         + 'const NODE_COLORS = [\n'
         + '  "#003087","#e25822","#2ca02c","#9467bd","#8c564b",\n'
         + '  "#e377c2","#7f7f7f","#bcbd22","#17becf","#1f77b4",\n'
@@ -833,6 +922,7 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         + '      plugins: {\n'
         + '        title: {display: true, text: title, font: {size: 14}},\n'
         + '        legend: {position: "bottom"},\n'
+        + '        datalabels: {display: false},\n'
         + '      },\n'
         + '      scales: {\n'
         + '        x: {\n'
@@ -850,49 +940,29 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         + '  charts[id] = {instance, data: d};\n'
         + '}\n'
         + '\n'
-        + 'function makePctChart(id, key, productType, title) {\n'
+        + '// Overlay chart: all nodes as separate lines on one chart (total = bundles + collections)\n'
+        + 'function makeOverlayChart(id, key, title) {\n'
         + '  const el = document.getElementById(id);\n'
         + '  if (!el) return;\n'
+        + '  const byNode = chartData[key].by_node;\n'
         + '  const start = document.getElementById("start-date").value;\n'
         + '  const end   = document.getElementById("end-date").value;\n'
+        + '  const allLabels = [...new Set(\n'
+        + '    Object.values(byNode).flatMap(nd => nd.labels)\n'
+        + '  )].sort();\n'
         + '  const {unit, stepSize} = timeScaleUnit(start, end);\n'
-        + '  const byNode = chartData[key].by_node;\n'
-        + '  const cumKey    = productType === "b" ? "cum_b"    : "cum_c";\n'
-        + '  const targetKey = productType === "b" ? "target_b" : "target_c";\n'
-        + '  const datasets = [];\n'
-        + '  let colorIdx = 0;\n'
-        + '  const nodeEntries = Object.entries(byNode).sort((a, b) => a[0].localeCompare(b[0]));\n'
-        + '  // Collect the full date union so the 100% reference line spans all data\n'
-        + '  const allDateSet = new Set();\n'
-        + '  for (const [, nd] of nodeEntries) { nd.labels.forEach(l => allDateSet.add(l)); }\n'
-        + '  const allDatesArr = [...allDateSet].sort();\n'
-        + '  const tMin = start || allDatesArr[0];\n'
-        + '  const tMax = end   || allDatesArr[allDatesArr.length - 1];\n'
-        + '  for (const [node, nd] of nodeEntries) {\n'
-        + '    const target = nd[targetKey];\n'
-        + '    if (!target) continue;\n'
-        + '    const pctValues = nd[cumKey].map(v => Math.min(100, v / target * 100));\n'
-        + '    const color = NODE_COLORS[colorIdx % NODE_COLORS.length];\n'
-        + '    colorIdx++;\n'
-        + '    datasets.push({\n'
+        + '  const datasets = Object.entries(byNode).map(([node, nd], i) => {\n'
+        + '    const pts = nd.labels.map((lbl, j) => ({x: lbl, y: nd.cum_b[j] + nd.cum_c[j]}));\n'
+        + '    return {\n'
         + '      label: node,\n'
-        + '      data: toPoints(nd.labels, pctValues),\n'
-        + '      borderColor: color,\n'
+        + '      data: pts,\n'
+        + '      borderColor: NODE_COLORS[i % NODE_COLORS.length],\n'
         + '      backgroundColor: "transparent",\n'
         + '      fill: false,\n'
         + '      tension: 0.3,\n'
         + '      pointRadius: 2,\n'
-        + '    });\n'
-        + '  }\n'
-        + '  // 100% reference line\n'
-        + '  datasets.push({\n'
-        + '    label: "100% target",\n'
-        + '    data: [{x: tMin, y: 100}, {x: tMax, y: 100}],\n'
-        + '    borderColor: "#aaa",\n'
-        + '    borderDash: [4, 4],\n'
-        + '    pointRadius: 0,\n'
-        + '    fill: false,\n'
-        + '    backgroundColor: "transparent",\n'
+        + '      borderWidth: 2,\n'
+        + '    };\n'
         + '  });\n'
         + '  const instance = new Chart(el, {\n'
         + '    type: "line",\n'
@@ -903,6 +973,7 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         + '      plugins: {\n'
         + '        title: {display: true, text: title, font: {size: 14}},\n'
         + '        legend: {position: "bottom"},\n'
+        + '        datalabels: {display: false},\n'
         + '      },\n'
         + '      scales: {\n'
         + '        x: {\n'
@@ -913,7 +984,79 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         + '          ticks: {maxRotation: 45, source: "auto"},\n'
         + '          title: {display: true, text: "Harvest Date"},\n'
         + '        },\n'
-        + '        y: {min: 0, max: 100, title: {display: true, text: "% Loaded"}},\n'
+        + '        y: {title: {display: true, text: "Cumulative Products (Bundles + Collections)"}, beginAtZero: true},\n'
+        + '      },\n'
+        + '    },\n'
+        + '  });\n'
+        + '  overlayCh[id] = {instance, key};\n'
+        + '}\n'
+        + '\n'
+        + '// Register datalabels only for the pct bar charts (not the time-series charts)\n'
+        + 'Chart.register(ChartDataLabels);\n'
+        + '\n'
+        + 'function makePctChart(id, key, productType, title) {\n'
+        + '  const el = document.getElementById(id);\n'
+        + '  if (!el) return;\n'
+        + '  const byNode = chartData[key].by_node;\n'
+        + '  const cumKey    = productType === "b" ? "cum_b"    : "cum_c";\n'
+        + '  const targetKey = productType === "b" ? "target_b" : "target_c";\n'
+        + '  const nodeEntries = Object.entries(byNode)\n'
+        + '    .filter(([, nd]) => nd[targetKey] > 0)\n'
+        + '    .sort((a, b) => {\n'
+        + '      const pctA = a[1][cumKey].length ? a[1][cumKey][a[1][cumKey].length-1] / a[1][targetKey] * 100 : 0;\n'
+        + '      const pctB = b[1][cumKey].length ? b[1][cumKey][b[1][cumKey].length-1] / b[1][targetKey] * 100 : 0;\n'
+        + '      return pctB - pctA;\n'
+        + '    });\n'
+        + '  const labels = nodeEntries.map(([node]) => node);\n'
+        + '  const values = nodeEntries.map(([, nd]) => {\n'
+        + '    const loaded = nd[cumKey].length ? nd[cumKey][nd[cumKey].length - 1] : 0;\n'
+        + '    return Math.min(100, loaded / nd[targetKey] * 100);\n'
+        + '  });\n'
+        + '  const bgColors = nodeEntries.map((_, i) => NODE_COLORS[i % NODE_COLORS.length]);\n'
+        + '  const instance = new Chart(el, {\n'
+        + '    type: "bar",\n'
+        + '    data: {\n'
+        + '      labels,\n'
+        + '      datasets: [{\n'
+        + '        label: "% Loaded",\n'
+        + '        data: values,\n'
+        + '        backgroundColor: bgColors,\n'
+        + '        borderColor: bgColors,\n'
+        + '        borderWidth: 1,\n'
+        + '      }],\n'
+        + '    },\n'
+        + '    options: {\n'
+        + '      indexAxis: "y",\n'
+        + '      responsive: true,\n'
+        + '      plugins: {\n'
+        + '        title: {display: true, text: title, font: {size: 14}},\n'
+        + '        legend: {display: false},\n'
+        + '        tooltip: {\n'
+        + '          callbacks: {\n'
+        + '            label: ctx => {\n'
+        + '              const nd = nodeEntries[ctx.dataIndex][1];\n'
+        + '              const loaded = nd[cumKey].length ? nd[cumKey][nd[cumKey].length - 1] : 0;\n'
+        + '              return ` ${ctx.parsed.x.toFixed(1)}%  (${loaded.toLocaleString()} / ${nd[targetKey].toLocaleString()})`;\n'
+        + '            },\n'
+        + '          },\n'
+        + '        },\n'
+        + '        datalabels: {\n'
+        + '          anchor: "end",\n'
+        + '          align: "end",\n'
+        + '          formatter: (value, ctx) => {\n'
+        + '            const nd = nodeEntries[ctx.dataIndex][1];\n'
+        + '            const loaded = nd[cumKey].length ? nd[cumKey][nd[cumKey].length - 1] : 0;\n'
+        + '            return `${value.toFixed(1)}%  (${loaded.toLocaleString()} / ${nd[targetKey].toLocaleString()})`;\n'
+        + '          },\n'
+        + '          font: {size: 11},\n'
+        + '          color: "#333",\n'
+        + '          clip: false,\n'
+        + '        },\n'
+        + '      },\n'
+        + '      layout: {padding: {right: 220}},\n'
+        + '      scales: {\n'
+        + '        x: {min: 0, max: 100, title: {display: true, text: "% Loaded"}, ticks: {callback: v => v + "%"}},\n'
+        + '        y: {ticks: {font: {size: 11}}},\n'
         + '      },\n'
         + '    },\n'
         + '  });\n'
@@ -936,14 +1079,14 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         + '    instance.data.datasets[3].data = [{x: tMin, y: d.target_c}, {x: tMax, y: d.target_c}];\n'
         + '    instance.update();\n'
         + '  }\n'
-        + '  // Update % completion charts (no target-line datasets to anchor)\n'
-        + '  for (const inst of Object.values(pctCharts)) {\n'
-        + '    inst.options.scales.x.min = start || undefined;\n'
-        + '    inst.options.scales.x.max = end   || undefined;\n'
-        + '    inst.options.scales.x.time.unit = unit;\n'
-        + '    inst.options.scales.x.time.stepSize = stepSize;\n'
-        + '    inst.update();\n'
+        + '  for (const {instance} of Object.values(overlayCh)) {\n'
+        + '    instance.options.scales.x.min = start || undefined;\n'
+        + '    instance.options.scales.x.max = end   || undefined;\n'
+        + '    instance.options.scales.x.time.unit = unit;\n'
+        + '    instance.options.scales.x.time.stepSize = stepSize;\n'
+        + '    instance.update();\n'
         + '  }\n'
+        + '  // % completion charts are static snapshots — no date-range update needed\n'
         + '}\n'
         + '\n'
         + 'function setActiveBtn(id) {\n'
@@ -974,6 +1117,8 @@ def generate_burnup_chart_html(data: dict[str, Any], output_file: Path) -> None:
         + 'setRange(12);\n'
         + 'makeChart("chart-overall-all",    chartData.all.overall,    "All Products — Cumulative Loading Over Time");\n'
         + 'makeChart("chart-overall-latest", chartData.latest.overall, "Latest Versions Only — Cumulative Loading Over Time");\n'
+        + 'makeOverlayChart("chart-overlay-all",    "all",    "All Products — By Node Overlaid");\n'
+        + 'makeOverlayChart("chart-overlay-latest", "latest", "Latest Versions Only — By Node Overlaid");\n'
         + 'for (const [node, d] of Object.entries(chartData.all.by_node)) {\n'
         + '  makeChart("chart-" + node + "-all", d, node + " — All Products");\n'
         + '}\n'
@@ -1247,6 +1392,18 @@ def main() -> int:
             return 1
 
     print_info("\nReport generation complete!")
+
+    # Re-annotate superseded flags in missing CSVs using loaded CSVs.
+    # The initial annotation only sees versions present in the legacy Solr index; newer versions
+    # loaded directly into the new registry (e.g., from PSA/ESA harvest) won't appear there and
+    # would otherwise leave older versions incorrectly marked superseded=false.
+    for missing_key, loaded_key in (
+        ("missing_bundles_in_registry.csv", "loaded_bundles_in_registry.csv"),
+        ("missing_collections_in_registry.csv", "loaded_collections_in_registry.csv"),
+    ):
+        changed = reannotate_superseded_from_loaded(output_dir / missing_key, output_dir / loaded_key)
+        if changed:
+            print_info(f"  → re-annotated {changed} superseded rows in {missing_key}")
 
     # Generate and update metrics in README
     print_info("Updating metrics in README...")

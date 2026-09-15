@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-07-28)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-09-09)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.6.0...«unknown»)
 
@@ -11,6 +11,7 @@
 - As a developer, I want human-readable Postman collection docs auto-generated on update [\#497](https://github.com/NASA-PDS/registry/issues/497)
 - As a PDS Node Operator, I want to validate that products listed as missing from the registry are truly absent from the PDS Search API [\#484](https://github.com/NASA-PDS/registry/issues/484)
 - As a PDS Node Operator, I want to track historical counts of missing and staged products over time [\#481](https://github.com/NASA-PDS/registry/issues/481)
+- As a registry cog-e, I want to automate the deployment of the registry on AWS with terraform [\#480](https://github.com/NASA-PDS/registry/issues/480)
 - As a user, I want to load date times as strings in order to support leap seconds [\#426](https://github.com/NASA-PDS/registry/issues/426)
 
 **Improvements:**
@@ -28,6 +29,9 @@
 
 **Other closed issues:**
 
+- New Registry User Account for ATM [\#569](https://github.com/NASA-PDS/registry/issues/569)
+- \[deployment\] Stable Registry release and deployment to production \(build17\) [\#544](https://github.com/NASA-PDS/registry/issues/544)
+- Deployment of stable Registry in Test [\#542](https://github.com/NASA-PDS/registry/issues/542)
 - Add Prototype Terraform deployment for Provisioned OpenSearch [\#531](https://github.com/NASA-PDS/registry/issues/531)
 - Investigate missing node RMS in metrics reports [\#477](https://github.com/NASA-PDS/registry/issues/477)
 - Filter bundles/collections by ingestion status and identify superseded vs latest versions [\#476](https://github.com/NASA-PDS/registry/issues/476)
