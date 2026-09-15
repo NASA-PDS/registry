@@ -77,7 +77,8 @@ resource "aws_opensearchserverless_access_policy" "data_access" {
           },
           {
             "Resource" : [
-              "index/*/${node}-*"
+              "index/*/${node}-*",
+              "index/*/temp-${node}-*"
             ],
             "Permission" : [
               "aoss:UpdateIndex",
