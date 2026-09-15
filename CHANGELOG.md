@@ -1,6 +1,7 @@
 # Changelog
 
-## [release/1.7.0](https://github.com/NASA-PDS/registry/tree/release/1.7.0) (2026-09-15)
+
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-09-09)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.6.0...release/1.7.0)
 
