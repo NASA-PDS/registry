@@ -1,6 +1,6 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-08-17)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-09-09)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.6.0...«unknown»)
 
@@ -29,6 +29,8 @@
 
 **Other closed issues:**
 
+- New Registry User Account for ATM [\#569](https://github.com/NASA-PDS/registry/issues/569)
+- \[deployment\] Stable Registry release and deployment to production \(build17\) [\#544](https://github.com/NASA-PDS/registry/issues/544)
 - Deployment of stable Registry in Test [\#542](https://github.com/NASA-PDS/registry/issues/542)
 - Add Prototype Terraform deployment for Provisioned OpenSearch [\#531](https://github.com/NASA-PDS/registry/issues/531)
 - Investigate missing node RMS in metrics reports [\#477](https://github.com/NASA-PDS/registry/issues/477)

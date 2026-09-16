@@ -61,10 +61,16 @@ terraform init -backend-config=../backend-config.tfvars
 For local state (not recommended for production):
 
 ```bash
-terraform init  -backend-config=.../backend-config.tfvars
+terraform init  -backend-config=../backend-config.tfvars
 ```
 
 ### 4. Plan and Apply
+
+As a prerequisite, you need python3.12 so that the terraform script can create the lambda layer.
+
+    python3.12 -m venv venv
+    source ./venv/bin/activate
+
 
 Review the planned changes:
 

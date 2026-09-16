@@ -1,59 +1,52 @@
-# Root Terraform Configuration
-# This file orchestrates the deployment by calling sub-modules
-
-# Data source to get current AWS account ID
-data "aws_caller_identity" "current" {}
-
-# OpenSearch Serverless Collection Module
-#module "opensearch" {
-#  source = "./opensearch_serverless"
-#
-#  component_name  = "registry"
-#  collection_name    = var.collection_name
-#  standby_replicas   = var.standby_replicas
-#  vpc_id             = var.vpc_id
-#  subnet_ids         = var.subnet_ids
-#  admin_roles        = concat(var.admin_roles, [data.aws_ssm_parameter.opensearch_admin_role_arn.value])
-#  readonly_roles     = [data.aws_ssm_parameter.opensearch_readonly_role_arn.value, data.aws_ssm_parameter.registry_api_ecs_task_role_arn.value]
-#  node_list                      = var.node_list
-#  node_nucleus_harvest_iam_roles = var.node_nucleus_harvest_iam_roles
-#  aws_region                     = var.aws_region
-#  common_tags        = var.common_tags
-#}
-
-
-# Lambda Module
-# Creates Lambda function and CloudWatch Log Group
-module "lambda" {
-  source = "./lambda"
-
-  runtime                    = var.lambda_runtime
-  lambda_execution_role_arn  = data.aws_ssm_parameter.lambda_execution_role_arn.value
-  timeout                    = var.lambda_timeout
-  memory_size                = var.lambda_memory_size
-  cognito_allowed_groups     = var.cognito_allowed_groups
-  cognito_user_pool_id       = var.cognito_user_pool_id
-  cognito_identity_pool_id   = var.cognito_identity_pool_id
-  aws_region                 = var.aws_region
-  vpc_subnet_ids             = var.subnet_ids
-  vpc_security_group_ids     = var.security_group_ids
-  common_tags                = var.common_tags
-
+locals {
+  common_tags = {
+    tenant    = "en"
+    venue     = var.venue
+    component = "registry"
+    cicd      = "iac"
+    managedby = var.managedby
+  }
 }
 
-# API Gateway Module
-# Integrates with Lambda function for /credentials endpoint
-module "api_gateway" {
-  source = "./api_gateway"
+module "registry_sweepers" {
+  source = "git::https://github.com/NASA-PDS/registry-sweepers.git//terraform?ref=simplify_terraform"
 
-  api_name             = var.api_gateway_name
-  api_description      = "API Gateway for PDS Registry credentials service"
-  stage_name           = var.api_gateway_stage_name
-  lambda_function_name = module.lambda.lambda_function_name
-  lambda_function_arn  = module.lambda.lambda_function_arn
-  lambda_invoke_arn    = module.lambda.lambda_invoke_arn
-  aws_region           = var.aws_region
-  common_tags          = var.common_tags
+  venue                    = var.venue
+  managedby                = var.managedby
+  aws_region               = var.aws_region
+  aoss_endpoint            = var.aoss_endpoint
+  image_uri                = var.sweepers_image_uri
+  mwaa_execution_role_name = var.mwaa_execution_role_name
+  nodes                    = var.sweepers_nodes
 }
 
-# TODO integrate as submodules registry-api and registry-sweepers
+module "credentials_api" {
+  source = "./credentials_api"
+
+  aws_region                              = var.aws_region
+  aws_profile                             = var.aws_profile
+  environment                             = var.environment
+  collection_name                         = var.collection_name
+  standby_replicas                        = var.standby_replicas
+  admin_roles                             = var.admin_roles
+  readonly_roles                          = var.readonly_roles
+  node_list                               = var.node_list
+  node_nucleus_harvest_iam_roles          = var.node_nucleus_harvest_iam_roles
+  common_tags                             = local.common_tags
+  vpc_id                                  = var.vpc_id
+  subnet_ids                              = var.subnet_ids
+  public_subnet_ids                       = var.public_subnet_ids
+  security_group_ids                      = var.security_group_ids
+  lambda_runtime                          = var.lambda_runtime
+  lambda_timeout                          = var.lambda_timeout
+  lambda_memory_size                      = var.lambda_memory_size
+  cognito_allowed_groups                  = var.cognito_allowed_groups
+  cognito_user_pool_id                    = var.cognito_user_pool_id
+  cognito_identity_pool_id                = var.cognito_identity_pool_id
+  api_gateway_name                        = var.api_gateway_name
+  api_gateway_stage_name                  = var.api_gateway_stage_name
+  aws_s3_bucket_logs_id                   = var.aws_s3_bucket_logs_id
+  registry_api_docker_image               = var.registry_api_docker_image
+  registry_api_ecs_service_security_group = var.registry_api_ecs_service_security_group
+  acm_certificate_arn                     = var.acm_certificate_arn
+}
