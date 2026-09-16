@@ -50,3 +50,24 @@ module "credentials_api" {
   registry_api_ecs_service_security_group = var.registry_api_ecs_service_security_group
   acm_certificate_arn                     = var.acm_certificate_arn
 }
+
+module "registry_api" {
+  source = "git::https://github.com/NASA-PDS/registry-api.git//terraform?ref=main"
+
+  node_name_abbr            = var.registry_api_node_name_abbr
+  aws_region                = var.aws_region
+  spring_boot_args          = var.registry_api_spring_boot_args
+  aws_fg_vpc                = var.vpc_id
+  aws_fg_security_groups    = var.security_group_ids
+  aws_lb_security_groups    = var.registry_api_lb_security_groups
+  aws_fg_subnets            = var.subnet_ids
+  aws_lb_subnets            = var.public_subnet_ids
+  ecs_task_role             = var.registry_api_ecs_task_role
+  ecs_task_execution_role   = var.registry_api_ecs_task_execution_role
+  registry_api_docker_image = var.registry_api_docker_image
+  aws_s3_bucket_logs_id     = var.aws_s3_bucket_logs_id
+  aws_acm_certificate_arn   = var.acm_certificate_arn
+  component_name            = "registry"
+  common_tags               = local.common_tags
+  cloudfront_dns            = var.registry_api_cloudfront_dns
+}

@@ -62,3 +62,10 @@ output "sweepers_task_role_arn" {
   description = "Sweeper task role ARN needed to update the OpenSearch data access policy"
   value       = module.registry_sweepers.sweeper_task_role
 }
+
+# registry-api outputs
+
+output "registry_api_load_balancer_domain" {
+  description = "Registry API load balancer domain"
+  value       = module.registry_api.load_balancer_domain
+}

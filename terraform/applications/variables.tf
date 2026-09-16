@@ -196,3 +196,37 @@ variable "sweepers_nodes" {
     additional_args = optional(string)
   }))
 }
+
+# registry-api variables
+
+variable "registry_api_node_name_abbr" {
+  description = "Node name abbreviation for registry-api"
+  type        = string
+  default     = "en"
+}
+
+variable "registry_api_spring_boot_args" {
+  description = "Spring Boot arguments for registry-api, including OpenSearch endpoint"
+  type        = string
+}
+
+variable "registry_api_lb_security_groups" {
+  description = "Security group IDs for the registry-api load balancer"
+  type        = list(string)
+  default     = []
+}
+
+variable "registry_api_ecs_task_role" {
+  description = "IAM role ARN for the registry-api ECS task"
+  type        = string
+}
+
+variable "registry_api_ecs_task_execution_role" {
+  description = "IAM role ARN for the registry-api ECS task execution"
+  type        = string
+}
+
+variable "registry_api_cloudfront_dns" {
+  description = "DNS of the CloudFront distribution providing access to the registry-api"
+  type        = string
+}
