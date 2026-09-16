@@ -11,6 +11,71 @@ It is divided into 3 scripts to match the lifecycle and update frequencies of th
 For development or test deployment we deploy the 3 scripts always.
 For production we only deploy `security` and `applications`, as needed.
 
+## Technical architecture
+
+WARNING: the technical architecture diagram is generated from the local terraform unstable code and his missing important components.
+
+```mermaid
+flowchart TB
+    subgraph external["External"]
+        Client["PDS Client"]
+        MWAA["MWAA / Airflow\n(scheduled sweeps)"]
+        Harvest["Nucleus Harvest\n(per discipline node)"]
+    end
+
+    subgraph vpc["VPC — private subnets"]
+        APIGW["API Gateway\nGET /credentials"]
+        Lambda["Lambda\nget-awskeys-from-cognitojwt"]
+        VPCE["VPC Endpoint\ncom.amazonaws.*.aoss"]
+        SG["Security Group\n(HTTPS 443)"]
+        subgraph fargate["ECS Fargate — registry-sweepers (one task def. per node)"]
+            SweepEN["en"]
+            SweepGEO["geo …"]
+        end
+    end
+
+    subgraph sec_module["security — data access policy (3 tiers)"]
+        AdminPolicy["Admin\naoss:* on collection + indexes"]
+        ROPolicy["Read-only\naoss:ReadDocument + DescribeIndex"]
+        NodePolicy["Per-node write\naoss:WriteDocument on {node}-* indexes"]
+    end
+
+    subgraph datastore["Data store — deploy one"]
+        subgraph aoss["opensearch_serverless"]
+            Collection["AOSS Collection\n(SEARCH type)"]
+            EncPolicy["Encryption policy\n(AWS-owned key)"]
+            NetPolicy["Network policy\n(VPC-only, update to public in console)"]
+        end
+        subgraph managed["opensearch_managed (legacy / prod)"]
+            Domain["Managed domain\n3 data nodes + 3 master nodes\nmulti-AZ, HTTPS enforced"]
+        end
+    end
+
+    subgraph aws_svcs["AWS managed services"]
+        Cognito["Cognito\nUser Pool + Identity Pool"]
+        SSM["SSM Parameter Store\n/pds/cds-infra/iam/roles/…\n/pds/registry/opensearch_serverless/…"]
+        CW["CloudWatch Logs\n/aws/lambda/… · /pds/ecs/…"]
+    end
+
+    Client -->|"GET /credentials + JWT"| APIGW --> Lambda
+    Lambda <-->|"validate JWT\nassume IAM role → temp credentials"| Cognito
+    Lambda -.->|"reads lambda execution\nrole ARN"| SSM
+    Lambda -.->|logs| CW
+
+    MWAA -->|"RunTask (iam:PassRole)"| SweepEN & SweepGEO
+    Harvest -->|"index PDS4 products"| VPCE
+    SweepEN & SweepGEO -->|"consolidate / sweep"| VPCE
+    SweepEN & SweepGEO -.->|logs| CW
+
+    VPCE --- SG --> Collection
+
+    EncPolicy & NetPolicy -.->|"required before\ncollection creation"| Collection
+    AdminPolicy & ROPolicy & NodePolicy -->|"controls access to"| Collection
+
+    SSM -.->|"cognito-admin-role ARN\n+ per-node writer role ARNs"| AdminPolicy & NodePolicy
+    Collection -.->|"collection_name + arn\nwritten to SSM on deploy"| SSM
+```
+
 ## Prerequisites
 
 - Terraform >= 1.0
@@ -61,10 +126,16 @@ terraform init -backend-config=../backend-config.tfvars
 For local state (not recommended for production):
 
 ```bash
-terraform init  -backend-config=.../backend-config.tfvars
+terraform init  -backend-config=../backend-config.tfvars
 ```
 
 ### 4. Plan and Apply
+
+As a prerequisite, you need python3.12 so that the terraform script can create the lambda layer.
+
+    python3.12 -m venv venv
+    source ./venv/bin/activate
+
 
 Review the planned changes:
 

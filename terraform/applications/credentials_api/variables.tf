@@ -58,10 +58,15 @@ variable "node_nucleus_harvest_iam_roles" {
   default     = {}
 }
 
-variable "venue" {
-  description = "Deployment venue (e.g. pds-en-dev, prod), used in resource tags across all modules"
-  type        = string
+variable "common_tags" {
+  description = "Common tags to apply to all resources"
+  type        = map(string)
+  default = {
+    Project     = "registry"
+    ManagedBy   = "terraform"
+  }
 }
+
 
 variable "vpc_id" {
   description = "VPC ID where the OpenSearch Serverless VPC endpoint will be created (required if create_vpc_endpoint is true)"
@@ -163,36 +168,4 @@ variable "acm_certificate_arn" {
   description = "ACM Certificate ARN used for HTTPS access to the Registry API load balancer, re-use the certificate of the cloudfront distribution DNS"
   type        = string
   default     = ""
-}
-
-# registry-sweepers variables
-
-variable "managedby" {
-  description = "Person or system responsible for the deployment"
-  type        = string
-}
-
-variable "aoss_endpoint" {
-  description = "Registry AOSS endpoint URL"
-  type        = string
-}
-
-variable "sweepers_image_uri" {
-  description = "registry-sweepers Docker image URI"
-  type        = string
-}
-
-variable "mwaa_execution_role_name" {
-  description = "Name of the MWAA execution role that needs iam:PassRole to launch ECS tasks"
-  type        = string
-  default     = ""
-}
-
-variable "sweepers_nodes" {
-  description = "Map of node IDs to ECS resource allocations for registry-sweepers"
-  type = map(object({
-    cpu             = number
-    memory          = number
-    additional_args = optional(string)
-  }))
 }
