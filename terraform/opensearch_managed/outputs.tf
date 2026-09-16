@@ -39,3 +39,12 @@ resource "aws_ssm_parameter" "domain_arn" {
   value       = aws_opensearch_domain.pds-opensearch-domain.arn
   tags        = var.common_tags
 }
+
+resource "aws_ssm_parameter" "domain_endpoint" {
+  count       = var.component_name != "" ? 1 : 0
+  name        = "/pds/${var.component_name}/opensearch_managed/domain_endpoint"
+  description = "The HTTPS endpoint URL of the Managed OpenSearch domain"
+  type        = "String"
+  value       = aws_opensearch_domain.pds-opensearch-domain.endpoint
+  tags        = var.common_tags
+}
