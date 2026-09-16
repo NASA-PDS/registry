@@ -13,6 +13,8 @@ For production we only deploy `security` and `applications`, as needed.
 
 ## Technical architecture
 
+WARNING: the technical architecture diagram is generated from the local terraform unstable code and his missing important components.
+
 ```mermaid
 flowchart TB
     subgraph external["External"]
