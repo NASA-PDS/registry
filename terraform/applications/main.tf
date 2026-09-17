@@ -52,7 +52,7 @@ module "credentials_api" {
 }
 
 module "registry_api" {
-  source = "git::https://github.com/NASA-PDS/registry-api.git//terraform?ref=main"
+  source = "git::https://github.com/NASA-PDS/registry-api.git//terraform?ref=develop"
 
   node_name_abbr            = var.registry_api_node_name_abbr
   aws_region                = var.aws_region
