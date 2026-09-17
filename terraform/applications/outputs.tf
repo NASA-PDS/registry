@@ -50,17 +50,17 @@ output "node_list" {
 
 output "sweepers_task_definition_arns" {
   description = "Map of node name to ECS task definition ARN"
-  value       = module.registry_sweepers.task_definition_arns
+  value       = module.registry_sweepers.sweepers_task_definition_arns
 }
 
 output "sweepers_log_group_names" {
   description = "Map of node name to CloudWatch log group name"
-  value       = module.registry_sweepers.log_group_names
+  value       = module.registry_sweepers.sweepers_log_group_names
 }
 
 output "sweepers_task_role_arn" {
   description = "Sweeper task role ARN needed to update the OpenSearch data access policy"
-  value       = module.registry_sweepers.sweeper_task_role
+  value       = module.registry_sweepers.sweepers_task_role_arn
 }
 
 # registry-api outputs
