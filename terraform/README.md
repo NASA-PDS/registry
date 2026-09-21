@@ -61,7 +61,7 @@ terraform init -backend-config=../backend-config.tfvars
 For local state (not recommended for production):
 
 ```bash
-terraform init  -backend-config=.../backend-config.tfvars
+terraform init  -backend-config=../backend-config.tfvars
 ```
 
 ### 4. Plan and Apply
