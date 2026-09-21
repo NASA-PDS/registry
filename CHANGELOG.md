@@ -1,5 +1,13 @@
 # Changelog
 
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-09-21)
+
+[Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.7.0...«unknown»)
+
+**Other closed issues:**
+
+- Complete automation of the opensearch data access policy [\#570](https://github.com/NASA-PDS/registry/issues/570)
+
 ## [v1.7.0](https://github.com/NASA-PDS/registry/tree/v1.7.0) (2026-09-15)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.6.0...v1.7.0)
