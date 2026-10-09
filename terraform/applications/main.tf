@@ -9,7 +9,7 @@ locals {
 }
 
 module "registry_sweepers" {
-  source = "git::https://github.com/NASA-PDS/registry-sweepers.git//terraform?ref=simplify_terraform"
+  source = "git::https://github.com/NASA-PDS/registry-sweepers.git//terraform?ref=develop"
 
   venue                    = var.venue
   managedby                = var.managedby
