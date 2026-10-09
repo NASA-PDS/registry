@@ -1,12 +1,17 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-09-23)
+## [«unknown»](https://github.com/NASA-PDS/registry/tree/«unknown») (2026-10-09)
 
 [Full Changelog](https://github.com/NASA-PDS/registry/compare/v1.7.0...«unknown»)
+
+**Defects:**
+
+- Members missing in collections seen from API for `urn:nasa:pds:lp-er-calibrated` collections [\#582](https://github.com/NASA-PDS/registry/issues/582) [[s.high](https://github.com/NASA-PDS/registry/labels/s.high)]
 
 **Other closed issues:**
 
 - Complete automation of the opensearch data access policy [\#570](https://github.com/NASA-PDS/registry/issues/570)
+- Deploy upgraded registry-api and sweepers to test and production [\#551](https://github.com/NASA-PDS/registry/issues/551)
 
 ## [v1.7.0](https://github.com/NASA-PDS/registry/tree/v1.7.0) (2026-09-15)
 
