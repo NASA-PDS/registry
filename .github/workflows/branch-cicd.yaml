@@ -56,6 +56,15 @@ jobs:
                     # To restore a set of files, we only need to match a prefix of the saved key.
                     restore-keys: pds-${{runner.os}}-py-
             -
+                name: 📦 Install terraform-docs
+                run: |
+                    TERRAFORM_DOCS_VERSION="v0.19.0"
+                    curl -sSLo terraform-docs.tar.gz "https://github.com/terraform-docs/terraform-docs/releases/download/${TERRAFORM_DOCS_VERSION}/terraform-docs-${TERRAFORM_DOCS_VERSION}-linux-amd64.tar.gz"
+                    tar -xzf terraform-docs.tar.gz terraform-docs
+                    chmod +x terraform-docs
+                    sudo mv terraform-docs /usr/local/bin/
+                shell: bash
+            -
                 name: 🩺 Test Software
                 run:
                     pip install --editable '.[dev]'
