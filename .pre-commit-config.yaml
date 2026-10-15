@@ -54,6 +54,37 @@ repos:
 
 -   repo: local
     hooks:
+    -   id: terraform-docs-applications
+        name: terraform-docs (applications)
+        language: system
+        entry: terraform-docs
+        args: ["--config", "terraform/.terraform-docs.yml", "terraform/applications"]
+        files: terraform/applications/[^/]+\.tf$
+        pass_filenames: false
+    -   id: terraform-docs-security
+        name: terraform-docs (security)
+        language: system
+        entry: terraform-docs
+        args: ["--config", "terraform/.terraform-docs.yml", "terraform/security"]
+        files: terraform/security/[^/]+\.tf$
+        pass_filenames: false
+    -   id: terraform-docs-opensearch-serverless
+        name: terraform-docs (opensearch_serverless)
+        language: system
+        entry: terraform-docs
+        args: ["--config", "terraform/.terraform-docs.yml", "terraform/opensearch_serverless"]
+        files: terraform/opensearch_serverless/[^/]+\.tf$
+        pass_filenames: false
+    -   id: terraform-docs-opensearch-managed
+        name: terraform-docs (opensearch_managed)
+        language: system
+        entry: terraform-docs
+        args: ["--config", "terraform/.terraform-docs.yml", "terraform/opensearch_managed"]
+        files: terraform/opensearch_managed/[^/]+\.tf$
+        pass_filenames: false
+
+-   repo: local
+    hooks:
     -   id: detect-secrets
         name: detect-secrets
         entry: scripts/detect_secrets_baseline.sh
