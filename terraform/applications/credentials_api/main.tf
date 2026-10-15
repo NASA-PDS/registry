@@ -56,4 +56,19 @@ module "api_gateway" {
   common_tags          = var.common_tags
 }
 
+# Cognito App Client
+# Public client (no secret) using the OAuth authorization code flow
+resource "aws_cognito_user_pool_client" "registry_app_client" {
+  name            = var.cognito_app_client_name
+  user_pool_id    = var.cognito_user_pool_id
+  generate_secret = false
+
+  callback_urls = var.cognito_app_client_callback_urls
+
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_flows                  = ["code"]
+  allowed_oauth_scopes                 = ["email", "openid"]
+  supported_identity_providers         = ["COGNITO"]
+}
+
 # TODO integrate as submodules registry-api and registry-sweepers

@@ -18,6 +18,7 @@ permissions_boundary_arn                = "arn:aws:iam::<aws_account_id>:policy/
 cognito_allowed_groups                  = ["<cognito_group_1>", "<cognito_group_2>"]
 cognito_user_pool_id                    = "<aws_region>_<user_pool_id>"
 cognito_identity_pool_id                = "<aws_region>:<identity_pool_uuid>"
+cognito_app_client_callback_urls        = ["https://<host>/oauth2/idpresponse"]
 registry_api_ecs_service_security_group = "<security_group_id>"
 acm_certificate_arn                     = "arn:aws:acm:<aws_region>:<aws_account_id>:certificate/<certificate_id>"
 

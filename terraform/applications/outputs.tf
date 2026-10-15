@@ -21,6 +21,11 @@ output "lambda_log_group_arn" {
   value       = module.credentials_api.lambda_log_group_arn
 }
 
+output "cognito_app_client_id" {
+  description = "ID of the Cognito app client"
+  value       = module.credentials_api.cognito_app_client_id
+}
+
 output "cognito_jwks_url" {
   description = "Cognito JWKS URL used for JWT token validation"
   value       = module.credentials_api.cognito_jwks_url

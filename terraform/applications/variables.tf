@@ -127,6 +127,17 @@ variable "cognito_identity_pool_id" {
   default     = ""
 }
 
+variable "cognito_app_client_name" {
+  description = "Name of the Cognito app client created in the user pool"
+  type        = string
+  default     = "pds-registry-client"
+}
+
+variable "cognito_app_client_callback_urls" {
+  description = "Allowed OAuth callback URLs of the Cognito app client (at least one is required for the authorization code flow)"
+  type        = list(string)
+}
+
 # API Gateway Configuration
 variable "api_gateway_name" {
   description = "Name of the API Gateway"
