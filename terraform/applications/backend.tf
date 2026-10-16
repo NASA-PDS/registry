@@ -3,7 +3,7 @@ terraform {
     # Backend configuration values provided via backend-config.tfvars
     # Example backend-config.tfvars content:
     #   bucket         = "pds-infra"
-    key            = "registry/applications.tfstate"
+    key            = "registry_aoss/applications.tfstate"
     #   region         = "us-east-1"
     #   dynamodb_table = "terraform-state-lock"
     #   encrypt        = true

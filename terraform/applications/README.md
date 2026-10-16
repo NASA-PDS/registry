@@ -71,7 +71,6 @@ No resources.
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_aoss_endpoint"></a> [aoss\_endpoint](#input\_aoss\_endpoint) | Registry AOSS endpoint URL | `string` | n/a | yes |
-| <a name="input_cognito_app_client_callback_urls"></a> [cognito\_app\_client\_callback\_urls](#input\_cognito\_app\_client\_callback\_urls) | Allowed OAuth callback URLs of the Cognito app client (at least one is required for the authorization code flow) | `list(string)` | n/a | yes |
 | <a name="input_managedby"></a> [managedby](#input\_managedby) | Person or system responsible for the deployment | `string` | n/a | yes |
 | <a name="input_sweepers_image_uri"></a> [sweepers\_image\_uri](#input\_sweepers\_image\_uri) | registry-sweepers Docker image URI | `string` | n/a | yes |
 | <a name="input_sweepers_nodes"></a> [sweepers\_nodes](#input\_sweepers\_nodes) | Map of node IDs to ECS resource allocations for registry-sweepers | <pre>map(object({<br/>    cpu             = number<br/>    memory          = number<br/>    additional_args = optional(string)<br/>  }))</pre> | n/a | yes |

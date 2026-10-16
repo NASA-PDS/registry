@@ -57,18 +57,20 @@ module "api_gateway" {
 }
 
 # Cognito App Client
-# Public client (no secret) using the OAuth authorization code flow
+# Client used by the CLI: no secret, no OAuth/hosted UI (hence no callback URL),
+# users authenticate directly with their username and password.
+# Password verification/update is handled by a separate, dedicated app client.
 resource "aws_cognito_user_pool_client" "registry_app_client" {
   name            = var.cognito_app_client_name
   user_pool_id    = var.cognito_user_pool_id
   generate_secret = false
 
-  callback_urls = var.cognito_app_client_callback_urls
+  explicit_auth_flows = [
+    "ALLOW_USER_PASSWORD_AUTH", # CLI login (registry-loader InitiateAuth)
+    "ALLOW_REFRESH_TOKEN_AUTH", # CLI token renewal
+  ]
 
-  allowed_oauth_flows_user_pool_client = true
-  allowed_oauth_flows                  = ["code"]
-  allowed_oauth_scopes                 = ["email", "openid"]
-  supported_identity_providers         = ["COGNITO"]
+  supported_identity_providers = ["COGNITO"]
 }
 
 # TODO integrate as submodules registry-api and registry-sweepers
