@@ -1,0 +1,20 @@
+formatter: "markdown table"
+
+sort:
+  enabled: true
+  by: required
+
+output:
+  file: "README.md"
+  mode: inject
+  template: |-
+    <!-- BEGIN_TF_DOCS -->
+    {{ .Content }}
+    <!-- END_TF_DOCS -->
+
+settings:
+  indent: 2
+  anchor: true
+  html: true
+  read-comments: true
+  lockfile: true
