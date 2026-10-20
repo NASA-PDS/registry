@@ -70,6 +70,7 @@ services:
     image: ${REG_LOADER_IMAGE}
     environment:
       - ES_URL=${ES_URL}
+      - HARVEST_VERSION=${HARVEST_VERSION}
     volumes:
       - ./scripts/elasticsearch-init.sh:/usr/local/bin/elasticsearch-init.sh
       - ./scripts/aliases:/usr/local/bin/aliases
@@ -103,7 +104,8 @@ services:
 
   # Runs provenance script
   registry-sweepers:
-    profiles: ["dev-api", "int-registry-batch-loader"]
+    #profiles: ["dev-api", "int-registry-batch-loader"]
+    profiles: ["dev-api"]
     image: ${REG_SWEEPERS_IMAGE}
     environment:
       - PROV_ENDPOINT=${ES_URL}
@@ -111,7 +113,7 @@ services:
       - LOGLEVEL=INFO
       - DEV_MODE=1
       - MULTITENANCY_NODE_ID=geo
-    command: ["--legacy-sync"]
+    #command: ["--legacy-sync"]
     networks:
       - pds
     depends_on:
@@ -128,7 +130,7 @@ services:
     environment:
       - ES_URL=${ES_URL}
       - SERVER_PORT=8080
-      - SPRING_BOOT_APP_ARGS=--openSearch.host=elasticsearch:9200 --logging.level.root=DEBUG --server.authorizedForwardedHost=localhost,registry-api
+      - SPRING_BOOT_APP_ARGS=--openSearch.host=elasticsearch:9200 --logging.level.root=DEBUG --server.authorizedForwardedHost=localhost,registry-api --registry.field.name.architecture=structured
     ports:
       - "8080:8080"
     volumes:
@@ -145,9 +147,9 @@ services:
       interval: 10s
       timeout: 2s
       retries: 50
-    depends_on:
-      registry-sweepers:
-        condition: service_completed_successfully
+    #depends_on:
+    #  registry-sweepers:
+    #    condition: service_completed_successfully
 
 
 

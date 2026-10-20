@@ -40,8 +40,13 @@ if [ -z "$ES_URL" ]; then
     exit 1
 fi
 
+echo "Bon dla bon dla" 1>&2
+
 echo "Creating registry and data dictionary indices..." 1>&2
 registry-manager create-registry -registry file:///etc/local_registry.xml  -auth /etc/es-auth.cfg
+
+echo "Add Harvest supported version..." 1>&2
+registry-manager update-tool-ver -registry file:///etc/local_registry.xml  -auth /etc/es-auth.cfg harvest=$HARVEST_VERSION
 
 echo "Create aliases, until registry-manager does it"
 curl -X POST  -H "Content-Type: application/json" -d @/usr/local/bin/aliases/alias_registry.json -u admin:admin --insecure https://elasticsearch:9200/_aliases
