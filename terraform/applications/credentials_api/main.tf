@@ -56,21 +56,4 @@ module "api_gateway" {
   common_tags          = var.common_tags
 }
 
-# Cognito App Client
-# Client used by the CLI: no secret, no OAuth/hosted UI (hence no callback URL),
-# users authenticate directly with their username and password.
-# Password verification/update is handled by a separate, dedicated app client.
-resource "aws_cognito_user_pool_client" "registry_app_client" {
-  name            = var.cognito_app_client_name
-  user_pool_id    = var.cognito_user_pool_id
-  generate_secret = false
-
-  explicit_auth_flows = [
-    "ALLOW_USER_PASSWORD_AUTH", # CLI login (registry-loader InitiateAuth)
-    "ALLOW_REFRESH_TOKEN_AUTH", # CLI token renewal
-  ]
-
-  supported_identity_providers = ["COGNITO"]
-}
-
 # TODO integrate as submodules registry-api and registry-sweepers

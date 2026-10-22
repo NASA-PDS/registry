@@ -24,11 +24,6 @@ output "lambda_log_group_arn" {
   value       = module.lambda.lambda_log_group_arn
 }
 
-output "cognito_app_client_id" {
-  description = "ID of the Cognito app client"
-  value       = aws_cognito_user_pool_client.registry_app_client.id
-}
-
 output "cognito_jwks_url" {
   description = "Cognito JWKS URL used for JWT token validation"
   value       = module.lambda.cognito_jwks_url

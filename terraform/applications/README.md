@@ -83,7 +83,6 @@ No resources.
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region for resources | `string` | `"us-east-1"` | no |
 | <a name="input_aws_s3_bucket_logs_id"></a> [aws\_s3\_bucket\_logs\_id](#input\_aws\_s3\_bucket\_logs\_id) | ID of the S3 bucket used for registry-api load balancer access logs | `string` | `""` | no |
 | <a name="input_cognito_allowed_groups"></a> [cognito\_allowed\_groups](#input\_cognito\_allowed\_groups) | List of Cognito groups allowed to access the Lambda function | `list(string)` | `[]` | no |
-| <a name="input_cognito_app_client_name"></a> [cognito\_app\_client\_name](#input\_cognito\_app\_client\_name) | Name of the Cognito app client created in the user pool | `string` | `"pds-registry-client"` | no |
 | <a name="input_cognito_identity_pool_id"></a> [cognito\_identity\_pool\_id](#input\_cognito\_identity\_pool\_id) | Cognito Identity Pool ID for Lambda authentication | `string` | `""` | no |
 | <a name="input_cognito_user_pool_id"></a> [cognito\_user\_pool\_id](#input\_cognito\_user\_pool\_id) | Cognito User Pool ID for Lambda authentication | `string` | `""` | no |
 | <a name="input_collection_name"></a> [collection\_name](#input\_collection\_name) | Name of the OpenSearch Serverless collection | `string` | `"registry-collection"` | no |
@@ -109,7 +108,6 @@ No resources.
 | ---- | ----------- |
 | <a name="output_api_gateway_endpoint"></a> [api\_gateway\_endpoint](#output\_api\_gateway\_endpoint) | Base URL of the API Gateway |
 | <a name="output_api_gateway_id"></a> [api\_gateway\_id](#output\_api\_gateway\_id) | ID of the API Gateway |
-| <a name="output_cognito_app_client_id"></a> [cognito\_app\_client\_id](#output\_cognito\_app\_client\_id) | ID of the Cognito app client |
 | <a name="output_cognito_jwks_url"></a> [cognito\_jwks\_url](#output\_cognito\_jwks\_url) | Cognito JWKS URL used for JWT token validation |
 | <a name="output_credentials_endpoint"></a> [credentials\_endpoint](#output\_credentials\_endpoint) | Full URL for the GET /credentials endpoint |
 | <a name="output_lambda_function_arn"></a> [lambda\_function\_arn](#output\_lambda\_function\_arn) | ARN of the Lambda function |

@@ -43,7 +43,6 @@ module "credentials_api" {
   cognito_allowed_groups                  = var.cognito_allowed_groups
   cognito_user_pool_id                    = var.cognito_user_pool_id
   cognito_identity_pool_id                = var.cognito_identity_pool_id
-  cognito_app_client_name                 = var.cognito_app_client_name
   api_gateway_name                        = var.api_gateway_name
   api_gateway_stage_name                  = var.api_gateway_stage_name
   aws_s3_bucket_logs_id                   = var.aws_s3_bucket_logs_id
