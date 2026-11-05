@@ -72,6 +72,12 @@ Options:
                           inventory and registry and compute set differences
     --output-dir DIR      Write all output files to DIR: summary.csv at the
                           root, per-collection diff CSVs in subdirectories
+    --verbose-report      After the count report, print a plain-language
+                          explanation of every source and, when the API
+                          /members count is short, compare the collection's
+                          harvest time with the latest member product's harvest
+                          time to say whether the shortfall will resolve on its
+                          own or needs the collection to be re-harvested
 """
 
 from __future__ import annotations
@@ -83,7 +89,11 @@ import json
 import logging
 import os
 import sys
+import textwrap
 import urllib.parse
+from dataclasses import dataclass
+from datetime import datetime
+from datetime import timezone
 from pathlib import Path
 from typing import TYPE_CHECKING
 from typing import NamedTuple
@@ -104,6 +114,10 @@ _DEFAULT_REGISTRY_INDEX = "/*-registry/_count"
 _REGISTRY_PAGE_SIZE = 10000
 _API_VISIBLE_ARCHIVE_STATUSES = ["archived", "certified"]
 """Archive-status values that the PDS Search API exposes to callers."""
+_REGISTRY_HARVEST_FIELD = "ops:Harvest_Info/ops:harvest_date_time"
+"""Registry (OpenSearch) field holding the time a product was harvested."""
+_API_HARVEST_PROPERTY = "ops:Harvest_Info.ops:harvest_date_time"
+"""The same field as exposed in the Search API's ``properties`` object."""
 
 _REGISTRY_ENV_VARS = (
     "REQUEST_SIGNER_AWS_REGION",
@@ -130,6 +144,44 @@ class _ReportRow(NamedTuple):
     label: str
     value: int | None
     primary: bool
+
+
+@dataclass
+class AuditFindings:
+    """Everything gathered for one collection, as input to the verbose report.
+
+    Attributes:
+        lidvid: Collection LIDVID that was audited.
+        registry_queried: ``False`` when registry queries were skipped
+            (``--no-registry`` or authentication unavailable).
+        registry_pattern: Wildcard pattern used for the registry counts.
+        label_count: ``pds:Inventory.pds:records`` from the collection label.
+        inventory_url: URL of the inventory table, if the label references one.
+        inventory_count: Data rows counted in the downloaded inventory table.
+        members_count: Hit total from the API ``/members`` endpoint.
+        registry_raw_count: All registry products matching the wildcard.
+        registry_superseded_count: Superseded products among those.
+        registry_non_archived_count: Non-superseded products not archived/certified.
+        registry_api_count: Non-superseded, archived/certified products.
+        collection_harvest: Harvest time of the collection product itself.
+        latest_product_harvest: Latest harvest time among non-superseded members.
+        latest_product_lidvid: LIDVID of the member with that harvest time.
+    """
+
+    lidvid: str
+    registry_queried: bool
+    registry_pattern: str | None = None
+    label_count: int | None = None
+    inventory_url: str | None = None
+    inventory_count: int | None = None
+    members_count: int | None = None
+    registry_raw_count: int | None = None
+    registry_superseded_count: int | None = None
+    registry_non_archived_count: int | None = None
+    registry_api_count: int | None = None
+    collection_harvest: str | None = None
+    latest_product_harvest: str | None = None
+    latest_product_lidvid: str | None = None
 
 
 # ── terminal colours ──────────────────────────────────────────────────────────
@@ -632,6 +684,93 @@ def get_all_registry_lidvids(
     return lidvids
 
 
+# ── harvest times ─────────────────────────────────────────────────────────────
+
+
+def _first_value(raw: object) -> str | None:
+    """Return a scalar string from a field that may be a single value or a list.
+
+    Args:
+        raw: Raw field value from an API ``properties`` object or a registry
+            ``_source`` document.
+
+    Returns:
+        The first element as a string, or ``None`` if the field is absent or empty.
+    """
+    if isinstance(raw, list):
+        raw = raw[0] if raw else None
+    return None if raw is None else str(raw)
+
+
+def parse_timestamp(value: str | None) -> datetime | None:
+    """Parse an ISO 8601 harvest timestamp into an aware datetime.
+
+    Args:
+        value: Timestamp string such as ``2025-03-01T12:34:56.789Z``. Naive
+            values are assumed to be UTC.
+
+    Returns:
+        Timezone-aware datetime, or ``None`` if ``value`` is empty or unparseable.
+    """
+    if not value:
+        return None
+    text = value.strip()
+    if text.endswith(("Z", "z")):
+        text = text[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(text)
+    except ValueError:
+        logger.warning("Could not parse harvest timestamp: %r", value)
+        return None
+    return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+
+
+def get_latest_member_harvest(
+    collection_lid: str,
+    wildcard_pattern: str | None,
+    registry_index: str,
+    auth: RequestsAWSV4SignerAuth,
+    timeout: int,
+) -> tuple[str | None, str | None]:
+    """Return the most recent harvest time among non-superseded member products.
+
+    Superseded products are excluded so an old version that happens to carry a
+    late harvest time cannot masquerade as the latest load.
+
+    Args:
+        collection_lid: Collection LID used to derive the default wildcard.
+        wildcard_pattern: Explicit wildcard override (defaults to
+            ``<collection_lid>:*``).
+        registry_index: Index path used for the count query; ``_count`` is
+            replaced with ``_search`` automatically.
+        auth: Signed AWS auth from ``make_registry_auth``.
+        timeout: Per-request timeout in seconds.
+
+    Returns:
+        A ``(lidvid, harvest_time)`` tuple for the latest-harvested member, or
+        ``(None, None)`` if the query fails or no member carries a harvest time.
+    """
+    pattern = wildcard_pattern or f"{collection_lid}:*"
+    search_index = registry_index.removesuffix("_count") + "_search"
+    query = {
+        "size": 1,
+        "_source": ["lidvid", _REGISTRY_HARVEST_FIELD],
+        "sort": [{_REGISTRY_HARVEST_FIELD: {"order": "desc", "unmapped_type": "date"}}],
+        **_non_superseded_query(pattern),
+    }
+    data = run_registry_query(query, search_index, auth, timeout)
+    if data is None:
+        return None, None
+
+    hits = data.get("hits", {}).get("hits", [])
+    if not hits:
+        logger.warning("No member products found for pattern %s", pattern)
+        return None, None
+
+    source = hits[0].get("_source", {})
+    return _first_value(source.get("lidvid")), _first_value(source.get(_REGISTRY_HARVEST_FIELD))
+
+
 # ── source 1: label record count ─────────────────────────────────────────────
 
 
@@ -640,8 +779,8 @@ def get_label_count(
     api_base: str,
     lidvid: str,
     timeout: int,
-) -> tuple[int | None, str | None]:
-    """Return the label's stated record count and the inventory file URL.
+) -> tuple[int | None, str | None, str | None]:
+    """Return the label's stated record count, inventory file URL and harvest time.
 
     Args:
         session: Shared HTTP session.
@@ -650,8 +789,8 @@ def get_label_count(
         timeout: Per-request timeout in seconds.
 
     Returns:
-        A ``(record_count, file_ref)`` tuple. Either element may be ``None``
-        if the corresponding field is absent from the label.
+        A ``(record_count, file_ref, harvest_time)`` tuple. Any element may be
+        ``None`` if the corresponding field is absent from the label.
     """
     encoded = urllib.parse.quote(lidvid, safe="")
     url = f"{api_base}/products/{encoded}"
@@ -660,7 +799,7 @@ def get_label_count(
         resp.raise_for_status()
     except requests.exceptions.RequestException as exc:
         logger.error("Failed to fetch collection product: %s", exc)
-        return None, None
+        return None, None, None
 
     # API returns properties at the top level of the response object.
     props = resp.json().get("properties", {})
@@ -679,7 +818,9 @@ def get_label_count(
     if raw is not None:
         file_ref = raw[0] if isinstance(raw, list) else raw
 
-    return record_count, file_ref
+    harvest_time = _first_value(props.get(_API_HARVEST_PROPERTY))
+
+    return record_count, file_ref, harvest_time
 
 
 # ── source 2: inventory file ──────────────────────────────────────────────────
@@ -1005,12 +1146,322 @@ def print_report(
     if label_count is not None and members_count is not None and label_count != members_count:
         diff = members_count - label_count
         direction = "more" if diff > 0 else "fewer"
+        hint = (
+            "secondary members or versioned products may be included"
+            if diff > 0
+            else "products may not be loaded, may not be API-visible, or the members "
+            "relationship may be stale (rerun with --verbose-report)"
+        )
         print(
             f"  {Color.yellow('⚠')}  API has {abs(diff):,} {direction} members than the label claims "
-            f"— secondary members or versioned products may be included"
+            f"— {hint}"
         )
 
     print()
+
+
+# ── verbose report ────────────────────────────────────────────────────────────
+
+_WRAP_WIDTH = 100
+
+
+def _print_wrapped(text: str, indent: int) -> None:
+    """Print ``text`` word-wrapped and indented by ``indent`` spaces."""
+    pad = " " * indent
+    print(textwrap.fill(text, width=_WRAP_WIDTH, initial_indent=pad, subsequent_indent=pad))
+
+
+def _print_source(title: str, value: int | None, explanation: str) -> None:
+    """Print one source heading with its count and a wrapped explanation."""
+    shown = f"{value:,}" if value is not None else "N/A"
+    print(f"  {Color.bold(title)}: {shown}")
+    _print_wrapped(explanation, 6)
+    print()
+
+
+def _compare_phrase(value: int, reference: int, reference_name: str) -> str:
+    """Return a sentence stating how ``value`` relates to ``reference``."""
+    if value == reference:
+        return f"This matches the {reference_name}."
+    diff = value - reference
+    direction = "more" if diff > 0 else "fewer"
+    return f"This is {abs(diff):,} {direction} than the {reference_name} ({reference:,})."
+
+
+def classify_harvest_order(collection_harvest: str | None, latest_product_harvest: str | None) -> str | None:
+    """Say whether the collection was harvested before its most recent member.
+
+    Args:
+        collection_harvest: Harvest time of the collection product.
+        latest_product_harvest: Latest harvest time among its member products.
+
+    Returns:
+        ``"collection_first"`` when the collection was harvested strictly before
+        the latest member, ``"collection_last"`` when it was harvested at the
+        same time or later, or ``None`` if either time is missing or unparseable.
+    """
+    collection_time = parse_timestamp(collection_harvest)
+    product_time = parse_timestamp(latest_product_harvest)
+    if collection_time is None or product_time is None:
+        return None
+    return "collection_first" if collection_time < product_time else "collection_last"
+
+
+def _print_sources(findings: AuditFindings) -> None:
+    """Print the "what each source says" section of the verbose report."""
+    print(Color.bold("What each source says"))
+    print()
+
+    if findings.label_count is None:
+        _print_source(
+            "Label (pds:records)",
+            None,
+            "pds:Inventory.pds:records could not be read from the collection label returned by the Search API.",
+        )
+    else:
+        _print_source(
+            "Label (pds:records)",
+            findings.label_count,
+            "The number of member records the data provider declared in the collection label "
+            "(pds:Inventory/pds:records). This is a claim by the provider and is not verified by anything else.",
+        )
+
+    if findings.inventory_count is not None:
+        text = (
+            f"The inventory table was downloaded from {findings.inventory_url} and confirmed to contain "
+            f"{findings.inventory_count:,} data rows (header excluded)."
+        )
+        if findings.label_count is not None:
+            text += " " + _compare_phrase(findings.inventory_count, findings.label_count, "label")
+        _print_source("Inventory file rows", findings.inventory_count, text)
+    elif findings.inventory_url is None:
+        _print_source(
+            "Inventory file rows",
+            None,
+            "The collection label has no inventory file reference (ops:Data_File_Info.ops:file_ref), "
+            "so the inventory table could not be checked.",
+        )
+    else:
+        _print_source(
+            "Inventory file rows",
+            None,
+            f"Downloading or parsing the inventory table at {findings.inventory_url} failed; see the log output.",
+        )
+
+    if findings.members_count is None:
+        _print_source("API /members hits", None, "The /members request failed; see the log output.")
+    else:
+        reference, name = (
+            (findings.inventory_count, "inventory file")
+            if findings.inventory_count is not None
+            else (findings.label_count, "label")
+        )
+        text = (
+            "The total reported by the Search API's /members endpoint for this collection, which is what "
+            "API users see. The members relationship is built by the registry sweepers after the collection "
+            "has been processed, so this count can lag what is actually in the registry."
+        )
+        if reference is not None:
+            text += " " + _compare_phrase(findings.members_count, reference, name)
+        _print_source("API /members hits", findings.members_count, text)
+
+    if not findings.registry_queried:
+        _print_source(
+            "Registry lid:* (all)",
+            None,
+            "The registry was not queried (--no-registry was given or registry authentication was "
+            "unavailable). Source your registry credentials and rerun to compare against the registry.",
+        )
+        return
+
+    pattern = findings.registry_pattern
+    _print_source(
+        "Registry lid:* (all)",
+        findings.registry_raw_count,
+        f"Every registry product whose LID matches {pattern}, including superseded versions and "
+        "products in any archive status. A wildcard match is approximate, not exact collection membership.",
+    )
+    _print_source(
+        "  of which superseded",
+        findings.registry_superseded_count,
+        "Products replaced by a newer version. They are not expected in the current inventory or the API.",
+    )
+    _print_source(
+        "  of which not archived/certified",
+        findings.registry_non_archived_count,
+        "Non-superseded products whose archive status is neither archived nor certified (for example "
+        "staged). They are in the registry but the API does not expose them.",
+    )
+    _print_source(
+        "Registry lid:* (API-visible)",
+        findings.registry_api_count,
+        "Non-superseded products with archive status archived or certified: the set the API is able to "
+        "expose. If this equals the inventory count but /members is lower, the products are loaded and the "
+        "problem is the members relationship.",
+    )
+
+
+def _print_harvest_analysis(findings: AuditFindings, shortfall: int) -> None:
+    """Print the harvest-time comparison used to judge whether /members will self-heal."""
+    print(Color.bold("Will the /members shortfall resolve on its own?"))
+    print()
+    _print_wrapped(
+        "The members relationship is only populated when the registry sweepers process a collection. "
+        "Sweepers do not revisit a collection that has already been processed, so if member products "
+        "were overwritten after that, /members stays stale until the collection itself is re-harvested. "
+        "Comparing harvest times (ops:Harvest_Info/ops:harvest_date_time) shows which situation applies.",
+        2,
+    )
+    print()
+
+    collection_time = parse_timestamp(findings.collection_harvest)
+    product_time = parse_timestamp(findings.latest_product_harvest)
+    print(f"  Collection harvested       : {collection_time.isoformat() if collection_time else 'unknown'}")
+    latest_suffix = f"  ({findings.latest_product_lidvid})" if findings.latest_product_lidvid else ""
+    print(f"  Latest member harvested    : {product_time.isoformat() if product_time else 'unknown'}{latest_suffix}")
+    print()
+
+    order = classify_harvest_order(findings.collection_harvest, findings.latest_product_harvest)
+    if order is None:
+        if not findings.registry_queried:
+            reason = "the latest member's harvest time comes from the registry, which was not queried"
+        else:
+            reason = "one or both harvest times are missing or could not be parsed"
+        _print_wrapped(
+            f"Cannot tell: {reason}. Without both times it is not possible to say whether sweepers "
+            "still have work to do.",
+            2,
+        )
+    elif order == "collection_first":
+        gap = product_time - collection_time  # type: ignore[operator]
+        _print_wrapped(
+            f"The collection was harvested {gap} BEFORE the most recent member product, and /members "
+            f"is {shortfall:,} short. Two explanations fit:",
+            2,
+        )
+        print()
+        _print_wrapped(
+            "(1) Sweepers have not yet processed the remaining members listed in the inventory. "
+            "This should resolve once the sweepers finish; recheck after their next run.",
+            4,
+        )
+        _print_wrapped(
+            "(2) The latest products were overwritten after the collection was processed. The "
+            "collection will not be processed again unless it is also rewritten, so /members will "
+            "stay short. Re-harvest the collection (label and inventory) to fix it.",
+            4,
+        )
+        print()
+        _print_wrapped(
+            "If the shortfall is unchanged after the next sweeper run, treat it as (2).",
+            2,
+        )
+    else:
+        _print_wrapped(
+            f"The collection was harvested at the same time as or after the most recent member product, "
+            f"so load order does not explain the {shortfall:,}-product shortfall. Look at whether the "
+            "missing products are loaded at all, are superseded, or are not archived/certified "
+            "(rerun with --diff to list the specific LIDVIDs).",
+            2,
+        )
+    print()
+
+
+def print_verbose_report(findings: AuditFindings) -> None:
+    """Print a plain-language explanation of the audit results.
+
+    Complements ``print_report`` by saying what each count is and where it came
+    from, then, when the API ``/members`` total is short of the expected count,
+    uses harvest times to indicate whether the shortfall will resolve itself.
+
+    Args:
+        findings: Counts and harvest times gathered for one collection.
+    """
+    print(Color.bold(f"Verbose report: {findings.lidvid}"))
+    print("─" * 70)
+    print()
+    _print_sources(findings)
+
+    expected, expected_name = (
+        (findings.inventory_count, "inventory file")
+        if findings.inventory_count is not None
+        else (findings.label_count, "label")
+    )
+
+    print(Color.bold("What this means"))
+    print()
+
+    if findings.label_count is not None and findings.inventory_count is not None:
+        if findings.label_count != findings.inventory_count:
+            _print_wrapped(
+                f"{Color.yellow('⚠')} The label and the inventory file disagree, so the label may be stale "
+                "or the inventory file malformed. This is a problem with the submitted data itself.",
+                2,
+            )
+        else:
+            _print_wrapped(
+                f"{Color.green('✓')} The label and the downloaded inventory file agree on "
+                f"{findings.inventory_count:,} members, so the submitted data is internally consistent.",
+                2,
+            )
+        print()
+
+    if findings.members_count is None or expected is None:
+        _print_wrapped("Not enough data to compare the API with the expected member count.", 2)
+        print()
+        return
+
+    if findings.members_count == expected:
+        _print_wrapped(
+            f"{Color.green('✓')} The API /members total matches the {expected_name} ({expected:,}).", 2
+        )
+        print()
+        return
+
+    if findings.members_count > expected:
+        _print_wrapped(
+            f"{Color.yellow('⚠')} The API reports {findings.members_count - expected:,} more members than "
+            f"the {expected_name}. Secondary members, duplicate registrations, or a stale "
+            f"{expected_name} could explain this.",
+            2,
+        )
+        print()
+        return
+
+    shortfall = expected - findings.members_count
+    _print_wrapped(
+        f"{Color.red('✗')} The API is missing {shortfall:,} of the {expected:,} members listed in the "
+        f"{expected_name}.",
+        2,
+    )
+    print()
+
+    api_visible = findings.registry_api_count
+    if api_visible is not None:
+        if api_visible >= expected:
+            _print_wrapped(
+                f"The registry wildcard matches {api_visible:,} API-visible products, enough to cover the "
+                f"expected count of {expected:,}, but that approximate count does not prove this collection's "
+                "products are loaded. Use --diff to verify the exact LIDVIDs before treating this as a members-relationship gap.",
+                2,
+            )
+        else:
+            missing = expected - api_visible
+            extra = ""
+            if findings.registry_non_archived_count:
+                extra = (
+                    f" {findings.registry_non_archived_count:,} loaded products are not archived/certified "
+                    "and are hidden from the API for that reason."
+                )
+            _print_wrapped(
+                f"The registry holds only {api_visible:,} API-visible products, {missing:,} fewer than "
+                f"the {expected_name}, so some products are not loaded or not visible.{extra} Rerun "
+                "with --diff to list the specific LIDVIDs.",
+                2,
+            )
+        print()
+
+    _print_harvest_analysis(findings, shortfall)
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────────
@@ -1120,6 +1571,18 @@ def parse_args() -> argparse.Namespace:
             "summary.csv is written at the root; each collection's diff CSVs "
             "go in a subdirectory named after the collection. "
             "Without --diff, only summary.csv is written."
+        ),
+    )
+    parser.add_argument(
+        "--verbose-report",
+        action="store_true",
+        help=(
+            "After the count report, print a plain-language explanation of each "
+            "source. When the API /members count is short, also compare the "
+            "collection's harvest time with the latest member product's harvest "
+            "time to indicate whether sweepers still need to run or the "
+            "collection must be re-harvested. The latest-member time requires "
+            "registry access."
         ),
     )
     return parser.parse_args()
@@ -1238,7 +1701,7 @@ def _audit_one(
 
     # Source 1: label count + inventory file URL
     logger.info("Fetching collection label from API …")
-    label_count, file_ref = get_label_count(session, args.api_base, lidvid, args.timeout)
+    label_count, file_ref, collection_harvest = get_label_count(session, args.api_base, lidvid, args.timeout)
 
     if label_count is not None:
         logger.info("pds:records = %d", label_count)
@@ -1312,6 +1775,15 @@ def _audit_one(
     else:
         logger.info("Registry query skipped")
 
+    # Harvest times only matter for the verbose report, so skip the extra query otherwise.
+    latest_product_lidvid: str | None = None
+    latest_product_harvest: str | None = None
+    if args.verbose_report and registry_auth is not None:
+        logger.info("Querying registry (latest member harvest time) …")
+        latest_product_lidvid, latest_product_harvest = get_latest_member_harvest(
+            collection_lid, args.wildcard, args.registry_index, registry_auth, args.timeout
+        )
+
     print_report(
         lidvid,
         label_count,
@@ -1322,6 +1794,26 @@ def _audit_one(
         registry_non_archived_count,
         registry_api_count,
     )
+
+    if args.verbose_report:
+        print_verbose_report(
+            AuditFindings(
+                lidvid=lidvid,
+                registry_queried=registry_auth is not None,
+                registry_pattern=args.wildcard or f"{collection_lid}:*",
+                label_count=label_count,
+                inventory_url=file_ref,
+                inventory_count=inventory_count,
+                members_count=members_count,
+                registry_raw_count=registry_raw_count,
+                registry_superseded_count=registry_superseded_count,
+                registry_non_archived_count=registry_non_archived_count,
+                registry_api_count=registry_api_count,
+                collection_harvest=collection_harvest,
+                latest_product_harvest=latest_product_harvest,
+                latest_product_lidvid=latest_product_lidvid,
+            )
+        )
 
     # Optional LIDVID-level diff
     diff_inv_not_reg: int | None = None
