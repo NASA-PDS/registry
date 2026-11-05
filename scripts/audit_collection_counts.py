@@ -1440,9 +1440,9 @@ def print_verbose_report(findings: AuditFindings) -> None:
     if api_visible is not None:
         if api_visible >= expected:
             _print_wrapped(
-                f"The registry holds {api_visible:,} API-visible products, enough to cover all "
-                f"{expected:,}. The products are loaded, so the gap is in the members relationship "
-                "rather than in loading.",
+                f"The registry wildcard matches {api_visible:,} API-visible products, enough to cover the "
+                f"expected count of {expected:,}, but that approximate count does not prove this collection's "
+                "products are loaded. Use --diff to verify the exact LIDVIDs before treating this as a members-relationship gap.",
                 2,
             )
         else:
