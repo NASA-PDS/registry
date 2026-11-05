@@ -95,4 +95,5 @@ Next Steps
 
 - See all Harvest options: ``harvest -help``
 - Additional job config options: :doc:`/user/harvest_job_configuration`
+- Expected load times for large harvests: :doc:`/user/harvest_performance`
 - Publish loaded data: :doc:`/user/update_status`
