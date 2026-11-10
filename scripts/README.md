@@ -183,9 +183,9 @@ Verify your credentials are correct in the `.env` file. Contact PDS operations i
 
 ### Collection Audit Script
 
-Diagnose product count discrepancies for one or more PDS4 collections.
+Diagnose product count discrepancies and unusable file paths or checksums for one or more PDS4 collections.
 
-**Script:** `audit_collection_counts.py`
+**Script:** `audit_collection.py`
 
 #### Purpose
 
@@ -199,6 +199,17 @@ Compares product counts across four independent sources to identify where a disc
 | Registry wildcard | OpenSearch `_count` queries (raw, superseded, non-archived, API-visible) |
 
 With `--diff`, fetches the complete LIDVID sets from the inventory file and registry to produce a diff — identifying which specific products are missing from the registry (and therefore absent from the API) and which non-superseded registry products are unexpectedly absent from the inventory.
+
+With `--check-files`, pages through the collection and every member product in the PDS Search API and reports the file paths and checksums that a Deep Archive (AIP/SIP) cannot use:
+
+| Problem | Example |
+|---|---|
+| `file_ref` is not an absolute URL | The literal string `null`, or a bare path with no scheme and host |
+| `md5_checksum` is not an MD5 digest | The literal string `null`, an empty string, or anything other than 32 hexadecimal digits |
+| Data `file_ref`s and `md5_checksum`s do not pair up | Two data files but one checksum |
+| Label has no `file_ref`, or no `md5_checksum` | A product registered without its label file |
+
+The check reports how many products it examined against the total the API reports, so a failed page or a paging gap is flagged rather than passing as a clean result. It needs no registry credentials, but it reads about 1,000 products per request and so can take a long time for large collections (roughly 40 minutes for a collection of 1.4 million products).
 
 #### Requirements
 
@@ -245,7 +256,7 @@ The following environment variables must be set:
 **Count comparison only (no registry queries):**
 
 ```bash
-python scripts/audit_collection_counts.py \
+python scripts/audit_collection.py \
     urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0 \
     --no-registry
 ```
@@ -255,7 +266,7 @@ python scripts/audit_collection_counts.py \
 ```bash
 ENV_FILE="<path-to-your-registry-client-env-file>"
 source "${ENV_FILE}"
-python scripts/audit_collection_counts.py \
+python scripts/audit_collection.py \
     urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0
 ```
 
@@ -263,31 +274,42 @@ python scripts/audit_collection_counts.py \
 
 ```bash
 # Pass LIDVIDs directly
-python scripts/audit_collection_counts.py \
+python scripts/audit_collection.py \
     urn:nasa:pds:bundle_a:collection_x::2.0 \
     urn:nasa:pds:bundle_b:collection_y::1.0
 
 # Or supply a file (blank lines and # comments are ignored)
-python scripts/audit_collection_counts.py --from-file collections.txt
+python scripts/audit_collection.py --from-file collections.txt
 ```
 
 **LIDVID-level diff with file output:**
 
 ```bash
-python scripts/audit_collection_counts.py \
+python scripts/audit_collection.py \
     urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0 \
     --diff \
+    --output-dir ./audit_results/
+```
+
+**File path and checksum check (no registry credentials needed):**
+
+```bash
+python scripts/audit_collection.py \
+    urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0 \
+    --no-registry \
+    --check-files \
     --output-dir ./audit_results/
 ```
 
 **All options:**
 
 ```
-usage: audit_collection_counts.py [-h] [--api-base URL] [--registry-index INDEX]
-                                  [--wildcard PAT] [--timeout N] [--no-registry]
-                                  [--from-file FILE] [--env-file FILE]
-                                  [--log-level LEVEL] [--diff] [--output-dir DIR]
-                                  [LIDVID ...]
+usage: audit_collection.py [-h] [--api-base URL] [--registry-index INDEX]
+                           [--wildcard PAT] [--timeout N] [--no-registry]
+                           [--from-file FILE] [--env-file FILE]
+                           [--log-level LEVEL] [--diff] [--check-files]
+                           [--output-dir DIR]
+                           [LIDVID ...]
 
 positional arguments:
   LIDVID                One or more collection LIDVIDs to audit
@@ -302,7 +324,8 @@ options:
   --env-file FILE       Supplement shell credentials from a file (optional)
   --log-level LEVEL     debug, info, warn, warning (default: info)
   --diff                Fetch full LIDVID sets and compute inventory vs. registry diff
-  --output-dir DIR      Write summary.csv and per-collection diff CSVs to DIR
+  --check-files         Report file_refs that are not absolute URLs and md5_checksums that are not MD5 digests
+  --output-dir DIR      Write summary.csv and per-collection diff and file problem CSVs to DIR
 ```
 
 #### Output
@@ -325,6 +348,16 @@ Collection audit: urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0
      to match exact collection membership
 ```
 
+**With `--check-files`**, a second section reports the file paths and checksums:
+
+```
+File paths and checksums
+──────────────────────────────────────────────────────────────────────
+  Products examined                   :  1,359,768
+  ✗  3 problem(s) in 1 product(s) — a Deep Archive cannot be generated
+       → audit_results/mars2020_navcam_ops_stereo-data/file_problems.csv
+```
+
 **With `--output-dir DIR`:**
 
 | File | Description |
@@ -332,6 +365,7 @@ Collection audit: urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0
 | `summary.csv` | One row per collection with all count columns |
 | `<slug>/diff_inventory_not_registry.csv` | LIDVIDs in inventory but missing from registry — these are absent from the API |
 | `<slug>/diff_registry_not_inventory.csv` | Non-superseded registry LIDVIDs absent from the inventory — genuinely unexpected |
+| `<slug>/file_problems.csv` | With `--check-files`: one row per unusable file path or checksum (`lidvid`, `kind`, `problem`, `value`) |
 
 Where `<slug>` is derived from the last two segments of the collection LID, e.g. `mars2020_navcam_ops_stereo-data`.
 
@@ -340,13 +374,17 @@ Where `<slug>` is derived from the last two segments of the collection LID, e.g.
 ```
 lidvid, label, inventory, api_members, registry_all, registry_superseded,
 registry_not_archived, registry_api_visible,
-diff_inventory_not_registry, diff_registry_not_inventory
+diff_inventory_not_registry, diff_registry_not_inventory,
+files_examined, file_problems
 ```
+
+The `diff_*` columns are empty unless `--diff` was passed, and `files_examined` and `file_problems` are empty unless `--check-files` was passed.
 
 #### Interpreting Results
 
 - **`diff_inventory_not_registry`** — products listed in the collection inventory that are not indexed in the registry. These are missing from the API. Investigate whether they were harvested.
 - **`diff_registry_not_inventory`** — non-superseded registry products not claimed by the collection inventory. These exist in the registry but the collection does not reference them. Investigate whether they belong to a different collection version.
+- **`file_problems.csv`** — products whose registry record has a `file_ref` or `md5_checksum` that cannot go into a manifest. A Deep Archive of any bundle containing them will fail until the records are corrected or the products re-registered. The `value` column holds the offending value (for example `null`). If `Products examined` is lower than the total the API reports, the check did not finish; re-run it.
 - **Registry lid:* counts are approximate** — the wildcard `<collection_lid>:*` matches any product whose LID begins with that prefix. It does not guarantee exact membership in the audited collection version.
 
 #### Troubleshooting
