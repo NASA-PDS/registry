@@ -301,6 +301,16 @@ python scripts/audit_collection.py \
     --output-dir ./audit_results/
 ```
 
+**Plain-language explanation of the results:**
+
+```bash
+ENV_FILE="<path-to-your-registry-client-env-file>"
+source "${ENV_FILE}"
+python scripts/audit_collection.py \
+    urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0 \
+    --verbose-report
+```
+
 **All options:**
 
 ```
@@ -308,7 +318,7 @@ usage: audit_collection.py [-h] [--api-base URL] [--registry-index INDEX]
                            [--wildcard PAT] [--timeout N] [--no-registry]
                            [--from-file FILE] [--env-file FILE]
                            [--log-level LEVEL] [--diff] [--check-files]
-                           [--output-dir DIR]
+                           [--output-dir DIR] [--verbose-report]
                            [LIDVID ...]
 
 positional arguments:
@@ -326,6 +336,9 @@ options:
   --diff                Fetch full LIDVID sets and compute inventory vs. registry diff
   --check-files         Report file_refs that are not absolute URLs and md5_checksums that are not MD5 digests
   --output-dir DIR      Write summary.csv and per-collection diff and file problem CSVs to DIR
+  --verbose-report      Explain each source in plain language and, when the API
+                        /members count is short, compare harvest times to judge
+                        whether the shortfall will resolve on its own
 ```
 
 #### Output
@@ -357,6 +370,21 @@ File paths and checksums
   ✗  3 problem(s) in 1 product(s) — a Deep Archive cannot be generated
        → audit_results/mars2020_navcam_ops_stereo-data/file_problems.csv
 ```
+
+**With `--verbose-report`:**
+
+Printed after the table above. It has three parts:
+
+1. **What each source says** — for every count, where it came from and how it compares to the others. For example, the inventory line reports that the table was downloaded from its URL and confirmed to contain N data rows, and whether N matches the label.
+2. **What this means** — whether the submitted data is internally consistent (label vs. inventory), and whether the API `/members` total is short of, equal to, or above the expected count. When the API is short, it also states whether the registry holds enough API-visible products to cover the inventory.
+3. **Will the `/members` shortfall resolve on its own?** — shown only when the API is short. It compares the collection's `ops:Harvest_Info.ops:harvest_date_time` with the latest harvest time among its non-superseded member products (a registry query, so it needs registry access).
+
+The harvest-time comparison matters because the members relationship is populated when the registry sweepers process a collection, and a collection that has already been processed is not processed again. Products that are overwritten without also rewriting the collection therefore leave `/members` stale.
+
+| Collection harvested… | Meaning |
+|---|---|
+| **before** the latest member | Either (1) sweepers have not yet processed the remaining members and the shortfall should resolve on its own, or (2) the latest products were overwritten after the collection was processed and `/members` will stay short until the collection is re-harvested. If the shortfall is unchanged after the next sweeper run, treat it as (2). |
+| **at or after** the latest member | Load order does not explain the shortfall. Check whether the missing products are loaded, superseded, or not archived/certified (use `--diff`). |
 
 **With `--output-dir DIR`:**
 
