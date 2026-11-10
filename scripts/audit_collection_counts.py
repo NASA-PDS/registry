@@ -1188,6 +1188,49 @@ def _compare_phrase(value: int, reference: int, reference_name: str) -> str:
     return f"This is {abs(diff):,} {direction} than the {reference_name} ({reference:,})."
 
 
+def _expected_count(findings: AuditFindings) -> tuple[int | None, str]:
+    """Return the count the other sources are compared against, and what it is called.
+
+    The downloaded inventory file is preferred because it is the provider's actual list of members;
+    the record count declared in the label is the fallback.
+    """
+    if findings.inventory_count is not None:
+        return findings.inventory_count, "inventory file"
+    return findings.label_count, "label"
+
+
+def _api_visible_conclusion(api_visible: int, expected: int | None, members: int | None) -> str | None:
+    """Return a sentence on what the API-visible registry count says about the shortfall, if it says anything.
+
+    Args:
+        api_visible: Non-superseded, archived/certified registry products.
+        expected: The inventory (or label) count the registry is compared against.
+        members: The API ``/members`` total.
+
+    Returns:
+        A conclusion, or ``None`` when the counts agree or there is nothing to compare.
+    """
+    if expected is None:
+        return None
+    if api_visible < expected:
+        return (
+            f"{expected - api_visible:,} expected products are not API-visible in the registry: they may "
+            "not be loaded, may be superseded, or may not be archived/certified (rerun with --diff to "
+            "list them)."
+        )
+    if api_visible > expected:
+        return (
+            f"The wildcard matches {api_visible - expected:,} more API-visible products than expected, "
+            "so it may include products outside this collection version."
+        )
+    if members is not None and members < api_visible:
+        return (
+            "All expected products are loaded and API-visible, so the /members shortfall is in the "
+            "members relationship, not in loading."
+        )
+    return None
+
+
 def classify_harvest_order(collection_harvest: str | None, latest_product_harvest: str | None) -> str | None:
     """Say whether the collection was harvested before its most recent member.
 
@@ -1251,11 +1294,7 @@ def _print_sources(findings: AuditFindings) -> None:
     if findings.members_count is None:
         _print_source("API /members hits", None, "The /members request failed; see the log output.")
     else:
-        reference, name = (
-            (findings.inventory_count, "inventory file")
-            if findings.inventory_count is not None
-            else (findings.label_count, "label")
-        )
+        reference, name = _expected_count(findings)
         text = (
             "The total reported by the Search API's /members endpoint for this collection, which is what "
             "API users see. The members relationship is built by the registry sweepers after the collection "
@@ -1274,31 +1313,59 @@ def _print_sources(findings: AuditFindings) -> None:
         )
         return
 
-    pattern = findings.registry_pattern
-    _print_source(
-        "Registry lid:* (all)",
-        findings.registry_raw_count,
-        f"Every registry product whose LID matches {pattern}, including superseded versions and "
-        "products in any archive status. A wildcard match is approximate, not exact collection membership.",
+    reference, name = _expected_count(findings)
+    raw = findings.registry_raw_count
+    superseded = findings.registry_superseded_count
+    non_archived = findings.registry_non_archived_count
+    api_visible = findings.registry_api_count
+
+    text = (
+        f"Every registry product whose LID matches {findings.registry_pattern}, including superseded versions "
+        "and products in any archive status. A wildcard match is approximate, not exact collection membership."
     )
-    _print_source(
-        "  of which superseded",
-        findings.registry_superseded_count,
-        "Products replaced by a newer version. They are not expected in the current inventory or the API.",
-    )
-    _print_source(
-        "  of which not archived/certified",
-        findings.registry_non_archived_count,
+    if raw is not None and reference is not None:
+        text += " " + _compare_phrase(raw, reference, name)
+    if raw is not None and superseded is not None and non_archived is not None and api_visible is not None:
+        accounted = superseded + non_archived + api_visible
+        if accounted == raw:
+            text += (
+                f" It breaks down into {superseded:,} superseded, {non_archived:,} not archived/certified, "
+                f"and {api_visible:,} API-visible."
+            )
+        else:
+            text += (
+                f" The superseded, not archived/certified, and API-visible counts below add up to {accounted:,}, "
+                f"which differs from this total by {abs(raw - accounted):,}; they were queried separately, so "
+                "products may have been loaded or changed in between."
+            )
+    _print_source("Registry lid:* (all)", raw, text)
+
+    text = "Products replaced by a newer version. They are not expected in the current inventory or the API."
+    if superseded and raw:
+        text += f" These {superseded:,} of the {raw:,} registry products are excluded from the API-visible count."
+    _print_source("  of which superseded", superseded, text)
+
+    text = (
         "Non-superseded products whose archive status is neither archived nor certified (for example "
-        "staged). They are in the registry but the API does not expose them.",
+        "staged). They are in the registry but the API does not expose them."
     )
-    _print_source(
-        "Registry lid:* (API-visible)",
-        findings.registry_api_count,
+    if non_archived and raw:
+        text += f" These {non_archived:,} of the {raw:,} registry products are excluded from the API-visible count."
+    _print_source("  of which not archived/certified", non_archived, text)
+
+    text = (
         "Non-superseded products with archive status archived or certified: the set the API is able to "
-        "expose. If this equals the inventory count but /members is lower, the products are loaded and the "
-        "problem is the members relationship.",
+        "expose."
     )
+    if api_visible is not None:
+        if reference is not None:
+            text += " " + _compare_phrase(api_visible, reference, name)
+        if findings.members_count is not None:
+            text += " " + _compare_phrase(api_visible, findings.members_count, "API /members total")
+        conclusion = _api_visible_conclusion(api_visible, reference, findings.members_count)
+        if conclusion is not None:
+            text += " " + conclusion
+    _print_source("Registry lid:* (API-visible)", api_visible, text)
 
 
 def _print_harvest_analysis(findings: AuditFindings, shortfall: int) -> None:
@@ -1382,11 +1449,7 @@ def print_verbose_report(findings: AuditFindings) -> None:
     print()
     _print_sources(findings)
 
-    expected, expected_name = (
-        (findings.inventory_count, "inventory file")
-        if findings.inventory_count is not None
-        else (findings.label_count, "label")
-    )
+    expected, expected_name = _expected_count(findings)
 
     print(Color.bold("What this means"))
     print()
