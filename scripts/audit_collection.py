@@ -1346,7 +1346,10 @@ def print_file_report(scan: FileScan | None, output_dir: Path | None) -> int | N
 
     n = len(scan.problems)
     if n == 0:
-        print(f"  {Color.green('✓')}  Every file_ref is an absolute URL and every md5_checksum is an MD5 digest")
+        if scan.examined == scan.expected:
+            print(f"  {Color.green('✓')}  Every file_ref is an absolute URL and every md5_checksum is an MD5 digest")
+        else:
+            print(f"  {Color.yellow('⚠')}  No problems found in the products that were examined")
         print()
         return 0
 
@@ -1527,7 +1530,7 @@ def _api_visible_conclusion(api_visible: int, expected: int | None, members: int
         return None
     if api_visible < expected:
         return (
-            f"{expected - api_visible:,} expected products are not API-visible in the registry: they may "
+            f"The registry has {expected - api_visible:,} fewer API-visible products than expected: they may "
             "not be loaded, may be superseded, or may not be archived/certified (rerun with --diff to "
             "list them)."
         )
@@ -1538,8 +1541,9 @@ def _api_visible_conclusion(api_visible: int, expected: int | None, members: int
         )
     if members is not None and members < api_visible:
         return (
-            "All expected products are loaded and API-visible, so the /members shortfall is in the "
-            "members relationship, not in loading."
+            "The registry has as many API-visible products as expected, so the /members shortfall looks "
+            "like a gap in the members relationship rather than in loading (this wildcard count is "
+            "approximate; use --diff to confirm)."
         )
     return None
 

@@ -352,7 +352,7 @@ Collection audit: urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0
   ✓  Inventory file rows               1,359,767
   ✗  API /members hits                 1,359,131
   ℹ  Registry lid:* (all)              1,361,857
-  ℹ    ↳ superseded                    2,089
+  ℹ    ↳ superseded                    2,090
   ℹ    ↳ not archived/certified        0
   ✗  Registry lid:* (API-visible) ¹    1,359,767
 
@@ -361,7 +361,30 @@ Collection audit: urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0
      to match exact collection membership
 ```
 
-**With `--check-files`**, a second section reports the file paths and checksums:
+**With `--check-files`**, a second section reports the file paths and checksums.
+
+When every file reference and checksum is usable:
+
+```
+File paths and checksums
+──────────────────────────────────────────────────────────────────────
+  Products examined                   :  1,359,768
+  ✓  Every file_ref is an absolute URL and every md5_checksum is an MD5 digest
+```
+
+When there are problems and no `--output-dir` was given, up to 50 are listed, one per line, as `<lidvid>: <kind> <problem>: '<value>'`. This example is a product whose data file has `null` for its `file_ref` and `md5_checksum` and whose label `file_ref` is a bare path with no scheme or host:
+
+```
+File paths and checksums
+──────────────────────────────────────────────────────────────────────
+  Products examined                   :  1,359,768
+  ✗  3 problem(s) in 1 product(s) — a Deep Archive cannot be generated
+       urn:nasa:pds:mars2020_navcam_ops_stereo:data:nrm_0929_0749414183_910ruc_n0452105vce_15900_0a02llj::1.0: data file file_ref is not an absolute URL: 'null'
+       urn:nasa:pds:mars2020_navcam_ops_stereo:data:nrm_0929_0749414183_910ruc_n0452105vce_15900_0a02llj::1.0: data file md5_checksum is not an MD5 digest: 'null'
+       urn:nasa:pds:mars2020_navcam_ops_stereo:data:nrm_0929_0749414183_910ruc_n0452105vce_15900_0a02llj::1.0: label file file_ref is not an absolute URL: '/mars2020_navcam_ops_stereo/data/sol/00929/ids/rdr/ncam/NRM_0929_0749414183_910RUC_N0452105VCE_15900_0A02LLJ01.xml'
+```
+
+With more than 50 problems, only the count is printed, followed by `(use --output-dir to write the full list to CSV)`. With `--output-dir`, the list is always written to `file_problems.csv` and the report points to it:
 
 ```
 File paths and checksums
@@ -371,6 +394,27 @@ File paths and checksums
        → audit_results/mars2020_navcam_ops_stereo-data/file_problems.csv
 ```
 
+The CSV has one row per problem (the `kind` is `data file` or `label file`):
+
+```
+lidvid,kind,problem,value
+urn:nasa:pds:mars2020_navcam_ops_stereo:data:nrm_0929_0749414183_910ruc_n0452105vce_15900_0a02llj::1.0,data file,file_ref is not an absolute URL,null
+urn:nasa:pds:mars2020_navcam_ops_stereo:data:nrm_0929_0749414183_910ruc_n0452105vce_15900_0a02llj::1.0,data file,md5_checksum is not an MD5 digest,null
+urn:nasa:pds:mars2020_navcam_ops_stereo:data:nrm_0929_0749414183_910ruc_n0452105vce_15900_0a02llj::1.0,label file,file_ref is not an absolute URL,/mars2020_navcam_ops_stereo/data/sol/00929/ids/rdr/ncam/NRM_0929_0749414183_910RUC_N0452105VCE_15900_0A02LLJ01.xml
+```
+
+If a page of members fails to load, or paging misses or repeats products, fewer products are examined than the API reports. The problems found so far are still reported, with a warning in place of a clean result:
+
+```
+File paths and checksums
+──────────────────────────────────────────────────────────────────────
+  Products examined                   :  1,200,000
+  ⚠  The API reports 1,359,768 products, so this check is incomplete — a page failed to load or paging missed or repeated products
+  ⚠  No problems found in the products that were examined
+```
+
+The other problems it can report are `number of file_refs and md5_checksums differ` (for example two data files but one checksum), `no file_ref` (a product with no label file reference) and `no md5_checksum` (a label with no checksum).
+
 **With `--verbose-report`:**
 
 Printed after the table above. It has three parts:
@@ -378,6 +422,86 @@ Printed after the table above. It has three parts:
 1. **What each source says** — for every count, where it came from and how it compares to the others. For example, the inventory line reports that the table was downloaded from its URL and confirmed to contain N data rows, and whether N matches the label.
 2. **What this means** — whether the submitted data is internally consistent (label vs. inventory), and whether the API `/members` total is short of, equal to, or above the expected count. When the API is short, it also states whether the registry holds enough API-visible products to cover the inventory.
 3. **Will the `/members` shortfall resolve on its own?** — shown only when the API is short. It compares the collection's `ops:Harvest_Info.ops:harvest_date_time` with the latest harvest time among its non-superseded member products (a registry query, so it needs registry access).
+
+Example, for a collection whose inventory lists 1,359,767 products but whose API `/members` total is 636 short, with registry access:
+
+```
+Verbose report: urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0
+──────────────────────────────────────────────────────────────────────
+
+What each source says
+
+  Label (pds:records): 1,359,767
+      The number of member records the data provider declared in the collection label
+      (pds:Inventory/pds:records). This is a claim by the provider and is not verified by anything
+      else.
+
+  Inventory file rows: 1,359,767
+      The inventory table was downloaded from <inventory-url> and confirmed to contain 1,359,767
+      data rows (header excluded). This matches the label.
+
+  API /members hits: 1,359,131
+      The total reported by the Search API's /members endpoint for this collection, which is what
+      API users see. The members relationship is built by the registry sweepers after the collection
+      has been processed, so this count can lag what is actually in the registry. This is 636 fewer
+      than the inventory file (1,359,767).
+
+  Registry lid:* (all): 1,361,857
+      Every registry product whose LID matches urn:nasa:pds:mars2020_navcam_ops_stereo:data:*,
+      including superseded versions and products in any archive status. A wildcard match is
+      approximate, not exact collection membership. This is 2,090 more than the inventory file
+      (1,359,767). It breaks down into 2,090 superseded, 0 not archived/certified, and 1,359,767
+      API-visible.
+
+    of which superseded: 2,090
+      Products replaced by a newer version. They are not expected in the current inventory or the
+      API. These 2,090 of the 1,361,857 registry products are excluded from the API-visible count.
+
+    of which not archived/certified: 0
+      Non-superseded products whose archive status is neither archived nor certified (for example
+      staged). They are in the registry but the API does not expose them.
+
+  Registry lid:* (API-visible): 1,359,767
+      Non-superseded products with archive status archived or certified: the set the API is able to
+      expose. This matches the inventory file. This is 636 more than the API /members total
+      (1,359,131). The registry has as many API-visible products as expected, so the /members
+      shortfall looks like a gap in the members relationship rather than in loading (this wildcard
+      count is approximate; use --diff to confirm).
+
+What this means
+
+  ✓ The label and the downloaded inventory file agree on 1,359,767 members, so the
+  submitted data is internally consistent.
+
+  ✗ The API is missing 636 of the 1,359,767 members listed in the inventory file.
+
+  The registry wildcard matches 1,359,767 API-visible products, enough to cover the expected count
+  of 1,359,767, but that approximate count does not prove this collection's products are loaded. Use
+  --diff to verify the exact LIDVIDs before treating this as a members-relationship gap.
+
+Will the /members shortfall resolve on its own?
+
+  The members relationship is only populated when the registry sweepers process a collection.
+  Sweepers do not revisit a collection that has already been processed, so if member products were
+  overwritten after that, /members stays stale until the collection itself is re-harvested.
+  Comparing harvest times (ops:Harvest_Info/ops:harvest_date_time) shows which situation applies.
+
+  Collection harvested       : 2026-10-01T12:00:00+00:00
+  Latest member harvested    : 2026-11-03T22:57:26.477893+00:00  (<latest-member-lidvid>)
+
+  The collection was harvested 33 days, 10:57:26.477893 BEFORE the most recent member product, and
+  /members is 636 short. Two explanations fit:
+
+    (1) Sweepers have not yet processed the remaining members listed in the inventory. This should
+    resolve once the sweepers finish; recheck after their next run.
+    (2) The latest products were overwritten after the collection was processed. The collection will
+    not be processed again unless it is also rewritten, so /members will stay short. Re-harvest the
+    collection (label and inventory) to fix it.
+
+  If the shortfall is unchanged after the next sweeper run, treat it as (2).
+```
+
+Without registry access, the registry entries read "The registry was not queried" and the harvest-time section says it cannot tell, because the latest member's harvest time comes from the registry. When the API total matches the inventory, "What this means" only confirms that the data is consistent and the API total matches, and the harvest-time section is omitted.
 
 The harvest-time comparison matters because the members relationship is populated when the registry sweepers process a collection, and a collection that has already been processed is not processed again. Products that are overwritten without also rewriting the collection therefore leave `/members` stale.
 
