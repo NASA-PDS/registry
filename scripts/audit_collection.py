@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Audit a PDS4 collection to diagnose product count discrepancies.
+Audit a PDS4 collection to diagnose product count discrepancies and bad file references.
 
 Compares four independent sources for member product counts:
 
@@ -14,6 +14,20 @@ between the inventory file and the registry (the only two sources that support
 complete enumeration — the API /members endpoint is capped at 10,000 items with
 no pagination, so it cannot be fully diffed directly).
 
+Pass --check-files to also audit the file paths and checksums that the registry
+holds for the collection and every member product, as served by the API. A
+Deep Archive (AIP/SIP) can only be generated when every file reference is an
+absolute URL and every checksum is an MD5 digest, so each of these is reported:
+
+  - a file_ref that is not an absolute URL (for example the literal string
+    "null", or a bare path with no scheme and host)
+  - an md5_checksum that is not 32 hexadecimal digits (for example "null")
+  - data file_refs and md5_checksums that do not pair up, or a label file_ref
+    with no md5_checksum, or a product with no label file_ref at all
+
+This pages through every member product, so it can take a long time for large
+collections (about 1,000 products per 1-2 seconds).
+
 Setup:
     Install registry-client dependencies before running registry queries:
 
@@ -24,33 +38,39 @@ Setup:
         source ~/.pds/registry-client-prod.env
 
 Usage:
-    python scripts/audit_collection_counts.py <collection_lidvid> [options]
+    python scripts/audit_collection.py <collection_lidvid> [options]
 
 Examples:
     # Count comparison only (no registry)
-    python scripts/audit_collection_counts.py \\
+    python scripts/audit_collection.py \\
         urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0 --no-registry
 
     # Full audit including registry counts (credentials must be sourced first)
     source ~/.pds/registry-client-prod.env
-    python scripts/audit_collection_counts.py \\
+    python scripts/audit_collection.py \\
         urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0
 
     # Audit multiple collections — pass directly or via a file
     source ~/.pds/registry-client-prod.env
-    python scripts/audit_collection_counts.py \\
+    python scripts/audit_collection.py \\
         urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0 \\
         urn:nasa:pds:mars2020_mastcam-z_ops:data_raw::14.0
 
-    python scripts/audit_collection_counts.py --from-file collections.txt
+    python scripts/audit_collection.py --from-file collections.txt
 
     # Full audit + LIDVID-level diff written to CSV files
     # summary.csv goes to audit_results/, diff CSVs to per-collection subdirs
     source ~/.pds/registry-client-prod.env
-    python scripts/audit_collection_counts.py \\
+    python scripts/audit_collection.py \\
         urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0 \\
         urn:nasa:pds:mars2020_mastcam-z_ops:data_raw::14.0 \\
         --diff --output-dir ./audit_results/
+
+    # Check file paths and checksums of every member product (no registry
+    # credentials needed); problems are also written to file_problems.csv
+    python scripts/audit_collection.py \\
+        urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0 \\
+        --no-registry --check-files --output-dir ./audit_results/
 
 Options:
     --api-base URL        PDS Search API base URL
@@ -70,8 +90,12 @@ Options:
                           (default: info)
     --diff                After the count report, fetch all LIDVIDs from
                           inventory and registry and compute set differences
+    --check-files         Page through the collection and every member product
+                          and report file_refs that are not absolute URLs and
+                          md5_checksums that are not MD5 digests
     --output-dir DIR      Write all output files to DIR: summary.csv at the
-                          root, per-collection diff CSVs in subdirectories
+                          root, per-collection diff and file_problems CSVs in
+                          subdirectories
     --verbose-report      After the count report, print a plain-language
                           explanation of every source and, when the API
                           /members count is short, compare the collection's
@@ -88,9 +112,11 @@ import io
 import json
 import logging
 import os
+import re
 import sys
 import textwrap
 import urllib.parse
+from collections.abc import Iterator
 from dataclasses import dataclass
 from datetime import datetime
 from datetime import timezone
@@ -119,6 +145,16 @@ _REGISTRY_HARVEST_FIELD = "ops:Harvest_Info/ops:harvest_date_time"
 _API_HARVEST_PROPERTY = "ops:Harvest_Info.ops:harvest_date_time"
 """The same field as exposed in the Search API's ``properties`` object."""
 
+_DATA_FILE_REF = "ops:Data_File_Info.ops:file_ref"
+_DATA_FILE_MD5 = "ops:Data_File_Info.ops:md5_checksum"
+_LABEL_FILE_REF = "ops:Label_File_Info.ops:file_ref"
+_LABEL_FILE_MD5 = "ops:Label_File_Info.ops:md5_checksum"
+_HARVEST_SORT_KEY = "ops:Harvest_Info.ops:harvest_date_time"
+"""API property used to sort and page (``search-after``) through a collection's members."""
+_FILE_FIELDS = [_DATA_FILE_REF, _DATA_FILE_MD5, _LABEL_FILE_REF, _LABEL_FILE_MD5, _HARVEST_SORT_KEY]
+_MEMBER_PAGE_SIZE = 1000
+_MD5_PATTERN = re.compile(r"[0-9a-fA-F]{32}")
+
 _REGISTRY_ENV_VARS = (
     "REQUEST_SIGNER_AWS_REGION",
     "REQUEST_SIGNER_AWS_ACCOUNT",
@@ -144,6 +180,23 @@ class _ReportRow(NamedTuple):
     label: str
     value: int | None
     primary: bool
+
+
+class FileProblem(NamedTuple):
+    """One unusable file reference or checksum found on a product."""
+
+    lidvid: str
+    kind: str
+    problem: str
+    value: str
+
+
+class FileScan(NamedTuple):
+    """Result of checking the file references of a collection and its members."""
+
+    examined: int
+    expected: int | None
+    problems: list[FileProblem]
 
 
 @dataclass
@@ -962,6 +1015,194 @@ def get_api_members_count(
     return None
 
 
+# ── source 5: file paths and checksums ────────────────────────────────────────
+
+
+def is_absolute_url(url: str) -> bool:
+    """Say whether ``url`` is an absolute URL with a scheme, host, and path.
+
+    Args:
+        url: A ``file_ref`` value from the registry.
+
+    Returns:
+        ``False`` for values such as the literal string ``null`` or a bare path
+        with no scheme and host, which cannot be listed in a manifest.
+    """
+    parsed = urllib.parse.urlparse(url)
+    return bool(parsed.scheme and parsed.netloc and parsed.path)
+
+
+def is_valid_md5(md5: str) -> bool:
+    """Say whether ``md5`` is an MD5 digest of exactly 32 hexadecimal digits.
+
+    Args:
+        md5: An ``md5_checksum`` value from the registry.
+
+    Returns:
+        ``False`` for values such as the literal string ``null`` or an empty string.
+    """
+    return _MD5_PATTERN.fullmatch(md5) is not None
+
+
+def check_product_files(product: dict) -> list[FileProblem]:
+    """Find the unusable file references and checksums of one API product.
+
+    Args:
+        product: A product object from the PDS Search API, with its file
+            properties at ``product["properties"]``.
+
+    Returns:
+        One ``FileProblem`` per bad reference or checksum; empty when the
+        product's files are all usable.
+    """
+    lidvid = product.get("id", "<unknown>")
+    props = product.get("properties", {})
+    problems: list[FileProblem] = []
+
+    # (kind, reference, checksum) triples; a checksum of None means it is missing.
+    files: list[tuple[str, str, str | None]] = []
+
+    data_refs = props.get(_DATA_FILE_REF, [])
+    data_md5s = props.get(_DATA_FILE_MD5, [])
+    if len(data_refs) != len(data_md5s):
+        problems.append(
+            FileProblem(
+                lidvid,
+                "data file",
+                "number of file_refs and md5_checksums differ",
+                f"{len(data_refs)} file_ref(s), {len(data_md5s)} md5_checksum(s)",
+            )
+        )
+    for i, ref in enumerate(data_refs):
+        files.append(("data file", ref, data_md5s[i] if i < len(data_md5s) else None))
+
+    label_refs = props.get(_LABEL_FILE_REF, [])
+    label_md5s = props.get(_LABEL_FILE_MD5, [])
+    if label_refs:
+        files.append(("label file", label_refs[0], label_md5s[0] if label_md5s else None))
+    else:
+        problems.append(FileProblem(lidvid, "label file", "no file_ref", ""))
+
+    for kind, ref, md5 in files:
+        if not is_absolute_url(ref):
+            problems.append(FileProblem(lidvid, kind, "file_ref is not an absolute URL", ref))
+        if md5 is not None and not is_valid_md5(md5):
+            problems.append(FileProblem(lidvid, kind, "md5_checksum is not an MD5 digest", md5))
+        elif md5 is None and kind == "label file":
+            problems.append(FileProblem(lidvid, kind, "no md5_checksum", ref))
+
+    return problems
+
+
+def _fetch_json(session: requests.Session, url: str, params: dict | None, timeout: int) -> dict | None:
+    """GET ``url`` and return the parsed JSON object, or ``None`` after logging an error."""
+    try:
+        resp = session.get(url, params=params, timeout=timeout)
+        resp.raise_for_status()
+        return resp.json()
+    except (requests.exceptions.RequestException, ValueError) as exc:
+        logger.error("Request to %s failed: %s", url, exc)
+        return None
+
+
+def iter_member_pages(
+    session: requests.Session,
+    api_base: str,
+    lidvid: str,
+    timeout: int,
+) -> Iterator[dict | None]:
+    """Yield each page of the API ``/members`` response for a collection.
+
+    Pages are sorted by harvest date and followed with ``search-after``, so the
+    10,000-item limit on a single query does not apply.
+
+    Args:
+        session: Shared HTTP session.
+        api_base: PDS Search API base URL.
+        lidvid: Collection LIDVID whose members to page through.
+        timeout: Per-request timeout in seconds.
+
+    Yields:
+        Each parsed response page, or ``None`` (after which iteration stops) if a
+        request fails.
+    """
+    encoded = urllib.parse.quote(lidvid, safe="")
+    url = f"{api_base}/products/{encoded}/members"
+    params: dict = {
+        "limit": _MEMBER_PAGE_SIZE,
+        "sort": _HARVEST_SORT_KEY,
+        "fields": ",".join(_FILE_FIELDS),
+    }
+    while True:
+        data = _fetch_json(session, url, params, timeout)
+        yield data
+        if data is None:
+            return
+        members = data.get("data", [])
+        if len(members) < _MEMBER_PAGE_SIZE:
+            return
+        next_key = members[-1].get("properties", {}).get(_HARVEST_SORT_KEY)
+        if not next_key:
+            logger.error("Last member on the page has no %s; cannot page further", _HARVEST_SORT_KEY)
+            yield None
+            return
+        next_key = next_key[0] if isinstance(next_key, list) else next_key
+        if next_key == params.get("search-after"):
+            logger.error(
+                "More than %d members share the harvest time %s; cannot page past them",
+                _MEMBER_PAGE_SIZE,
+                next_key,
+            )
+            yield None
+            return
+        params["search-after"] = next_key
+
+
+def scan_collection_files(
+    session: requests.Session,
+    api_base: str,
+    lidvid: str,
+    timeout: int,
+) -> FileScan | None:
+    """Check the file paths and checksums of a collection and all its members.
+
+    Args:
+        session: Shared HTTP session.
+        api_base: PDS Search API base URL.
+        lidvid: Collection LIDVID to check.
+        timeout: Per-request timeout in seconds.
+
+    Returns:
+        A ``FileScan``, or ``None`` if the collection itself could not be
+        fetched. ``FileScan.examined`` counts the collection plus every member
+        seen, and ``FileScan.expected`` is the total the API reports. If a page
+        fails or paging misses or repeats products the two differ, and the
+        problems found up to that point are still returned.
+    """
+    encoded = urllib.parse.quote(lidvid, safe="")
+    collection = _fetch_json(session, f"{api_base}/products/{encoded}", None, timeout)
+    if collection is None:
+        return None
+    problems = check_product_files(collection)
+    examined = 1
+
+    expected: int | None = None
+    for page in iter_member_pages(session, api_base, lidvid, timeout):
+        if page is None:
+            break
+        if expected is None:
+            hits = page.get("summary", {}).get("hits")
+            expected = hits + 1 if isinstance(hits, int) else None
+        members = page.get("data", [])
+        for member in members:
+            problems.extend(check_product_files(member))
+        examined += len(members)
+        total = f"{expected:,}" if expected is not None else "?"
+        logger.info("Checked the file references of %s of %s products …", f"{examined:,}", total)
+
+    return FileScan(examined, expected, problems)
+
+
 # ── diff report ───────────────────────────────────────────────────────────────
 
 
@@ -1053,6 +1294,81 @@ def print_diff_report(
 
     print()
     return len(in_inv_not_reg), len(in_reg_not_inv)
+
+
+# ── file report ───────────────────────────────────────────────────────────────
+
+
+def _write_problems_csv(problems: list[FileProblem], path: Path) -> None:
+    """Write file problems to a CSV with one row per problem.
+
+    Args:
+        problems: Problems to write.
+        path: Destination file path (parent directory must exist).
+    """
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(FileProblem._fields)
+        writer.writerows(problems)
+
+
+def print_file_report(scan: FileScan | None, output_dir: Path | None) -> int | None:
+    """Print the result of the file path and checksum check.
+
+    When ``output_dir`` is provided any problems are written to
+    ``file_problems.csv`` there. When it is ``None`` small lists (≤ 50 problems)
+    are printed inline; larger lists show only the count with a prompt to use
+    ``--output-dir``.
+
+    Args:
+        scan: Result of ``scan_collection_files``, or ``None`` if unavailable.
+        output_dir: Directory to write ``file_problems.csv`` to, or ``None``.
+
+    Returns:
+        The number of problems found, or ``None`` when the check could not run.
+    """
+    print()
+    print(Color.bold("File paths and checksums"))
+    print("─" * 70)
+
+    if scan is None:
+        print(f"  {Color.yellow('⚠')}  Could not check: the collection could not be fetched from the API")
+        print()
+        return None
+
+    expected = f"{scan.expected:,}" if scan.expected is not None else "an unknown number"
+    print(f"  Products examined                   : {scan.examined:>10,}")
+    if scan.examined != scan.expected:
+        print(
+            f"  {Color.yellow('⚠')}  The API reports {expected} products, so this check is incomplete "
+            f"— a page failed to load or paging missed or repeated products"
+        )
+
+    n = len(scan.problems)
+    if n == 0:
+        if scan.examined == scan.expected:
+            print(f"  {Color.green('✓')}  Every file_ref is an absolute URL and every md5_checksum is an MD5 digest")
+        else:
+            print(f"  {Color.yellow('⚠')}  No problems found in the products that were examined")
+        print()
+        return 0
+
+    affected = len({p.lidvid for p in scan.problems})
+    print(f"  {Color.red('✗')}  {n:,} problem(s) in {affected:,} product(s) — a Deep Archive cannot be generated")
+
+    if output_dir is not None:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        dest = output_dir / "file_problems.csv"
+        _write_problems_csv(scan.problems, dest)
+        print(f"       → {dest}")
+    elif n <= 50:
+        for p in scan.problems:
+            print(f"       {p.lidvid}: {p.kind} {p.problem}" + (f": {p.value!r}" if p.value else ""))
+    else:
+        print("       (use --output-dir to write the full list to CSV)")
+
+    print()
+    return n
 
 
 # ── count report ──────────────────────────────────────────────────────────────
@@ -1214,7 +1530,7 @@ def _api_visible_conclusion(api_visible: int, expected: int | None, members: int
         return None
     if api_visible < expected:
         return (
-            f"{expected - api_visible:,} expected products are not API-visible in the registry: they may "
+            f"The registry has {expected - api_visible:,} fewer API-visible products than expected: they may "
             "not be loaded, may be superseded, or may not be archived/certified (rerun with --diff to "
             "list them)."
         )
@@ -1225,8 +1541,9 @@ def _api_visible_conclusion(api_visible: int, expected: int | None, members: int
         )
     if members is not None and members < api_visible:
         return (
-            "All expected products are loaded and API-visible, so the /members shortfall is in the "
-            "members relationship, not in loading."
+            "The registry has as many API-visible products as expected, so the /members shortfall looks "
+            "like a gap in the members relationship rather than in loading (this wildcard count is "
+            "approximate; use --diff to confirm)."
         )
     return None
 
@@ -1537,7 +1854,7 @@ def parse_args() -> argparse.Namespace:
         Parsed argparse.Namespace.
     """
     parser = argparse.ArgumentParser(
-        description="Audit a PDS4 collection for product count discrepancies",
+        description="Audit a PDS4 collection for product count discrepancies and bad file references",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )
@@ -1625,15 +1942,25 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--check-files",
+        action="store_true",
+        help=(
+            "Page through the collection and every member product and report "
+            "file_refs that are not absolute URLs and md5_checksums that are "
+            "not MD5 digests. Does not need registry access, but takes a long "
+            "time for large collections."
+        ),
+    )
+    parser.add_argument(
         "--output-dir",
         type=Path,
         default=None,
         metavar="DIR",
         help=(
             "Write all output files to DIR (created if absent). "
-            "summary.csv is written at the root; each collection's diff CSVs "
-            "go in a subdirectory named after the collection. "
-            "Without --diff, only summary.csv is written."
+            "summary.csv is written at the root; each collection's diff and "
+            "file_problems CSVs go in a subdirectory named after the collection. "
+            "Without --diff or --check-files, only summary.csv is written."
         ),
     )
     parser.add_argument(
@@ -1720,6 +2047,8 @@ _SUMMARY_FIELDNAMES = [
     "registry_api_visible",
     "diff_inventory_not_registry",
     "diff_registry_not_inventory",
+    "files_examined",
+    "file_problems",
 ]
 
 
@@ -1895,6 +2224,16 @@ def _audit_one(
                 inventory_lidvids, registry_lidvids, diff_output
             )
 
+    # Optional file path and checksum check
+    files_examined: int | None = None
+    file_problems: int | None = None
+
+    if args.check_files:
+        logger.info("Checking file paths and checksums of all members (this can take a while) …")
+        scan = scan_collection_files(session, args.api_base, lidvid, args.timeout)
+        file_problems = print_file_report(scan, _diff_output_for(args.output_dir, collection_lid))
+        files_examined = scan.examined if scan is not None else None
+
     return {
         "lidvid": lidvid,
         "label": label_count,
@@ -1906,6 +2245,8 @@ def _audit_one(
         "registry_api_visible": registry_api_count,
         "diff_inventory_not_registry": diff_inv_not_reg,
         "diff_registry_not_inventory": diff_reg_not_inv,
+        "files_examined": files_examined,
+        "file_problems": file_problems,
     }
 
 
