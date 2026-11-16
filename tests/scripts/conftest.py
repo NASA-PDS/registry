@@ -1,5 +1,4 @@
 """Make the ``scripts/`` directory importable so tests can load ``unprocessed_audit``."""
-
 import sys
 from pathlib import Path
 

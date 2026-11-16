@@ -1,5 +1,4 @@
 """Tests for the invalid ``file_ref`` reports of ``generate_registry_status_reports`` (no registry access)."""
-
 from __future__ import annotations
 
 import csv
