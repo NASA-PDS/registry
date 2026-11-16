@@ -88,6 +88,11 @@ Options:
                           precedence via os.environ.setdefault)
     --log-level LEVEL     Logging verbosity: debug, info, warn, warning
                           (default: info)
+    --load-status         Report how much of the inventory is loaded and whether loading is still
+                          active, from the newest harvest time among products that are in both the
+                          inventory and the registry (requires registry access)
+    --active-days N       With --load-status, "still loading" means the newest loaded member was
+                          harvested within N days (default: 3)
     --diff                After the count report, fetch all LIDVIDs from
                           inventory and registry and compute set differences
     --check-files         Page through the collection and every member product
@@ -660,14 +665,14 @@ def get_registry_count(
 # ── diff: full LIDVID enumeration ─────────────────────────────────────────────
 
 
-def get_all_registry_lidvids(
+def get_registry_harvests(
     collection_lid: str,
     wildcard_pattern: str | None,
     registry_index: str,
     auth: RequestsAWSV4SignerAuth,
     timeout: int,
-) -> set[str] | None:
-    """Paginate through registry _search and return LIDVIDs of non-superseded products.
+) -> dict[str, str | None] | None:
+    """Paginate through registry _search and return each non-superseded product's harvest time.
 
     Filters to non-superseded products only (``ops:Provenance/ops:superseded_by``
     absent) with no archive-status restriction. Superseded products are excluded
@@ -688,8 +693,8 @@ def get_all_registry_lidvids(
         timeout: Per-request timeout in seconds.
 
     Returns:
-        Set of LIDVID strings for non-superseded products, or ``None`` if any
-        page fails.
+        ``{lidvid: harvest_time}`` for non-superseded products (the harvest time is ``None``
+        when the product has none), or ``None`` if any page fails.
     """
     pattern = wildcard_pattern or f"{collection_lid}:*"
     search_index = registry_index.removesuffix("_count") + "_search"
@@ -700,13 +705,13 @@ def get_all_registry_lidvids(
     )
 
     base_query: dict = {
-        "_source": ["lidvid"],
+        "_source": ["lidvid", _REGISTRY_HARVEST_FIELD, "ops:Provenance/ops:superseded_by"],
         "size": _REGISTRY_PAGE_SIZE,
         "sort": [{"_id": "asc"}],
         **_non_superseded_query(pattern),
     }
 
-    lidvids: set[str] = set()
+    lidvids: dict[str, str | None] = {}
     query = base_query
     page = 0
 
@@ -719,9 +724,14 @@ def get_all_registry_lidvids(
 
         hits = data.get("hits", {}).get("hits", [])
         for hit in hits:
-            lidvid = hit.get("_source", {}).get("lidvid")
+            source = hit.get("_source", {})
+            lidvid = source.get("lidvid")
+            # The query cannot exclude superseded products on every index (the field is returned but not
+            # searchable on the ATM registry), so the marker is checked here as well.
+            if _first_value(source.get("ops:Provenance/ops:superseded_by")):
+                continue
             if lidvid:
-                lidvids.add(lidvid)
+                lidvids[lidvid] = _first_value(source.get(_REGISTRY_HARVEST_FIELD))
             else:
                 logger.debug("Hit missing lidvid in _source: %s", hit.get("_id"))
 
@@ -735,6 +745,24 @@ def get_all_registry_lidvids(
         query = {**base_query, "search_after": last_sort}
 
     return lidvids
+
+
+def get_all_registry_lidvids(
+    collection_lid: str,
+    wildcard_pattern: str | None,
+    registry_index: str,
+    auth: RequestsAWSV4SignerAuth,
+    timeout: int,
+) -> set[str] | None:
+    """Return the LIDVIDs of non-superseded registry products under a collection LID.
+
+    A thin wrapper over ``get_registry_harvests``; see it for the filtering and arguments.
+
+    Returns:
+        Set of LIDVID strings, or ``None`` if any page fails.
+    """
+    harvests = get_registry_harvests(collection_lid, wildcard_pattern, registry_index, auth, timeout)
+    return None if harvests is None else set(harvests)
 
 
 # ── harvest times ─────────────────────────────────────────────────────────────
@@ -1294,6 +1322,134 @@ def print_diff_report(
 
     print()
     return len(in_inv_not_reg), len(in_reg_not_inv)
+
+
+# ── load status ───────────────────────────────────────────────────────────────
+
+
+class LoadStatus(NamedTuple):
+    """How much of a collection's inventory is loaded, and whether loading looks active.
+
+    Attributes:
+        inventory_total: Distinct LIDVIDs in the inventory.
+        loaded: Inventory LIDVIDs that are in the registry (non-superseded).
+        not_loaded: Inventory LIDVIDs that are not in the registry.
+        registry_not_in_inventory: Registry LIDVIDs under the collection LID that the inventory does not list.
+        latest_member_lidvid: LIDVID of the loaded inventory product with the latest harvest time.
+        latest_member_harvest: That harvest time, ``None`` when no loaded member has one.
+        latest_other_harvest: Latest harvest time among registry products the inventory does not list.
+        latest_member_age_days: Age of ``latest_member_harvest`` at the time of the check.
+        verdict: ``complete``, ``not_started``, ``loading``, ``stalled`` or ``unknown``.
+    """
+
+    inventory_total: int
+    loaded: int
+    not_loaded: int
+    registry_not_in_inventory: int
+    latest_member_lidvid: str | None
+    latest_member_harvest: datetime | None
+    latest_other_harvest: datetime | None
+    latest_member_age_days: float | None
+    verdict: str
+
+
+def _latest_harvest(lidvids: list[str], harvests: dict[str, str | None]) -> tuple[str | None, datetime | None]:
+    """Return the LIDVID with the latest parseable harvest time among ``lidvids``, and that time."""
+    best_lidvid: str | None = None
+    best_time: datetime | None = None
+    for lidvid in lidvids:
+        when = parse_timestamp(harvests[lidvid])
+        if when is not None and (best_time is None or when > best_time):
+            best_lidvid, best_time = lidvid, when
+    return best_lidvid, best_time
+
+
+def compute_load_status(
+    inventory_lidvids: set[str],
+    registry_harvests: dict[str, str | None],
+    now: datetime,
+    active_days: float,
+) -> LoadStatus:
+    """Judge whether a collection is fully loaded, being loaded, or stalled part-way.
+
+    Only products that the inventory lists and the registry holds count as loaded members. Registry
+    products the inventory does not list (for example an older version of a product) are ignored for
+    the verdict, because they say nothing about whether the current inventory is still being loaded.
+
+    Args:
+        inventory_lidvids: LIDVIDs listed in the collection inventory.
+        registry_harvests: ``{lidvid: harvest_time}`` of non-superseded registry products under the LID.
+        now: Time to measure ages from.
+        active_days: A partial load whose newest member was harvested within this many days is "loading".
+
+    Returns:
+        The load status.
+    """
+    loaded = [lidvid for lidvid in registry_harvests if lidvid in inventory_lidvids]
+    other = [lidvid for lidvid in registry_harvests if lidvid not in inventory_lidvids]
+    not_loaded = len(inventory_lidvids.difference(registry_harvests))
+    latest_lidvid, latest_when = _latest_harvest(loaded, registry_harvests)
+    _, latest_other = _latest_harvest(other, registry_harvests)
+    age = None if latest_when is None else (now - latest_when).total_seconds() / 86400.0
+
+    if not_loaded == 0:
+        verdict = "complete"
+    elif not loaded:
+        verdict = "not_started"
+    elif age is None:
+        verdict = "unknown"
+    elif age <= active_days:
+        verdict = "loading"
+    else:
+        verdict = "stalled"
+    return LoadStatus(
+        len(inventory_lidvids), len(loaded), not_loaded, len(other), latest_lidvid, latest_when, latest_other, age, verdict
+    )
+
+
+def print_load_status_report(status: LoadStatus, active_days: float) -> None:
+    """Print the load-status section of the report.
+
+    Args:
+        status: Result of ``compute_load_status``.
+        active_days: The threshold used for the verdict.
+    """
+
+    def show(when: datetime | None) -> str:
+        return when.isoformat() if when else "none"
+
+    print()
+    print(Color.bold("Load status: is the inventory still being loaded?"))
+    print("─" * 70)
+    print(f"  Inventory products                  : {status.inventory_total:>10,}")
+    print(f"  Loaded (in inventory and registry)  : {status.loaded:>10,}")
+    print(f"  Not loaded                          : {status.not_loaded:>10,}")
+    print(f"  In registry, not in inventory       : {status.registry_not_in_inventory:>10,}")
+    latest = show(status.latest_member_harvest)
+    if status.latest_member_age_days is not None:
+        latest += f"  ({status.latest_member_age_days:.1f} days ago)"
+    print(f"  Newest loaded member harvested      : {latest}")
+    if status.latest_member_lidvid:
+        print(f"      {status.latest_member_lidvid}")
+    print(f"  Newest other registry product       : {show(status.latest_other_harvest)}")
+
+    verdicts = {
+        "complete": f"{Color.green('✓')}  Every inventory product is loaded.",
+        "not_started": f"{Color.red('✗')}  No inventory product is in the registry: the collection has not started loading.",
+        "loading": (
+            f"{Color.yellow('⚠')}  Partially loaded and still loading: the newest loaded member was harvested "
+            f"within the last {active_days:g} days. Re-check later."
+        ),
+        "stalled": (
+            f"{Color.red('✗')}  Partially loaded and not currently loading: nothing in the inventory has been "
+            f"harvested for more than {active_days:g} days. The node needs to load the remaining "
+            f"{status.not_loaded:,} products."
+        ),
+        "unknown": f"{Color.yellow('⚠')}  Partially loaded, but no loaded member has a harvest time.",
+    }
+    print()
+    print(f"  {verdicts[status.verdict]}")
+    print()
 
 
 # ── file report ───────────────────────────────────────────────────────────────
@@ -1942,6 +2098,25 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--load-status",
+        action="store_true",
+        help=(
+            "Report how much of the inventory is loaded and whether loading looks active, from the newest "
+            "harvest time among products that are both in the inventory and in the registry. "
+            "Requires registry access (incompatible with --no-registry)."
+        ),
+    )
+    parser.add_argument(
+        "--active-days",
+        type=float,
+        default=3.0,
+        metavar="N",
+        help=(
+            "With --load-status, a partially loaded collection whose newest loaded member was harvested "
+            "within N days is reported as still loading (default: 3)"
+        ),
+    )
+    parser.add_argument(
         "--check-files",
         action="store_true",
         help=(
@@ -2049,6 +2224,10 @@ _SUMMARY_FIELDNAMES = [
     "diff_registry_not_inventory",
     "files_examined",
     "file_problems",
+    "inventory_loaded",
+    "inventory_not_loaded",
+    "latest_member_harvest",
+    "load_verdict",
 ]
 
 
@@ -2108,7 +2287,7 @@ def _audit_one(
     if file_ref:
         logger.info("Inventory file: %s", file_ref)
         logger.info("Downloading inventory table …")
-        if args.diff:
+        if args.diff or args.load_status:
             inventory_count, inventory_lidvids = fetch_inventory_lidvids(
                 session, file_ref, args.timeout
             )
@@ -2210,19 +2389,29 @@ def _audit_one(
     # Optional LIDVID-level diff
     diff_inv_not_reg: int | None = None
     diff_reg_not_inv: int | None = None
+    load_status: LoadStatus | None = None
 
-    if args.diff:
+    if args.diff or args.load_status:
         if registry_auth is None:
-            logger.error("Registry authentication unavailable; skipping diff for %s", lidvid)
+            logger.error("Registry authentication unavailable; skipping diff and load status for %s", lidvid)
         else:
-            logger.info("Fetching all registry LIDVIDs for diff …")
-            registry_lidvids = get_all_registry_lidvids(
+            logger.info("Fetching all registry LIDVIDs and harvest times …")
+            registry_harvests = get_registry_harvests(
                 collection_lid, args.wildcard, args.registry_index, registry_auth, args.timeout
             )
-            diff_output = _diff_output_for(args.output_dir, collection_lid)
-            diff_inv_not_reg, diff_reg_not_inv = print_diff_report(
-                inventory_lidvids, registry_lidvids, diff_output
-            )
+            if args.diff:
+                diff_output = _diff_output_for(args.output_dir, collection_lid)
+                diff_inv_not_reg, diff_reg_not_inv = print_diff_report(
+                    inventory_lidvids, None if registry_harvests is None else set(registry_harvests), diff_output
+                )
+            if args.load_status:
+                if inventory_lidvids is None or registry_harvests is None:
+                    logger.warning("Cannot compute load status: the inventory or the registry list is unavailable")
+                else:
+                    load_status = compute_load_status(
+                        inventory_lidvids, registry_harvests, datetime.now(timezone.utc), args.active_days
+                    )
+                    print_load_status_report(load_status, args.active_days)
 
     # Optional file path and checksum check
     files_examined: int | None = None
@@ -2247,6 +2436,14 @@ def _audit_one(
         "diff_registry_not_inventory": diff_reg_not_inv,
         "files_examined": files_examined,
         "file_problems": file_problems,
+        "inventory_loaded": load_status.loaded if load_status else None,
+        "inventory_not_loaded": load_status.not_loaded if load_status else None,
+        "latest_member_harvest": (
+            load_status.latest_member_harvest.isoformat()
+            if load_status and load_status.latest_member_harvest
+            else None
+        ),
+        "load_verdict": load_status.verdict if load_status else None,
     }
 
 
@@ -2266,6 +2463,9 @@ def main() -> int:
 
     if args.diff and args.no_registry:
         logger.error("--diff requires registry access; cannot be used with --no-registry")
+        return 1
+    if args.load_status and args.no_registry:
+        logger.error("--load-status requires registry access; cannot be used with --no-registry")
         return 1
 
     # Merge LIDVIDs from positional args and --from-file, preserving order.
