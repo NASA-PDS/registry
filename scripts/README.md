@@ -776,7 +776,7 @@ python scripts/audit_index_mappings.py --output-dir ./audit_mappings/
 python scripts/audit_index_mappings.py --output-dir ./audit_mappings/ --include-refs --check
 ```
 
-The ATM products index is `temp-atm-registry` behind the alias `atm-registry`, while its refs index is `atm-registry-refs`. Node discovery returns the concrete name `temp-atm`, so name the node with `--node atm` (repeat `--node` for each node) when `--include-refs` is used; otherwise its refs index is reported missing.
+The ATM products index is `temp-atm-registry` behind the alias `atm-registry`, while its refs index is `atm-registry-refs`. Node discovery returns the concrete name `temp-atm`, and the refs index is looked up under the tenant name `atm`.
 
 #### Output
 

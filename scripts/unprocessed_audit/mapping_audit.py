@@ -17,6 +17,7 @@ from dataclasses import field
 from enum import Enum
 from pathlib import Path
 
+from unprocessed_audit.model import CONCRETE_NODE_NAMES
 from unprocessed_audit.model import REFS_SUFFIX
 from unprocessed_audit.model import REGISTRY_SUFFIX
 from unprocessed_audit.model import RegistryQueryError
@@ -242,7 +243,9 @@ def read_mappings(client: RegistryClient, nodes: Sequence[str], groups: Sequence
     mappings: list[IndexMapping] = []
     for group in groups:
         for node in nodes:
-            name = f"{node}{GROUP_SUFFIXES[group]}"
+            # A refs index is named after the tenant, not after the concrete products index behind its alias.
+            prefix = CONCRETE_NODE_NAMES.get(node, node) if group == GROUP_REFS else node
+            name = f"{prefix}{GROUP_SUFFIXES[group]}"
             try:
                 response = client.get_mapping(name)
             except RegistryQueryError as exc:

@@ -18,9 +18,8 @@ mapped on every node, so their discrepancies are errors, as is any type conflict
 node-specific and not reported as missing.
 
 An index is named after its node (``<node>-registry``, ``<node>-registry-refs``). The ATM products index is
-``temp-atm-registry`` behind the alias ``atm-registry``, while its refs index is ``atm-registry-refs``: name that
-node ``atm`` with --node, because node discovery returns the concrete name ``temp-atm`` and its refs index would
-be reported missing.
+``temp-atm-registry`` behind the alias ``atm-registry``, while its refs index is ``atm-registry-refs``; node
+discovery returns the concrete name ``temp-atm``, and the refs index is looked up under the tenant name ``atm``.
 
 The audit is READ-ONLY: it only issues GET /<index>/_mapping.
 

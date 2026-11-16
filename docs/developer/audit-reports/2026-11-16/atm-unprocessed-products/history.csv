@@ -1,0 +1,2 @@
+run_time,ancestry_version,nodes,examined,expected,anomalous,no_parent_by_design,collection_not_loaded_pending,collection_not_loaded_overdue,collection_pending,collection_overdue,reloaded_after_collection,inventory_version_mismatch,not_in_collection_inventory,sweeper_miss,refs_missing_pending,refs_missing,stale_stamp,anomalous_collections,empty_refs_with_bundle
+2026-11-16T16:00:35+00:00,7,atm,2784370,1725,2782645,0,0,42,0,0,0,2765640,16960,0,0,3,0,23,0

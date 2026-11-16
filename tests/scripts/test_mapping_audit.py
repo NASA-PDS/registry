@@ -181,6 +181,16 @@ def test_read_mappings_requests_every_node_and_group():
     assert [(m.name, m.group) for m in mappings] == [("a-registry", "registry"), ("a-registry-refs", "registry-refs")]
 
 
+def test_the_refs_index_of_a_concrete_products_index_is_named_after_the_tenant():
+    client = FakeClient({
+        "temp-atm-registry": response(props(lid="keyword")),
+        "atm-registry-refs": response(props(collection_lidvid="keyword")),
+    })  # fmt: skip
+    mappings = ma.read_mappings(client, ["temp-atm"], [ma.GROUP_REGISTRY, ma.GROUP_REFS])  # type: ignore[arg-type]
+    assert client.requested == ["temp-atm-registry", "atm-registry-refs"]
+    assert all(m.present for m in mappings)
+
+
 def test_a_missing_refs_index_is_tolerated_but_a_missing_registry_index_is_not():
     not_found = RegistryQueryError("Registry request to x/_mapping failed: HTTP 404: index_not_found_exception")
     client = FakeClient({"a-registry": response(props(lid="keyword")), "a-registry-refs": not_found})
