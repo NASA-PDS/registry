@@ -211,9 +211,10 @@ def extract_bad_file_ref_rows(data: dict[str, Any]) -> list[tuple]:
 
     A value is offending if it does not start with ``https://``.  Empty values and the
     literal string ``null`` (used as a placeholder for products without data files) are
-    ignored, as are ``s3://`` values on staged products (a product is staged while it is
-    still being loaded).  Filtering is repeated here so that the CSV lists exactly the bad
-    values even when a product has both valid and invalid entries in a multi-valued field.
+    ignored.  Only ``https://`` values are valid, because the archive is served through
+    CloudFront; ``s3://`` values are reported like any other.  Filtering is repeated here so
+    that the CSV lists exactly the bad values even when a product has both valid and invalid
+    entries in a multi-valued field.
     """
     rows = []
     for hit in data.get("hits", {}).get("hits", []):
@@ -230,8 +231,6 @@ def extract_bad_file_ref_rows(data: dict[str, Any]) -> list[tuple]:
             for value in _as_list(source.get(field)):
                 text = str(value).strip()
                 if not text or text.lower() == "null" or text.startswith("https://"):
-                    continue
-                if archive_status == "staged" and text.startswith("s3://"):
                     continue
                 rows.append((node, lidvid, product_class, archive_status, label, text))
 
@@ -612,8 +611,8 @@ def generate_metrics_from_csvs(csv_files: dict[str, Path]) -> str:
 
     markdown += "\n### Products with Invalid file_ref by Node\n\n"
     markdown += (
-        "Products with a Label or Data `file_ref` that does not start with `https://`, "
-        "except `s3://` on staged products.\n\n"
+        "Products with a Label or Data `file_ref` that does not start with `https://`. "
+        "Only `https://` is valid because the archive is served through CloudFront.\n\n"
     )
     markdown += "| Node | Bundles | Collections | Other Products |\n"
     markdown += "|------|--------:|------------:|---------------:|\n"
@@ -1586,7 +1585,7 @@ def main() -> int:
             print_error(f"Failed to generate {description} report: {e}")
             return 1
 
-    # Products whose Label or Data file_ref does not start with https://, except s3:// on staged products.
+    # Products whose Label or Data file_ref does not start with https:// (including s3://).
     # These queries are paginated. The bundle and collection CSVs list one row per offending file_ref value;
     # the report for other products is grouped by bundle and collection, because it has too many products.
     bad_file_ref_queries = [

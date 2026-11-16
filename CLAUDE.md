@@ -216,7 +216,7 @@ Each file is an OpenSearch DSL body passed directly to `pds-registry-client`. Th
 | `staged_collections_per_node.json` | `/*-registry/_search` | Collections with `archive_status=staged` |
 | `loaded_bundles_per_node.json` | `/*-registry/_search` | **All** bundles in new OpenSearch (no `archive_status` filter); includes `sort` for pagination |
 | `loaded_collections_per_node.json` | `/*-registry/_search` | **All** collections in new OpenSearch; includes `sort` for pagination |
-| `bad_file_ref_bundles_per_node.json` | `/*-registry/_search` | Bundles with any `ops:Label_File_Info/ops:file_ref` or `ops:Data_File_Info/ops:file_ref` value not starting with `https://` (paginated); `s3://` is allowed on `staged` products |
+| `bad_file_ref_bundles_per_node.json` | `/*-registry/_search` | Bundles with any `ops:Label_File_Info/ops:file_ref` or `ops:Data_File_Info/ops:file_ref` value not starting with `https://` (paginated). Only `https://` is valid because the archive is served through CloudFront, so `s3://` is reported like any other value |
 | `bad_file_ref_collections_per_node.json` | `/*-registry/_search` | Same, for collections |
 | `bad_file_ref_products_per_node.json` | `/*-registry/_search` | Same, for all other product classes |
 

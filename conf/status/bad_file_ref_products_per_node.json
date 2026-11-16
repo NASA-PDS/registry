@@ -20,10 +20,8 @@
         {
           "bool": {
             "should": [
-              {"bool": {"must_not": [{"term": {"ops:Tracking_Meta/ops:archive_status": "staged"}}], "filter": [{"regexp": {"ops:Label_File_Info/ops:file_ref": {"value": "~(https://.*)"}}}]}},
-              {"bool": {"must_not": [{"term": {"ops:Tracking_Meta/ops:archive_status": "staged"}}], "filter": [{"regexp": {"ops:Data_File_Info/ops:file_ref": {"value": "~(https://.*)"}}}]}},
-              {"bool": {"filter": [{"term": {"ops:Tracking_Meta/ops:archive_status": "staged"}}, {"regexp": {"ops:Label_File_Info/ops:file_ref": {"value": "~(https://.*|s3://.*)"}}}]}},
-              {"bool": {"filter": [{"term": {"ops:Tracking_Meta/ops:archive_status": "staged"}}, {"regexp": {"ops:Data_File_Info/ops:file_ref": {"value": "~(https://.*|s3://.*)"}}}]}}
+              {"regexp": {"ops:Label_File_Info/ops:file_ref": {"value": "~(https://.*)"}}},
+              {"regexp": {"ops:Data_File_Info/ops:file_ref": {"value": "~(https://.*)"}}}
             ],
             "minimum_should_match": 1
           }

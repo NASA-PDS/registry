@@ -1,7 +1,6 @@
 """Tests for the invalid ``file_ref`` reports of ``generate_registry_status_reports`` (no registry access)."""
 from __future__ import annotations
 
-import csv
 import json
 from pathlib import Path
 
@@ -35,18 +34,12 @@ def test_extract_reports_each_offending_value_and_skips_https_null_and_empty():
     assert [(r[4], r[5]) for r in rows] == [("Label_File_Info", "/tmp/p.xml"), ("Data_File_Info", "file:///x.tab")]
 
 
-def test_extract_ignores_s3_values_on_staged_products_only():
-    staged = reports.extract_bad_file_ref_rows(response(hit("urn:a:b:c:p::1.0", "staged", label="s3://bucket/p.xml")))
-    archived = reports.extract_bad_file_ref_rows(response(hit("urn:a:b:c:p::1.0", "archived", label="s3://bucket/p.xml")))
-    assert staged == []
-    assert [r[5] for r in archived] == ["s3://bucket/p.xml"]
-
-
-def test_extract_keeps_other_bad_values_on_staged_products():
+@pytest.mark.parametrize("status", ["staged", "archived"])
+def test_extract_reports_s3_values_whatever_the_archive_status(status: str):
     rows = reports.extract_bad_file_ref_rows(
-        response(hit("urn:a:b:c:p::1.0", "staged", label="s3://bucket/p.xml", data="/local/p.tab"))
+        response(hit("urn:a:b:c:p::1.0", status, label="s3://bucket/p.xml", data="/local/p.tab"))
     )
-    assert [r[5] for r in rows] == ["/local/p.tab"]
+    assert [r[5] for r in rows] == ["s3://bucket/p.xml", "/local/p.tab"]
 
 
 # ── grouping ──────────────────────────────────────────────────────────────────
@@ -163,18 +156,11 @@ def test_per_value_counts_count_each_lidvid_once_per_node(tmp_path: Path):
 
 
 @pytest.mark.parametrize("name", ["bundles", "collections", "products"])
-def test_query_files_exclude_s3_only_on_staged_products(name: str):
+def test_query_files_accept_only_https_on_both_file_ref_fields(name: str):
     query = json.loads((CONF / f"bad_file_ref_{name}_per_node.json").read_text(encoding="utf-8"))
     should = next(f["bool"]["should"] for f in query["query"]["bool"]["filter"] if "should" in f.get("bool", {}))
-    assert len(should) == 4
-    staged = {"term": {STATUS: "staged"}}
-    for clause in should:
-        body = clause["bool"]
-        regexp = next(f["regexp"] for f in body["filter"] if "regexp" in f)
-        value = next(iter(regexp.values()))["value"]
-        if staged in body.get("filter", []):
-            assert value == "~(https://.*|s3://.*)"
-        else:
-            assert body["must_not"] == [staged]
-            assert value == "~(https://.*)"
-    assert {next(iter(next(f["regexp"] for f in c["bool"]["filter"] if "regexp" in f))) for c in should} == {LABEL, DATA}
+    assert {field: spec["value"] for clause in should for field, spec in clause["regexp"].items()} == {
+        LABEL: "~(https://.*)",
+        DATA: "~(https://.*)",
+    }
+    assert "staged" not in json.dumps(query)
