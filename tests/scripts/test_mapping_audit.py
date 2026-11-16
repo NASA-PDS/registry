@@ -121,6 +121,24 @@ def test_a_type_conflict_is_an_error_on_the_minority_index():
     assert (found[0].expected, found[0].actual) == ("date", "keyword")
 
 
+def test_a_type_conflict_lists_which_nodes_use_which_type():
+    mappings = group(**{"d-registry": {HARVEST: "keyword"}, "e-registry": {HARVEST: "keyword"}})
+    found = ma.analyze(mappings)
+    assert {d.index for d in found} == {"d-registry", "e-registry"}
+    assert {d.types_by_index for d in found} == {"date: a, b, c; keyword: d, e"}
+    text = ma.render_summary(mappings, found, 0.8)
+    assert "1 fields are mapped with more than one type" in text
+    assert f"| registry | `{HARVEST}` | date: a, b, c; keyword: d, e |" in text
+
+
+def test_the_type_mismatch_table_has_one_row_per_field_not_per_index():
+    mappings = [index("a-registry", {"f": "long"}), index("b-registry", {"f": "keyword"})]
+    found = ma.analyze(mappings)
+    assert len(found) == 1  # only the tie-break loser is flagged...
+    text = ma.render_summary(mappings, found, 0.8)
+    assert "| registry | `f` | keyword: b; long: a |" in text  # ...but the row names both sides
+
+
 def test_a_type_tie_goes_to_the_alphabetically_first_type_deterministically():
     mappings = [index("a-registry", {"f": "long"}), index("b-registry", {"f": "keyword"})]
     found = ma.analyze(mappings)

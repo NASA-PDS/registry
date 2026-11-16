@@ -99,6 +99,8 @@ class Discrepancy:
         actual: What this index has.
         present_in: Indices of the group that define the field with the expected type.
         total: Indices in the group that exist.
+        types_by_index: For a type mismatch, every type the field has in the group and the nodes that map it as
+            that type, e.g. ``text: geo, img; keyword: naif``. Empty for other kinds.
     """
 
     index: str
@@ -111,6 +113,7 @@ class Discrepancy:
     actual: str
     present_in: int
     total: int
+    types_by_index: str = ""
 
 
 @dataclass(frozen=True)
@@ -266,6 +269,15 @@ def _severity(field_path: str, kind: Kind) -> Severity:
     return Severity.ERROR if field_path.startswith("ops:") or field_path in CORE_FIELDS else Severity.WARNING
 
 
+def _types_by_index(defined: Sequence[IndexMapping], path: str) -> str:
+    """Describe which nodes map ``path`` as which type, most common type first: ``text: geo, img; keyword: naif``."""
+    nodes_by_type: dict[str, list[str]] = {}
+    for m in defined:
+        nodes_by_type.setdefault(m.fields[path], []).append(m.node)
+    ordered = sorted(nodes_by_type.items(), key=lambda item: (-len(item[1]), item[0]))
+    return "; ".join(f"{type_}: {', '.join(sorted(nodes))}" for type_, nodes in ordered)
+
+
 def _most_common(values: Iterable[str]) -> tuple[str, int]:
     counts = Counter(values)
     best = max(counts.values())
@@ -316,6 +328,7 @@ def analyze(mappings: Sequence[IndexMapping], presence_threshold: float = DEFAUL
             defined = [m for m in existing if path in m.fields]
             expected, expected_count = _most_common(m.fields[path] for m in defined)
             expected_everywhere = len(defined) / total >= presence_threshold
+            types_by_index = _types_by_index(defined, path)
             for m in existing:
                 actual = m.fields.get(path)
                 if actual is None:
@@ -328,7 +341,7 @@ def analyze(mappings: Sequence[IndexMapping], presence_threshold: float = DEFAUL
                     discrepancies.append(
                         Discrepancy(
                             m.name, m.node, group, path, Kind.TYPE_MISMATCH, Severity.ERROR,
-                            expected, actual, expected_count, total,
+                            expected, actual, expected_count, total, types_by_index,
                         )  # fmt: skip
                     )
     return sorted(discrepancies, key=lambda d: (d.group, d.index, d.field, d.kind.value))
@@ -344,7 +357,10 @@ def write_discrepancies_csv(path: Path, discrepancies: Iterable[Discrepancy]) ->
     Returns:
         The number of rows written.
     """
-    columns = ["group", "index", "node", "field", "kind", "severity", "expected", "actual", "present_in", "total"]
+    columns = [
+        "group", "index", "node", "field", "kind", "severity", "expected", "actual", "present_in", "total",
+        "types_by_index",
+    ]  # fmt: skip
     count = 0
     with Path(path).open("w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle)
@@ -362,6 +378,7 @@ def write_discrepancies_csv(path: Path, discrepancies: Iterable[Discrepancy]) ->
                     d.actual,
                     d.present_in,
                     d.total,
+                    d.types_by_index,
                 ]
             )
             count += 1
@@ -472,14 +489,18 @@ def render_summary(
             if hidden > 0:
                 lines.append(f"| | | ... and {hidden} more fields (see mapping_discrepancies.csv) | | |")
         elif kind is Kind.TYPE_MISMATCH:
+            fields = sorted({(d.group, d.field): d.types_by_index for d in rows}.items())
             lines += [
-                "| Group | Index | Field | Expected | Actual | Indices with the expected type |",
-                "|---|---|---|---|---|---|",
+                f"{len(fields)} fields are mapped with more than one type. Each row lists every type and the "
+                "nodes that use it; when a field exists on only two indices, neither type is more correct.",
+                "",
+                "| Group | Field | Type: nodes |",
+                "|---|---|---|",
             ]
-            for d in rows[:_DETAIL_LIMIT * 4]:
-                lines.append(f"| {d.group} | {d.index} | `{d.field}` | {d.expected} | {d.actual} | {d.present_in} of {d.total} |")
-            if len(rows) > _DETAIL_LIMIT * 4:
-                lines.append(f"| | | ... and {len(rows) - _DETAIL_LIMIT * 4} more (see mapping_discrepancies.csv) | | | |")
+            for (group, field_path), distribution in fields[: _DETAIL_LIMIT * 4]:
+                lines.append(f"| {group} | `{field_path}` | {distribution} |")
+            if len(fields) > _DETAIL_LIMIT * 4:
+                lines.append(f"| | ... and {len(fields) - _DETAIL_LIMIT * 4} more (see mapping_discrepancies.csv) | |")
         else:
             lines += ["| Group | Index | Expected | Actual |", "|---|---|---|---|"]
             for d in rows:

@@ -782,8 +782,8 @@ The ATM products index is `temp-atm-registry` behind the alias `atm-registry`, w
 
 | File | Content |
 |---|---|
-| `mapping_summary.md` | The report (also printed): per-index counts, fields missing from some indices, type mismatches, missing indices |
-| `mapping_discrepancies.csv` | One row per discrepancy: group, index, field, kind, severity, expected and actual type, how many indices have the expected type |
+| `mapping_summary.md` | The report (also printed): per-index counts, fields missing from some indices, one row per field with conflicting types showing which nodes use which type, missing indices |
+| `mapping_discrepancies.csv` | One row per discrepancy: group, index, field, kind, severity, expected and actual type, how many indices have the expected type, and for a type mismatch the nodes that use each type (`types_by_index`) |
 | `mapping_matrix.csv` | One row per field, one column per index, with the mapped type or `(absent)` |
 | `mapping_possibly_stale.csv` | Written only when such indices exist: one row per index that is not named after a tenant node, with its document count, mapped-field count and whether a refs index exists |
 

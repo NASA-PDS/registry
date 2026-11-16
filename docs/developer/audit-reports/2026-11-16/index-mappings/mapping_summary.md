@@ -148,32 +148,33 @@ owner before deleting; the audit never changes or deletes anything.
 
 ## Fields mapped with different types
 
-| Group | Index | Field | Expected | Actual | Indices with the expected type |
-|---|---|---|---|---|---|
-| registry | en-registry | `nh:Mission_Elapsed_Time/nh:clock_partition` | keyword | long | 1 of 10 |
-| registry | en-registry | `sb:Exposure/sb:exposure_description` | keyword | text | 1 of 10 |
-| registry | geo-registry | `insight:Observation_Information/insight:release_number` | integer | keyword | 3 of 10 |
-| registry | geo-registry | `insight:Observation_Information/insight:spacecraft_clock_count_partition` | integer | keyword | 2 of 10 |
-| registry | img-registry | `img:Exposure/img:exposure_duration_count` | double | long | 2 of 10 |
-| registry | naif-registry | `description` | text | keyword | 9 of 10 |
-| registry | naif-registry | `pds:Bundle/pds:description` | text | keyword | 8 of 10 |
-| registry | naif-registry | `pds:Citation_Information/pds:author_list` | text | keyword | 9 of 10 |
-| registry | naif-registry | `pds:Citation_Information/pds:description` | text | keyword | 9 of 10 |
-| registry | naif-registry | `pds:Collection/pds:description` | text | keyword | 7 of 10 |
-| registry | naif-registry | `pds:Document/pds:description` | text | keyword | 9 of 10 |
-| registry | naif-registry | `pds:Document/pds:document_name` | text | keyword | 9 of 10 |
-| registry | naif-registry | `pds:Field_Character/pds:description` | text | keyword | 9 of 10 |
-| registry | naif-registry | `pds:SPICE_Kernel/pds:description` | text | keyword | 7 of 10 |
-| registry | naif-registry | `title` | text | keyword | 9 of 10 |
-| registry | rms-registry | `ops:Provenance/ops:registry_sweepers_provenance_version` | integer | keyword | 9 of 10 |
-| registry | sbnumd-registry | `ebt:Airmass/ebt:airmass` | double | keyword | 1 of 10 |
-| registry | sbnumd-registry | `ebt:Airmass/ebt:airmass_time` | date | keyword | 1 of 10 |
-| registry | sbnumd-registry | `sb:Exposure/sb:exposure_duration` | double | keyword | 1 of 10 |
-| registry | sbnumd-registry | `sb:Filter/sb:long_wavelength_limit` | double | keyword | 1 of 10 |
-| registry | sbnumd-registry | `sb:Filter/sb:short_wavelength_limit` | double | keyword | 1 of 10 |
-| registry | sbnumd-registry | `sb:Instrument_Position_Angles/sb:y_axis_position_angle` | double | keyword | 1 of 10 |
-| registry | sbnumd-registry | `sb:Instrument_Position_Angles/sb:z_axis_position_angle` | double | keyword | 1 of 10 |
-| registry | sbnumd-registry | `sb:Timing/sb:midobservation_time_UTC_JD` | double | keyword | 1 of 10 |
-| registry | sbnumd-registry | `sb:Timing/sb:midobservation_time_UTC_YMD` | date | keyword | 1 of 10 |
-| registry | temp-atm-registry | `img:Exposure/img:exposure_duration_count` | double | long | 2 of 10 |
+25 fields are mapped with more than one type. Each row lists every type and the nodes that use it; when a field exists on only two indices, neither type is more correct.
+
+| Group | Field | Type: nodes |
+|---|---|---|
+| registry | `description` | text: en, geo, img, ppi, psa, rms, sbnpsi, sbnumd, temp-atm; keyword: naif |
+| registry | `ebt:Airmass/ebt:airmass` | double: sbnpsi; keyword: sbnumd |
+| registry | `ebt:Airmass/ebt:airmass_time` | date: sbnpsi; keyword: sbnumd |
+| registry | `img:Exposure/img:exposure_duration_count` | double: geo, sbnpsi; long: img, temp-atm |
+| registry | `insight:Observation_Information/insight:release_number` | integer: en, ppi, temp-atm; keyword: geo |
+| registry | `insight:Observation_Information/insight:spacecraft_clock_count_partition` | integer: en, ppi; keyword: geo |
+| registry | `nh:Mission_Elapsed_Time/nh:clock_partition` | keyword: sbnumd; long: en |
+| registry | `ops:Provenance/ops:registry_sweepers_provenance_version` | integer: en, geo, img, naif, ppi, psa, sbnpsi, sbnumd, temp-atm; keyword: rms |
+| registry | `pds:Bundle/pds:description` | text: en, geo, img, ppi, psa, rms, sbnpsi, temp-atm; keyword: naif |
+| registry | `pds:Citation_Information/pds:author_list` | text: en, geo, img, ppi, psa, rms, sbnpsi, sbnumd, temp-atm; keyword: naif |
+| registry | `pds:Citation_Information/pds:description` | text: en, geo, img, ppi, psa, rms, sbnpsi, sbnumd, temp-atm; keyword: naif |
+| registry | `pds:Collection/pds:description` | text: geo, ppi, psa, rms, sbnpsi, sbnumd, temp-atm; keyword: naif |
+| registry | `pds:Document/pds:description` | text: en, geo, img, ppi, psa, rms, sbnpsi, sbnumd, temp-atm; keyword: naif |
+| registry | `pds:Document/pds:document_name` | text: en, geo, img, ppi, psa, rms, sbnpsi, sbnumd, temp-atm; keyword: naif |
+| registry | `pds:Field_Character/pds:description` | text: en, geo, img, ppi, psa, rms, sbnpsi, sbnumd, temp-atm; keyword: naif |
+| registry | `pds:SPICE_Kernel/pds:description` | text: geo, img, ppi, psa, rms, sbnpsi, temp-atm; keyword: naif |
+| registry | `sb:Exposure/sb:exposure_description` | keyword: sbnumd; text: en |
+| registry | `sb:Exposure/sb:exposure_duration` | double: en; keyword: sbnumd |
+| registry | `sb:Filter/sb:long_wavelength_limit` | double: en; keyword: sbnumd |
+| registry | `sb:Filter/sb:short_wavelength_limit` | double: en; keyword: sbnumd |
+| registry | `sb:Instrument_Position_Angles/sb:y_axis_position_angle` | double: en; keyword: sbnumd |
+| registry | `sb:Instrument_Position_Angles/sb:z_axis_position_angle` | double: en; keyword: sbnumd |
+| registry | `sb:Timing/sb:midobservation_time_UTC_JD` | double: en; keyword: sbnumd |
+| registry | `sb:Timing/sb:midobservation_time_UTC_YMD` | date: en; keyword: sbnumd |
+| registry | `title` | text: en, geo, img, ppi, psa, rms, sbnpsi, sbnumd, temp-atm; keyword: naif |
 
