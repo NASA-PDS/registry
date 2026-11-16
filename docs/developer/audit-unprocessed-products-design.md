@@ -111,6 +111,18 @@ that is written to the CSV.
 `reloaded_after_collection` is flagged `anomalous` because the product is still missing ancestry and
 will stay that way, but its rationale says no sweeper bug is implied.
 
+## Responsibility
+
+A report that lists rule names does not tell anyone what to do, so each rule is mapped to the party that can fix
+it (`unprocessed_audit/ownership.py`) and to one of two kinds of problem: **orphaned** (no registry record
+confirms the product's collection; the collection shown is a best guess from its identifier) or **not processed**
+(the refs list the product, but the sweepers never processed it). `summary.md` opens with a table in those terms,
+`metrics.json` carries the counts by owner, and `audit_rollup.py` compares nodes. The mapping follows how ancestry
+is produced: Harvest writes the refs from a collection's inventory, and the sweeper reaches a product only
+through them. `refs_missing` is split by the collection inventory: the inventory decides whether the node's data
+is at fault or the refs are stale. A `refs_missing` product that could not be checked against the inventory is
+reported as needing a closer look instead of being assigned an owner on a guess.
+
 ## Extra diagnostics
 
 - **Stamped collections with empty refs.** The collection list from phase 1 with bundle cross-check.

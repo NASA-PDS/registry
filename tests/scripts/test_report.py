@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import gzip
+from dataclasses import replace
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
@@ -387,11 +388,44 @@ def test_summary_sections_in_order() -> None:
     assert text.endswith("\n")
 
 
-def test_summary_empty_tally_has_only_headline() -> None:
+def test_summary_empty_tally_is_healthy_and_has_no_problem_sections() -> None:
     text = render_summary(Tally(), [], {}, TH, {}, None)
     assert text.startswith("# Unprocessed product audit")
     assert "No candidate products were found" in text
-    assert "## " not in text
+    assert "**Healthy: nothing needs doing.**" in text
+    assert "| Who |" not in text
+    assert "## Anomalies by rule" not in text
+
+
+def test_summary_leads_with_what_needs_to_happen_grouped_by_owner() -> None:
+    text = render_summary(build_tally(), [], {}, TH, {}, None)
+    assert text.index("## What needs to happen") < text.index("## Anomalies by rule")
+    assert "| Who | What is wrong | Products | Collections | What to do |" in text
+    assert text.index("| Node |") < text.index("| Registry operations |") < text.index("| Sweepers team |")
+    assert "Who fixes what:" in text
+
+
+def test_summary_asks_for_a_closer_look_at_refs_missing_products_the_inventory_did_not_verify() -> None:
+    verified = build_tally()
+    verified.add(make_candidate("p8"), make_verdict(Rule.REFS_MISSING, Severity.ANOMALOUS, COLL, False), NOW)
+    unverified = build_tally()
+    unverified.add(
+        make_candidate("p8"),
+        replace(make_verdict(Rule.REFS_MISSING, Severity.ANOMALOUS, COLL, False), inventory_verified=False),
+        NOW,
+    )
+    assert "| Needs a closer look |" not in render_summary(verified, [], {}, TH, {}, None)
+    text = render_summary(unverified, [], {}, TH, {}, None)
+    assert "| Needs a closer look |" in text
+    assert "1 products were not checked against the collection inventory" in text
+
+
+def test_summary_defines_orphaned_and_not_processed_and_prefixes_each_problem_with_its_kind() -> None:
+    text = render_summary(build_tally(), [], {}, TH, {}, None)
+    assert "Kinds of problem:" in text
+    assert "**Not processed**: the registry's refs list the product" in text
+    assert "best guess from its identifier" in text
+    assert "**Orphaned**: No collection with the identifier" in text
 
 
 def test_summary_skips_diff_without_previous() -> None:

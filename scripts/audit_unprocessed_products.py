@@ -400,7 +400,7 @@ def run_audit(args: argparse.Namespace, client: RegistryClient, now: datetime | 
                     collections_by_lid,
                     refs.get(candidate.lidvid) if checked else None,
                     refs_checked=checked,
-                    listed_lidvid=listed_versions.get(candidate.lid) if checked else None,
+                    listed_in_refs=listed_versions.get(candidate.lid, ()) if checked else (),
                     inventory_for=inventory_cache,
                 )
                 writer.write(candidate, verdict, now)

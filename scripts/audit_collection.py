@@ -965,7 +965,9 @@ def _download_inventory(
         ``(row_count, lidvid_set_or_None)`` tuple, or ``(None, None)`` on error.
     """
     try:
-        resp = session.get(file_ref, timeout=timeout)
+        # The file comes from the data provider, not the API: its server rejects the session's JSON-only Accept header
+        # with HTTP 406.
+        resp = session.get(file_ref, headers={"Accept": "*/*"}, timeout=timeout)
         resp.raise_for_status()
     except requests.exceptions.RequestException as exc:
         logger.error("Failed to download inventory file: %s", exc)

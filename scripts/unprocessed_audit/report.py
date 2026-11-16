@@ -27,6 +27,7 @@ from types import TracebackType
 from typing import IO
 from typing import Any
 
+from unprocessed_audit import ownership
 from unprocessed_audit.classify import RULE_GUIDANCE
 from unprocessed_audit.classify import age_days
 from unprocessed_audit.classify import derive_collection_lid
@@ -334,6 +335,8 @@ class Tally:
         """Expected-pending counts per node, then per rule value."""
         self.keys: set[int] = set()
         """``record_key`` of every (product, rule) seen, when ``collect_keys`` is true."""
+        self.unverified_refs_missing = 0
+        """Anomalous ``refs_missing`` products reached without the collection inventory."""
 
     def add(self, candidate: Candidate, verdict: Verdict, now: datetime) -> None:
         """Fold one classified product into the counters.
@@ -366,6 +369,10 @@ class Tally:
                 impact.state = verdict.collection_state.value
             if verdict.collection_harvest is not None:
                 impact.harvest = verdict.collection_harvest
+
+        if verdict.rule is Rule.REFS_MISSING and verdict.severity is Severity.ANOMALOUS:
+            if not verdict.inventory_verified:
+                self.unverified_refs_missing += 1
 
         if verdict.rule in NOT_LOADED_RULES:
             lid = derive_collection_lid(candidate.lid) or "(unknown)"
@@ -606,13 +613,16 @@ def _bundles_for(
 
 
 def _section_headline(tally: Tally, th: Thresholds, params: Mapping[str, object]) -> list[str]:
-    """Section 1: headline counts and run parameters."""
+    """Section 1: headline counts."""
     lines = [
         "# Unprocessed product audit",
         "",
         f"Run time: {_fmt_ts(th.now)}",
-        "",
     ]
+    nodes = params.get("Nodes")
+    if nodes:
+        lines.append(f"Nodes: {nodes}")
+    lines.append("")
     if tally.examined == 0:
         lines.append("No candidate products were found: every API-visible product has current ancestry.")
     else:
@@ -621,9 +631,53 @@ def _section_headline(tally: Tally, th: Thresholds, params: Mapping[str, object]
             f"- Expected (should resolve on their own): **{tally.expected:,}**",
             f"- Anomalous (need attention): **{tally.anomalous:,}**",
         ]
-    lines += [
-        "",
-        "Run parameters:",
+    return lines
+
+
+def _section_actions(tally: Tally, collections: CollectionABC[Collection]) -> list[str]:
+    """Section 2: what needs to happen, grouped by who can fix it, in plain language."""
+    per_rule = ownership.collections_per_rule(impact.rule_counts for impact in tally.collections.values())
+    not_loaded = sum(1 for orphan in tally.orphans.values() if orphan.overdue)
+    if not_loaded:
+        per_rule[Rule.COLLECTION_NOT_LOADED_OVERDUE.value] = not_loaded
+    rows = ownership.build_rows(
+        tally.rule_totals(Severity.ANOMALOUS),
+        tally.rule_totals(Severity.EXPECTED),
+        per_rule,
+        len(ownership.empty_refs_collections(collections)),
+        tally.unverified_refs_missing,
+    )
+    lines = ["## What needs to happen", "", f"**{ownership.verdict(rows)}**"]
+    if not rows:
+        return lines
+    lines += ["", "| Who | What is wrong | Products | Collections | What to do |", "|---|---|--:|--:|---|"]
+    for row in rows:
+        products = f"{row.products:,}" if row.products is not None else "-"
+        count = f"{row.collections:,}" if row.collections is not None else "-"
+        what = f"**{ownership.KIND_LABELS[row.kind]}**: {row.problem.title}"
+        lines.append(
+            f"| {ownership.OWNER_LABELS[row.owner]} | {_cell(what)} | {products} | {count} | "
+            f"{_cell(row.problem.action)} |"
+        )
+    kinds_present = [k for k in ownership.Kind if any(r.kind is k for r in rows)]
+    owners_present = [o for o in ownership.Owner if any(r.owner is o for r in rows)]
+    lines += ["", "Kinds of problem:", ""]
+    lines += [f"- **{ownership.KIND_LABELS[k]}**: {ownership.KIND_MEANING[k]}." for k in kinds_present]
+    lines += ["", "Who fixes what:", ""]
+    lines += [f"- **{ownership.OWNER_LABELS[o]}**: {ownership.OWNER_MEANING[o]}." for o in owners_present]
+    if tally.unverified_refs_missing:
+        lines += [
+            "",
+            f"{tally.unverified_refs_missing:,} products were not checked against the collection inventory "
+            "(it was skipped with `--no-inventory` or could not be read).",
+        ]
+    return lines
+
+
+def _section_parameters(th: Thresholds, params: Mapping[str, object]) -> list[str]:
+    """Run parameters, at the end of the report."""
+    lines = [
+        "## Run parameters",
         "",
         f"- Ancestry version: {th.ancestry_version}",
         f"- Collection grace period: {th.collection_grace_days:g} days",
@@ -848,6 +902,7 @@ def render_summary(
     known = {c.lidvid: c for c in collection_list}
     sections = [
         _section_headline(tally, th, params),
+        _section_actions(tally, collection_list),
         _section_anomalies(tally, max_rows),
         _section_anomalous_collections(tally, known, coverage, max_rows),
         _section_empty_refs(collection_list, max_rows),
@@ -856,5 +911,6 @@ def render_summary(
         _section_breakdown(tally, max_rows),
         _section_diff(diff),
         _section_guidance(tally),
+        _section_parameters(th, params),
     ]
     return "\n\n".join("\n".join(section) for section in sections if section) + "\n"

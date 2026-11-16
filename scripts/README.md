@@ -620,11 +620,31 @@ Products without `ops:Provenance/ops:ancestor_refs` and a current `ops:Provenanc
 | `reloaded_after_collection` | anomalous | Collection was processed, then the product was re-harvested; re-harvesting the collection fixes it |
 | `inventory_version_mismatch` | anomalous | The collection's inventory lists the product at a different version than the registry holds; load that version (re-harvesting the collection does not help) |
 | `not_in_collection_inventory` | anomalous | The product is registered under the collection but its current inventory does not list it under any version; the node decides whether to add it to the inventory or remove it |
+| `bare_lid_in_inventory` | anomalous | The collection's inventory lists the product by LID without a version, which the sweepers do not follow; re-harvesting writes the same refs |
 | `sweeper_miss` | anomalous | Collection processed at or after the product's harvest and the product is in refs, but has no ancestry |
 | `refs_missing_pending` / `refs_missing` | expected / anomalous | No `registry-refs` document lists the product |
 | `stale_stamp` | anomalous | Product stamped with an older ancestry version than its processed collection |
 
 Only non-superseded products with archive status `archived` or `certified` are examined. The audit is read-only.
+
+**Reading the report.** `summary.md` opens with a "What needs to happen" table in plain language, grouped by who can fix each problem:
+
+| Who | Problems |
+|---|---|
+| Node | A collection is not loaded, the inventory lists a different version, or the inventory does not list the product |
+| Registry operations | Stale or missing refs, products loaded after their collection was processed, an older stamp, a collection stamped without a link to its bundle: re-harvest the collection, then run the sweepers |
+| Sweepers team | `sweeper_miss`, or an inventory that lists products by LID without a version |
+| Needs a closer look | `refs_missing` products that could not be checked against the collection inventory |
+| No action | Products loaded recently |
+
+Each problem is marked **Orphaned** (no registry record confirms the product's collection; the collection named for it is a best guess from its identifier) or **Not processed** (the refs list the product but the sweepers never processed it). The same counts are in `metrics.json` under `owners`. `refs_missing` needs the collection inventory to be classified, so run without `--no-inventory` when owners matter.
+
+```bash
+AUDITS_DIR="<directory containing one sub-directory per node, each with the audit output>"
+python scripts/audit_rollup.py --audits-dir "${AUDITS_DIR}"
+```
+
+`audit_rollup.py` reads each node's `metrics.json` and prints one table of those counts, node by node.
 
 #### Usage
 

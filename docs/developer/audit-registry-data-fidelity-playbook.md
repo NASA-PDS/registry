@@ -240,29 +240,79 @@ newest harvest time among those other products for context.
 
 ## 5. Decision table: finding, meaning, action, owner
 
-Owners: **node** (the data provider's PDS node), **registry operations** (the team that re-harvests and runs
-sweepers on demand), **sweepers** (the registry-sweepers team).
+### 5.1 Two kinds of problem
 
-| Finding | What it means | Action | Owner |
-|---|---|---|---|
-| Collection `load_verdict` of `stalled` or `not_started`, and rule `inventory_version_mismatch` | The inventory lists a different version of the product than the registry holds; refs follow the inventory, so the registered version is never swept | Finish or start loading the product versions the inventory lists. First confirm whether a load is actually running; a long-stalled load usually means the node does not know about the gap. Older registered versions should then be superseded. Re-harvesting the collection does not help | node |
-| `refs_missing` where the inventory lists the product | Stale refs: the refs documents were written from an older inventory than the one served now | Re-harvest the collection from its current label and inventory (use step 5), then run the ancestry sweeper | registry operations, with the node |
-| `not_in_collection_inventory` | The product is registered under the collection but the current inventory lists it under no version, and no refs document lists it | Decide whether the product belongs in the inventory (update the inventory and re-harvest the collection) or should be removed from the registry. Re-harvesting alone does not help | node |
-| `reloaded_after_collection` | The collection was swept, then the product was re-harvested and lost its ancestry. Not a sweeper defect | Re-harvest the collection (step 5), then let the sweeper run | registry operations |
-| `stale_stamp` (non-superseded products only) | The product carries an older ancestry stamp than its already-stamped collection, which is not revisited | Re-sweep the collection | sweepers / registry operations |
-| `collection_overdue` / `collection_pending` | The parent collection has no current stamp; the collection is the root cause. Pending is within the grace period, overdue is beyond it | Confirm the ancestry sweeper ran for the node since the collection was harvested | sweepers |
-| `collection_not_loaded_overdue` | No API-visible collection exists for the product's collection LID well after the product was harvested | Load the parent collection, change its archive status, or fix the product LID | node |
-| Stamped collection with empty `ancestor_refs` that has a bundle | The collection counts as swept, so its products are not revisited, and the bundle's `/members` is empty | File or comment on a registry-sweepers issue (see NASA-PDS/registry-sweepers#284 and PR #286). Repair by running ancestry in overwrite mode for the node, or by re-harvesting the collection and running the sweepers with the PR #286 fix. On ATM, that repaired 44 of 45 such collections | sweepers |
-| Superseded collection version whose products are unprocessed | A superseded version is not re-harvested; its bundle refers to the newer version | No re-harvest. Report the products against the real (current) collection version | - (reporting only) |
-| Old Harvest version on recent loads | The node loads with an outdated Harvest release | Informational. Ask the node to upgrade | node |
+Harvest writes a `registry-refs` document for a collection from the collection's inventory when the collection
+is harvested. The refs are the registry's record of which products belong to which collection. The ancestry
+sweeper reaches a non-aggregate product only through those refs, and it does not revisit a collection once the
+collection is stamped. So a product lacks ancestry in one of two ways:
 
-Rules that need no owner:
+- **Orphaned**: no registry record confirms which collection the product belongs to. The collection a report
+  names for it is a **best guess** from its identifier (`bundle:collection:product`) and the collection versions
+  that are registered. The product may really belong to a collection version that is not loaded; for example,
+  products whose inventory is `::64.0` while the registry holds `::56.0` are orphans of a collection the registry
+  does not have.
+- **Not processed**: the refs do list the product, so its collection is confirmed, but the sweepers never gave
+  it ancestry (it was loaded after its collection was processed, it carries an older stamp, or the sweepers have
+  a bug).
 
-- `no_parent_by_design`: `Product_Service` and `Product_Context` never belong to a collection.
-- `*_pending` rules (`collection_not_loaded_pending`, `collection_pending`, `refs_missing_pending`): within
-  the grace periods, expected to resolve on their own. Recheck on the next run.
-- `sweeper_miss`: nothing in the registry data explains the gap. Gather the evidence from the reference
-  document's checks (including the refs `batch_id`) and report it to the sweepers team.
+A third group, **waiting**, is products loaded so recently that the sweepers have not had their chance.
+
+### 5.2 Who fixes what
+
+| Owner | Fixes | How |
+|---|---|---|
+| **Node** (the data provider's PDS node) | Orphans whose cause is the node's data: the collection is not loaded, the inventory lists a different version of the product, or the inventory does not list it | Load, correct or remove data; only the node can |
+| **Registry operations** (re-harvests and runs the sweepers) | Orphans whose inventory does list the product but whose refs are stale or missing; products that are linked but not processed; collections stamped with empty refs | Re-harvest the collection, then run the sweepers. No change to the node's data |
+| **Sweepers team** | `sweeper_miss`: everything looks right and the sweepers skipped the product | Software fix |
+| **Needs a closer look** | `refs_missing` products the audit could not check against the collection's inventory | Re-run with the inventories (not `--no-inventory`), or check the inventory by hand |
+
+The audit's `summary.md` opens with a table in these terms ("What needs to happen"), and
+`scripts/audit_rollup.py` puts every node side by side.
+
+### 5.3 Is `refs_missing` a Harvest problem or a sweepers problem?
+
+Neither, as a first guess; read the collection's inventory first. `refs_missing` means no refs document lists the
+product while its collection exists. The inventory settles who is responsible:
+
+- The inventory lists a **different version** of the product, or **does not list it**: the node's data does not
+  line up (the audit then reports `inventory_version_mismatch` or `not_in_collection_inventory`). The node
+  fixes it. Re-harvesting does not help, and neither do the sweepers.
+- The inventory **lists this exact product**, but the refs do not: the refs were written from an older
+  inventory, or never written. This is a Harvest-side gap, fixed by re-harvesting the collection so that its
+  refs are regenerated, and then running the sweepers. It is not a sweepers defect, and the node's data is fine.
+- The inventory could not be read (skipped with `--no-inventory`, or the provider's file could not be
+  downloaded): the audit cannot tell; this is the "needs a closer look" group. In the first all-node run, every
+  `refs_missing` product that was checked by hand turned out to be one of the first two cases, and the
+  proportion of node problems was high (EN, GEO, SBNPSI and SBNUMD each had some).
+
+A product that was overwritten (re-harvested) after its collection was processed, and whose collection was not
+re-harvested, is a different case: it is `reloaded_after_collection`. Its refs still list it, so it is linked,
+but the stamped collection is never revisited and so the product is never reprocessed. The fix is to re-harvest
+the collection and run the sweepers. The naming is an inference from harvest times: on IMG the products of
+four collections were stamped up to one point in time and not after it, which fits the sweepers having run
+part-way through a sequential load.
+
+### 5.4 Findings
+
+| Finding (rule) | Kind | What it means | Action | Owner |
+|---|---|---|---|---|
+| `collection_not_loaded_overdue` | Orphaned | No collection with the product's collection identifier is registered in the audited node's index. Check first whether the collection is registered under another node (a LIDVID can be registered under several) | Load the parent collection, change its archive status, or fix the product identifier | node |
+| `inventory_version_mismatch` | Orphaned | The collection's inventory lists a different version of the product than the registry holds. Usually the registry is older (the listed version is not loaded); it can also be newer (the registry holds a version the inventory does not list). `audit_collection.py --diff` shows the direction | Make them agree: load the listed version, or correct the inventory, or remove the unlisted version. First confirm whether a load is running; a long-stalled load usually means the node does not know about the gap. Re-harvesting the collection does not help | node |
+| `not_in_collection_inventory` | Orphaned | The product is registered under the collection but the current inventory lists it under no version | Add it to the inventory, or remove it from the registry | node |
+| `refs_missing` (inventory lists the exact product) | Orphaned | The refs were written from an older inventory, or never written | Re-harvest the collection from its current label and inventory (step 5), then run the sweepers | registry operations |
+| `refs_missing` (inventory not checked) | Orphaned, cause unknown | See 5.3 | Re-run with inventories | needs a closer look |
+| `reloaded_after_collection` | Not processed | The collection was processed before the product was loaded, and the sweepers do not go back | Re-harvest the collection (step 5), then run the sweepers | registry operations |
+| `stale_stamp` (non-superseded products only) | Not processed | The product carries an older ancestry stamp than its already-stamped collection, which is not revisited. A plain sweeper run does not reach it | Re-harvest the collection and run the sweepers, or run ancestry in overwrite mode (registry-sweepers PR #291) | registry operations |
+| `collection_overdue` / `collection_pending` | Not processed | The parent collection has no current stamp; the collection is the root cause. Pending is within the grace period, overdue is beyond it | Confirm the ancestry sweeper ran for the node since the collection was harvested | registry operations |
+| `sweeper_miss` | Not processed | The collection is processed, the refs list the product, the product was loaded before the collection, and it still has no ancestry | Gather the evidence from the reference document's checks (including the refs `batch_id`) and report it | sweepers team |
+| Stamped collection with empty `ancestor_refs` that has a bundle | Not processed | The collection counts as swept, so its products are not revisited, and the bundle does not list it as a member | Re-harvest the collection and run the sweepers with the fix from registry-sweepers PR #286 (NASA-PDS/registry-sweepers#284), or run ancestry in overwrite mode. On ATM, that repaired 44 of 45 such collections | registry operations (sweepers team if it recurs after the fix) |
+| Superseded collection version whose products are unprocessed | - | A superseded version is not re-harvested; its bundle refers to the newer version | No re-harvest. Report the products against the real (current) collection version | reporting only |
+| Old Harvest version on recent loads | - | The node loads with an outdated Harvest release | Informational. Ask the node to upgrade | node |
+
+Rules that need no action: `no_parent_by_design` (`Product_Service` and `Product_Context` never belong to a
+collection) and the `*_pending` rules (`collection_not_loaded_pending`, `collection_pending`,
+`refs_missing_pending`), which are inside their grace periods. Recheck on the next run.
 
 ## 6. Known pitfalls
 
@@ -275,6 +325,10 @@ Rules that need no owner:
 | e | Inventory servers can be slow | The full run sits for long stretches on inventory downloads (tens of MB at tens of KB/s). Use `--timeout` to tune and `--no-inventory` for a quick pass |
 | f | `--max-products` truncates per-collection counts | Counts from a dry run are lower than the real ones and collection tallies are partial. Never quote a dry-run number |
 | g | A surprising number may be a query artifact | Before trusting any count, sample the population and read the `_source` of a few documents. Confirm fields exist, are searchable and hold the values the query assumes |
+| h | The collection named for an orphan is a guess | A product of `...::64.0` is shown under the registered `...::56.0`. Compare the collection's inventory (`audit_collection.py --diff`) with the registry before acting; the product may belong to a version that is not loaded |
+| i | Refs of another collection version are not evidence for this one | Refs of an older collection version that name an older product version say nothing about the current collection version. The audit counts a refs listing as a version mismatch only when it comes from the product's own collection |
+| j | Products that are stamped but linked to an older collection version are not examined | A product that already has ancestry naming collection `::12.1` while the inventory of `::16.0` lists a different version is not a candidate. A node can have tens of thousands of these (on IMG, the `mars2020_navcam_ops_mosaic` collection); `audit_collection.py --diff` shows them and the `load_verdict` can read `stalled` for them even though nothing is waiting to load |
+| k | A relative `file_ref` cannot be downloaded | A collection whose registered label location is a local path (not an `https://` URL) cannot have its inventory fetched by `audit_collection.py` or the audit; its products stay under "needs a closer look". See the invalid `file_ref` reports in NASA-PDS/registry#614 |
 
 ## 7. Verifying a finding by hand, and cross-checks
 

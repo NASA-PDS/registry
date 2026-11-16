@@ -58,6 +58,38 @@ Add `--junitxml=test-results.xml` for a report file.
 | `in_refs` | `true`/`false` when `registry-refs` was consulted for this product, empty when it was not needed |
 | `rule`, `severity`, `rationale` | The verdict. `severity` is `expected` (should resolve on its own) or `anomalous` |
 
+## Terms: orphaned, not processed, and who fixes what
+
+`summary.md` opens with "What needs to happen", a table in plain language. It uses these terms.
+
+- **Orphaned**: no registry record confirms which collection the product belongs to. The collection shown for it
+  is a **best guess**, derived from the product's identifier (`bundle:collection:product`) and the collection
+  versions that are registered. The product may really belong to a collection version that is not loaded.
+  Rules: `collection_not_loaded_overdue`, `inventory_version_mismatch`, `not_in_collection_inventory`,
+  `bare_lid_in_inventory`, `refs_missing`.
+- **Not processed**: the `registry-refs` documents list the product, so its collection is confirmed, but the
+  sweepers never gave it ancestry. Rules: `reloaded_after_collection`, `stale_stamp`, `collection_overdue`,
+  `sweeper_miss`, and a collection stamped with empty refs that has a bundle.
+- **Waiting**: loaded recently, expected to resolve by itself (the `*_pending` rules and `no_parent_by_design`).
+
+Harvest writes the refs from a collection's inventory when the collection is harvested, and the ancestry sweeper
+reaches a non-aggregate product only through them. It does not revisit a collection once it is stamped. That is
+why the owner follows from the rule:
+
+| Owner | Rules |
+|---|---|
+| Node | `collection_not_loaded_overdue`, `inventory_version_mismatch`, `not_in_collection_inventory` |
+| Registry operations (re-harvest the collection, then run the sweepers) | `refs_missing` where the inventory lists the exact product, `reloaded_after_collection`, `stale_stamp`, `collection_overdue`, a collection stamped with empty refs that has a bundle |
+| Sweepers team | `sweeper_miss`, `bare_lid_in_inventory` |
+| Needs a closer look | `refs_missing` that was reached without the collection inventory |
+| No action | `*_pending`, `no_parent_by_design` |
+
+`refs_missing` is therefore not a verdict on its own. With the inventory read, a product that no refs document
+lists is classified by what the inventory says: another version (`inventory_version_mismatch`, node), no
+listing (`not_in_collection_inventory`, node), a LID without a version (`bare_lid_in_inventory`), or the exact
+product (`refs_missing`: stale or never-written refs, registry operations). Without the inventory (`--no-inventory`,
+or a provider file that cannot be downloaded) it stays `refs_missing` and is reported as needing a closer look.
+
 ## Background: what "processed" means
 
 The ancestry sweeper marks a product processed by writing two fields:
@@ -236,6 +268,18 @@ than the current version, or a current stamp with no `ancestor_refs`.
   continue or redo it. Registry products the inventory does not list are ignored, so the old versions cannot
   make a stalled load look active.
 
+### `bare_lid_in_inventory` (anomalous)
+
+The collection's inventory lists the product by LID, without a version. Harvest records that as `product_lid` in
+the `registry-refs` document and leaves `product_lidvid` out, and the ancestry sweeper follows only
+`product_lidvid`, so it never reaches the product. Re-harvesting writes the same refs. The inventory has to list
+LIDVIDs, or the sweepers have to follow LID references; the audit assigns it to the sweepers team because the
+sweepers are the part that does not follow a valid PDS4 inventory.
+
+**Check.** Download the inventory (the collection's `ops:Data_File_Info/ops:file_ref`) and look at the row for the
+product: a row such as `P,urn:nasa:pds:b:c:p` with no `::version`. Then `show_refs` for the collection shows a
+document with `product_lid` and no `product_lidvid`.
+
 ### `sweeper_miss` (anomalous)
 
 - **Meaning:** the collection is stamped and a refs document lists the product, and the collection was
@@ -374,6 +418,17 @@ scanning when the file exists with other columns.
    collection confirms the user-visible effect.
 
 ## Limitations
+
+- The collection named for an orphaned product is a best guess. Compare the collection's inventory with the
+  registry (`audit_collection.py --diff`) before acting on it.
+- A refs listing counts as an inventory version mismatch only when it comes from the product's own collection
+  version. Refs of an older collection version that name an older product version say nothing about the current
+  one.
+- `inventory_version_mismatch` can point either way: the registry may hold an older or a newer version than the
+  inventory lists. The rationale says which.
+- A product that already has ancestry naming an older collection version than the inventory's current one is not
+  a candidate and is not examined (on IMG, the `mars2020_navcam_ops_mosaic` collection has about 35,000 of
+  these). `audit_collection.py --diff` shows them.
 
 - Only API-visible products are examined: not superseded, `archived` or `certified`.
 - On the ATM registry index, `ops:Provenance/ops:superseded_by` is returned in a document's `_source` but cannot be

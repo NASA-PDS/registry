@@ -690,10 +690,10 @@ def test_lookup_refs_by_lid_batches_and_queries_product_lid() -> None:
     sizes = [len(body["query"]["bool"]["filter"][0]["terms"]["product_lid"]) for _, body in fake.searches]
     assert sizes == [1000, 1000, 500]
     assert all(index == "atm-registry-refs" for index, _ in fake.searches)
-    assert fake.searches[0][1]["_source"] == ["product_lidvid"]
+    assert fake.searches[0][1]["_source"] == ["product_lidvid", "collection_lidvid"]
 
 
-def test_lookup_refs_by_lid_returns_the_listed_version_for_requested_lids_only() -> None:
+def test_lookup_refs_by_lid_returns_each_listed_version_with_its_collection_for_requested_lids_only() -> None:
     hits = [
         {
             "_id": "1",
@@ -702,17 +702,25 @@ def test_lookup_refs_by_lid_returns_the_listed_version_for_requested_lids_only()
                     "urn:nasa:pds:b:c:p1::14.0",
                     "urn:nasa:pds:b:c:unrelated::1.0",
                     "urn:nasa:pds:b:c:p2::3.0",
-                ]
+                ],
+                "collection_lidvid": "urn:nasa:pds:b:c::1.0",
             },
             "sort": ["1"],
         },
-        {"_id": "2", "_source": {"product_lidvid": "urn:nasa:pds:b:c:p1::15.0"}, "sort": ["2"]},
+        {
+            "_id": "2",
+            "_source": {"product_lidvid": "urn:nasa:pds:b:c:p1::15.0", "collection_lidvid": "urn:nasa:pds:b:c::2.0"},
+            "sort": ["2"],
+        },
     ]
     fake = FakeClient(lambda index, body: hits_response(hits))
     result = registry.lookup_refs_by_lid(fake, ["urn:nasa:pds:b:c:p1", "urn:nasa:pds:b:c:p2", "urn:nasa:pds:b:c:p3"], None)
     assert result == {
-        "urn:nasa:pds:b:c:p1": "urn:nasa:pds:b:c:p1::14.0",
-        "urn:nasa:pds:b:c:p2": "urn:nasa:pds:b:c:p2::3.0",
+        "urn:nasa:pds:b:c:p1": [
+            ("urn:nasa:pds:b:c:p1::14.0", "urn:nasa:pds:b:c::1.0"),
+            ("urn:nasa:pds:b:c:p1::15.0", "urn:nasa:pds:b:c::2.0"),
+        ],
+        "urn:nasa:pds:b:c:p2": [("urn:nasa:pds:b:c:p2::3.0", "urn:nasa:pds:b:c::1.0")],
     }
     assert fake.searches[0][0] == "*-registry-refs"
 

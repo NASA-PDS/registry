@@ -1,0 +1,9 @@
+urn:nasa:pds:artemis2_crew_camera:browse::1.0
+urn:nasa:pds:artemis2_crew_camera:data_processed::1.0
+urn:nasa:pds:artemis2_crew_camera:data_raw::1.0
+urn:nasa:pds:artemis2_crew_camera:data_source::1.0
+urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data::1.0
+urn:nasa:pds:mars2020_hazcam_ops_stereo:data::16.0
+urn:nasa:pds:mars2020_mastcamz_ops_stereo:data::16.0
+urn:nasa:pds:mars2020_navcam_ops_mosaic:data::16.0
+urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0

@@ -76,7 +76,7 @@ class FakeRegistry:
         ]
         self.lookup_calls: list[list[str]] = []
         self.lid_lookup_calls: list[list[str]] = []
-        self.listed: dict[str, str] = {}
+        self.listed: dict[str, str] = {}  # product LID -> product LIDVID that the refs of C_OK list
         self.coverage_calls: list[str] = []
         self.bundle_calls: list[list[str]] = []
 
@@ -103,9 +103,9 @@ class FakeRegistry:
         self.lookup_calls.append(list(lidvids))
         return {lv: C_OK for lv in lidvids if "reloaded" in lv}
 
-    def lookup_refs_by_lid(self, client: object, lids: list[str], nodes: list[str]) -> dict[str, str]:
+    def lookup_refs_by_lid(self, client: object, lids: list[str], nodes: list[str]) -> dict[str, list[tuple[str, str]]]:
         self.lid_lookup_calls.append(list(lids))
-        return {lid: self.listed[lid] for lid in lids if lid in self.listed}
+        return {lid: [(self.listed[lid], C_OK)] for lid in lids if lid in self.listed}
 
     def get_refs_coverage(self, client: object, coll: Collection, nodes: list[str], version: int) -> RefsCoverage:
         self.coverage_calls.append(coll.lidvid)

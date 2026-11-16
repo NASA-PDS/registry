@@ -55,6 +55,10 @@ class InventoryIndex:
         """Say whether the inventory lists this exact product, by LIDVID or as a bare LID."""
         return lidvid in self.lidvids or lid in self.bare_lids
 
+    def lists_exactly(self, lidvid: str) -> bool:
+        """Say whether the inventory lists this product by its LIDVID, which is what the sweepers follow."""
+        return lidvid in self.lidvids
+
     def other_version(self, lid: str, lidvid: str) -> str | None:
         """Return the LIDVID the inventory lists for ``lid`` when it is not ``lidvid``, else ``None``."""
         listed = self.listed_by_lid.get(lid)

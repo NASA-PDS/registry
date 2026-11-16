@@ -144,3 +144,25 @@ def test_registry_harvests_returns_none_when_a_page_fails(monkeypatch):
     monkeypatch.setattr(ac, "run_registry_query", lambda query, index, auth, timeout: None)
     assert ac.get_registry_harvests("urn:nasa:pds:b:c", None, "/*-registry/_count", object(), 5) is None
     assert ac.get_all_registry_lidvids("urn:nasa:pds:b:c", None, "/*-registry/_count", object(), 5) is None
+
+
+def test_the_inventory_download_accepts_any_content_type():
+    class Response:
+        text = "P,urn:nasa:pds:b:c:a::1.0\n"
+        encoding = None
+
+        def raise_for_status(self):
+            return None
+
+    class Session:
+        def __init__(self):
+            self.calls = []
+
+        def get(self, url, **kwargs):
+            self.calls.append((url, kwargs))
+            return Response()
+
+    session = Session()
+    count, lidvids = ac.fetch_inventory_lidvids(session, "https://data.example.invalid/inventory.csv", 5)
+    assert (count, lidvids) == (1, {"urn:nasa:pds:b:c:a::1.0"})
+    assert session.calls[0][1]["headers"] == {"Accept": "*/*"}  # the provider answers HTTP 406 to a JSON-only Accept

@@ -1,0 +1,52 @@
+{
+  "ancestry_version": 7,
+  "anomalous": 36839,
+  "anomalous_collections": [
+    "urn:nasa:pds:artemis2_crew_camera:browse::1.0",
+    "urn:nasa:pds:artemis2_crew_camera:data_processed::1.0",
+    "urn:nasa:pds:artemis2_crew_camera:data_raw::1.0",
+    "urn:nasa:pds:artemis2_crew_camera:data_source::1.0",
+    "urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data::1.0",
+    "urn:nasa:pds:mars2020_navcam_ops_mosaic:data::16.0"
+  ],
+  "empty_refs_with_bundle": [
+    "urn:nasa:pds:artemis2_crew_camera:browse::1.0",
+    "urn:nasa:pds:artemis2_crew_camera:data_raw::1.0",
+    "urn:nasa:pds:artemis2_crew_camera:data_source::1.0",
+    "urn:nasa:pds:mars2020_hazcam_ops_stereo:data::16.0",
+    "urn:nasa:pds:mars2020_mastcamz_ops_stereo:data::16.0",
+    "urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0"
+  ],
+  "examined": 36839,
+  "expected": 0,
+  "nodes": [
+    "img"
+  ],
+  "owners": {
+    "needs_check": 0,
+    "no_action": 0,
+    "node": 516,
+    "registry_operations": 36323,
+    "sweepers_team": 0
+  },
+  "rules": {
+    "bare_lid_in_inventory": 0,
+    "collection_not_loaded_overdue": 0,
+    "collection_not_loaded_pending": 0,
+    "collection_overdue": 0,
+    "collection_pending": 0,
+    "inventory_version_mismatch": 516,
+    "no_parent_by_design": 0,
+    "not_in_collection_inventory": 0,
+    "refs_missing": 0,
+    "refs_missing_pending": 0,
+    "reloaded_after_collection": 36323,
+    "stale_stamp": 0,
+    "sweeper_miss": 0
+  },
+  "run_time": "2026-11-16T22:23:49+00:00",
+  "schema_version": 1,
+  "superseded_anomalous_collections": [],
+  "unmapped_superseded": [],
+  "unverified_refs_missing": 0
+}

@@ -360,3 +360,25 @@ def test_main_exits_one_for_an_unusable_baseline(
     monkeypatch.setattr(cli, "registry_endpoint_from_env", lambda: "https://example.invalid")
     missing = tmp_path / "missing.json"
     assert cli.main(["--output-dir", str(tmp_path / "out"), "--node", "atm", "--check", "--baseline", str(missing)]) == 1
+
+
+def test_metrics_count_anomalous_products_by_owner(tmp_path: Path, fake: FakeRegistry):
+    with_inventory = cli.run_audit(make_args(tmp_path / "checked"), client=object(), now=NOW)  # type: ignore[arg-type]
+    assert sum(with_inventory.metrics.owners.values()) == with_inventory.metrics.anomalous
+    without = cli.run_audit(make_args(tmp_path / "unchecked", "--no-inventory"), client=object(), now=NOW)  # type: ignore[arg-type]
+    # no inventory was read in either run (the fake collections have no inventory URL), so refs_missing is unverified
+    refs_missing = without.metrics.rules["refs_missing"]
+    assert without.metrics.unverified_refs_missing == refs_missing >= 1
+    assert without.metrics.owners["needs_check"] == refs_missing
+    assert "| Needs a closer look |" in without.summary
+
+
+def test_metrics_owners_survive_a_round_trip(tmp_path: Path):
+    original = metrics(owners={"node": 5}, unverified_refs_missing=3)
+    path = tmp_path / "metrics.json"
+    path.write_text(original.to_json(), encoding="utf-8")
+    assert regression.load_metrics(path) == original
+    legacy = json.loads(original.to_json())
+    del legacy["owners"], legacy["unverified_refs_missing"]
+    path.write_text(json.dumps(legacy), encoding="utf-8")
+    assert regression.load_metrics(path).owners == {} and regression.load_metrics(path).unverified_refs_missing == 0

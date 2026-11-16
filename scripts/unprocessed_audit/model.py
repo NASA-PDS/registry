@@ -89,6 +89,7 @@ class Rule(str, Enum):
     RELOADED_AFTER_COLLECTION = "reloaded_after_collection"
     INVENTORY_VERSION_MISMATCH = "inventory_version_mismatch"
     NOT_IN_COLLECTION_INVENTORY = "not_in_collection_inventory"
+    BARE_LID_IN_INVENTORY = "bare_lid_in_inventory"
     SWEEPER_MISS = "sweeper_miss"
     REFS_MISSING_PENDING = "refs_missing_pending"
     REFS_MISSING = "refs_missing"
@@ -181,6 +182,9 @@ class Verdict:
         collection_harvest: Harvest time of that collection, if known.
         in_refs: Whether a ``registry-refs`` document lists the product. ``None`` when refs were not
             consulted for this product.
+        inventory_verified: ``False`` for a ``refs_missing`` verdict reached without the collection inventory,
+            because it was skipped or could not be read. Such a product may be a node problem (the inventory
+            does not list it) or a stale-refs problem, and the audit cannot tell which.
     """
 
     population: Population
@@ -192,6 +196,7 @@ class Verdict:
     collection_state: CollectionState | None = None
     collection_harvest: datetime | None = None
     in_refs: bool | None = None
+    inventory_verified: bool = True
 
 
 @dataclass

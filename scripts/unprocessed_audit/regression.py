@@ -17,6 +17,7 @@ from dataclasses import field
 from datetime import datetime
 from pathlib import Path
 
+from unprocessed_audit import ownership
 from unprocessed_audit.model import SUPERSEDED_FIELD
 from unprocessed_audit.model import Collection
 from unprocessed_audit.model import CollectionState
@@ -66,6 +67,10 @@ class Metrics:
         superseded_anomalous_collections: LIDVIDs of superseded collection versions rooting anomalous products.
         empty_refs_with_bundle: LIDVIDs of collections stamped with empty refs that have a bundle.
         unmapped_superseded: Indices whose mapping lacks the superseded field; ``None`` when not checked.
+        owners: Anomalous product count per owner (``node``, ``registry_operations``, ``sweepers_team``,
+            ``needs_check``, ``no_action``); see ``ownership``.
+        unverified_refs_missing: ``refs_missing`` products reached without the collection inventory (skipped or
+            unreadable); they are counted under ``needs_check`` in ``owners``.
     """
 
     run_time: str
@@ -79,6 +84,8 @@ class Metrics:
     superseded_anomalous_collections: list[str]
     empty_refs_with_bundle: list[str]
     unmapped_superseded: list[str] | None = None
+    owners: dict[str, int] = field(default_factory=dict)
+    unverified_refs_missing: int = 0
 
     def to_json(self) -> str:
         """Serialise to the ``metrics.json`` text."""
@@ -131,6 +138,8 @@ def build_metrics(
         expected=tally.expected,
         anomalous=tally.anomalous,
         rules={rule.value: anomalous_totals.get(rule.value, 0) for rule in Rule},
+        owners=ownership.count_by_owner(anomalous_totals, tally.unverified_refs_missing),
+        unverified_refs_missing=tally.unverified_refs_missing,
         anomalous_collections=sorted(lidvid for lidvid in tally.collections if lidvid not in superseded),
         superseded_anomalous_collections=sorted(lidvid for lidvid in tally.collections if lidvid in superseded),
         empty_refs_with_bundle=sorted(
@@ -174,6 +183,8 @@ def load_metrics(path: Path) -> Metrics:
             unmapped_superseded=None
             if raw.get("unmapped_superseded") is None
             else [str(i) for i in raw["unmapped_superseded"]],
+            owners={str(k): int(v) for k, v in raw.get("owners", {}).items()},
+            unverified_refs_missing=int(raw.get("unverified_refs_missing", 0)),
         )
     except (KeyError, TypeError, ValueError, AttributeError) as exc:
         raise BaselineError(f"{path} is missing or has malformed metrics fields: {exc!r}") from exc

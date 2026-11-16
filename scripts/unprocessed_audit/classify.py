@@ -12,6 +12,7 @@ import logging
 from collections.abc import Callable
 from collections.abc import Mapping
 from collections.abc import Sequence
+from dataclasses import replace
 from datetime import datetime
 from datetime import timezone
 
@@ -86,6 +87,12 @@ RULE_GUIDANCE: dict[Rule, str] = {
         "The collection is processed but no registry-refs document lists the product, so the sweeper never "
         "selects it. The refs were probably never written for this product; the loader or harvest step is "
         "the likely place to look."
+    ),
+    Rule.BARE_LID_IN_INVENTORY: (
+        "The collection's inventory lists the product by LID only, without a version. Harvest records that as a "
+        "product_lid in the registry-refs document, but the ancestry sweeper follows only product_lidvid, so it "
+        "never reaches the product. Re-harvesting the collection writes the same refs; the inventory must list "
+        "LIDVIDs, or the sweepers must follow LID references."
     ),
     Rule.STALE_STAMP: (
         "The product carries an ancestry stamp from an older sweeper version although its collection is "
@@ -343,13 +350,30 @@ def _fmt_ts(when: datetime | None) -> str:
     return "unknown" if when is None else _aware(when).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def _version_tuple(lidvid: str) -> tuple[int, ...] | None:
+    """Return the numeric parts of a LIDVID's version (``urn:a:b::2.10`` gives ``(2, 10)``), or ``None``."""
+    _, _, version = lidvid.partition("::")
+    try:
+        return tuple(int(part) for part in version.split("."))
+    except ValueError:
+        return None
+
+
+def _compare_versions(registered: str, listed: str) -> int:
+    """Compare two LIDVID versions: positive when ``registered`` is newer, negative when older, 0 if equal or unknown."""
+    a, b = _version_tuple(registered), _version_tuple(listed)
+    if a is None or b is None or a == b:
+        return 0
+    return 1 if a > b else -1
+
+
 def classify_product(
     candidate: Candidate,
     th: Thresholds,
     collections_by_lid: Mapping[str, Sequence[Collection]],
     refs_collection_lidvid: str | None = None,
     refs_checked: bool = False,
-    listed_lidvid: str | None = None,
+    listed_in_refs: Sequence[tuple[str, str | None]] = (),
     inventory_for: Callable[[Collection], InventoryIndex | None] | None = None,
 ) -> Verdict:
     """Assign a rule, severity and rationale to one candidate product.
@@ -361,8 +385,10 @@ def classify_product(
         refs_collection_lidvid: ``collection_lidvid`` of the refs document listing the product.
         refs_checked: Whether ``registry-refs`` was consulted. When ``True`` and
             ``refs_collection_lidvid`` is ``None``, no refs document lists the product.
-        listed_lidvid: Only meaningful when no refs document lists the product's LIDVID: the LIDVID
-            under which refs list the same product LID (a different version), if any.
+        listed_in_refs: Only meaningful when no refs document lists the product's LIDVID: the
+            ``(product LIDVID, collection LIDVID)`` pairs under which refs list the same product LID (a
+            different version). Only a listing that comes from the product's own collection counts as a version
+            mismatch; a listing from another version of the collection says nothing about this one.
         inventory_for: Returns the parsed current inventory of a collection, or ``None`` when it is
             unavailable. Consulted only for a product that no refs document lists, to tell whether the
             inventory lists it (stale refs), lists another version of it, or does not list it at all.
@@ -485,17 +511,26 @@ def classify_product(
     if refs_collection_lidvid is None:
 
         def version_mismatch(listed: str) -> Verdict:
+            direction = _compare_versions(candidate.lidvid, listed)
+            if direction > 0:
+                advice = (
+                    f"The registry holds a newer version than the inventory lists. Either the inventory is out of "
+                    f"date or {candidate.lidvid} should not be loaded; the node decides which"
+                )
+            else:
+                advice = f"Load {listed}"
             return verdict(
                 Rule.INVENTORY_VERSION_MISMATCH,
                 Severity.ANOMALOUS,
                 f"The collection's inventory lists this product as {listed} but the registry holds "
-                f"{candidate.lidvid}; {c_desc}. Load {listed}; re-harvesting the collection does not fix it.",
+                f"{candidate.lidvid}; {c_desc}. {advice}; re-harvesting the collection does not fix it.",
                 collection,
             )
 
-        # The refs already name another version of the product: no need to read the inventory.
-        if listed_lidvid is not None and listed_lidvid != candidate.lidvid:
-            return version_mismatch(listed_lidvid)
+        # The collection's own refs already name another version of the product: no need to read the inventory.
+        for listed, listed_collection in listed_in_refs:
+            if listed != candidate.lidvid and listed_collection == collection.lidvid:
+                return version_mismatch(listed)
         inventory = inventory_for(collection) if inventory_for is not None else None
         if inventory is not None and not inventory.lists(candidate.lidvid, candidate.lid):
             other = inventory.other_version(candidate.lid, candidate.lidvid)
@@ -515,7 +550,16 @@ def classify_product(
                 f"{th.product_grace_days:g} days.",
                 collection,
             )
-        if inventory is not None and inventory.lists(candidate.lidvid, candidate.lid):
+        if inventory is not None and candidate.lid in inventory.bare_lids and not inventory.lists_exactly(candidate.lidvid):
+            return verdict(
+                Rule.BARE_LID_IN_INVENTORY,
+                Severity.ANOMALOUS,
+                f"The collection's inventory lists this product by LID without a version, which the sweepers do not "
+                f"follow, so no refs document names it; {c_desc}; {age_text}. Re-harvesting writes the same refs. "
+                f"The inventory needs LIDVIDs, or the sweepers need to support LID references.",
+                collection,
+            )
+        if inventory is not None and inventory.lists_exactly(candidate.lidvid):
             return verdict(
                 Rule.REFS_MISSING,
                 Severity.ANOMALOUS,
@@ -531,12 +575,15 @@ def classify_product(
                 f"{age_text}. Decide whether it belongs in the inventory or should be removed from the registry.",
                 collection,
             )
-        return verdict(
-            Rule.REFS_MISSING,
-            Severity.ANOMALOUS,
-            f"No refs document lists the product but {c_desc}; {age_text}, product grace "
-            f"{th.product_grace_days:g} days.",
-            collection,
+        return replace(
+            verdict(
+                Rule.REFS_MISSING,
+                Severity.ANOMALOUS,
+                f"No refs document lists the product but {c_desc}; {age_text}, product grace "
+                f"{th.product_grace_days:g} days. The collection inventory was not used, so the cause is unknown.",
+                collection,
+            ),
+            inventory_verified=False,
         )
 
     # Rule 6: collection processed and refs list the product.

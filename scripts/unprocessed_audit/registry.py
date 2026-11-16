@@ -676,11 +676,12 @@ def lookup_refs(client: RegistryClient, product_lidvids: Sequence[str], nodes: S
 
 def lookup_refs_by_lid(
     client: RegistryClient, product_lids: Sequence[str], nodes: Sequence[str] | None
-) -> dict[str, str]:
-    """Find the version under which ``registry-refs`` lists each product LID.
+) -> dict[str, list[tuple[str, str | None]]]:
+    """Find the versions under which ``registry-refs`` lists each product LID, and for which collection.
 
-    Refs are written from the collection inventory, so a product whose LIDVID is not in refs but whose
-    LID is has an inventory that lists a different version of it.
+    Refs are written from a collection's inventory. A refs document of one collection version that lists a
+    different version of the product says nothing about another version of the collection, so each listing
+    is returned with the collection it comes from.
 
     Args:
         client: Registry client.
@@ -688,10 +689,11 @@ def lookup_refs_by_lid(
         nodes: Nodes to limit to, or ``None`` for all.
 
     Returns:
-        ``{product_lid: listed_product_lidvid}`` for LIDs that refs list under some version. LIDs that
-        refs list only as a bare LID, or not at all, are omitted.
+        ``{product_lid: [(listed_product_lidvid, collection_lidvid), ...]}`` for LIDs that refs list under some
+        version; ``collection_lidvid`` is ``None`` when the refs document names none. LIDs that refs list only as
+        a bare LID, or not at all, are omitted.
     """
-    result: dict[str, str] = {}
+    result: dict[str, list[tuple[str, str | None]]] = {}
     if not product_lids:
         return result
     index = refs_index(nodes)
@@ -699,15 +701,20 @@ def lookup_refs_by_lid(
         batch = list(product_lids[start : start + REFS_PRODUCT_BATCH])
         wanted = set(batch)
         body = {
-            "_source": ["product_lidvid"],
+            "_source": ["product_lidvid", "collection_lidvid"],
             "query": {"bool": {"filter": [{"terms": {"product_lid": batch}}]}},
         }
         for hits in _page_hits(client, index, body, MAX_PAGE_SIZE):
             for hit in hits:
-                for listed in _string_list(hit.get("_source", {}).get("product_lidvid")):
+                source = hit.get("_source", {})
+                collection_lidvid = _scalar(source.get("collection_lidvid"))
+                for listed in _string_list(source.get("product_lidvid")):
                     lid = _lid_of(listed)
-                    if lid in wanted and lid not in result:
-                        result[lid] = listed
+                    if lid in wanted:
+                        entry = (listed, collection_lidvid)
+                        found = result.setdefault(lid, [])
+                        if entry not in found:
+                            found.append(entry)
     return result
 
 

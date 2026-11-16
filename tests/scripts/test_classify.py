@@ -443,7 +443,7 @@ def test_inventory_is_not_downloaded_when_the_refs_already_name_another_version(
         calls.append(collection.lidvid)
         return None
 
-    v = classify_product(candidate, TH, by_lid(col), None, True, candidate.lid + "::2.0", provider)
+    v = classify_product(candidate, TH, by_lid(col), None, True, [(candidate.lid + "::2.0", COLL_LIDVID)], provider)
     assert v.rule == Rule.INVENTORY_VERSION_MISMATCH
     assert calls == []
 
@@ -466,7 +466,7 @@ def test_rule_inventory_version_mismatch() -> None:
     col = make_collection(CollectionState.PROCESSED, days_ago(30))
     candidate = make_candidate(days_ago(20))
     listed = candidate.lid + "::2.0"
-    v = classify_product(candidate, TH, by_lid(col), None, True, listed)
+    v = classify_product(candidate, TH, by_lid(col), None, True, [(listed, COLL_LIDVID)])
     assert v.rule == Rule.INVENTORY_VERSION_MISMATCH
     assert v.severity == Severity.ANOMALOUS
     assert v.in_refs is False
@@ -479,22 +479,46 @@ def test_rule_inventory_version_mismatch() -> None:
 def test_inventory_version_mismatch_applies_inside_the_product_grace_period() -> None:
     col = make_collection(CollectionState.PROCESSED, days_ago(30))
     candidate = make_candidate(days_ago(1))
-    v = classify_product(candidate, TH, by_lid(col), None, True, candidate.lid + "::2.0")
+    v = classify_product(candidate, TH, by_lid(col), None, True, [(candidate.lid + "::2.0", COLL_LIDVID)])
     assert v.rule == Rule.INVENTORY_VERSION_MISMATCH
 
 
 def test_listed_lidvid_equal_to_the_candidate_does_not_make_a_mismatch() -> None:
     col = make_collection(CollectionState.PROCESSED, days_ago(30))
     candidate = make_candidate(days_ago(20))
-    v = classify_product(candidate, TH, by_lid(col), None, True, candidate.lidvid)
+    v = classify_product(candidate, TH, by_lid(col), None, True, [(candidate.lidvid, COLL_LIDVID)])
     assert v.rule == Rule.REFS_MISSING
 
 
 def test_listed_lidvid_is_ignored_when_a_refs_document_lists_the_product() -> None:
     col = make_collection(CollectionState.PROCESSED, days_ago(10))
     candidate = make_candidate(days_ago(2))
-    v = classify_product(candidate, TH, by_lid(col), COLL_LIDVID, True, candidate.lid + "::2.0")
+    v = classify_product(candidate, TH, by_lid(col), COLL_LIDVID, True, [(candidate.lid + "::2.0", COLL_LIDVID)])
     assert v.rule == Rule.RELOADED_AFTER_COLLECTION
+
+
+def test_a_listing_from_another_collection_version_is_not_a_version_mismatch() -> None:
+    # Refs of an older collection version name an older product version; the current collection version has no
+    # refs at all and its inventory lists the exact product, so the refs are missing, not the product version.
+    col = make_collection(CollectionState.PROCESSED, days_ago(30))
+    candidate = make_candidate(days_ago(20))
+    other_collection = COLL_LID + "::0.5"
+    v = classify_product(
+        candidate, TH, by_lid(col), None, True, [(candidate.lid + "::0.5", other_collection)],
+        inventory_for=lambda c: InventoryIndex(lidvids={candidate.lidvid}, listed_by_lid={candidate.lid: candidate.lidvid}),
+    )  # fmt: skip
+    assert v.rule == Rule.REFS_MISSING
+    assert v.inventory_verified is True
+    assert "inventory lists this product" in v.rationale
+
+
+def test_refs_missing_without_the_inventory_is_marked_unverified() -> None:
+    col = make_collection(CollectionState.PROCESSED, days_ago(30))
+    candidate = make_candidate(days_ago(20))
+    v = classify_product(candidate, TH, by_lid(col), None, True)
+    assert v.rule == Rule.REFS_MISSING
+    assert v.inventory_verified is False
+    assert "inventory was not used" in v.rationale
 
 
 def make_superseded(version: str, harvest: datetime | None = None) -> Collection:
@@ -656,3 +680,35 @@ def test_rationales_are_single_line_ascii() -> None:
     for v in verdicts:
         assert v.rationale.isascii()
         assert "\n" not in v.rationale
+
+
+def test_a_registry_version_newer_than_the_inventory_lists_is_not_told_to_load_the_listed_one() -> None:
+    col = make_collection(CollectionState.PROCESSED, days_ago(30))
+    candidate = make_candidate(days_ago(20))  # registered ::1.0
+    older = [(candidate.lid + "::0.9", COLL_LIDVID)]
+    v = classify_product(candidate, TH, by_lid(col), None, True, older)
+    assert v.rule == Rule.INVENTORY_VERSION_MISMATCH
+    assert "newer version than the inventory lists" in v.rationale
+    assert "Load " not in v.rationale
+    newer = [(candidate.lid + "::2.0", COLL_LIDVID)]
+    assert "Load " + candidate.lid + "::2.0" in classify_product(candidate, TH, by_lid(col), None, True, newer).rationale
+
+
+def test_an_inventory_that_lists_the_product_by_lid_only_is_not_stale_refs() -> None:
+    # Harvest records a bare LID as product_lid; the sweepers follow product_lidvid only, so re-harvesting cannot help.
+    col = make_collection(CollectionState.PROCESSED, days_ago(30))
+    candidate = make_candidate(days_ago(20))
+    inventory = InventoryIndex(lidvids=set(), listed_by_lid={}, bare_lids={candidate.lid})
+    v = classify_product(candidate, TH, by_lid(col), None, True, inventory_for=lambda c: inventory)
+    assert v.rule == Rule.BARE_LID_IN_INVENTORY
+    assert v.severity == Severity.ANOMALOUS
+    assert "without a version" in v.rationale
+    assert v.inventory_verified is True
+
+
+def test_a_lidvid_listing_wins_over_a_bare_lid_listing() -> None:
+    col = make_collection(CollectionState.PROCESSED, days_ago(30))
+    candidate = make_candidate(days_ago(20))
+    inventory = InventoryIndex(lidvids={candidate.lidvid}, listed_by_lid={candidate.lid: candidate.lidvid}, bare_lids={candidate.lid})
+    v = classify_product(candidate, TH, by_lid(col), None, True, inventory_for=lambda c: inventory)
+    assert v.rule == Rule.REFS_MISSING
