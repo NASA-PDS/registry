@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Generate CSV status reports for missing and staged products in the PDS Registry.
+Generate CSV status reports for missing, staged and invalid-file_ref products in the PDS Registry.
 
 This script queries OpenSearch using pds-registry-client and generates CSV reports
-for missing and staged bundles and collections per node.
+for missing and staged bundles and collections per node, plus bundles, collections
+and other products whose Label or Data ``file_ref`` does not start with ``https://``.
 
 For missing products, one CSV is produced per product type with a ``superseded``
 column (``true``/``false``) indicating whether a given LIDVID is the latest version
@@ -189,6 +190,51 @@ def extract_rows(
     return rows
 
 
+BAD_FILE_REF_HEADER = ("node", "lidvid", "product_class", "archive_status", "file_ref_field", "file_ref")
+
+# (CSV label, _source field) for each file_ref field checked by the bad-file_ref queries
+_FILE_REF_FIELDS = (
+    ("Label_File_Info", "ops:Label_File_Info/ops:file_ref"),
+    ("Data_File_Info", "ops:Data_File_Info/ops:file_ref"),
+)
+
+
+def _as_list(value: Any) -> list[Any]:
+    """Normalize a scalar, list or missing value to a list."""
+    if value is None:
+        return []
+    return value if isinstance(value, list) else [value]
+
+
+def extract_bad_file_ref_rows(data: dict[str, Any]) -> list[tuple]:
+    """Extract one row per offending file_ref value from an OpenSearch query response.
+
+    A value is offending if it does not start with ``https://``.  Empty values and the
+    literal string ``null`` (used as a placeholder for products without data files) are
+    ignored.  Filtering is repeated here so that the CSV lists exactly the bad values
+    even when a product has both valid and invalid entries in a multi-valued field.
+    """
+    rows = []
+    for hit in data.get("hits", {}).get("hits", []):
+        source = hit.get("_source", {})
+
+        nodes = _as_list(source.get("ops:Harvest_Info/ops:node_name"))
+        node = nodes[0] if nodes else ""
+        statuses = _as_list(source.get("ops:Tracking_Meta/ops:archive_status"))
+        archive_status = statuses[0] if statuses else ""
+        lidvid = source.get("lidvid", "")
+        product_class = ", ".join(_as_list(source.get("product_class")))
+
+        for label, field in _FILE_REF_FIELDS:
+            for value in _as_list(source.get(field)):
+                text = str(value).strip()
+                if not text or text.lower() == "null" or text.startswith("https://"):
+                    continue
+                rows.append((node, lidvid, product_class, archive_status, label, text))
+
+    return rows
+
+
 def write_rows_to_csv(rows: list[tuple], output_file: Path, header: tuple | None = None) -> int:
     """Write rows to a CSV file. Returns the number of rows written."""
     with open(output_file, "w", newline="") as csvfile:
@@ -357,6 +403,22 @@ def _count_by_node(csv_path: Path, superseded: bool | None = None) -> dict[str, 
     return counts
 
 
+def _count_distinct_lidvids_by_node(csv_path: Path) -> dict[str, int]:
+    """Return a node→count mapping of distinct LIDVIDs in a bad-file_ref CSV.
+
+    The CSV has one row per offending file_ref value, so a product with several bad
+    values appears more than once; each LIDVID is counted once per node.
+    """
+    seen: dict[str, set[str]] = defaultdict(set)
+    if csv_path.exists():
+        with open(csv_path, "r", newline="") as f:
+            for row in csv.reader(f):
+                if len(row) < 2 or row[0] == "node":
+                    continue
+                seen[row[0]].add(row[1])
+    return {node: len(lidvids) for node, lidvids in seen.items()}
+
+
 def generate_metrics_from_csvs(csv_files: dict[str, Path]) -> str:
     """Generate metrics summary markdown from CSV files."""
     mb = _count_by_node(csv_files["missing_bundles"])
@@ -431,6 +493,25 @@ def generate_metrics_from_csvs(csv_files: dict[str, Path]) -> str:
             sc_t += collections
 
     markdown += f"| **Total** | **{sb_t}** | **{sc_t}** |\n"
+
+    # --- Bad file_ref table ---
+    bf_b = _count_distinct_lidvids_by_node(csv_files["bad_file_ref_bundles"])
+    bf_c = _count_distinct_lidvids_by_node(csv_files["bad_file_ref_collections"])
+    bf_p = _count_distinct_lidvids_by_node(csv_files["bad_file_ref_products"])
+
+    markdown += "\n### Products with Invalid file_ref by Node\n\n"
+    markdown += "Products with a Label or Data `file_ref` that does not start with `https://`.\n\n"
+    markdown += "| Node | Bundles | Collections | Other Products |\n"
+    markdown += "|------|--------:|------------:|---------------:|\n"
+
+    bf_b_t = bf_c_t = bf_p_t = 0
+    for node in sorted(set(bf_b) | set(bf_c) | set(bf_p)):
+        markdown += f"| {node} | {bf_b.get(node, 0)} | {bf_c.get(node, 0)} | {bf_p.get(node, 0)} |\n"
+        bf_b_t += bf_b.get(node, 0)
+        bf_c_t += bf_c.get(node, 0)
+        bf_p_t += bf_p.get(node, 0)
+
+    markdown += f"| **Total** | **{bf_b_t}** | **{bf_c_t}** | **{bf_p_t}** |\n"
 
     markdown += "\n### Loading Progress\n\n"
     markdown += "[View Burnup Chart](burnup_chart.html) — cumulative products loaded over time vs. target\n"
@@ -1391,6 +1472,46 @@ def main() -> int:
             print_error(f"Failed to generate {description} report: {e}")
             return 1
 
+    # Products whose Label or Data file_ref does not start with https://.
+    # These queries are paginated; the CSVs list one row per offending file_ref value.
+    bad_file_ref_queries = [
+        (
+            conf_dir / "bad_file_ref_bundles_per_node.json",
+            output_dir / "bad_file_ref_bundles_in_registry.csv",
+            "bundles with invalid file_ref",
+        ),
+        (
+            conf_dir / "bad_file_ref_collections_per_node.json",
+            output_dir / "bad_file_ref_collections_in_registry.csv",
+            "collections with invalid file_ref",
+        ),
+        (
+            conf_dir / "bad_file_ref_products_per_node.json",
+            output_dir / "bad_file_ref_products_in_registry.csv",
+            "other products with invalid file_ref",
+        ),
+    ]
+
+    for query_file, _, description in bad_file_ref_queries:
+        if not query_file.exists():
+            print_error(f"Query file not found: {query_file}")
+            return 1
+
+    for query_file, output_file, description in bad_file_ref_queries:
+        try:
+            print_info(f"Querying for {description}...")
+            data = run_query_paginated(query_file, "/*-registry/_search")
+            rows = extract_bad_file_ref_rows(data)
+            count = write_rows_to_csv(rows, output_file, header=BAD_FILE_REF_HEADER)
+            print_info(f"  → {output_file.name} ({count} records)")
+            output_files.append(output_file)
+        except subprocess.CalledProcessError as e:
+            print_error(f"Failed to generate {description} report: {e.stderr}")
+            return 1
+        except (json.JSONDecodeError, OSError) as e:
+            print_error(f"Failed to generate {description} report: {e}")
+            return 1
+
     print_info("\nReport generation complete!")
 
     # Re-annotate superseded flags in missing CSVs using loaded CSVs.
@@ -1414,6 +1535,9 @@ def main() -> int:
         "staged_collections": output_dir / "staged_collections_in_registry.csv",
         "loaded_bundles": output_dir / "loaded_bundles_in_registry.csv",
         "loaded_collections": output_dir / "loaded_collections_in_registry.csv",
+        "bad_file_ref_bundles": output_dir / "bad_file_ref_bundles_in_registry.csv",
+        "bad_file_ref_collections": output_dir / "bad_file_ref_collections_in_registry.csv",
+        "bad_file_ref_products": output_dir / "bad_file_ref_products_in_registry.csv",
     }
     readme_path = output_dir / "README.md"
 

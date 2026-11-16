@@ -1,0 +1,25 @@
+{
+  "_source": ["ops:Harvest_Info/ops:node_name", "lidvid", "product_class", "ops:Tracking_Meta/ops:archive_status", "ops:Label_File_Info/ops:file_ref", "ops:Data_File_Info/ops:file_ref"],
+  "size": 10000,
+  "sort": [{"_id": "asc"}],
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match_phrase": {
+            "product_class": "Product_Bundle"
+          }
+        },
+        {
+          "bool": {
+            "should": [
+              {"regexp": {"ops:Label_File_Info/ops:file_ref": {"value": "~(https://.*)"}}},
+              {"regexp": {"ops:Data_File_Info/ops:file_ref": {"value": "~(https://.*)"}}}
+            ],
+            "minimum_should_match": 1
+          }
+        }
+      ]
+    }
+  }
+}
