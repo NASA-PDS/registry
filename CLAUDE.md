@@ -216,7 +216,7 @@ Each file is an OpenSearch DSL body passed directly to `pds-registry-client`. Th
 | `staged_collections_per_node.json` | `/*-registry/_search` | Collections with `archive_status=staged` |
 | `loaded_bundles_per_node.json` | `/*-registry/_search` | **All** bundles in new OpenSearch (no `archive_status` filter); includes `sort` for pagination |
 | `loaded_collections_per_node.json` | `/*-registry/_search` | **All** collections in new OpenSearch; includes `sort` for pagination |
-| `bad_file_ref_bundles_per_node.json` | `/*-registry/_search` | Bundles with any `ops:Label_File_Info/ops:file_ref` or `ops:Data_File_Info/ops:file_ref` value not starting with `https://` (paginated) |
+| `bad_file_ref_bundles_per_node.json` | `/*-registry/_search` | Bundles with any `ops:Label_File_Info/ops:file_ref` or `ops:Data_File_Info/ops:file_ref` value not starting with `https://` (paginated); `s3://` is allowed on `staged` products |
 | `bad_file_ref_collections_per_node.json` | `/*-registry/_search` | Same, for collections |
 | `bad_file_ref_products_per_node.json` | `/*-registry/_search` | Same, for all other product classes |
 
@@ -237,9 +237,9 @@ Each file is an OpenSearch DSL body passed directly to `pds-registry-client`. Th
 | `staged_collections_in_registry.csv` | Collections in new registry with `archive_status=staged` |
 | `loaded_bundles_in_registry.csv` | All bundles in new registry (paginated) |
 | `loaded_collections_in_registry.csv` | All collections in new registry (paginated) |
-| `bad_file_ref_bundles_in_registry.csv` | One row per invalid `file_ref` value on a bundle (`node, lidvid, product_class, archive_status, file_ref_field, file_ref`) |
+| `bad_file_ref_bundles_in_registry.csv` | One row per invalid `file_ref` value on a bundle (`node, lidvid, product_class, archive_status, file_ref_field, file_ref`). The `file_ref` is masked to its scheme and file name (`.../name.xml`, `s3://.../name.xml`) because the directory is a path on the harvesting machine |
 | `bad_file_ref_collections_in_registry.csv` | Same, for collections |
-| `bad_file_ref_products_in_registry.csv` | Same, for all other product classes |
+| `bad_file_ref_products_in_registry.csv` | All other product classes, grouped by `node, bundle_lid, collection_lid, archive_status` with `products` (distinct), `values`, `value_kinds`, `file_ref_fields` and one example LIDVID and masked `file_ref` |
 | `counts_history.csv` | Append-only snapshot of missing/staged totals per run |
 | `burnup_history.csv` | Cumulative loaded counts by date (all versions) |
 | `burnup_by_node.csv` | Per-node cumulative loaded counts (all versions) |

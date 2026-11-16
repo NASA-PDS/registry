@@ -211,8 +211,9 @@ def extract_bad_file_ref_rows(data: dict[str, Any]) -> list[tuple]:
 
     A value is offending if it does not start with ``https://``.  Empty values and the
     literal string ``null`` (used as a placeholder for products without data files) are
-    ignored.  Filtering is repeated here so that the CSV lists exactly the bad values
-    even when a product has both valid and invalid entries in a multi-valued field.
+    ignored, as are ``s3://`` values on staged products (a product is staged while it is
+    still being loaded).  Filtering is repeated here so that the CSV lists exactly the bad
+    values even when a product has both valid and invalid entries in a multi-valued field.
     """
     rows = []
     for hit in data.get("hits", {}).get("hits", []):
@@ -230,9 +231,105 @@ def extract_bad_file_ref_rows(data: dict[str, Any]) -> list[tuple]:
                 text = str(value).strip()
                 if not text or text.lower() == "null" or text.startswith("https://"):
                     continue
+                if archive_status == "staged" and text.startswith("s3://"):
+                    continue
                 rows.append((node, lidvid, product_class, archive_status, label, text))
 
     return rows
+
+
+BAD_FILE_REF_GROUP_HEADER = (
+    "node",
+    "bundle_lid",
+    "collection_lid",
+    "archive_status",
+    "products",
+    "values",
+    "value_kinds",
+    "file_ref_fields",
+    "example_lidvid",
+    "example_file_ref",
+)
+
+
+def mask_file_ref(value: str) -> str:
+    """Reduce a file_ref to its URI scheme and file name, e.g. ``/a/b/c.xml`` to ``.../c.xml``.
+
+    The directory part of an offending value is a path on the machine the product was harvested from, which
+    must not be published, so the reports keep only the scheme and the file name.
+    """
+    scheme = value.split("://", 1)[0] + "://" if "://" in value else ""
+    name = re.split(r"[\\/]", value.rstrip("\\/"))[-1]
+    return f"{scheme}.../{name}"
+
+
+def mask_bad_file_ref_rows(rows: list[tuple]) -> list[tuple]:
+    """Mask the file_ref (the last column) of per-value rows from ``extract_bad_file_ref_rows``."""
+    return [(*row[:-1], mask_file_ref(row[-1])) for row in rows]
+
+
+def file_ref_kind(value: str) -> str:
+    """Classify an offending file_ref value: its URI scheme, ``local path`` or ``relative path``."""
+    if "://" in value:
+        return value.split("://", 1)[0] + "://"
+    if value.startswith("/") or re.match(r"^[A-Za-z]:[\\/]", value):
+        return "local path"
+    return "relative path"
+
+
+def derive_bundle_and_collection(lidvid: str) -> tuple[str, str]:
+    """Derive the bundle LID and collection LID from a product LIDVID.
+
+    A product LID is ``<bundle>:<collection>:<product>``, with a ``urn:<agency>:<namespace>`` prefix on
+    PDS4 identifiers.  The collection is empty when the LID has no collection segment, and both are
+    ``(unknown)`` when the LID is too short to tell.
+    """
+    parts = lidvid.split("::")[0].split(":")
+    prefix = 3 if parts and parts[0] == "urn" else 0
+    if len(parts) < prefix + 2:
+        return "(unknown)", "(unknown)"
+    bundle = ":".join(parts[: prefix + 1])
+    collection = ":".join(parts[: prefix + 2]) if len(parts) >= prefix + 3 else ""
+    return bundle, collection
+
+
+def group_bad_file_ref_rows(rows: list[tuple]) -> list[tuple]:
+    """Group per-value rows by node, bundle, collection and archive status.
+
+    Reporting every product of a collection adds little, so each group gives the number of distinct
+    products and offending values, the kinds of value, which file_ref fields are affected and one example
+    (with its file_ref masked). Groups are ordered by product count, largest first.
+    """
+    groups: dict[tuple[str, str, str, str], dict[str, Any]] = {}
+    for node, lidvid, _product_class, archive_status, label, value in rows:
+        bundle, collection = derive_bundle_and_collection(lidvid)
+        group = groups.setdefault(
+            (node, bundle, collection, archive_status),
+            {"lidvids": set(), "values": 0, "kinds": set(), "fields": set(), "example": None},
+        )
+        group["lidvids"].add(lidvid)
+        group["values"] += 1
+        group["kinds"].add(file_ref_kind(value))
+        group["fields"].add(label)
+        if group["example"] is None or lidvid < group["example"][0]:
+            group["example"] = (lidvid, mask_file_ref(value))
+
+    grouped = [
+        (
+            node,
+            bundle,
+            collection,
+            archive_status,
+            len(group["lidvids"]),
+            group["values"],
+            "; ".join(sorted(group["kinds"])),
+            "; ".join(sorted(group["fields"])),
+            group["example"][0],
+            group["example"][1],
+        )
+        for (node, bundle, collection, archive_status), group in groups.items()
+    ]
+    return sorted(grouped, key=lambda row: (-row[4], row[:4]))
 
 
 def write_rows_to_csv(rows: list[tuple], output_file: Path, header: tuple | None = None) -> int:
@@ -419,6 +516,20 @@ def _count_distinct_lidvids_by_node(csv_path: Path) -> dict[str, int]:
     return {node: len(lidvids) for node, lidvids in seen.items()}
 
 
+def _count_grouped_products_by_node(csv_path: Path) -> dict[str, int]:
+    """Return a node→count mapping of products in a grouped bad-file_ref CSV.
+
+    Each group already holds the number of distinct products for one node, bundle, collection and archive
+    status, and a product has one archive status, so the counts are summed per node.
+    """
+    counts: dict[str, int] = defaultdict(int)
+    if csv_path.exists():
+        with open(csv_path, "r", newline="") as f:
+            for row in csv.DictReader(f):
+                counts[row["node"]] += int(row["products"])
+    return dict(counts)
+
+
 def generate_metrics_from_csvs(csv_files: dict[str, Path]) -> str:
     """Generate metrics summary markdown from CSV files."""
     mb = _count_by_node(csv_files["missing_bundles"])
@@ -497,10 +608,13 @@ def generate_metrics_from_csvs(csv_files: dict[str, Path]) -> str:
     # --- Bad file_ref table ---
     bf_b = _count_distinct_lidvids_by_node(csv_files["bad_file_ref_bundles"])
     bf_c = _count_distinct_lidvids_by_node(csv_files["bad_file_ref_collections"])
-    bf_p = _count_distinct_lidvids_by_node(csv_files["bad_file_ref_products"])
+    bf_p = _count_grouped_products_by_node(csv_files["bad_file_ref_products"])
 
     markdown += "\n### Products with Invalid file_ref by Node\n\n"
-    markdown += "Products with a Label or Data `file_ref` that does not start with `https://`.\n\n"
+    markdown += (
+        "Products with a Label or Data `file_ref` that does not start with `https://`, "
+        "except `s3://` on staged products.\n\n"
+    )
     markdown += "| Node | Bundles | Collections | Other Products |\n"
     markdown += "|------|--------:|------------:|---------------:|\n"
 
@@ -1472,37 +1586,46 @@ def main() -> int:
             print_error(f"Failed to generate {description} report: {e}")
             return 1
 
-    # Products whose Label or Data file_ref does not start with https://.
-    # These queries are paginated; the CSVs list one row per offending file_ref value.
+    # Products whose Label or Data file_ref does not start with https://, except s3:// on staged products.
+    # These queries are paginated. The bundle and collection CSVs list one row per offending file_ref value;
+    # the report for other products is grouped by bundle and collection, because it has too many products.
     bad_file_ref_queries = [
         (
             conf_dir / "bad_file_ref_bundles_per_node.json",
             output_dir / "bad_file_ref_bundles_in_registry.csv",
             "bundles with invalid file_ref",
+            False,
         ),
         (
             conf_dir / "bad_file_ref_collections_per_node.json",
             output_dir / "bad_file_ref_collections_in_registry.csv",
             "collections with invalid file_ref",
+            False,
         ),
         (
             conf_dir / "bad_file_ref_products_per_node.json",
             output_dir / "bad_file_ref_products_in_registry.csv",
             "other products with invalid file_ref",
+            True,
         ),
     ]
 
-    for query_file, _, description in bad_file_ref_queries:
+    for query_file, _, description, _ in bad_file_ref_queries:
         if not query_file.exists():
             print_error(f"Query file not found: {query_file}")
             return 1
 
-    for query_file, output_file, description in bad_file_ref_queries:
+    for query_file, output_file, description, grouped in bad_file_ref_queries:
         try:
             print_info(f"Querying for {description}...")
             data = run_query_paginated(query_file, "/*-registry/_search")
             rows = extract_bad_file_ref_rows(data)
-            count = write_rows_to_csv(rows, output_file, header=BAD_FILE_REF_HEADER)
+            if grouped:
+                count = write_rows_to_csv(
+                    group_bad_file_ref_rows(rows), output_file, header=BAD_FILE_REF_GROUP_HEADER
+                )
+            else:
+                count = write_rows_to_csv(mask_bad_file_ref_rows(rows), output_file, header=BAD_FILE_REF_HEADER)
             print_info(f"  → {output_file.name} ({count} records)")
             output_files.append(output_file)
         except subprocess.CalledProcessError as e:
