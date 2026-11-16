@@ -61,6 +61,9 @@ Options:
     --output-dir DIR              Directory to write all output files to (required)
     --node NODE                   Limit the audit to <NODE>-registry and <NODE>-registry-refs;
                                   repeatable (default: discover every node)
+    --known-node NODE             Tenant node name; repeatable (default: atm, en, geo, img, naif, ppi, psa,
+                                  rms, sbnpsi, sbnumd). When nodes are discovered, an index prefix that is
+                                  not a tenant node is reported as possibly stale and not audited
     --collection-grace-days N     Days an unprocessed collection is left alone (default: 1)
     --product-grace-days N        Days a product waiting for its collection is left alone
                                   (default: 7)
@@ -114,7 +117,9 @@ from unprocessed_audit.model import CURRENT_ANCESTRY_VERSION  # noqa: E402
 from unprocessed_audit.model import Collection  # noqa: E402
 from unprocessed_audit.model import CollectionState  # noqa: E402
 from unprocessed_audit.model import RefsCoverage  # noqa: E402
+from unprocessed_audit.model import REGISTRY_SUFFIX  # noqa: E402
 from unprocessed_audit.model import SUPERSEDED_FIELD  # noqa: E402
+from unprocessed_audit.model import TENANT_NODES  # noqa: E402
 from unprocessed_audit.model import RegistryQueryError  # noqa: E402
 from unprocessed_audit.model import Thresholds  # noqa: E402
 from unprocessed_audit.registry import RegistryClient  # noqa: E402
@@ -129,6 +134,7 @@ from unprocessed_audit.registry import lookup_refs  # noqa: E402
 from unprocessed_audit.registry import lookup_refs_by_lid  # noqa: E402
 from unprocessed_audit.registry import make_registry_auth  # noqa: E402
 from unprocessed_audit.registry import registry_endpoint_from_env  # noqa: E402
+from unprocessed_audit.registry import split_tenant_nodes  # noqa: E402
 from unprocessed_audit.regression import METRICS_JSON  # noqa: E402
 from unprocessed_audit.regression import BaselineError  # noqa: E402
 from unprocessed_audit.regression import HistoryFormatError  # noqa: E402
@@ -345,7 +351,16 @@ def run_audit(args: argparse.Namespace, client: RegistryClient, now: datetime | 
         ancestry_version=args.ancestry_version,
     )
 
-    nodes: list[str] = list(args.node) if args.node else discover_nodes(client)
+    stale_nodes: list[str] = []
+    if args.node:
+        nodes: list[str] = list(args.node)
+    else:
+        nodes, stale_nodes = split_tenant_nodes(discover_nodes(client), args.known_node or TENANT_NODES)
+        if stale_nodes:
+            logger.warning(
+                "Not auditing indices that are not tenant nodes (possibly stale or test data): %s",
+                ", ".join(f"{n}{REGISTRY_SUFFIX}" for n in stale_nodes),
+            )
     logger.info("Nodes: %s", ", ".join(nodes))
 
     # Fail before the long product scan when the comparison or the history file cannot work.
@@ -424,7 +439,7 @@ def run_audit(args: argparse.Namespace, client: RegistryClient, now: datetime | 
         violations = evaluate(metrics, baseline)
         logger.info("Regression check: %d invariants violated", len(violations))
 
-    params = _run_params(args, nodes)
+    params = _run_params(args, nodes, stale_nodes)
     summary = render_summary(tally, collections, coverage, th, params, diff)
     if args.check:
         summary += "\n" + render_check_section(violations, baseline, not args.no_mapping_check)
@@ -482,9 +497,13 @@ def _collect_coverage(
     return coverage
 
 
-def _run_params(args: argparse.Namespace, nodes: list[str]) -> dict[str, object]:
+def _run_params(args: argparse.Namespace, nodes: list[str], stale_nodes: list[str]) -> dict[str, object]:
     """Describe the run parameters for the summary headline."""
     params: dict[str, object] = {"Nodes": ", ".join(nodes) if nodes else "all"}
+    if stale_nodes:
+        params["Possibly stale or test indices (not audited)"] = ", ".join(
+            f"{n}{REGISTRY_SUFFIX}" for n in stale_nodes
+        )
     if args.node:
         params["Node filter"] = ", ".join(args.node)
     if args.max_products is not None:
@@ -525,6 +544,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=None,
         metavar="NODE",
         help="Limit to <NODE>-registry and <NODE>-registry-refs; repeatable (default: discover every node)",
+    )
+    parser.add_argument(
+        "--known-node",
+        action="append",
+        default=None,
+        metavar="NODE",
+        help=(
+            "Tenant node name; repeatable (default: " + ", ".join(TENANT_NODES) + "). When nodes are discovered, "
+            "an index prefix that is not a tenant node is reported as possibly stale and not audited"
+        ),
     )
     parser.add_argument(
         "--collection-grace-days",

@@ -785,3 +785,17 @@ def test_get_refs_coverage_bad_aggregation_raises() -> None:
     fake = FakeClient(lambda index, body: {"hits": {}})
     with pytest.raises(RegistryQueryError):
         registry.get_refs_coverage(fake, collection, None, 7)
+
+
+# ── tenant nodes ──────────────────────────────────────────────────────────────
+
+
+def test_split_tenant_nodes_separates_index_prefixes_that_are_not_tenants() -> None:
+    tenant, stale = registry.split_tenant_nodes(["atm", "edunn-geo", "geo", "temp-atm", "sandbox"])
+    assert tenant == ["atm", "geo", "temp-atm"]  # temp-atm is the concrete index behind the atm alias
+    assert stale == ["edunn-geo", "sandbox"]
+
+
+def test_split_tenant_nodes_accepts_a_custom_tenant_list() -> None:
+    assert registry.split_tenant_nodes(["a", "b"], ["a"]) == (["a"], ["b"])
+    assert registry.split_tenant_nodes([]) == ([], [])

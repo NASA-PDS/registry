@@ -36,6 +36,11 @@ AGGREGATE_CLASSES = ("Product_Bundle", "Product_Collection")
 NO_PARENT_CLASSES = ("Product_Service", "Product_Context")
 """Product classes that never belong to a collection, so lacking ancestry is expected."""
 
+TENANT_NODES = ("atm", "en", "geo", "img", "naif", "ppi", "psa", "rms", "sbnpsi", "sbnumd")
+"""Node names whose ``<node>-registry`` indices are the registry's tenant indices."""
+CONCRETE_NODE_NAMES = {"temp-atm": "atm"}
+"""Concrete index prefixes that sit behind a tenant's alias: ``temp-atm-registry`` is behind ``atm-registry``."""
+
 REGISTRY_SUFFIX = "-registry"
 REFS_SUFFIX = "-registry-refs"
 LEGACY_INDEX = "en-legacy-registry"

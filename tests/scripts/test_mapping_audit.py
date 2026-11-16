@@ -159,6 +159,7 @@ class FakeClient:
     def __init__(self, responses: dict[str, dict | Exception]) -> None:
         self.responses = responses
         self.requested: list[str] = []
+        self.documents: dict[str, int] = {}
 
     def get_mapping(self, name: str) -> dict:
         self.requested.append(name)
@@ -166,6 +167,9 @@ class FakeClient:
         if isinstance(result, Exception):
             raise result
         return result
+
+    def count(self, name: str, body: dict) -> int:
+        return self.documents[name]
 
 
 def test_read_mappings_requests_every_node_and_group():
@@ -264,22 +268,75 @@ def test_main_check_exits_two_on_an_error_and_zero_when_clean(tmp_path: Path, mo
     assert cli.main(["--output-dir", str(tmp_path / "good"), *NODE_ARGS, "--check"]) == 0
 
 
+KNOWN = ["--known-node", "a", "--known-node", "b"]
+
+
 def test_main_discovers_nodes_when_none_are_given(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    client = install(monkeypatch, {"a-registry": mappings_for(False)["a-registry"], "b-registry": mappings_for(False)["a-registry"]})
-    assert cli.main(["--output-dir", str(tmp_path / "out")]) == 0
+    full = mappings_for(False)["a-registry"]
+    client = install(monkeypatch, {"a-registry": full, "b-registry": full})
+    assert cli.main(["--output-dir", str(tmp_path / "out"), *KNOWN]) == 0
     assert client.requested == ["a-registry", "b-registry"]
 
 
 def test_main_include_refs_reads_the_refs_indices(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     refs = response({"collection_lidvid": {"type": "keyword"}})
     client = install(monkeypatch, {**mappings_for(False), "a-registry-refs": refs, "b-registry-refs": refs})
-    assert cli.main(["--output-dir", str(tmp_path / "out"), "--include-refs"]) == 0
+    assert cli.main(["--output-dir", str(tmp_path / "out"), "--include-refs", *KNOWN]) == 0
     assert "a-registry-refs" in client.requested
 
 
 def test_main_returns_one_on_a_registry_error(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     install(monkeypatch, {"a-registry": RegistryQueryError("HTTP 500"), "b-registry": {}})
-    assert cli.main(["--output-dir", str(tmp_path / "out")]) == 1
+    assert cli.main(["--output-dir", str(tmp_path / "out"), *KNOWN]) == 1
+
+
+# ── possibly stale indices ────────────────────────────────────────────────────
+
+
+def test_describe_possibly_stale_gathers_documents_fields_and_refs_presence():
+    not_found = RegistryQueryError("HTTP 404: index_not_found_exception")
+    client = FakeClient({"scratch-registry": response(props(lidvid="keyword", vid="float")), "scratch-registry-refs": not_found})
+    client.documents["scratch-registry"] = 5_000_000
+    found = ma.describe_possibly_stale(client, ["scratch"])  # type: ignore[arg-type]
+    assert found == [ma.StaleIndex("scratch-registry", "scratch", 5_000_000, 2, False)]
+
+
+def test_discovered_non_tenant_indices_are_reported_not_compared(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys):
+    full = mappings_for(False)["a-registry"]
+    client = install(monkeypatch, {
+        "a-registry": full, "b-registry": full,
+        "scratch-registry": response(props(lidvid="keyword")),
+        "scratch-registry-refs": RegistryQueryError("HTTP 404: index_not_found_exception"),
+    })  # fmt: skip
+    client.documents["scratch-registry"] = 1234
+    monkeypatch.setattr(cli, "discover_nodes", lambda c: ["a", "b", "scratch"])
+
+    assert cli.main(["--output-dir", str(tmp_path / "out"), "--check", *KNOWN]) == 0  # no discrepancy from scratch
+
+    out = tmp_path / "out"
+    summary = (out / "mapping_summary.md").read_text(encoding="utf-8")
+    assert "## Possibly stale or test indices" in summary
+    assert "| scratch-registry | 1,234 | 1 | no |" in summary
+    assert "scratch-registry |" not in summary.split("## Per index")[1]  # left out of the comparison
+    with (out / "mapping_possibly_stale.csv").open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    assert rows == [{"index": "scratch-registry", "node": "scratch", "documents": "1234", "mapped_fields": "1", "has_refs_index": "false"}]
+    assert "candidates for cleanup" in capsys.readouterr().out
+
+
+def test_explicitly_named_nodes_are_compared_even_when_not_tenants(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    full = mappings_for(False)["a-registry"]
+    install(monkeypatch, {"scratch-registry": full, "a-registry": full})
+    assert cli.main(["--output-dir", str(tmp_path / "out"), "--node", "scratch", "--node", "a"]) == 0
+    assert not (tmp_path / "out" / "mapping_possibly_stale.csv").exists()
+
+
+def test_a_run_without_stale_indices_writes_no_stale_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    full = mappings_for(False)["a-registry"]
+    install(monkeypatch, {"a-registry": full, "b-registry": full})
+    assert cli.main(["--output-dir", str(tmp_path / "out"), *KNOWN]) == 0
+    assert not (tmp_path / "out" / "mapping_possibly_stale.csv").exists()
+    assert "Possibly stale" not in (tmp_path / "out" / "mapping_summary.md").read_text(encoding="utf-8")
 
 
 def test_presence_threshold_must_be_in_range(tmp_path: Path):

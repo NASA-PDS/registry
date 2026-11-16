@@ -48,6 +48,9 @@ Options:
     --output-dir DIR        Directory to write all output files to (required)
     --node NODE             Limit to <NODE>-registry (and -refs); repeatable (default: discover every node)
     --include-refs          Also compare the <node>-registry-refs indices
+    --known-node NODE       Tenant node name; repeatable (default: atm, en, geo, img, naif, ppi, psa, rms,
+                            sbnpsi, sbnumd). A discovered index prefix that is not a tenant node is listed as
+                            possibly stale or test data (candidates for cleanup) and left out of the comparison
     --presence-threshold F  Fraction of a group's indices that must define a field for it to be expected on all
                             of them (default: 0.8)
     --check                 Exit with code 2 when an error-level discrepancy is found
@@ -65,6 +68,7 @@ import argparse
 import logging
 import sys
 from dataclasses import dataclass
+from dataclasses import field
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -77,21 +81,27 @@ from unprocessed_audit.mapping_audit import GROUP_REGISTRY  # noqa: E402
 from unprocessed_audit.mapping_audit import Discrepancy  # noqa: E402
 from unprocessed_audit.mapping_audit import IndexMapping  # noqa: E402
 from unprocessed_audit.mapping_audit import Severity  # noqa: E402
+from unprocessed_audit.mapping_audit import StaleIndex  # noqa: E402
 from unprocessed_audit.mapping_audit import analyze  # noqa: E402
+from unprocessed_audit.mapping_audit import describe_possibly_stale  # noqa: E402
 from unprocessed_audit.mapping_audit import read_mappings  # noqa: E402
 from unprocessed_audit.mapping_audit import render_summary  # noqa: E402
 from unprocessed_audit.mapping_audit import write_discrepancies_csv  # noqa: E402
 from unprocessed_audit.mapping_audit import write_matrix_csv  # noqa: E402
+from unprocessed_audit.mapping_audit import write_stale_csv  # noqa: E402
+from unprocessed_audit.model import TENANT_NODES  # noqa: E402
 from unprocessed_audit.model import RegistryQueryError  # noqa: E402
 from unprocessed_audit.registry import RegistryClient  # noqa: E402
 from unprocessed_audit.registry import discover_nodes  # noqa: E402
 from unprocessed_audit.registry import make_registry_auth  # noqa: E402
 from unprocessed_audit.registry import registry_endpoint_from_env  # noqa: E402
+from unprocessed_audit.registry import split_tenant_nodes  # noqa: E402
 
 _DEFAULT_TIMEOUT = 120
 DISCREPANCIES_CSV = "mapping_discrepancies.csv"
 MATRIX_CSV = "mapping_matrix.csv"
 SUMMARY_MD = "mapping_summary.md"
+STALE_CSV = "mapping_possibly_stale.csv"
 
 _LOG_LEVELS = {
     "debug": logging.DEBUG,
@@ -113,6 +123,7 @@ class MappingAuditResult:
         summary: The rendered Markdown report.
         output_dir: Directory the files were written to.
         paths: Files written, keyed by short name.
+        stale: Indices left out of the comparison because they are not named after a tenant node.
     """
 
     mappings: list[IndexMapping]
@@ -120,6 +131,7 @@ class MappingAuditResult:
     summary: str
     output_dir: Path
     paths: dict[str, Path]
+    stale: list[StaleIndex] = field(default_factory=list)
 
     @property
     def errors(self) -> list[Discrepancy]:
@@ -142,7 +154,14 @@ def run_audit(args: argparse.Namespace, client: RegistryClient) -> MappingAuditR
     """
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    nodes: list[str] = list(args.node) if args.node else discover_nodes(client)
+    stale: list[StaleIndex] = []
+    if args.node:
+        nodes: list[str] = list(args.node)
+    else:
+        nodes, stale_nodes = split_tenant_nodes(discover_nodes(client), args.known_node or TENANT_NODES)
+        if stale_nodes:
+            logger.warning("Indices that are not tenant nodes, possibly stale: %s", ", ".join(stale_nodes))
+            stale = describe_possibly_stale(client, stale_nodes)
     logger.info("Nodes: %s", ", ".join(nodes))
     groups = [GROUP_REGISTRY, GROUP_REFS] if args.include_refs else [GROUP_REGISTRY]
 
@@ -157,9 +176,12 @@ def run_audit(args: argparse.Namespace, client: RegistryClient) -> MappingAuditR
     }
     write_discrepancies_csv(paths["discrepancies"], discrepancies)
     write_matrix_csv(paths["matrix"], mappings)
-    summary = render_summary(mappings, discrepancies, args.presence_threshold)
+    if stale:
+        paths["stale"] = output_dir / STALE_CSV
+        write_stale_csv(paths["stale"], stale)
+    summary = render_summary(mappings, discrepancies, args.presence_threshold, stale)
     paths["summary"].write_text(summary, encoding="utf-8")
-    return MappingAuditResult(mappings, discrepancies, summary, output_dir, paths)
+    return MappingAuditResult(mappings, discrepancies, summary, output_dir, paths, stale)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -185,6 +207,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Limit to <NODE>-registry (and -refs); repeatable (default: discover every node)",
     )
     parser.add_argument("--include-refs", action="store_true", help="Also compare the <node>-registry-refs indices")
+    parser.add_argument(
+        "--known-node",
+        action="append",
+        default=None,
+        metavar="NODE",
+        help=(
+            "Tenant node name; repeatable (default: " + ", ".join(TENANT_NODES) + "). A discovered index prefix "
+            "that is not a tenant node is reported as possibly stale instead of being compared"
+        ),
+    )
     parser.add_argument(
         "--presence-threshold",
         type=float,
@@ -240,6 +272,9 @@ def main(argv: list[str] | None = None) -> int:
     errors = result.errors
     status = f"{len(errors)} error-level discrepancies, {len(result.discrepancies) - len(errors)} warnings"
     print(Color.red(status) if errors else Color.green(status))
+    if result.stale:
+        names = ", ".join(s.index for s in result.stale)
+        print(f"Possibly stale or test indices (candidates for cleanup, not compared): {names}")
     print(f"Output files written to {result.output_dir}")
     return 2 if args.check and errors else 0
 

@@ -360,6 +360,24 @@ def test_run_audit_discovers_nodes_when_not_given(tmp_path: Path, fake: FakeRegi
     assert "Nodes: atm" in result.summary
 
 
+def test_run_audit_skips_indices_that_are_not_tenant_nodes(
+    tmp_path: Path, fake: FakeRegistry, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(cli, "discover_nodes", lambda client: ["atm", "scratch"])
+    result = cli.run_audit(make_args(tmp_path), client=object(), now=NOW)  # type: ignore[arg-type]
+    assert result.metrics.nodes == ["atm"]
+    assert "Possibly stale or test indices (not audited): scratch-registry" in result.summary
+
+
+def test_run_audit_audits_a_discovered_node_named_by_known_node(
+    tmp_path: Path, fake: FakeRegistry, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(cli, "discover_nodes", lambda client: ["atm", "scratch"])
+    result = cli.run_audit(make_args(tmp_path, "--known-node", "atm", "--known-node", "scratch"), client=object(), now=NOW)  # type: ignore[arg-type]
+    assert result.metrics.nodes == ["atm", "scratch"]
+    assert "Possibly stale" not in result.summary
+
+
 def test_registry_error_flushes_partial_output(
     tmp_path: Path, fake: FakeRegistry, monkeypatch: pytest.MonkeyPatch
 ) -> None:

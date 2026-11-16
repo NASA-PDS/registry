@@ -112,6 +112,68 @@ class Discrepancy:
     total: int
 
 
+@dataclass(frozen=True)
+class StaleIndex:
+    """An index that is not named after a tenant node, so it may be stale or hold test data.
+
+    Attributes:
+        index: Index name.
+        node: Index prefix that is not a tenant node.
+        documents: Number of documents in the index.
+        mapped_fields: Number of fields in its mapping.
+        has_refs_index: Whether ``<node>-registry-refs`` exists.
+    """
+
+    index: str
+    node: str
+    documents: int
+    mapped_fields: int
+    has_refs_index: bool
+
+
+def describe_possibly_stale(client: RegistryClient, nodes: Sequence[str]) -> list[StaleIndex]:
+    """Gather the evidence for reviewing indices that are not named after a tenant node.
+
+    Args:
+        client: Registry client.
+        nodes: Index prefixes that are not tenant nodes.
+
+    Returns:
+        One ``StaleIndex`` per prefix.
+
+    Raises:
+        RegistryQueryError: If an index cannot be read.
+    """
+    found: list[StaleIndex] = []
+    for node in nodes:
+        name = f"{node}{REGISTRY_SUFFIX}"
+        mapping = flatten_mapping(client.get_mapping(name), name, node, GROUP_REGISTRY)
+        documents = client.count(name, {"query": {"match_all": {}}})
+        refs = read_mappings(client, [node], [GROUP_REFS])[0]
+        found.append(StaleIndex(name, node, documents, len(mapping.fields), refs.present))
+    return found
+
+
+def write_stale_csv(path: Path, stale: Iterable[StaleIndex]) -> int:
+    """Write the possibly stale indices to a CSV.
+
+    Args:
+        path: Output file.
+        stale: Rows to write.
+
+    Returns:
+        The number of rows written.
+    """
+    count = 0
+    with Path(path).open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["index", "node", "documents", "mapped_fields", "has_refs_index"])
+        for s in stale:
+            writer.writerow([s.index, s.node, s.documents, s.mapped_fields, str(s.has_refs_index).lower()])
+            count += 1
+    return count
+
+
 def _walk(properties: object, prefix: str, out: dict[str, str]) -> None:
     if not isinstance(properties, dict):
         return
@@ -329,13 +391,19 @@ def write_matrix_csv(path: Path, mappings: Sequence[IndexMapping]) -> int:
     return rows
 
 
-def render_summary(mappings: Sequence[IndexMapping], discrepancies: Sequence[Discrepancy], presence_threshold: float) -> str:
+def render_summary(
+    mappings: Sequence[IndexMapping],
+    discrepancies: Sequence[Discrepancy],
+    presence_threshold: float,
+    stale: Sequence[StaleIndex] = (),
+) -> str:
     """Render the Markdown report.
 
     Args:
         mappings: Flattened mappings.
         discrepancies: Result of ``analyze``.
         presence_threshold: Threshold the analysis used.
+        stale: Indices left out of the comparison because they are not named after a tenant node.
 
     Returns:
         Markdown text ending in a newline.
@@ -345,7 +413,24 @@ def render_summary(mappings: Sequence[IndexMapping], discrepancies: Sequence[Dis
     lines.append(f"- Indices read: **{sum(1 for m in mappings if m.present)}**")
     lines.append(f"- Discrepancies: **{len(discrepancies)}** ({len(errors)} errors, {len(discrepancies) - len(errors)} warnings)")
     lines.append(f"- A field defined on at least {presence_threshold:.0%} of a group's indices is expected on all of them")
+    if stale:
+        lines.append(f"- Possibly stale or test indices (not compared): **{len(stale)}**")
     lines.append("")
+
+    if stale:
+        lines += [
+            "## Possibly stale or test indices",
+            "",
+            "These indices are not named after a tenant node (`<node>-registry`), so they were left out of the",
+            "comparison. They may be stale copies or test data and are candidates for cleanup. Confirm with their",
+            "owner before deleting; the audit never changes or deletes anything.",
+            "",
+            "| Index | Documents | Mapped fields | Refs index |",
+            "|---|---|---|---|",
+        ]
+        for s in stale:
+            lines.append(f"| {s.index} | {s.documents:,} | {s.mapped_fields} | {'yes' if s.has_refs_index else 'no'} |")
+        lines.append("")
 
     lines += [
         "## Per index",

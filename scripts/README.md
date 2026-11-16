@@ -785,5 +785,10 @@ The ATM products index is `temp-atm-registry` behind the alias `atm-registry`, w
 | `mapping_summary.md` | The report (also printed): per-index counts, fields missing from some indices, type mismatches, missing indices |
 | `mapping_discrepancies.csv` | One row per discrepancy: group, index, field, kind, severity, expected and actual type, how many indices have the expected type |
 | `mapping_matrix.csv` | One row per field, one column per index, with the mapped type or `(absent)` |
+| `mapping_possibly_stale.csv` | Written only when such indices exist: one row per index that is not named after a tenant node, with its document count, mapped-field count and whether a refs index exists |
+
+#### Possibly stale indices
+
+Only tenant nodes are compared: `atm`, `en`, `geo`, `img`, `naif`, `ppi`, `psa`, `rms`, `sbnpsi` and `sbnumd` (`--known-node`, repeatable, replaces the list). When nodes are discovered, an index named `<prefix>-registry` whose prefix is not one of them (a personal, temporary or test copy) is left out of the comparison and listed under "Possibly stale or test indices" in the report with its document count, mapped-field count and refs-index presence. These are candidates for cleanup: confirm with the owner before deleting, since the audit never deletes anything. `audit_unprocessed_products.py` applies the same rule to discovered nodes and names the skipped indices in its report headline. Nodes named with `--node` are always audited as given.
 
 Exit codes: 0 on success (and, with `--check`, no error-level discrepancy), 1 on an error, 2 when `--check` finds an error-level discrepancy. A mapping type cannot be changed in place, so fixing a type mismatch means reindexing into a corrected index.

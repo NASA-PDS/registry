@@ -25,6 +25,7 @@ import requests
 from unprocessed_audit.model import AGGREGATE_CLASSES
 from unprocessed_audit.model import API_VISIBLE_ARCHIVE_STATUSES
 from unprocessed_audit.model import ARCHIVE_STATUS_FIELD
+from unprocessed_audit.model import CONCRETE_NODE_NAMES
 from unprocessed_audit.model import DATA_FILE_REF_FIELD
 from unprocessed_audit.model import HARVEST_FIELD
 from unprocessed_audit.model import LEGACY_INDEX
@@ -33,6 +34,7 @@ from unprocessed_audit.model import REFS_SUFFIX
 from unprocessed_audit.model import REGISTRY_SUFFIX
 from unprocessed_audit.model import STAMP_FIELD
 from unprocessed_audit.model import SUPERSEDED_FIELD
+from unprocessed_audit.model import TENANT_NODES
 from unprocessed_audit.model import Candidate
 from unprocessed_audit.model import Collection
 from unprocessed_audit.model import RefsCoverage
@@ -498,6 +500,27 @@ def discover_nodes(client: RegistryClient) -> list[str]:
             "Name the nodes explicitly with the --node option."
         )
     return nodes
+
+
+def split_tenant_nodes(
+    nodes: Sequence[str], tenants: Sequence[str] = TENANT_NODES
+) -> tuple[list[str], list[str]]:
+    """Separate the tenant nodes from index prefixes that are not one.
+
+    An index whose prefix is not a tenant node (a personal, temporary or test copy such as
+    ``<name>-registry``) is possibly stale. It is reported for cleanup instead of being audited.
+
+    Args:
+        nodes: Node names, as returned by ``discover_nodes``.
+        tenants: Tenant node names. A concrete name in ``CONCRETE_NODE_NAMES`` counts as its tenant.
+
+    Returns:
+        ``(tenant nodes, possibly stale nodes)``, each in the order given.
+    """
+    recognised = set(tenants)
+    tenant = [n for n in nodes if CONCRETE_NODE_NAMES.get(n, n) in recognised]
+    stale = [n for n in nodes if n not in tenant]
+    return tenant, stale
 
 
 def iter_collections(client: RegistryClient, nodes: Sequence[str] | None) -> Iterator[Collection]:
