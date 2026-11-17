@@ -28,6 +28,7 @@ Taken from the ancestry sweeper source (`SWEEPERS_ANCESTRY_VERSION = 7`) and the
   pending collection. A product with no refs document is never touched.
 - Once a collection is stamped it is never revisited. A product force-overwritten afterwards loses
   its ancestry and nothing repairs it. Refs added to a stamped collection later are never swept.
+  This describes registry-sweepers `main`, which production runs. `develop`, which is not deployed because it uses structured metadata, adds a deferral (PR #256) that processes products that were not yet loaded when their collection was swept; it does not cover products overwritten afterwards or refs added afterwards (registry-sweepers #298, #300).
 - A collection can be stamped with empty `ancestor_refs` (fixed going forward, but already-stamped
   collections are not reprocessed). Its bundle's `/members` then returns nothing.
 - The version field is mapped as `keyword`, so range queries on it are lexicographic. Compare
