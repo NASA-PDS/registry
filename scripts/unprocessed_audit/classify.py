@@ -80,13 +80,20 @@ RULE_GUIDANCE: dict[Rule, str] = {
         "the sweeper run for this collection."
     ),
     Rule.REFS_MISSING_PENDING: (
-        "The collection is processed but no registry-refs document lists the product yet, and the product "
-        "was harvested recently. This may resolve once refs are written; re-check after the grace period."
+        "The collection is processed but no registry-refs document lists the product, and the product was "
+        "harvested within the grace period, so a load may still be running. Re-check after the grace period; "
+        "if the product is still missing, it is classified like refs_missing."
     ),
     Rule.REFS_MISSING: (
-        "The collection is processed but no registry-refs document lists the product, so the sweeper never "
-        "selects it. The refs were probably never written for this product; the loader or harvest step is "
-        "the likely place to look."
+        "The collection is processed and has refs, but no registry-refs document lists this product, so the "
+        "sweeper never selects it. Harvest writes a collection's refs from its inventory when the collection is "
+        "harvested, so the inventory read at that time did not list the product, or the inventory has changed "
+        "since, or the refs were not written. Read the collection's current inventory. If it lists this exact "
+        "product, the refs are stale: registry operations re-harvest the collection from its current label and "
+        "inventory, then run the sweepers. If it lists another version of the product or does not list it, the "
+        "node's data does not line up and the node fixes it (the audit reports those as "
+        "inventory_version_mismatch and not_in_collection_inventory when it can read the inventory). The "
+        "collection named for the product is a best guess from its identifier."
     ),
     Rule.BARE_LID_IN_INVENTORY: (
         "The collection's inventory lists the product by LID only, without a version. Harvest records that as a "
