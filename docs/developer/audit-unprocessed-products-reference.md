@@ -105,7 +105,7 @@ Facts that drive the rules:
   `<node>-registry-refs` document whose `collection_lidvid` is a pending collection. A product with no
   refs document is never touched.
 - A stamped collection is never revisited. A product re-harvested afterwards loses its ancestry and
-  nothing restores it. Refs added to a stamped collection later are never swept. This describes registry-sweepers `main`, which production runs. `develop`, which is not deployed because it uses structured metadata, adds a deferral (PR #256) that processes products that were not yet loaded when their collection was swept; it does not cover products overwritten afterwards or refs added afterwards (registry-sweepers #298, #300).
+  nothing restores it. Refs added to a stamped collection later are never swept. This describes registry-sweepers `main`, which production runs (registry-sweepers #298). `develop`, which is not deployed because it uses structured metadata, adds a deferral (PR #256) that processes products that were not yet loaded when their collection was swept. It does not cover products overwritten afterwards or refs added afterwards (#270), or a bundle loaded after its collection (#301); the completeness flag verified by count (#243) and Harvest preserving `ops:` metadata on overwrite (harvest#349) are the planned fixes. Until production moves to `develop`, the workaround is for the node to re-harvest the collection and for EN to run the sweepers.
 - `exists` queries treat an empty array as absent, so population B is found with
   `must_not exists ancestor_refs`.
 - The stamp is a `keyword` field. The audit compares it for equality, never with a range.

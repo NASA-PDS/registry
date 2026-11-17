@@ -245,11 +245,13 @@ newest harvest time among those other products for context.
 Harvest writes a `registry-refs` document for a collection from the collection's inventory when the collection
 is harvested. The refs are the registry's record of which products belong to which collection. The ancestry
 sweeper reaches a non-aggregate product only through those refs, and it does not revisit a collection once the
-collection is stamped. That is the behaviour of registry-sweepers `main`, which production runs. `develop` (not
-deployed, because it uses structured metadata) also processes products that were not yet loaded when their
-collection was swept, but not products overwritten or listed in refs afterwards (registry-sweepers #298 and #300);
-a bundle loaded after its collection was stamped is not linked on either branch (#301). So a product lacks
-ancestry in one of two ways:
+collection is stamped. That is the behaviour of registry-sweepers `main`, which production runs (registry-sweepers
+#298). `develop` (not deployed, because it uses structured metadata) also processes products that were not yet
+loaded when their collection was swept, but not products overwritten or listed in refs afterwards (#270); a bundle
+loaded after its collection was stamped is not linked on either branch (#301). The planned fixes are a completeness
+flag verified by count (#243) and Harvest preserving `ops:` metadata on overwrite (harvest#349). Until production
+moves to `develop`, the workaround is the node re-harvesting the collection and EN running the sweepers. So a
+product lacks ancestry in one of two ways:
 
 - **Orphaned**: no registry record confirms which collection the product belongs to. The collection a report
   names for it is a **best guess** from its identifier (`bundle:collection:product`) and the collection versions
