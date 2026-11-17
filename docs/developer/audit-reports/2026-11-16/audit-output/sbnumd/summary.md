@@ -9,7 +9,7 @@ Nodes: sbnumd
 
 ## What needs to happen
 
-**Needs attention: 83 for the node.**
+**Needs attention: 25 products and 58 collections for the node.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|

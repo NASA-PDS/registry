@@ -2,7 +2,7 @@
 
 ## Verdict
 
-793 products in the `en` registry index could appear in the public API; 705 need attention and all 705 are for the node (nothing for EN or the sweepers team), and 88 need no action. The biggest problem is that the registry stops at version 56.0 of the two Deep Archive collections while the data provider now publishes version 64.0.
+793 products in the `en` registry index could appear in the public API; 705 need attention: 703 are for the node and 2 need a closer look (nothing for the EN team or the sweepers team), and 88 need no action. The biggest problem is that the registry stops at version 56.0 of the two Deep Archive collections while the data provider now publishes version 64.0.
 
 ## What needs to happen
 
@@ -10,11 +10,11 @@
 
 | Who | What is wrong (plain English) | Products | Collections | What to do |
 |---|---|---|---|---|
-| Node | Collection versions 57.0 to 64.0 of the AIP and SIP Deep Archive collections are published by the provider but not loaded. 180 AIP and 180 SIP products are already in the registry but appear in no inventory the registry holds, so they have no refs and no ancestry | 360 | 2 | Load the current versions (up to 64.0) of `product_aip` and `product_sip_deep_archive`, and the ~456 products each lists that are not loaded yet. Then EN runs the sweepers |
+| Node | Collection versions 57.0 to 64.0 of the AIP and SIP Deep Archive collections are published by the provider but not loaded. 180 AIP and 180 SIP products are already in the registry but appear in no inventory the registry holds, so they have no refs and no ancestry | 360 | 2 | Load the current versions (up to 64.0) of `product_aip` and `product_sip_deep_archive`, and the ~456 products each lists that are not loaded yet. Then the EN team runs the sweepers |
 | Node | The `xml_schema` collection of the System Bundle (and two foreign copies of it) is not in the registry, so its schema products have no parent | 342 | 4 collection IDs | Load the collection `urn:nasa:pds:system_bundle:xml_schema` (the bundle label lists it). One product has a malformed LID (`tbd_urnprefixsystem_bundle:...`): fix it. Decide what to do with the `jaxa:darts` and `kari:kpds` schema products |
 | Node | Two policy documents are registered under `document_policy` but not listed in its inventory file under any version | 2 | 1 | Add them to the inventory and re-harvest the collection, or remove them from the registry |
 | Node | `lids_deprecated` has three different versions: refs say 1.1, the inventory file now says 1.0, the registry holds 1.2 | 1 | 1 | Make the inventory and the loaded version agree, then re-harvest |
-| EN | none found | 0 | 0 | - |
+| EN team | none found | 0 | 0 | - |
 | Sweepers team | none found (no `sweeper_miss`, no empty-refs collection with a bundle) | 0 | 0 | - |
 | Needs a closer look | none: every `refs_missing` product was checked against the inventory | 0 | 0 | - |
 | No action | 87 services and 1 context product never belong to a collection | 88 | - | - |
@@ -40,7 +40,7 @@ Collections: `urn:nasa:pds:system_bundle:product_aip` (registry current 56.0), `
 
 ## Index mapping
 
-From `mapping_discrepancies.csv` (`en-registry`): no field missing at error level; `superseded_by`, `vid`, `lidvid` and the ancestry fields are mapped. Two type conflicts at error level, both against `sbnumd-registry`: `nh:Mission_Elapsed_Time/nh:clock_partition` (en `long`, sbnumd `keyword`) and `sb:Exposure/sb:exposure_description` (en `text`, sbnumd `keyword`). Seven more `sb:` fields (en `double` or `date`, sbnumd `keyword`) and two `insight:` fields (en `integer`, geo `keyword`) are flagged on the other node. Effect: a query across all nodes that treats such a field as a number, date or text can fail or behave differently on one of the two. Ten warnings: fields mapped on most nodes but not here (`pds:Collection/pds:description`, `pds:Observation_Area/pds:comment`, six `pds:SPICE_Kernel` fields, `pds:Special_Constants/pds:not_applicable_constant`, `ref_lid_data`); such values would be returned but not searchable. The en documents I sampled do not carry them; I did not check all. Owner: EN with the index owners.
+From `mapping_discrepancies.csv` (`en-registry`): no field missing at error level; `superseded_by`, `vid`, `lidvid` and the ancestry fields are mapped. Two type conflicts at error level, both against `sbnumd-registry`: `nh:Mission_Elapsed_Time/nh:clock_partition` (en `long`, sbnumd `keyword`) and `sb:Exposure/sb:exposure_description` (en `text`, sbnumd `keyword`). Seven more `sb:` fields (en `double` or `date`, sbnumd `keyword`) and two `insight:` fields (en `integer`, geo `keyword`) are flagged on the other node. Effect: a query across all nodes that treats such a field as a number, date or text can fail or behave differently on one of the two. Ten warnings: fields mapped on most nodes but not here (`pds:Collection/pds:description`, `pds:Observation_Area/pds:comment`, six `pds:SPICE_Kernel` fields, `pds:Special_Constants/pds:not_applicable_constant`, `ref_lid_data`); such values would be returned but not searchable. The en documents I sampled do not carry them; I did not check all. Owner: the EN team with the index owners.
 
 <!-- product-samples:start -->
 ## Example products

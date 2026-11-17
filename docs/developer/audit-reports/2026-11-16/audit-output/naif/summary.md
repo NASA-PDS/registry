@@ -9,7 +9,7 @@ Nodes: naif
 
 ## What needs to happen
 
-**Needs attention: 2 for the node.**
+**Needs attention: 2 products for the node.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|

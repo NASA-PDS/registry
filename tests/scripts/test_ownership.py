@@ -130,8 +130,15 @@ def test_verdict_names_the_owners_that_have_work_and_ignores_waiting():
     rows = ownership.build_rows(
         {"inventory_version_mismatch": 1200, "collection_overdue": 30}, {"refs_missing_pending": 9}, {}, 0
     )
-    assert ownership.verdict(rows) == "Needs attention: 1,200 for the node; 30 for EN."
+    assert ownership.verdict(rows) == "Needs attention: 1,200 products for the node; 30 products for EN."
     assert ownership.verdict(ownership.build_rows({}, {"refs_missing_pending": 9}, {}, 0)) == (
         "Healthy: nothing needs doing."
     )
     assert ownership.verdict([]) == "Healthy: nothing needs doing."
+
+
+def test_verdict_counts_products_and_collections_apart():
+    rows = ownership.build_rows({"reloaded_after_collection": 36323}, {}, {"reloaded_after_collection": 5}, 6)
+    assert ownership.verdict(rows) == "Needs attention: 36,323 products and 6 collections for the node."
+    only_collections = ownership.build_rows({}, {}, {}, 2)
+    assert ownership.verdict(only_collections) == "Needs attention: 2 collections for the node."

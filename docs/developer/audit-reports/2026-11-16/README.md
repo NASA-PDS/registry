@@ -14,7 +14,7 @@ and each one has an owner, the party that can fix it:
 | Owner | What they do |
 |---|---|
 | **Node** | Fix the node's data: load a collection or a product version, correct an inventory, or remove a product. Also re-harvest the collection when its refs are stale or missing, or the sweepers never reached the products |
-| **EN** | Run the sweepers after the node's re-harvest, and fix the registry itself (index mappings). No product is waiting on EN alone in this run |
+| **EN** | The EN team: run the sweepers after the node's re-harvest, and fix the registry itself (index mappings). Not to be confused with the `en` node, a data provider that appears in the tables under its own name. No product is waiting on the EN team alone in this run |
 | **Sweepers team** | Fix a software gap: the sweepers skipped a product that looks right, or do not follow an inventory that lists products without a version |
 | **Needs a closer look** | The audit could not check the collection's inventory, so the cause is unknown |
 

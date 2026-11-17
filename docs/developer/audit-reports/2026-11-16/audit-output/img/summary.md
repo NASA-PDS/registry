@@ -9,7 +9,7 @@ Nodes: img
 
 ## What needs to happen
 
-**Needs attention: 36,845 for the node.**
+**Needs attention: 36,839 products and 6 collections for the node.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|

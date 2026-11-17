@@ -9,7 +9,7 @@ Nodes: sbnpsi
 
 ## What needs to happen
 
-**Needs attention: 69 for the node.**
+**Needs attention: 69 products for the node.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|

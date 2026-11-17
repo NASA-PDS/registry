@@ -320,15 +320,27 @@ def verdict(rows: Iterable[ActionRow]) -> str:
         rows: Rows from ``build_rows``.
 
     Returns:
-        A sentence such as ``Needs attention: 1,200 for the node; 30 for EN.``.
+        A sentence such as ``Needs attention: 1,200 products and 6 collections for the node; 30 products for EN.``.
+        Products are counted from the rows that have products; collections only from rows about collections alone.
     """
-    needs: dict[Owner, int] = {}
+    products: dict[Owner, int] = {}
+    collections: dict[Owner, int] = {}
     for row in rows:
         if row.owner is Owner.NO_ACTION:
             continue
-        amount = row.products if row.products is not None else row.collections or 0
-        needs[row.owner] = needs.get(row.owner, 0) + amount
-    if not needs:
+        if row.products is not None:
+            products[row.owner] = products.get(row.owner, 0) + row.products
+        else:
+            collections[row.owner] = collections.get(row.owner, 0) + (row.collections or 0)
+    parts = []
+    for owner in _OWNER_ORDER:
+        counts = []
+        if products.get(owner):
+            counts.append(f"{products[owner]:,} product{'' if products[owner] == 1 else 's'}")
+        if collections.get(owner):
+            counts.append(f"{collections[owner]:,} collection{'' if collections[owner] == 1 else 's'}")
+        if counts:
+            parts.append(f"{' and '.join(counts)} {_VERDICT_PHRASE[owner]}")
+    if not parts:
         return "Healthy: nothing needs doing."
-    parts = [f"{count:,} {_VERDICT_PHRASE[owner]}" for owner, count in needs.items()]
     return "Needs attention: " + "; ".join(parts) + "."

@@ -9,7 +9,7 @@ Nodes: psa
 
 ## What needs to happen
 
-**Needs attention: 262,042 for the node; 57,525 that need a closer look.**
+**Needs attention: 262,042 products for the node; 57,525 products that need a closer look.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|

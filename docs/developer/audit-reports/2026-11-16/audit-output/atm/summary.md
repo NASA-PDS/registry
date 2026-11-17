@@ -9,7 +9,7 @@ Nodes: atm
 
 ## What needs to happen
 
-**Needs attention: 2,782,642 for the node; 1 for the sweepers team; 2 that need a closer look.**
+**Needs attention: 2,782,642 products for the node; 1 product for the sweepers team; 2 products that need a closer look.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|

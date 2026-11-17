@@ -9,7 +9,7 @@ Nodes: geo
 
 ## What needs to happen
 
-**Needs attention: 1,326 for the node; 49 for the sweepers team.**
+**Needs attention: 1,324 products and 2 collections for the node; 49 products for the sweepers team.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|

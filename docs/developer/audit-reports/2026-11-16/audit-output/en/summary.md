@@ -9,7 +9,7 @@ Nodes: en
 
 ## What needs to happen
 
-**Needs attention: 703 for the node; 2 that need a closer look.**
+**Needs attention: 703 products for the node; 2 products that need a closer look.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|
