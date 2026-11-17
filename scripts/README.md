@@ -862,7 +862,7 @@ Grade every node green, yellow or red from the status reports and the fidelity a
 
 **Scripts:** `generate_report_card.py` (reads local files only) and `collect_node_totals.py` (read-only `_count` queries). The rubric and the node list are in `conf/status/report_card.json`.
 
-Each node gets Loading, File paths and Fidelity scores (the node's) and a Registry Health score (EN's). A score is green with no issues, yellow with issues below 5% of the node's items, and red from 5%. A mapping error on a core or `ops:` field is red; a type conflict on another field is yellow. The full rubric, the inputs and the refresh commands are in `docs/status/fidelity/README.md`.
+Each node gets Loading, File paths and Fidelity scores (the node's) and a Registry Health score (EN's). A score is green with no issues, yellow with issues below 5% of the node's items, and red from 5%. The index mapping counts only for the fields the API relies on (`lid`, `lidvid`, `archive_status`, `superseded_by`, `ancestor_refs`): one missing from a node's mapping or mapped with a different type (`text` against `keyword` excepted) is red, and other mapping differences are ignored. The full rubric, the inputs and the refresh commands are in `docs/status/fidelity/README.md`.
 
 ```bash
 PYTHON="<path-to-python-with-the-registry-client>"

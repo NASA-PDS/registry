@@ -27,7 +27,7 @@
     "overall": "red",
     "registry_health": {
       "as_of": "2026-11-16",
-      "detail": "Products without ancestry for EN or the sweepers team: 1; Mapping errors on core or ops fields: 2, other type conflicts: 1",
+      "detail": "Products without ancestry for EN or the sweepers team: 1; Index mapping problems on API fields: ops:Provenance/ops:superseded_by",
       "issues": null,
       "stale": false,
       "status": "red",
@@ -62,10 +62,10 @@
     "overall": "red",
     "registry_health": {
       "as_of": "2026-11-16",
-      "detail": "Mapping errors on core or ops fields: 0, other type conflicts: 2",
+      "detail": "No registry-side issues",
       "issues": null,
       "stale": false,
-      "status": "yellow",
+      "status": "green",
       "total": null
     }
   },
@@ -97,7 +97,7 @@
     "overall": "yellow",
     "registry_health": {
       "as_of": "2026-11-16",
-      "detail": "Products without ancestry for EN or the sweepers team: 49; Collections without a link to their bundle: 2; Mapping errors on core or ops fields: 0, other type conflicts: 2",
+      "detail": "Products without ancestry for EN or the sweepers team: 49; Collections without a link to their bundle: 2",
       "issues": null,
       "stale": false,
       "status": "yellow",
@@ -132,7 +132,7 @@
     "overall": "red",
     "registry_health": {
       "as_of": "2026-11-16",
-      "detail": "Collections without a link to their bundle: 6; Mapping errors on core or ops fields: 0, other type conflicts: 1",
+      "detail": "Collections without a link to their bundle: 6",
       "issues": null,
       "stale": false,
       "status": "yellow",
@@ -167,10 +167,10 @@
     "overall": "yellow",
     "registry_health": {
       "as_of": "2026-11-16",
-      "detail": "Mapping errors on core or ops fields: 2, other type conflicts: 8",
+      "detail": "No registry-side issues",
       "issues": null,
       "stale": false,
-      "status": "red",
+      "status": "green",
       "total": null
     }
   },
@@ -272,10 +272,10 @@
     "overall": "green",
     "registry_health": {
       "as_of": "2026-11-16",
-      "detail": "Mapping errors on core or ops fields: 1, other type conflicts: 0",
+      "detail": "No registry-side issues",
       "issues": null,
       "stale": false,
-      "status": "red",
+      "status": "green",
       "total": null
     }
   },
@@ -342,7 +342,7 @@
     "overall": "yellow",
     "registry_health": {
       "as_of": "2026-11-16",
-      "detail": "Collections without a link to their bundle: 58; Mapping errors on core or ops fields: 0, other type conflicts: 9",
+      "detail": "Collections without a link to their bundle: 58",
       "issues": null,
       "stale": false,
       "status": "red",

@@ -9,12 +9,14 @@ on four scores. Three belong to the node; the fourth, Registry Health, belongs t
   Fidelity         visible products without ancestry that the node has to fix or that need a closer look, of the
                    node's visible products (node)
   Registry Health  products without ancestry that EN or the sweepers team fix, collections stamped without a link to
-                   their bundle, and index mapping errors (EN)
+                   their bundle, and index mapping problems on the fields the API relies on (EN)
 
 A score is green with no issues, yellow with issues below ``yellow_below_percent`` of the node's items (default 5),
-and red from that percentage up. A mapping error on a core or ``ops:`` field is red outright; a type conflict on any
-other field is yellow. A node is as good as the worst of its three scores; Registry Health is shown beside it, not
-folded in. A green score whose data is older than ``stale_after_days`` is shown as stale, since it cannot be trusted.
+and red from that percentage up. Index mappings count only for the fields the API relies on (``api_mapping_fields``
+in the configuration): such a field that is missing from a node's mapping, or mapped with a type other than the
+other nodes' (``text`` and ``keyword`` count as the same), is red. Every other mapping difference is ignored.
+A node is as good as the worst of its three scores; Registry Health is shown beside it, not folded in. A green
+score whose data is older than ``stale_after_days`` is shown as stale, since it cannot be trusted.
 
 Inputs (all read-only, local files):
 
@@ -62,8 +64,6 @@ from enum import Enum
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-
-from unprocessed_audit.mapping_audit import CORE_FIELDS  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -187,6 +187,7 @@ class Config:
     base_url: str
     latest_report: str
     nodes: list[dict]
+    api_mapping_fields: frozenset[str] = frozenset()
 
 
 def load_config(path: Path) -> Config:
@@ -203,6 +204,7 @@ def load_config(path: Path) -> Config:
             str(raw["base_url"]).rstrip("/"),
             str(raw["latest_report"]).strip("/"),
             list(raw["nodes"]),
+            frozenset(raw.get("api_mapping_fields", [])),
         )
     except (OSError, ValueError, KeyError) as exc:
         raise ReportCardError(f"Cannot read the report card configuration {path}: {exc}") from exc
@@ -279,23 +281,33 @@ def read_totals(fidelity_dir: Path) -> tuple[dict[str, int], date | None]:
         raise ReportCardError(f"Cannot read {path}: {exc}") from exc
 
 
-def read_mapping(fidelity_dir: Path) -> tuple[dict[str, tuple[int, int]], date | None]:
-    """Return ``{node: (core or ops errors, other errors)}`` for the registry indices and the date of the run."""
+_TEXT_TYPES = frozenset({"text", "keyword"})
+
+
+def read_mapping(fidelity_dir: Path, api_fields: frozenset[str]) -> tuple[dict[str, list[str]], date | None]:
+    """Return the mapping problems on the fields the API relies on, per node, and the date of the run.
+
+    A field is a problem when it is missing from the node's index, or mapped with a type other than the other
+    nodes' one. ``text`` against ``keyword`` is not a problem. Fields the API does not rely on are ignored.
+
+    Returns:
+        ``({node: [field, ...]}, run date)`` for the registry indices.
+    """
     folder = Path(fidelity_dir) / "index-mappings"
-    counts: dict[str, tuple[int, int]] = {}
+    problems: dict[str, list[str]] = {}
     for row in _rows(folder / "mapping_discrepancies.csv"):
-        if row["group"] != "registry" or row["severity"] != "error":
+        if row["group"] != "registry" or row["field"] not in api_fields:
             continue
-        critical = row["kind"] == "missing_field" or row["field"].startswith("ops:") or row["field"] in CORE_FIELDS
+        if row["kind"] == "type_mismatch" and {row["expected"], row["actual"]} <= _TEXT_TYPES:
+            continue
         node = row["node"].removeprefix("temp-")  # the ATM products index is temp-atm-registry behind atm-registry
-        core, other = counts.get(node, (0, 0))
-        counts[node] = (core + 1, other) if critical else (core, other + 1)
+        problems.setdefault(node, []).append(row["field"])
     run_date = None
     summary = folder / "mapping_summary.md"
     if summary.exists():
         match = re.search(r"^Run time: (\S+)", summary.read_text(encoding="utf-8"), re.MULTILINE)
         run_date = _parse_date(match.group(1)) if match else None
-    return counts, run_date
+    return problems, run_date
 
 
 def has_mapping(fidelity_dir: Path) -> bool:
@@ -342,19 +354,19 @@ class Inputs:
     totals: dict[str, int]
     totals_date: date | None
     metrics: dict[str, dict | None]
-    mapping: dict[str, tuple[int, int]]
+    mapping: dict[str, list[str]]
     mapping_date: date | None
     mapping_present: bool
 
 
-def load_inputs(status_dir: Path, fidelity_dir: Path, nodes: list[str]) -> Inputs:
+def load_inputs(status_dir: Path, fidelity_dir: Path, nodes: list[str], api_fields: frozenset[str]) -> Inputs:
     """Read every input of the card.
 
     Raises:
         ReportCardError: If an input exists but cannot be read.
     """
     totals, totals_date = read_totals(fidelity_dir)
-    mapping, mapping_date = read_mapping(fidelity_dir)
+    mapping, mapping_date = read_mapping(fidelity_dir, api_fields)
     return Inputs(
         read_loading(status_dir),
         read_status_date(status_dir),
@@ -463,9 +475,9 @@ def _score_health(
     ]
     as_of = run
     if data.mapping_present:
-        core, other = data.mapping.get(node, (0, 0))
-        mapping_status = Status.RED if core else (Status.YELLOW if other else Status.GREEN)
-        parts.append((mapping_status, f"Mapping errors on core or ops fields: {core:,}, other type conflicts: {other:,}"))
+        fields = data.mapping.get(node, [])
+        listed = ", ".join(sorted(set(fields)))
+        parts.append((Status.RED if fields else Status.GREEN, f"Index mapping problems on API fields: {listed}"))
         as_of = min([d for d in (run, data.mapping_date) if d], default=run)
     links = [links[0], _link(config, "Index mappings", "status/fidelity/index-mappings/mapping_summary.md")]
     status = worst([s for s, _ in parts])
@@ -554,7 +566,7 @@ def render_html(cards: list[NodeCard], config: Config, today: date) -> str:
 <li><strong>Loading</strong>: current bundles and collections that are not yet in the registry, of all current ones.</li>
 <li><strong>File paths</strong>: products, collections and bundles with an invalid <code>file_ref</code>, of the node's visible products.</li>
 <li><strong>Fidelity</strong>: visible products without ancestry (missing from their collection's and bundle's <code>/members</code>) that the node must fix, or that need a closer look, of the node's visible products. Products still within the grace period are not counted.</li>
-<li><strong>Registry Health</strong> (EN and the sweepers team, not the node): products without ancestry that EN or the sweepers team fix, collections stamped without a link to their bundle, and index mapping errors. A mapping error on a core or <code>ops:</code> field is red; a type conflict on another field is yellow.</li>
+<li><strong>Registry Health</strong> (EN and the sweepers team, not the node): products without ancestry that EN or the sweepers team fix, collections stamped without a link to their bundle, and index mapping problems. Only the fields the API relies on count (<code>lid</code>, <code>lidvid</code>, the archive status, <code>superseded_by</code> and <code>ancestor_refs</code>): one that is missing from the node's mapping, or mapped with a different type from the other nodes (text and keyword count as the same), makes the score red. Other mapping differences are ignored.</li>
 <li>Green is no issues. Yellow is some issues, but below {limit}% of the node's items. Red is {limit}% or more of the items, which is enough to harm users of the registry. A node's status is the worst of Loading, File paths and Fidelity.</li>
 </ul></div>
 </main></body></html>
@@ -610,7 +622,7 @@ def render_json(cards: list[NodeCard]) -> str:
 
 def build_cards(status_dir: Path, fidelity_dir: Path, config: Config, today: date) -> list[NodeCard]:
     """Read the inputs and grade every configured node."""
-    data = load_inputs(status_dir, fidelity_dir, [entry["node"] for entry in config.nodes])
+    data = load_inputs(status_dir, fidelity_dir, [entry["node"] for entry in config.nodes], config.api_mapping_fields)
     return [score_node(entry, data, config, today) for entry in config.nodes]
 
 

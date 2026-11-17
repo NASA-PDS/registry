@@ -22,6 +22,7 @@ CONFIG = rc.Config(
         {"node": "sbnpsi", "label": "SBN PSI", "status_node": "PDS_SBN", "shared_with": ["sbnpsi", "sbnumd"]},
         {"node": "sbnumd", "label": "SBN UMD", "status_node": "PDS_SBN", "shared_with": ["sbnpsi", "sbnumd"]},
     ],
+    frozenset({"lid", "ops:Provenance/ops:superseded_by"}),
 )
 
 
@@ -68,7 +69,7 @@ def build_tree(tmp_path: Path, *, atm_owners: dict | None = None, discrepancies:
         (folder / "metrics.json").write_text(json.dumps(metrics(owners=owners)), encoding="utf-8")
     write_csv(
         fidelity / "index-mappings" / "mapping_discrepancies.csv",
-        ["group", "index", "node", "field", "kind", "severity"],
+        ["group", "index", "node", "field", "kind", "severity", "expected", "actual"],
         discrepancies or [],
     )
     (fidelity / "index-mappings" / "mapping_summary.md").write_text("# Index mapping audit\n\nRun time: 2026-11-16\n", encoding="utf-8")
@@ -130,17 +131,30 @@ def test_registry_health_is_separate_from_the_node_status(tmp_path: Path):
     assert atm.overall is rc.Status.RED  # loading is red; health is not part of it
 
 
-def test_mapping_errors_on_core_or_ops_fields_are_red_and_other_conflicts_yellow(tmp_path: Path):
-    header = ["registry", "temp-atm-registry", "temp-atm", "ops:Provenance/ops:superseded_by", "missing_field", "error"]
-    status, fidelity = build_tree(tmp_path, discrepancies=[header])
-    assert rc.build_cards(status, fidelity, CONFIG, TODAY)[0].health.status is rc.Status.RED
-    other = ["registry", "sbnumd-registry", "sbnumd", "sb:Exposure/sb:exposure_duration", "type_mismatch", "error"]
-    warning = ["registry", "sbnpsi-registry", "sbnpsi", "pds:Person/pds:given_name", "missing_field", "warning"]
-    status, fidelity = build_tree(tmp_path / "b", discrepancies=[other, warning])
+def test_only_missing_or_mismatched_api_fields_make_the_registry_health_red(tmp_path: Path):
+    missing = ["registry", "temp-atm-registry", "temp-atm", "ops:Provenance/ops:superseded_by", "missing_field", "error", "keyword", "(absent)"]
+    status, fidelity = build_tree(tmp_path, discrepancies=[missing])
+    atm = rc.build_cards(status, fidelity, CONFIG, TODAY)[0]
+    assert atm.health.status is rc.Status.RED and "superseded_by" in atm.health.detail
+
+    mismatch = ["registry", "x-registry", "sbnumd", "lid", "type_mismatch", "error", "keyword", "long"]
+    status, fidelity = build_tree(tmp_path / "b", discrepancies=[mismatch])
     cards = {c.node: c for c in rc.build_cards(status, fidelity, CONFIG, TODAY)}
-    assert cards["sbnumd"].health.status is rc.Status.YELLOW
-    assert cards["sbnpsi"].health.status is rc.Status.GREEN  # warnings do not count
+    assert cards["sbnumd"].health.status is rc.Status.RED
     assert cards["atm"].health.status is rc.Status.GREEN
+
+
+def test_other_mapping_differences_and_text_against_keyword_are_green(tmp_path: Path):
+    rows = [
+        ["registry", "x", "sbnumd", "sb:Exposure/sb:exposure_duration", "type_mismatch", "error", "double", "keyword"],
+        ["registry", "x", "sbnumd", "pds:Person/pds:given_name", "missing_field", "warning", "text", "(absent)"],
+        ["registry", "x", "sbnpsi", "ops:Provenance/ops:registry_sweepers_provenance_version", "type_mismatch", "error", "integer", "keyword"],
+        ["registry", "x", "atm", "lid", "type_mismatch", "error", "keyword", "text"],
+        ["registry", "x", "atm", "ops:Provenance/ops:superseded_by", "type_mismatch", "error", "text", "keyword"],
+    ]
+    status, fidelity = build_tree(tmp_path, discrepancies=rows)
+    for card in rc.build_cards(status, fidelity, CONFIG, TODAY):
+        assert card.health.status is rc.Status.GREEN, card.node
 
 
 def test_collections_without_a_bundle_link_are_graded_against_the_node_collections(tmp_path: Path):

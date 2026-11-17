@@ -10,10 +10,10 @@ fidelity audit output the card reads. The dated audit reports stay under `docs/d
 | Loading | Node | Current bundles and collections not yet in the registry | All current bundles and collections |
 | File paths | Node | Products, collections and bundles with an invalid `file_ref` | The node's API-visible products |
 | Fidelity | Node | API-visible products without ancestry that the node must fix, or that need a closer look | The node's API-visible products |
-| Registry Health | EN | Products without ancestry that EN or the sweepers team fix; collections stamped without a link to their bundle; index mapping errors | Products, collections; mapping is graded by kind |
+| Registry Health | EN | Products without ancestry that EN or the sweepers team fix; collections stamped without a link to their bundle; index mapping problems on the fields the API relies on | Products and collections; the mapping check is pass or fail |
 
 - **Green:** no issues. **Yellow:** issues below 5% of the items. **Red:** 5% or more.
-- Registry Health grades a mapping error on a core or `ops:` field red, and a type conflict on any other field yellow. Its worst sub-score is its grade.
+- Registry Health looks at the index mapping only for the fields the API relies on: `lid`, `lidvid`, `archive_status`, `ops:Provenance/ops:superseded_by` and `ops:Provenance/ops:ancestor_refs` (`api_mapping_fields` in the configuration). One of them missing from a node's mapping, or mapped with a type other than the other nodes', makes the mapping check red. `text` against `keyword` counts as the same type. Every other mapping difference, including fields a node has not loaded any data for, is ignored (the full list stays in the index mapping audit). Registry Health's grade is its worst sub-score.
 - A node's status is the worst of Loading, File paths and Fidelity. Registry Health is shown beside it, not folded in.
 - Products still within the grace period ("waiting") are not issues.
 - Data older than 14 days is shown as stale; a stale green is no longer green.
