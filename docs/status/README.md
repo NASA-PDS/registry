@@ -61,6 +61,7 @@ but is not yet present in the new OpenSearch-based registry.
 | **Missing** | In PDS Keyword Search (released by EN) but not yet in the new registry |
 | **Staged** | In the new registry but `archive_status = staged` — loaded but not yet transitioned to `archived` |
 | **Loaded** | All products currently in the new registry, regardless of archive status |
+| **Invalid file_ref** | In the new registry, but a label or data `file_ref` does not start with `https://` |
 
 > **Note:** Loaded counts will exceed missing-products baseline counts because the new registry also
 > contains products harvested directly from non-EN sources (e.g., PSA/ESA ~900 bundles, ~4,000
@@ -101,6 +102,35 @@ Queried with pagination so counts are not capped at 10,000.
 - **[`loaded_collections_in_registry.csv`](loaded_collections_in_registry.csv)** — All Product_Collection records in new OpenSearch
 
 **Columns:** `node, lidvid, product_class, harvest_date`
+
+### Invalid file_ref
+
+Products in the new registry whose label (`ops:Label_File_Info/ops:file_ref`) or data file
+(`ops:Data_File_Info/ops:file_ref`) reference does not start with `https://`, regardless of archive status.
+
+Only `https://` references are valid, because the archive is served through CloudFront. Every other value is
+reported: `s3://` URLs, local paths, relative paths and any other scheme. Empty values and the placeholder `null`
+are ignored. Queried with pagination so counts are not capped at 10,000.
+
+- **[`bad_file_ref_bundles_in_registry.csv`](bad_file_ref_bundles_in_registry.csv)** — One row per invalid value on a Product_Bundle
+- **[`bad_file_ref_collections_in_registry.csv`](bad_file_ref_collections_in_registry.csv)** — One row per invalid value on a Product_Collection
+- **[`bad_file_ref_products_in_registry.csv`](bad_file_ref_products_in_registry.csv)** — All other product classes, grouped (see below)
+
+**Columns (bundles and collections):** `node, lidvid, product_class, archive_status, file_ref_field, file_ref`
+
+`file_ref_field` is `Label_File_Info` or `Data_File_Info`.
+
+**Columns (other products):** `node, bundle_lid, collection_lid, archive_status, products, values, value_kinds, file_ref_fields, example_lidvid, example_file_ref`
+
+There are too many other products to list one by one, so each row summarizes one node, bundle, collection and
+archive status. `products` is the number of distinct products affected, `values` the number of invalid values,
+`value_kinds` the kinds of value found (`s3://`, `http://`, `local path`, `relative path`, ...), and
+`file_ref_fields` which fields are affected. `example_lidvid` and `example_file_ref` give one affected product.
+Rows are ordered by `products`, largest first.
+
+The directory part of an invalid value is a path on the machine the product was harvested from, so every
+`file_ref` in these reports is masked to its scheme and file name (for example `.../label.xml` or
+`s3://.../label.xml`).
 
 ---
 
@@ -242,6 +272,7 @@ See the [scripts/README.md](../../scripts/README.md) for more details on running
 
 - **Missing products** are queried from the `/en-legacy-registry/_search` endpoint
 - **Staged products** are queried from the `/*-registry/_search` endpoint (all registry indices)
+- **Loaded products** and **invalid `file_ref` products** are queried from the `/*-registry/_search` endpoint and paginated
 
 Both queries return up to 2000 results per product type.
 
@@ -251,6 +282,8 @@ Both queries return up to 2000 results per product type.
 - **LIDVID** - Logical Identifier with Version ID in the format `urn:nasa:pds:bundle_name::version`
 - **PRODUCT_CLASS** - Type of product (Product_Bundle or Product_Collection)
 - **HARVEST_DATE_TIME** - Timestamp when the product was harvested into the registry (ISO 8601 format, UTC)
+- **ARCHIVE_STATUS** - The product's `ops:Tracking_Meta/ops:archive_status` (e.g., `staged`, `archived`)
+- **FILE_REF** - A label or data file reference, masked to its scheme and file name; valid only if it started with `https://`
 
 ## Questions or Issues
 

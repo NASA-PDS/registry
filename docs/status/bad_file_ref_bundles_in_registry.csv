@@ -1,0 +1,2 @@
+node,lidvid,product_class,archive_status,file_ref_field,file_ref
+PDS_ATM,urn:nasa:pds-ama:sample_bundle::1.0,Product_Bundle,archived,Label_File_Info,.../sample_bundle.xml
