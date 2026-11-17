@@ -9,14 +9,14 @@ Nodes: sbnumd
 
 ## What needs to happen
 
-**Needs attention: 25 products and 58 collections for the node.**
+**Needs attention: 25 products for the node; 58 collections for EN.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|
 | Node | **Not processed**: Linked to their collection, but loaded after the sweepers processed it, so the sweepers never went back | 20 | 9 | Re-harvest the collection; EN then runs the sweepers |
 | Node | **Not processed**: Linked to their collection, but processed by an older sweepers version while the collection is on the current one, so the sweepers do not go back | 4 | 2 | Re-harvest the collection; EN then runs the sweepers |
 | Node | **Orphaned**: The collection's inventory does not list these products under any version | 1 | 1 | Add them to the inventory, or remove the products from the registry |
-| Node | **Not processed**: The collection is marked processed but has no link to its bundle, so the bundle does not list it as a member | - | 58 | Re-harvest the collection; EN then runs the sweepers (the sweepers bug that caused this is fixed in registry-sweepers PR #286) |
+| EN | **Not processed**: The collection is marked processed but has no link to its bundle, so the bundle does not list it as a member (a sweepers bug, fixed in registry-sweepers PR #286) | - | 58 | EN re-harvests the collection and runs the sweepers that include the fix |
 
 Kinds of problem:
 
@@ -26,6 +26,7 @@ Kinds of problem:
 Who fixes what:
 
 - **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory), or the collection has to be re-harvested by the node so that the registry's refs are rewritten from its inventory; EN then runs the sweepers.
+- **EN**: EN fixes the registry itself: runs the sweepers, repairs collections the sweepers bug left without a bundle link, and fixes index mappings.
 
 ## Anomalies by rule
 

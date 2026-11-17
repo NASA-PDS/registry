@@ -107,7 +107,7 @@ def test_rows_are_ordered_by_owner_then_size_and_include_the_empty_refs_row():
         (Owner.NODE, Rule.INVENTORY_VERSION_MISMATCH),
         (Owner.NODE, Rule.STALE_STAMP),
         (Owner.NODE, Rule.REFS_MISSING),
-        (Owner.NODE, None),
+        (Owner.EN, None),
         (Owner.SWEEPERS_TEAM, Rule.SWEEPER_MISS),
         (Owner.NO_ACTION, Rule.REFS_MISSING_PENDING),
     ]
@@ -139,6 +139,6 @@ def test_verdict_names_the_owners_that_have_work_and_ignores_waiting():
 
 def test_verdict_counts_products_and_collections_apart():
     rows = ownership.build_rows({"reloaded_after_collection": 36323}, {}, {"reloaded_after_collection": 5}, 6)
-    assert ownership.verdict(rows) == "Needs attention: 36,323 products and 6 collections for the node."
+    assert ownership.verdict(rows) == "Needs attention: 36,323 products for the node; 6 collections for EN."
     only_collections = ownership.build_rows({}, {}, {}, 2)
-    assert ownership.verdict(only_collections) == "Needs attention: 2 collections for the node."
+    assert ownership.verdict(only_collections) == "Needs attention: 2 collections for EN."

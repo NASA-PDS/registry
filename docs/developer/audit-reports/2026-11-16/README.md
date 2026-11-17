@@ -14,13 +14,13 @@ and each one has an owner, the party that can fix it:
 | Owner | What they do |
 |---|---|
 | **Node** | Fix the node's data: load a collection or a product version, correct an inventory, or remove a product. Also re-harvest the collection when its refs are stale or missing, or the sweepers never reached the products |
-| **EN** | The EN team: run the sweepers after the node's re-harvest, and fix the registry itself (index mappings). Not to be confused with the `en` node, a data provider that appears in the tables under its own name. No product is waiting on the EN team alone in this run |
+| **EN** | The EN team: repair the collections the sweepers bug left without a bundle link, run the sweepers after a node's re-harvest, and fix the registry itself (index mappings). Not to be confused with the `en` node, a data provider that appears in the tables under its own name. No product is waiting on the EN team alone in this run |
 | **Sweepers team** | Fix a software gap: the sweepers skipped a product that looks right, or do not follow an inventory that lists products without a version |
 | **Needs a closer look** | The audit could not check the collection's inventory, so the cause is unknown |
 
 ## Roll-up by node
 
-Products that need attention, by owner. "Bundles missing members" counts collections that are marked processed but have no link to their bundle, so the bundle does not list them (the node re-harvests the collection, then EN runs the sweepers).
+Products that need attention, by owner. "Bundles missing members" counts collections that are marked processed but have no link to their bundle, so the bundle does not list them (a sweepers bug, fixed in registry-sweepers PR #286; EN re-harvests the collection and runs the fixed sweepers).
 
 | Node | Products examined | Needs attention: Node | Needs attention: EN | Needs attention: Sweepers team | Needs attention: Needs a closer look | Collections whose bundle shows no members | Waiting (no action) |
 |---|--:|--:|--:|--:|--:|--:|--:|

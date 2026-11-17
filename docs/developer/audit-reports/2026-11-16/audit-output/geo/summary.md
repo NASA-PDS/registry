@@ -9,7 +9,7 @@ Nodes: geo
 
 ## What needs to happen
 
-**Needs attention: 1,324 products and 2 collections for the node; 49 products for the sweepers team.**
+**Needs attention: 1,324 products for the node; 2 collections for EN; 49 products for the sweepers team.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|
@@ -17,7 +17,7 @@ Nodes: geo
 | Node | **Orphaned**: The collection's inventory does not list these products under any version | 168 | 1 | Add them to the inventory, or remove the products from the registry |
 | Node | **Orphaned**: No collection with the identifier these products belong to is in the registry | 2 | 2 | Load the collection, or correct the product identifiers |
 | Node | **Not processed**: Linked to their collection, but processed by an older sweepers version while the collection is on the current one, so the sweepers do not go back | 2 | 1 | Re-harvest the collection; EN then runs the sweepers |
-| Node | **Not processed**: The collection is marked processed but has no link to its bundle, so the bundle does not list it as a member | - | 2 | Re-harvest the collection; EN then runs the sweepers (the sweepers bug that caused this is fixed in registry-sweepers PR #286) |
+| EN | **Not processed**: The collection is marked processed but has no link to its bundle, so the bundle does not list it as a member (a sweepers bug, fixed in registry-sweepers PR #286) | - | 2 | EN re-harvests the collection and runs the sweepers that include the fix |
 | Sweepers team | **Orphaned**: The collection's inventory lists these products by LID without a version, which the sweepers do not follow | 49 | 11 | Re-harvesting does not help. The node lists LIDVIDs in the inventory, or the sweepers support LID references |
 
 Kinds of problem:
@@ -28,6 +28,7 @@ Kinds of problem:
 Who fixes what:
 
 - **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory), or the collection has to be re-harvested by the node so that the registry's refs are rewritten from its inventory; EN then runs the sweepers.
+- **EN**: EN fixes the registry itself: runs the sweepers, repairs collections the sweepers bug left without a bundle link, and fixes index mappings.
 - **Sweepers team**: everything looks right but the sweepers cannot or do not follow it; a software gap, possibly worked around by the node.
 
 ## Anomalies by rule

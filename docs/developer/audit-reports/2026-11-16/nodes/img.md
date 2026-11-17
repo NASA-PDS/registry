@@ -10,12 +10,12 @@ Mostly healthy: 36,839 of 26,339,723 products the public API can show (0.14 perc
 |---|---|---|---|---|
 | Node | The inventory of one collection lists a newer version of 516 products than the registry holds (registry has version 1.0, inventory lists 2.0 to 9.0) | 516 | 1 | Load the listed versions, or correct the inventory if 1.0 is right |
 | Node | Sweepers processed these collections while the node was still loading their products; products loaded afterwards were never processed (sweepers do not revisit a processed collection) | 36,323 | 5 | Re-harvest the collections, then run the sweepers |
-| Node | Collections stamped as processed with an empty ancestor list although their bundle exists, so the bundle's `/members` is empty (sweeper bug fixed in registry-sweepers PR #286) | 0 (3 of the 6 collections are also in the row above) | 6 | Re-harvest the collections, then run the sweepers that include PR #286 |
+| EN | Collections stamped as processed with an empty ancestor list although their bundle exists, so the bundle's `/members` is empty (sweeper bug fixed in registry-sweepers PR #286) | 0 (3 of the 6 collections are also in the row above) | 6 | EN re-harvests the collections and runs the sweepers that include PR #286 |
 | Sweepers team | Products the sweepers skipped with no explanation in the data | 0 | 0 | None |
 | Needs a closer look | Same collection as the node row: the inventory lists an older version than the registry holds, for products that already have ancestry (not counted in the 36,839) | 35,109 | 1 | Node confirms which versions the collection should contain |
 | No action | Products still within the grace period, and service/context products that never have a collection | 0 | 0 | None |
 
-Collections the node re-harvests: `urn:nasa:pds:artemis2_crew_camera:data_processed::1.0` (9,961 products), `:data_raw::1.0` (9,141), `:data_source::1.0` (8,671), `:browse::1.0` (8,530), `urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data::1.0` (20). Empty-refs collections with a bundle: Artemis 2 `browse`, `data_raw`, `data_source` and `urn:nasa:pds:mars2020_{hazcam,mastcamz,navcam}_ops_stereo:data::16.0`. Collection for the node: `urn:nasa:pds:mars2020_navcam_ops_mosaic:data::16.0`.
+Collections the node re-harvests: `urn:nasa:pds:artemis2_crew_camera:data_processed::1.0` (9,961 products), `:data_raw::1.0` (9,141), `:data_source::1.0` (8,671), `:browse::1.0` (8,530), `urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data::1.0` (20). Empty-refs collections with a bundle, which EN repairs: Artemis 2 `browse`, `data_raw`, `data_source` and `urn:nasa:pds:mars2020_{hazcam,mastcamz,navcam}_ops_stereo:data::16.0`. Collection for the node: `urn:nasa:pds:mars2020_navcam_ops_mosaic:data::16.0`.
 
 ## Details
 

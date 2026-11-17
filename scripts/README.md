@@ -667,8 +667,8 @@ Only non-superseded products with archive status `archived` or `certified` are e
 
 | Who | Problems |
 |---|---|
-| Node | A collection is not loaded, the inventory lists a different version, or the inventory does not list the product; stale or missing refs, products loaded after their collection was processed, an older stamp, or a collection stamped without a link to its bundle (the node re-harvests the collection, then EN runs the sweepers) |
-| EN | The sweepers have not processed a loaded collection (EN runs them); fixes to the registry itself |
+| Node | A collection is not loaded, the inventory lists a different version, or the inventory does not list the product; stale or missing refs, products loaded after their collection was processed, or an older stamp (the node re-harvests the collection, then EN runs the sweepers) |
+| EN | A collection stamped without a link to its bundle (a sweepers bug; EN re-harvests it and runs the fixed sweepers); a loaded collection the sweepers have not processed; fixes to the registry itself |
 | Sweepers team | `sweeper_miss`, or an inventory that lists products by LID without a version |
 | Needs a closer look | `refs_missing` products that could not be checked against the collection inventory |
 | No action | Products loaded recently |

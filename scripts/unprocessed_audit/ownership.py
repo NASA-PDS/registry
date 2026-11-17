@@ -60,7 +60,8 @@ OWNER_MEANING: dict[Owner, str] = {
     Owner.NODE: "the node's data does not line up (a collection or product is missing, at the wrong version, or "
     "not in the collection's inventory), or the collection has to be re-harvested by the node so that the "
     "registry's refs are rewritten from its inventory; EN then runs the sweepers",
-    Owner.EN: "EN runs the sweepers or fixes the registry itself",
+    Owner.EN: "EN fixes the registry itself: runs the sweepers, repairs collections the sweepers bug left without "
+    "a bundle link, and fixes index mappings",
     Owner.SWEEPERS_TEAM: "everything looks right but the sweepers cannot or do not follow it; a software gap, "
     "possibly worked around by the node",
     Owner.NEEDS_CHECK: "the cause cannot be told apart because the collection inventory could not be used",
@@ -188,11 +189,11 @@ REFS_MISSING_UNVERIFIED = Problem(
 )
 
 EMPTY_REFS_PROBLEM = Problem(
-    Owner.NODE,
+    Owner.EN,
     Kind.NOT_PROCESSED,
-    "The collection is marked processed but has no link to its bundle, so the bundle does not list it as a member",
-    "Re-harvest the collection; EN then runs the sweepers (the sweepers bug that caused this is fixed in "
-    "registry-sweepers PR #286)",
+    "The collection is marked processed but has no link to its bundle, so the bundle does not list it as a member "
+    "(a sweepers bug, fixed in registry-sweepers PR #286)",
+    "EN re-harvests the collection and runs the sweepers that include the fix",
 )
 
 

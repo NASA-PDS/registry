@@ -78,8 +78,8 @@ why the owner follows from the rule:
 
 | Owner | Rules |
 |---|---|
-| Node | `collection_not_loaded_overdue`, `inventory_version_mismatch`, `not_in_collection_inventory`; and, by re-harvesting the collection (EN then runs the sweepers), `refs_missing` where the inventory lists the exact product, `reloaded_after_collection`, `stale_stamp`, a collection stamped with empty refs that has a bundle |
-| EN (runs the sweepers) | `collection_overdue` |
+| Node | `collection_not_loaded_overdue`, `inventory_version_mismatch`, `not_in_collection_inventory`; and, by re-harvesting the collection (EN then runs the sweepers), `refs_missing` where the inventory lists the exact product, `reloaded_after_collection`, `stale_stamp` |
+| EN (runs the sweepers) | `collection_overdue`, a collection stamped with empty refs that has a bundle (sweepers bug, fixed in PR #286) |
 | Sweepers team | `sweeper_miss`, `bare_lid_in_inventory` |
 | Needs a closer look | `refs_missing` that was reached without the collection inventory |
 | No action | `*_pending`, `no_parent_by_design` |

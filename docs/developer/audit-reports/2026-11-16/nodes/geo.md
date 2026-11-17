@@ -13,7 +13,7 @@ Terms: the inventory is the list of products in a collection, published by the n
 | Node | The inventory lists older product versions (1.0) than the registry shows as current (1.1, 2.0, 4.0). The older versions are already loaded and carry ancestry, but the registry hides them behind the newer ones. The provider's current labels are the older versions | 1,152 | 3 | Confirm which version is intended. If the older ones are: EN removes the newer versions. If the newer ones: fix the labels and the inventory, then re-harvest |
 | Node | 168 products are registered under a collection but are in none of its inventory entries, and their labels now return 404 at the provider | 168 | 1 | Say whether they are retired. If yes, EN removes them; if not, add them to the inventory and re-harvest |
 | Node | 2 products belong to a collection that is not loaded in `geo-registry` | 2 | 2 | Load the collection, or fix the product ids |
-| Node | 2 collections are marked as swept but have no ancestors, and their bundle does not list them as members | 0 (4 products already counted in row 1) | 2 | Re-harvest both, then run the sweepers with the registry-sweepers PR #286 fix |
+| EN | 2 collections are marked as swept but have no ancestors, and their bundle does not list them as members | 0 (4 products already counted in row 1) | 2 | EN re-harvests both and runs the sweepers with the registry-sweepers PR #286 fix |
 | Node | 2 products carry an old ancestry stamp (version 3) | 2 | 1 | Re-harvest the collection and EN runs the sweepers (or EN runs them in overwrite mode), but expect no change until row 1 is settled (same stale versions) |
 | Sweepers team | MESSENGER document collections: the inventories list the products by id without a version; the refs store them the same way and the sweepers read only versioned ids (registry-sweepers#299) | 49 | 11 | Decide between two fixes (see Details) |
 | Needs a closer look | None | 0 | 0 | - |
@@ -21,7 +21,7 @@ Terms: the inventory is the list of products in a collection, published by the n
 
 Collections, row 1: `mars2020_mission:calibration_camera::1.1` (1,127), `mars2020_mission:miscellaneous::1.1` (21), `mars2020_mission:document_camera::16.0` (4).
 Row 2: `mars2020_mission:calibration_camera::1.1`. Row 3: `urn:nasa:pds:messenger:document` (1 product), `urn:nasa:pds:system_bundle:xml_schema` (1 product).
-Node (re-harvest, then EN runs the sweepers): `mars2020_mission:document_camera::16.0`, `mars2020_rimfax:document::16.0`; stale stamp in `mars2020_mission:miscellaneous::1.1`.
+EN re-harvests: `mars2020_mission:document_camera::16.0`, `mars2020_rimfax:document::16.0`. Node (re-harvest, then EN runs the sweepers): stale stamp in `mars2020_mission:miscellaneous::1.1`.
 Sweepers team: the 11 `urn:nasa:pds:mess_*:document::1.0` collections (grs, mla, ns, rs and xrs bundles in their raw, calibrated and derived variants); the largest are `mess_grs_derived` (8) and `mess_rs_derived` (6).
 
 ## Details
@@ -38,7 +38,7 @@ Sweepers team: the 11 `urn:nasa:pds:mess_*:document::1.0` collections (grs, mla,
 
 **Row 3 (collection missing).** `urn:nasa:pds:messenger:document::1.0` exists only in `ppi-registry` (archived), and its `/members` does not list the geo product. `urn:nasa:pds:system_bundle:xml_schema` is in no registry index. Fixed when: the audit shows no `collection_not_loaded_overdue`.
 
-**Node re-harvest, then EN sweepers.** `mars2020_mission:document_camera::16.0` and `mars2020_rimfax:document::16.0` are stamped with current version and empty ancestors, and each has a bundle. The bundle `/members` is not empty: `mars2020_mission::4.0` returns 3 collections and `mars2020_rimfax::1.0` returns 4; the stamped collection is the one missing from each. Fixed when: the bundle's `/members` includes it and `empty_refs_with_bundle` is empty in `metrics.json`. The 2 old-stamp products (`mipl_browse.vm::2.0`, `msam_velocity_macros.vmac::8.0`) have provider labels at 1.0 too.
+**EN re-harvest (empty-refs collections), and the node for the old-stamp products.** `mars2020_mission:document_camera::16.0` and `mars2020_rimfax:document::16.0` are stamped with current version and empty ancestors, and each has a bundle. The bundle `/members` is not empty: `mars2020_mission::4.0` returns 3 collections and `mars2020_rimfax::1.0` returns 4; the stamped collection is the one missing from each. Fixed when: the bundle's `/members` includes it and `empty_refs_with_bundle` is empty in `metrics.json`. The 2 old-stamp products (`mipl_browse.vm::2.0`, `msam_velocity_macros.vmac::8.0`) have provider labels at 1.0 too.
 
 **Sweepers team (49 products, 11 collections).** All 49 are in their collection's current inventory, but as an id without a version (0 of the entries carry a version). The refs documents of all 11 collections have `product_lid` and no `product_lidvid`. The sweepers' source (`develop`) reads only `product_lidvid`, so these are never selected, and a re-harvest alone would write the same refs (not tested). Fix options: (a) the node lists exact versioned ids in the inventories, then the node re-harvests and EN runs the sweepers; or (b) the sweepers team resolves unversioned refs to the latest version. Fixed when: the 49 leave the audit.
 
