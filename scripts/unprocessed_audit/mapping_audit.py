@@ -416,6 +416,7 @@ def render_summary(
     discrepancies: Sequence[Discrepancy],
     presence_threshold: float,
     stale: Sequence[StaleIndex] = (),
+    run_time: str | None = None,
 ) -> str:
     """Render the Markdown report.
 
@@ -424,12 +425,15 @@ def render_summary(
         discrepancies: Result of ``analyze``.
         presence_threshold: Threshold the analysis used.
         stale: Indices left out of the comparison because they are not named after a tenant node.
+        run_time: ISO date or timestamp of the run, shown at the top of the report when given.
 
     Returns:
         Markdown text ending in a newline.
     """
     errors = [d for d in discrepancies if d.severity is Severity.ERROR]
     lines = ["# Index mapping audit", ""]
+    if run_time:
+        lines += [f"Run time: {run_time}", ""]
     lines.append(f"- Indices read: **{sum(1 for m in mappings if m.present)}**")
     lines.append(f"- Discrepancies: **{len(discrepancies)}** ({len(errors)} errors, {len(discrepancies) - len(errors)} warnings)")
     lines.append(f"- A field defined on at least {presence_threshold:.0%} of a group's indices is expected on all of them")

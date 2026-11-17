@@ -1,0 +1,18 @@
+{
+  "yellow_below_percent": 5.0,
+  "stale_after_days": 14,
+  "base_url": "https://github.com/NASA-PDS/registry/blob/main/docs",
+  "latest_report": "developer/audit-reports/2026-11-16",
+  "nodes": [
+    {"node": "atm", "label": "ATM", "status_node": "PDS_ATM"},
+    {"node": "en", "label": "EN (System Bundle)", "status_node": "PDS_ENG"},
+    {"node": "geo", "label": "GEO", "status_node": "PDS_GEO"},
+    {"node": "img", "label": "IMG", "status_node": "PDS_IMG"},
+    {"node": "naif", "label": "NAIF", "status_node": "PDS_NAIF"},
+    {"node": "ppi", "label": "PPI", "status_node": "PDS_PPI"},
+    {"node": "psa", "label": "PSA", "status_node": "PSA"},
+    {"node": "rms", "label": "RMS", "status_node": "PDS_RMS"},
+    {"node": "sbnpsi", "label": "SBN PSI", "status_node": "PDS_SBN", "shared_with": ["sbnpsi", "sbnumd"]},
+    {"node": "sbnumd", "label": "SBN UMD", "status_node": "PDS_SBN", "shared_with": ["sbnpsi", "sbnumd"]}
+  ]
+}

@@ -1,0 +1,352 @@
+{
+  "atm": {
+    "fidelity": {
+      "as_of": "2026-11-16",
+      "detail": "2,782,644 of 6,909,980 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 2782644,
+      "stale": false,
+      "status": "red",
+      "total": 6909980
+    },
+    "file_paths": {
+      "as_of": "2026-11-10",
+      "detail": "11 of 6,909,980 products, collections and bundles with an invalid file path",
+      "issues": 11,
+      "stale": false,
+      "status": "yellow",
+      "total": 6909980
+    },
+    "loading": {
+      "as_of": "2026-11-10",
+      "detail": "98 of 594 current bundles and collections not loaded",
+      "issues": 98,
+      "stale": false,
+      "status": "red",
+      "total": 594
+    },
+    "overall": "red",
+    "registry_health": {
+      "as_of": "2026-11-16",
+      "detail": "Products without ancestry for EN or the sweepers team: 1; Mapping errors on core or ops fields: 2, other type conflicts: 1",
+      "issues": null,
+      "stale": false,
+      "status": "red",
+      "total": null
+    }
+  },
+  "en": {
+    "fidelity": {
+      "as_of": "2026-11-16",
+      "detail": "705 of 5,868 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 705,
+      "stale": false,
+      "status": "red",
+      "total": 5868
+    },
+    "file_paths": {
+      "as_of": "2026-11-10",
+      "detail": "38 of 5,868 products, collections and bundles with an invalid file path",
+      "issues": 38,
+      "stale": false,
+      "status": "yellow",
+      "total": 5868
+    },
+    "loading": {
+      "as_of": "2026-11-10",
+      "detail": "7 of 41 current bundles and collections not loaded",
+      "issues": 7,
+      "stale": false,
+      "status": "red",
+      "total": 41
+    },
+    "overall": "red",
+    "registry_health": {
+      "as_of": "2026-11-16",
+      "detail": "Mapping errors on core or ops fields: 0, other type conflicts: 2",
+      "issues": null,
+      "stale": false,
+      "status": "yellow",
+      "total": null
+    }
+  },
+  "geo": {
+    "fidelity": {
+      "as_of": "2026-11-16",
+      "detail": "1,324 of 10,612,890 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 1324,
+      "stale": false,
+      "status": "yellow",
+      "total": 10612890
+    },
+    "file_paths": {
+      "as_of": "2026-11-10",
+      "detail": "2 of 10,612,890 products, collections and bundles with an invalid file path",
+      "issues": 2,
+      "stale": false,
+      "status": "yellow",
+      "total": 10612890
+    },
+    "loading": {
+      "as_of": "2026-11-10",
+      "detail": "2 of 1,329 current bundles and collections not loaded",
+      "issues": 2,
+      "stale": false,
+      "status": "yellow",
+      "total": 1329
+    },
+    "overall": "yellow",
+    "registry_health": {
+      "as_of": "2026-11-16",
+      "detail": "Products without ancestry for EN or the sweepers team: 49; Collections without a link to their bundle: 2; Mapping errors on core or ops fields: 0, other type conflicts: 2",
+      "issues": null,
+      "stale": false,
+      "status": "yellow",
+      "total": null
+    }
+  },
+  "img": {
+    "fidelity": {
+      "as_of": "2026-11-16",
+      "detail": "36,839 of 26,339,924 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 36839,
+      "stale": false,
+      "status": "yellow",
+      "total": 26339924
+    },
+    "file_paths": {
+      "as_of": "2026-11-10",
+      "detail": "67,182 of 26,339,924 products, collections and bundles with an invalid file path",
+      "issues": 67182,
+      "stale": false,
+      "status": "yellow",
+      "total": 26339924
+    },
+    "loading": {
+      "as_of": "2026-11-10",
+      "detail": "1,640 of 1,863 current bundles and collections not loaded",
+      "issues": 1640,
+      "stale": false,
+      "status": "red",
+      "total": 1863
+    },
+    "overall": "red",
+    "registry_health": {
+      "as_of": "2026-11-16",
+      "detail": "Collections without a link to their bundle: 6; Mapping errors on core or ops fields: 0, other type conflicts: 1",
+      "issues": null,
+      "stale": false,
+      "status": "yellow",
+      "total": null
+    }
+  },
+  "naif": {
+    "fidelity": {
+      "as_of": "2026-11-16",
+      "detail": "2 of 6,622 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 2,
+      "stale": false,
+      "status": "yellow",
+      "total": 6622
+    },
+    "file_paths": {
+      "as_of": "2026-11-10",
+      "detail": "0 of 6,622 products, collections and bundles with an invalid file path",
+      "issues": 0,
+      "stale": false,
+      "status": "green",
+      "total": 6622
+    },
+    "loading": {
+      "as_of": "2026-11-10",
+      "detail": "0 of 56 current bundles and collections not loaded",
+      "issues": 0,
+      "stale": false,
+      "status": "green",
+      "total": 56
+    },
+    "overall": "yellow",
+    "registry_health": {
+      "as_of": "2026-11-16",
+      "detail": "Mapping errors on core or ops fields: 2, other type conflicts: 8",
+      "issues": null,
+      "stale": false,
+      "status": "red",
+      "total": null
+    }
+  },
+  "ppi": {
+    "fidelity": {
+      "as_of": "2026-11-16",
+      "detail": "0 of 1,438,449 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 0,
+      "stale": false,
+      "status": "green",
+      "total": 1438449
+    },
+    "file_paths": {
+      "as_of": "2026-11-10",
+      "detail": "0 of 1,438,449 products, collections and bundles with an invalid file path",
+      "issues": 0,
+      "stale": false,
+      "status": "green",
+      "total": 1438449
+    },
+    "loading": {
+      "as_of": "2026-11-10",
+      "detail": "9 of 1,355 current bundles and collections not loaded",
+      "issues": 9,
+      "stale": false,
+      "status": "yellow",
+      "total": 1355
+    },
+    "overall": "yellow",
+    "registry_health": {
+      "as_of": "2026-11-16",
+      "detail": "No registry-side issues",
+      "issues": null,
+      "stale": false,
+      "status": "green",
+      "total": null
+    }
+  },
+  "psa": {
+    "fidelity": {
+      "as_of": "2026-11-16",
+      "detail": "319,567 of 39,276,959 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 319567,
+      "stale": false,
+      "status": "yellow",
+      "total": 39276959
+    },
+    "file_paths": {
+      "as_of": "2026-11-10",
+      "detail": "0 of 39,276,959 products, collections and bundles with an invalid file path",
+      "issues": 0,
+      "stale": false,
+      "status": "green",
+      "total": 39276959
+    },
+    "loading": {
+      "as_of": "2026-11-10",
+      "detail": "0 of 147 current bundles and collections not loaded",
+      "issues": 0,
+      "stale": false,
+      "status": "green",
+      "total": 147
+    },
+    "overall": "yellow",
+    "registry_health": {
+      "as_of": "2026-11-16",
+      "detail": "No registry-side issues",
+      "issues": null,
+      "stale": false,
+      "status": "green",
+      "total": null
+    }
+  },
+  "rms": {
+    "fidelity": {
+      "as_of": "2026-11-16",
+      "detail": "0 of 2,335,157 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 0,
+      "stale": false,
+      "status": "green",
+      "total": 2335157
+    },
+    "file_paths": {
+      "as_of": "2026-11-10",
+      "detail": "0 of 2,335,157 products, collections and bundles with an invalid file path",
+      "issues": 0,
+      "stale": false,
+      "status": "green",
+      "total": 2335157
+    },
+    "loading": {
+      "as_of": "2026-11-10",
+      "detail": "0 of 393 current bundles and collections not loaded",
+      "issues": 0,
+      "stale": false,
+      "status": "green",
+      "total": 393
+    },
+    "overall": "green",
+    "registry_health": {
+      "as_of": "2026-11-16",
+      "detail": "Mapping errors on core or ops fields: 1, other type conflicts: 0",
+      "issues": null,
+      "stale": false,
+      "status": "red",
+      "total": null
+    }
+  },
+  "sbnpsi": {
+    "fidelity": {
+      "as_of": "2026-11-16",
+      "detail": "69 of 5,055,499 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 69,
+      "stale": false,
+      "status": "yellow",
+      "total": 5055499
+    },
+    "file_paths": {
+      "as_of": "2026-11-10",
+      "detail": "0 of 7,177,699 products, collections and bundles with an invalid file path",
+      "issues": 0,
+      "stale": false,
+      "status": "green",
+      "total": 7177699
+    },
+    "loading": {
+      "as_of": "2026-11-10",
+      "detail": "8 of 1,041 current bundles and collections not loaded",
+      "issues": 8,
+      "stale": false,
+      "status": "yellow",
+      "total": 1041
+    },
+    "overall": "yellow",
+    "registry_health": {
+      "as_of": "2026-11-16",
+      "detail": "No registry-side issues",
+      "issues": null,
+      "stale": false,
+      "status": "green",
+      "total": null
+    }
+  },
+  "sbnumd": {
+    "fidelity": {
+      "as_of": "2026-11-16",
+      "detail": "25 of 2,122,200 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 25,
+      "stale": false,
+      "status": "yellow",
+      "total": 2122200
+    },
+    "file_paths": {
+      "as_of": "2026-11-10",
+      "detail": "0 of 7,177,699 products, collections and bundles with an invalid file path",
+      "issues": 0,
+      "stale": false,
+      "status": "green",
+      "total": 7177699
+    },
+    "loading": {
+      "as_of": "2026-11-10",
+      "detail": "8 of 1,041 current bundles and collections not loaded",
+      "issues": 8,
+      "stale": false,
+      "status": "yellow",
+      "total": 1041
+    },
+    "overall": "yellow",
+    "registry_health": {
+      "as_of": "2026-11-16",
+      "detail": "Collections without a link to their bundle: 58; Mapping errors on core or ops fields: 0, other type conflicts: 9",
+      "issues": null,
+      "stale": false,
+      "status": "red",
+      "total": null
+    }
+  }
+}

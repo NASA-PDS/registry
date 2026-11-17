@@ -67,6 +67,8 @@ import argparse
 import logging
 import sys
 from dataclasses import dataclass
+from datetime import datetime
+from datetime import timezone
 from dataclasses import field
 from pathlib import Path
 
@@ -178,7 +180,9 @@ def run_audit(args: argparse.Namespace, client: RegistryClient) -> MappingAuditR
     if stale:
         paths["stale"] = output_dir / STALE_CSV
         write_stale_csv(paths["stale"], stale)
-    summary = render_summary(mappings, discrepancies, args.presence_threshold, stale)
+    summary = render_summary(
+        mappings, discrepancies, args.presence_threshold, stale, datetime.now(timezone.utc).isoformat(timespec="seconds")
+    )
     paths["summary"].write_text(summary, encoding="utf-8")
     return MappingAuditResult(mappings, discrepancies, summary, output_dir, paths, stale)
 

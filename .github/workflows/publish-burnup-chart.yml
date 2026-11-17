@@ -1,4 +1,4 @@
-name: Publish Burnup Chart to GitHub Pages
+name: Publish Status Pages to GitHub Pages
 
 on:
   push:
@@ -7,11 +7,12 @@ on:
       - develop
     paths:
       - 'docs/status/burnup_chart.html'
+      - 'docs/status/report_card.html'
   workflow_dispatch:
 
 jobs:
   publish:
-    name: Copy burnup chart to gh-pages
+    name: Copy burnup chart and report card to gh-pages
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -21,8 +22,10 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Save burnup chart before workspace is replaced
-        run: cp docs/status/burnup_chart.html /tmp/burnup_chart.html
+      - name: Save status pages before workspace is replaced
+        run: |
+          cp docs/status/burnup_chart.html /tmp/burnup_chart.html
+          cp docs/status/report_card.html /tmp/report_card.html
 
       - name: Checkout gh-pages
         uses: actions/checkout@v7
@@ -30,16 +33,17 @@ jobs:
           ref: gh-pages
           path: gh-pages
 
-      - name: Copy burnup chart
+      - name: Copy status pages
         run: |
           mkdir -p gh-pages/status
           cp /tmp/burnup_chart.html gh-pages/status/burnup_chart.html
+          cp /tmp/report_card.html gh-pages/status/report_card.html
 
       - name: Commit and push to gh-pages
         run: |
           cd gh-pages
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add status/burnup_chart.html
-          git diff --cached --quiet || git commit -m "docs: update burnup chart"
+          git add status/burnup_chart.html status/report_card.html
+          git diff --cached --quiet || git commit -m "docs: update status pages"
           git push

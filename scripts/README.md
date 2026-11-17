@@ -854,3 +854,19 @@ The ATM products index is `temp-atm-registry` behind the alias `atm-registry`, w
 Only tenant nodes are compared: `atm`, `en`, `geo`, `img`, `naif`, `ppi`, `psa`, `rms`, `sbnpsi` and `sbnumd` (`--known-node`, repeatable, replaces the list). When nodes are discovered, an index named `<prefix>-registry` whose prefix is not one of them (a personal, temporary or test copy) is left out of the comparison and listed under "Possibly stale or test indices" in the report with its document count, mapped-field count and refs-index presence. These are candidates for cleanup: confirm with the owner before deleting, since the audit never deletes anything. `audit_unprocessed_products.py` applies the same rule to discovered nodes and names the skipped indices in its report headline. Nodes named with `--node` are always audited as given.
 
 Exit codes: 0 on success (and, with `--check`, no error-level discrepancy), 1 on an error, 2 when `--check` finds an error-level discrepancy. A mapping type cannot be changed in place, so fixing a type mismatch means reindexing into a corrected index.
+
+
+### Registry Report Card
+
+Grade every node green, yellow or red from the status reports and the fidelity audits.
+
+**Scripts:** `generate_report_card.py` (reads local files only) and `collect_node_totals.py` (read-only `_count` queries). The rubric and the node list are in `conf/status/report_card.json`.
+
+Each node gets Loading, File paths and Fidelity scores (the node's) and a Registry Health score (EN's). A score is green with no issues, yellow with issues below 5% of the node's items, and red from 5%. A mapping error on a core or `ops:` field is red; a type conflict on another field is yellow. The full rubric, the inputs and the refresh commands are in `docs/status/fidelity/README.md`.
+
+```bash
+PYTHON="<path-to-python-with-the-registry-client>"
+"${PYTHON}" scripts/generate_report_card.py          # writes docs/status/report_card.{html,md,json}
+```
+
+`collect_node_totals.py` counts each node's API-visible products, the denominator of the product-based scores, and needs registry credentials like the audits.

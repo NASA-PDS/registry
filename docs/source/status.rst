@@ -30,6 +30,17 @@ For detailed guidance on interpreting the reports, filtering by node, and unders
 `docs/status README on GitHub <https://github.com/NASA-PDS/registry/blob/main/docs/status/README.md>`_.
 
 
+Report Card
+-----------
+
+The `Registry Report Card <https://nasa-pds.github.io/registry/status/report_card.html>`_ grades every node green,
+yellow or red on three scores that the node owns (loading, invalid file paths and data fidelity) and shows
+Registry Health, which EN owns, beside them. A score is green with no issues, yellow with issues below 5% of the
+node's items, and red from 5%. Each score links to the page that lists what to fix. See the
+`fidelity README <https://github.com/NASA-PDS/registry/blob/main/docs/status/fidelity/README.md>`_ for how the
+scores are calculated and refreshed.
+
+
 Burnup Chart
 ------------
 
