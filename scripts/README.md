@@ -646,6 +646,12 @@ python scripts/audit_rollup.py --audits-dir "${AUDITS_DIR}"
 
 `audit_rollup.py` reads each node's `metrics.json` and prints one table of those counts, node by node.
 
+A per-product CSV can hold millions of rows. `audit_product_samples.py` reads the per-product CSV of every node and writes `<node>/product_samples.csv`: for each group of anomalous products (one rule in one collection) the group's size and up to `--per-group` example products (the lowest LIDVIDs, so reruns match), each with its owner and the reason. It is small enough to commit.
+
+```bash
+python scripts/audit_product_samples.py --audits-dir "${AUDITS_DIR}" --output-dir "${AUDITS_DIR}" --per-group 10
+```
+
 #### Usage
 
 Credentials come from the shell environment, as for the collection audit (`pip install -r scripts/requirements.txt` first).

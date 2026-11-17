@@ -38,6 +38,20 @@ Products that need attention, by owner. "Bundles missing members" counts collect
 
 `scripts/audit_rollup.py` produces this table from the `metrics.json` files. "Needs a closer look" are products whose collection inventory could not be read (ATM: the `pds-ama` sample, whose files were loaded from a local path; PSA: see its report).
 
+## Where the numbers are
+
+Across the ten nodes, 4,385,292 API-visible products were examined: **3,141,225 need attention** (they have no ancestry and something has to be done) and 1,244,067 are only waiting (loaded within the last week). The products are not corrupted: each one is missing its link to a collection or its processing by the sweepers.
+
+| What | Where |
+|---|---|
+| Totals by node and owner | The roll-up table above, and `scripts/audit_rollup.py` |
+| Counts per rule and per owner, per node | `audit-output/<node>/metrics.json` (`rules` and `owners`) |
+| Counts per collection | `audit-output/<node>/collections.csv` (`anomalous_product_count`) |
+| **Example products of every problem group** | `audit-output/<node>/product_samples.csv`: for each group (one rule in one collection) the group's full size (`products_in_group`) and up to 10 products, with the owner and the reason |
+| Every affected product | `unprocessed_products.csv.gz` in each audit run's output directory. Not committed (up to about 50 MB for ATM); regenerate with the commands below, or ask for the files |
+
+`product_samples.csv` is written by `scripts/audit_product_samples.py` from the per-product CSVs; for every node the group sizes in it add up to that node's anomalous total.
+
 ## Per node
 
 | Node | Report | Audit output |
@@ -53,7 +67,7 @@ Products that need attention, by owner. "Bundles missing members" counts collect
 | sbnpsi | [`nodes/sbnpsi.md`](nodes/sbnpsi.md) | [`audit-output/sbnpsi/`](audit-output/sbnpsi) |
 | sbnumd | [`nodes/sbnumd.md`](nodes/sbnumd.md) | [`audit-output/sbnumd/`](audit-output/sbnumd) |
 
-Each `nodes/<node>.md` is a plain-language report: a verdict, a "What needs to happen" table by owner, the evidence checked by hand, and a short index-mapping section. Each `audit-output/<node>/` holds the script output: `summary.md` (opens with the same owner table), `metrics.json` (totals, counts per rule and per owner, usable as the `--baseline` of a later `--check` run), `collections.csv` and `anomalous_collections.txt`. The per-product CSVs (`unprocessed_products.csv.gz`, up to about 50 MB for ATM and 18 MB for PSA) are not committed; regenerate them with the commands below.
+Each `nodes/<node>.md` is a plain-language report: a verdict, a "What needs to happen" table by owner, the evidence checked by hand, and a short index-mapping section. Each `audit-output/<node>/` holds the script output: `summary.md` (opens with the same owner table), `metrics.json` (totals, counts per rule and per owner, usable as the `--baseline` of a later `--check` run), `collections.csv`, `anomalous_collections.txt` and `product_samples.csv` (example products of every problem group). The per-product CSVs (`unprocessed_products.csv.gz`, up to about 50 MB for ATM and 18 MB for PSA) are not committed; regenerate them with the commands below.
 
 ## Index mappings (`index-mappings/`)
 
@@ -79,6 +93,7 @@ python scripts/audit_unprocessed_products.py --output-dir "${OUTPUT_DIR}" --node
 python scripts/audit_index_mappings.py --output-dir "./audit_mappings/" --include-refs
 AUDITS_DIR="<directory containing one sub-directory per node>"
 python scripts/audit_rollup.py --audits-dir "${AUDITS_DIR}"
+python scripts/audit_product_samples.py --audits-dir "${AUDITS_DIR}" --output-dir "${AUDITS_DIR}" --per-group 10
 ```
 
 Without `--no-inventory` the audit reads each collection's inventory where it needs it, which can be slow for large collections; `--inventory-cache-dir` keeps the downloads.
