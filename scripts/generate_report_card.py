@@ -2,20 +2,20 @@
 r"""Generate the registry report card: one row per node, graded green, yellow or red.
 
 The card combines the status reports (loading, invalid file paths) with the data fidelity audits and grades each node
-on four scores. Three belong to the node; the fourth, Registry Health, belongs to EN (and the sweepers team):
+on four scores. Three belong to the node; the fourth, Index Health, belongs to EN (and the sweepers team):
 
   Loading          current bundles and collections not yet loaded, of all current bundles and collections (node)
   File paths       products, collections and bundles with an invalid ``file_ref``, of the node's visible products (node)
   Fidelity         visible products without ancestry that the node has to fix or that need a closer look, of the
                    node's visible products (node)
-  Registry Health  products without ancestry that EN or the sweepers team fix, collections stamped without a link to
+  Index Health  products without ancestry that EN or the sweepers team fix, collections stamped without a link to
                    their bundle, and index mapping problems on the fields the API relies on (EN)
 
 A score is green with no issues, yellow with issues below ``yellow_below_percent`` of the node's items (default 5),
 and red from that percentage up. Index mappings count only for the fields the API relies on (``api_mapping_fields``
 in the configuration): such a field that is missing from a node's mapping, or mapped with a type other than the
 other nodes' (``text`` and ``keyword`` count as the same), is red. Every other mapping difference is ignored.
-A node is as good as the worst of its three scores; Registry Health is shown beside it, not folded in. A green
+A node is as good as the worst of its three scores; Index Health is shown beside it, not folded in. A green
 score whose data is older than ``stale_after_days`` is shown as stale, since it cannot be trusted.
 
 Inputs (all read-only, local files):
@@ -173,8 +173,13 @@ class NodeCard:
     shared_note: str = ""
 
     @property
+    def en_issues(self) -> bool:
+        """``True`` when EN owns open issues on this node (Index Health is not green); they are not in the node status."""
+        return self.health.status in (Status.YELLOW, Status.RED)
+
+    @property
     def overall(self) -> Status:
-        """The worst of the node's three scores (Registry Health is EN's and is not included)."""
+        """The worst of the node's three scores (Index Health is EN's and is not included)."""
         return worst([self.loading.status, self.file_paths.status, self.fidelity.status])
 
 
@@ -429,7 +434,7 @@ def score_node(entry: dict, data: Inputs, config: Config, today: date) -> NodeCa
             data.status_date, path_links,
         )
 
-    # Fidelity and Registry Health
+    # Fidelity and Index Health
     metrics = data.metrics.get(node)
     fidelity_links = [
         _link(config, "Report", f"{config.latest_report}/nodes/{node}.md"),
@@ -464,7 +469,7 @@ def _score_health(
     node: str, metrics: dict, visible: int, collections: int, data: Inputs, config: Config, run: date | None,
     links: list[Link],
 ) -> Score:
-    """Grade Registry Health: EN-owned products, collections without a bundle link and mapping errors."""
+    """Grade Index Health: EN-owned products, collections without a bundle link and mapping errors."""
     limit = config.yellow_below_percent
     owners = metrics.get("owners", {})
     registry_products = int(owners.get("en", 0)) + int(owners.get("sweepers_team", 0))
@@ -509,7 +514,7 @@ tr:last-child td{border-bottom:0}th small{display:block;text-transform:none;lett
 .chip{display:inline-block;padding:2px 9px;border-radius:999px;font-weight:600;font-size:.85rem;white-space:nowrap}
 .green{color:var(--green);background:var(--green-bg)}.yellow{color:var(--yellow);background:var(--yellow-bg)}
 .red{color:var(--red);background:var(--red-bg)}.stale,.no-data{color:var(--grey);background:var(--grey-bg)}
-.count{display:block;font-size:.85rem;margin-top:4px}.links{display:block;font-size:.8rem;margin-top:2px}
+.count{display:block;font-size:.85rem;margin-top:4px;overflow-wrap:anywhere}.links{display:block;font-size:.8rem;margin-top:2px}
 .links a{margin-right:8px}
 .legend{display:flex;gap:16px;flex-wrap:wrap;margin:12px 0}
 .rubric{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px}
@@ -517,13 +522,14 @@ tr:last-child td{border-bottom:0}th small{display:block;text-transform:none;lett
 """  # noqa: B950
 
 
-def _chip(status: Status) -> str:
+def _chip(status: Status, en: bool = False) -> str:
     css = status.value.replace(" ", "-")
-    return f'<span class="chip {css}">{_SYMBOL[status]} {html.escape(status.value.capitalize())}</span>'
+    star = '<abbr title="EN\'s responsibility">*</abbr>' if en else ""
+    return f'<span class="chip {css}">{_SYMBOL[status]} {html.escape(status.value.capitalize())}{star}</span>'
 
 
-def _cell(score: Score) -> str:
-    parts = [_chip(score.status)]
+def _cell(score: Score, en: bool = False) -> str:
+    parts = [_chip(score.status, en)]
     if score.share:
         parts.append(f'<span class="count">{html.escape(score.share)}</span>')
     elif score.issues == 0 and score.total is not None:
@@ -546,8 +552,8 @@ def render_html(cards: list[NodeCard], config: Config, today: date) -> str:
     for card in cards:
         note = f'<span class="count muted">{html.escape(card.shared_note)}</span>' if card.shared_note else ""
         rows.append(
-            f'<tr><td class="node">{html.escape(card.label)}{note}</td><td>{_chip(card.overall)}</td>'
-            f"{_cell(card.loading)}{_cell(card.file_paths)}{_cell(card.fidelity)}{_cell(card.health)}</tr>"
+            f'<tr><td class="node">{html.escape(card.label)}{note}</td><td>{_chip(card.overall, card.en_issues)}</td>'
+            f"{_cell(card.loading)}{_cell(card.file_paths)}{_cell(card.fidelity)}{_cell(card.health, True)}</tr>"
         )
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -559,14 +565,15 @@ def render_html(cards: list[NodeCard], config: Config, today: date) -> str:
 {_chip(Status.STALE)} data older than {config.stale_after_days} days {_chip(Status.NO_DATA)} not measured</div>
 <div class="scroll"><table>
 <thead><tr><th>Node</th><th>Node status<small>worst of the next three</small></th><th>Loading<small>node</small></th>
-<th>File paths<small>node</small></th><th>Fidelity<small>node</small></th><th>Registry Health<small>EN</small></th></tr></thead>
+<th>File paths<small>node</small></th><th>Fidelity<small>node</small></th><th>Index Health *<small>EN's responsibility</small></th></tr></thead>
 <tbody>{"".join(rows)}</tbody></table></div>
+<p class="muted">* EN's responsibility, not the node's. Every Index Health issue is EN's or the sweepers team's to fix. A node status marked * also has open Index Health issues; they are not counted in the node status.</p>
 <h2>How the scores work</h2>
 <div class="rubric"><ul>
 <li><strong>Loading</strong>: current bundles and collections that are not yet in the registry, of all current ones.</li>
 <li><strong>File paths</strong>: products, collections and bundles with an invalid <code>file_ref</code>, of the node's visible products.</li>
 <li><strong>Fidelity</strong>: visible products without ancestry (missing from their collection's and bundle's <code>/members</code>) that the node must fix, or that need a closer look, of the node's visible products. Products still within the grace period are not counted.</li>
-<li><strong>Registry Health</strong> (EN and the sweepers team, not the node): products without ancestry that EN or the sweepers team fix, collections stamped without a link to their bundle, and index mapping problems. Only the fields the API relies on count (<code>lid</code>, <code>lidvid</code>, <code>vid</code>, the archive status, <code>superseded_by</code> and <code>ancestor_refs</code>): one that is missing from the node's mapping, or mapped with a different type from the other nodes (text and keyword count as the same), makes the score red. Other mapping differences are ignored.</li>
+<li><strong>Index Health</strong> (EN and the sweepers team, not the node): products without ancestry that EN or the sweepers team fix, collections stamped without a link to their bundle, and index mapping problems. Only the fields the API relies on count (<code>lid</code>, <code>lidvid</code>, <code>vid</code>, the archive status, <code>superseded_by</code> and <code>ancestor_refs</code>): one that is missing from the node's mapping, or mapped with a different type from the other nodes (text and keyword count as the same), makes the score red. Other mapping differences are ignored.</li>
 <li>Green is no issues. Yellow is some issues, but below {limit}% of the node's items. Red is {limit}% or more of the items, which is enough to harm users of the registry. A node's status is the worst of Loading, File paths and Fidelity.</li>
 </ul></div>
 </main></body></html>
@@ -577,8 +584,8 @@ def render_markdown(cards: list[NodeCard], config: Config, today: date) -> str:
     """Render the same card as a Markdown table."""
     limit = f"{config.yellow_below_percent:g}"
 
-    def md(score: Score) -> str:
-        text = f"{_SYMBOL[score.status]} {score.status.value.capitalize()}"
+    def md(score: Score, en: bool = False) -> str:
+        text = f"{_SYMBOL[score.status]} {score.status.value.capitalize()}{' \\*' if en else ''}"
         if score.share:
             text += f": {score.share}"
         return text
@@ -588,15 +595,16 @@ def render_markdown(cards: list[NodeCard], config: Config, today: date) -> str:
         "",
         f"Generated {today.isoformat()}. Green: no issues. Yellow: issues below {limit}% of the node's items. "
         f"Red: {limit}% or more. Stale: data older than {config.stale_after_days} days. "
-        "Registry Health is EN's; the other three scores are the node's.",
+        "Loading, File paths and Fidelity are the node's. \\* Index Health is EN's responsibility, not the node's; "
+        "a node status marked \\* also has open Index Health issues, which are not counted in the node status.",
         "",
-        "| Node | Node status | Loading | File paths | Fidelity | Registry Health (EN) |",
+        "| Node | Node status | Loading | File paths | Fidelity | Index Health * |",
         "|---|---|---|---|---|---|",
     ]
     for card in cards:
         lines.append(
-            f"| {card.label} | {_SYMBOL[card.overall]} {card.overall.value.capitalize()} | {md(card.loading)} | "
-            f"{md(card.file_paths)} | {md(card.fidelity)} | {md(card.health)} |"
+            f"| {card.label} | {_SYMBOL[card.overall]} {card.overall.value.capitalize()}{' \\*' if card.en_issues else ''} | "
+            f"{md(card.loading)} | {md(card.file_paths)} | {md(card.fidelity)} | {md(card.health, True)} |"
         )
     return "\n".join(lines) + "\n"
 
@@ -612,8 +620,12 @@ def render_json(cards: list[NodeCard]) -> str:
 
     document = {
         card.node: {
-            "overall": card.overall.value, "loading": one(card.loading), "file_paths": one(card.file_paths),
-            "fidelity": one(card.fidelity), "registry_health": one(card.health),
+            "overall": card.overall.value,
+            "en_issues": card.en_issues,
+            "loading": one(card.loading),
+            "file_paths": one(card.file_paths),
+            "fidelity": one(card.fidelity),
+            "index_health": one(card.health),
         }
         for card in cards
     }

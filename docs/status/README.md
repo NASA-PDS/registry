@@ -4,7 +4,7 @@ This directory contains automatically generated CSV reports that track the statu
 
 ## Report Card
 
-[Registry Report Card](report_card.md) ([web page](https://nasa-pds.github.io/registry/status/report_card.html)): one row per node, graded green, yellow or red on loading, invalid file paths and data fidelity, with Registry Health (EN's) beside them. Each score links to the details. How the scores work and how to refresh the inputs: [fidelity/README.md](fidelity/README.md).
+[Registry Report Card](report_card.md) ([web page](https://nasa-pds.github.io/registry/status/report_card.html)): one row per node, graded green, yellow or red on loading, invalid file paths and data fidelity, with Index Health (EN's) beside them. Each score links to the details. How the scores work and how to refresh the inputs: [fidelity/README.md](fidelity/README.md).
 
 ## Metrics Summary
 

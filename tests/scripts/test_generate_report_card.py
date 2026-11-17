@@ -123,15 +123,16 @@ def test_fidelity_is_red_from_five_percent(tmp_path: Path):
     assert rc.build_cards(status, fidelity, CONFIG, TODAY)[0].fidelity.status is rc.Status.RED
 
 
-def test_registry_health_is_separate_from_the_node_status(tmp_path: Path):
+def test_index_health_is_separate_from_the_node_status(tmp_path: Path):
     status, fidelity = build_tree(tmp_path, atm_owners={"en": 5, "sweepers_team": 1})
     atm = rc.build_cards(status, fidelity, CONFIG, TODAY)[0]
     assert atm.fidelity.status is rc.Status.GREEN
     assert atm.health.status is rc.Status.YELLOW  # 6 of 1000 products
     assert atm.overall is rc.Status.RED  # loading is red; health is not part of it
+    assert atm.en_issues  # EN-owned issues are flagged beside the node status
 
 
-def test_only_missing_or_mismatched_api_fields_make_the_registry_health_red(tmp_path: Path):
+def test_only_missing_or_mismatched_api_fields_make_the_index_health_red(tmp_path: Path):
     missing = ["registry", "temp-atm-registry", "temp-atm", "ops:Provenance/ops:superseded_by", "missing_field", "error", "keyword", "(absent)"]
     status, fidelity = build_tree(tmp_path, discrepancies=[missing])
     atm = rc.build_cards(status, fidelity, CONFIG, TODAY)[0]
@@ -218,7 +219,7 @@ def test_outputs_are_written_with_a_row_per_node_and_links(tmp_path: Path):
     page = (out / "report_card.html").read_text(encoding="utf-8")
     assert page.count("<tr>") == 4  # header and three nodes
     assert "https://example.test/docs/audits/latest/nodes/atm.md" in page
-    assert "Registry Health" in page and "&lt;" not in page.split("<style>")[0]
+    assert "Index Health *" in page and '<abbr title="EN' in page and "&lt;" not in page.split("<style>")[0]
     assert "| ATM |" in (out / "report_card.md").read_text(encoding="utf-8")
     assert json.loads((out / "report_card.json").read_text(encoding="utf-8"))["atm"]["overall"] == "red"
 

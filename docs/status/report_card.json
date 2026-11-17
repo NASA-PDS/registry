@@ -1,5 +1,6 @@
 {
   "atm": {
+    "en_issues": true,
     "fidelity": {
       "as_of": "2026-11-16",
       "detail": "2,782,644 of 6,909,980 visible products without ancestry that the node or a closer look must resolve",
@@ -16,6 +17,14 @@
       "status": "yellow",
       "total": 6909980
     },
+    "index_health": {
+      "as_of": "2026-11-16",
+      "detail": "Products without ancestry for EN or the sweepers team: 1; Index mapping problems on API fields: ops:Provenance/ops:superseded_by, vid",
+      "issues": null,
+      "stale": false,
+      "status": "red",
+      "total": null
+    },
     "loading": {
       "as_of": "2026-11-10",
       "detail": "98 of 594 current bundles and collections not loaded",
@@ -24,17 +33,10 @@
       "status": "red",
       "total": 594
     },
-    "overall": "red",
-    "registry_health": {
-      "as_of": "2026-11-16",
-      "detail": "Products without ancestry for EN or the sweepers team: 1; Index mapping problems on API fields: ops:Provenance/ops:superseded_by, vid",
-      "issues": null,
-      "stale": false,
-      "status": "red",
-      "total": null
-    }
+    "overall": "red"
   },
   "en": {
+    "en_issues": false,
     "fidelity": {
       "as_of": "2026-11-16",
       "detail": "705 of 5,868 visible products without ancestry that the node or a closer look must resolve",
@@ -51,6 +53,14 @@
       "status": "yellow",
       "total": 5868
     },
+    "index_health": {
+      "as_of": "2026-11-16",
+      "detail": "No registry-side issues",
+      "issues": null,
+      "stale": false,
+      "status": "green",
+      "total": null
+    },
     "loading": {
       "as_of": "2026-11-10",
       "detail": "7 of 41 current bundles and collections not loaded",
@@ -59,17 +69,10 @@
       "status": "red",
       "total": 41
     },
-    "overall": "red",
-    "registry_health": {
-      "as_of": "2026-11-16",
-      "detail": "No registry-side issues",
-      "issues": null,
-      "stale": false,
-      "status": "green",
-      "total": null
-    }
+    "overall": "red"
   },
   "geo": {
+    "en_issues": true,
     "fidelity": {
       "as_of": "2026-11-16",
       "detail": "1,324 of 10,612,890 visible products without ancestry that the node or a closer look must resolve",
@@ -86,6 +89,14 @@
       "status": "yellow",
       "total": 10612890
     },
+    "index_health": {
+      "as_of": "2026-11-16",
+      "detail": "Products without ancestry for EN or the sweepers team: 49; Collections without a link to their bundle: 2",
+      "issues": null,
+      "stale": false,
+      "status": "yellow",
+      "total": null
+    },
     "loading": {
       "as_of": "2026-11-10",
       "detail": "2 of 1,329 current bundles and collections not loaded",
@@ -94,17 +105,10 @@
       "status": "yellow",
       "total": 1329
     },
-    "overall": "yellow",
-    "registry_health": {
-      "as_of": "2026-11-16",
-      "detail": "Products without ancestry for EN or the sweepers team: 49; Collections without a link to their bundle: 2",
-      "issues": null,
-      "stale": false,
-      "status": "yellow",
-      "total": null
-    }
+    "overall": "yellow"
   },
   "img": {
+    "en_issues": true,
     "fidelity": {
       "as_of": "2026-11-16",
       "detail": "36,839 of 26,339,924 visible products without ancestry that the node or a closer look must resolve",
@@ -121,6 +125,14 @@
       "status": "yellow",
       "total": 26339924
     },
+    "index_health": {
+      "as_of": "2026-11-16",
+      "detail": "Collections without a link to their bundle: 6",
+      "issues": null,
+      "stale": false,
+      "status": "yellow",
+      "total": null
+    },
     "loading": {
       "as_of": "2026-11-10",
       "detail": "1,640 of 1,863 current bundles and collections not loaded",
@@ -129,17 +141,10 @@
       "status": "red",
       "total": 1863
     },
-    "overall": "red",
-    "registry_health": {
-      "as_of": "2026-11-16",
-      "detail": "Collections without a link to their bundle: 6",
-      "issues": null,
-      "stale": false,
-      "status": "yellow",
-      "total": null
-    }
+    "overall": "red"
   },
   "naif": {
+    "en_issues": false,
     "fidelity": {
       "as_of": "2026-11-16",
       "detail": "2 of 6,622 visible products without ancestry that the node or a closer look must resolve",
@@ -156,6 +161,14 @@
       "status": "green",
       "total": 6622
     },
+    "index_health": {
+      "as_of": "2026-11-16",
+      "detail": "No registry-side issues",
+      "issues": null,
+      "stale": false,
+      "status": "green",
+      "total": null
+    },
     "loading": {
       "as_of": "2026-11-10",
       "detail": "0 of 56 current bundles and collections not loaded",
@@ -164,17 +177,10 @@
       "status": "green",
       "total": 56
     },
-    "overall": "yellow",
-    "registry_health": {
-      "as_of": "2026-11-16",
-      "detail": "No registry-side issues",
-      "issues": null,
-      "stale": false,
-      "status": "green",
-      "total": null
-    }
+    "overall": "yellow"
   },
   "ppi": {
+    "en_issues": false,
     "fidelity": {
       "as_of": "2026-11-16",
       "detail": "0 of 1,438,449 visible products without ancestry that the node or a closer look must resolve",
@@ -191,6 +197,14 @@
       "status": "green",
       "total": 1438449
     },
+    "index_health": {
+      "as_of": "2026-11-16",
+      "detail": "No registry-side issues",
+      "issues": null,
+      "stale": false,
+      "status": "green",
+      "total": null
+    },
     "loading": {
       "as_of": "2026-11-10",
       "detail": "9 of 1,355 current bundles and collections not loaded",
@@ -199,17 +213,10 @@
       "status": "yellow",
       "total": 1355
     },
-    "overall": "yellow",
-    "registry_health": {
-      "as_of": "2026-11-16",
-      "detail": "No registry-side issues",
-      "issues": null,
-      "stale": false,
-      "status": "green",
-      "total": null
-    }
+    "overall": "yellow"
   },
   "psa": {
+    "en_issues": false,
     "fidelity": {
       "as_of": "2026-11-16",
       "detail": "319,567 of 39,276,959 visible products without ancestry that the node or a closer look must resolve",
@@ -226,6 +233,14 @@
       "status": "green",
       "total": 39276959
     },
+    "index_health": {
+      "as_of": "2026-11-16",
+      "detail": "No registry-side issues",
+      "issues": null,
+      "stale": false,
+      "status": "green",
+      "total": null
+    },
     "loading": {
       "as_of": "2026-11-10",
       "detail": "0 of 147 current bundles and collections not loaded",
@@ -234,17 +249,10 @@
       "status": "green",
       "total": 147
     },
-    "overall": "yellow",
-    "registry_health": {
-      "as_of": "2026-11-16",
-      "detail": "No registry-side issues",
-      "issues": null,
-      "stale": false,
-      "status": "green",
-      "total": null
-    }
+    "overall": "yellow"
   },
   "rms": {
+    "en_issues": false,
     "fidelity": {
       "as_of": "2026-11-16",
       "detail": "0 of 2,335,157 visible products without ancestry that the node or a closer look must resolve",
@@ -261,6 +269,14 @@
       "status": "green",
       "total": 2335157
     },
+    "index_health": {
+      "as_of": "2026-11-16",
+      "detail": "No registry-side issues",
+      "issues": null,
+      "stale": false,
+      "status": "green",
+      "total": null
+    },
     "loading": {
       "as_of": "2026-11-10",
       "detail": "0 of 393 current bundles and collections not loaded",
@@ -269,17 +285,10 @@
       "status": "green",
       "total": 393
     },
-    "overall": "green",
-    "registry_health": {
-      "as_of": "2026-11-16",
-      "detail": "No registry-side issues",
-      "issues": null,
-      "stale": false,
-      "status": "green",
-      "total": null
-    }
+    "overall": "green"
   },
   "sbnpsi": {
+    "en_issues": false,
     "fidelity": {
       "as_of": "2026-11-16",
       "detail": "69 of 5,055,499 visible products without ancestry that the node or a closer look must resolve",
@@ -296,6 +305,14 @@
       "status": "green",
       "total": 7177699
     },
+    "index_health": {
+      "as_of": "2026-11-16",
+      "detail": "No registry-side issues",
+      "issues": null,
+      "stale": false,
+      "status": "green",
+      "total": null
+    },
     "loading": {
       "as_of": "2026-11-10",
       "detail": "8 of 1,041 current bundles and collections not loaded",
@@ -304,17 +321,10 @@
       "status": "yellow",
       "total": 1041
     },
-    "overall": "yellow",
-    "registry_health": {
-      "as_of": "2026-11-16",
-      "detail": "No registry-side issues",
-      "issues": null,
-      "stale": false,
-      "status": "green",
-      "total": null
-    }
+    "overall": "yellow"
   },
   "sbnumd": {
+    "en_issues": true,
     "fidelity": {
       "as_of": "2026-11-16",
       "detail": "25 of 2,122,200 visible products without ancestry that the node or a closer look must resolve",
@@ -331,6 +341,14 @@
       "status": "green",
       "total": 7177699
     },
+    "index_health": {
+      "as_of": "2026-11-16",
+      "detail": "Collections without a link to their bundle: 58",
+      "issues": null,
+      "stale": false,
+      "status": "red",
+      "total": null
+    },
     "loading": {
       "as_of": "2026-11-10",
       "detail": "8 of 1,041 current bundles and collections not loaded",
@@ -339,14 +357,6 @@
       "status": "yellow",
       "total": 1041
     },
-    "overall": "yellow",
-    "registry_health": {
-      "as_of": "2026-11-16",
-      "detail": "Collections without a link to their bundle: 58",
-      "issues": null,
-      "stale": false,
-      "status": "red",
-      "total": null
-    }
+    "overall": "yellow"
   }
 }
