@@ -13,10 +13,6 @@ PDS_IMG,urn:nasa:pds:m2020_edlcam_raw:document::9.0,Product_Collection,staged,La
 PDS_IMG,urn:nasa:pds:m2020_edlcam_raw:document_video::6.0,Product_Collection,staged,Label_File_Info,.../document_video_collection.xml
 PDS_IMG,urn:nasa:pds:m2020_edlcam_raw:document_video::7.0,Product_Collection,staged,Label_File_Info,.../document_video_collection.xml
 PDS_IMG,urn:nasa:pds:m2020_edlcam_raw:document_video::8.0,Product_Collection,staged,Label_File_Info,.../document_video_collection.xml
-PDS_IMG,urn:nasa:pds:messenger_mdis_3001:ancillary::1.0,Product_Collection,staged,Label_File_Info,s3://.../collection_ancillary.xml
-PDS_IMG,urn:nasa:pds:messenger_mdis_3001:ancillary::1.0,Product_Collection,staged,Data_File_Info,s3://.../collection_ancillary.csv
-PDS_IMG,urn:nasa:pds:messenger_mdis_3001:document::1.0,Product_Collection,staged,Label_File_Info,s3://.../collection_document.xml
-PDS_IMG,urn:nasa:pds:messenger_mdis_3001:document::1.0,Product_Collection,staged,Data_File_Info,s3://.../collection_document.csv
 PDS_IMG,urn:nasa:pds:messenger_mdis_3001:nac_ddr::1.0,Product_Collection,staged,Label_File_Info,s3://.../collection_nac_ddr.xml
 PDS_IMG,urn:nasa:pds:messenger_mdis_3001:nac_ddr::1.0,Product_Collection,staged,Data_File_Info,s3://.../collection_nac_ddr.csv
 PDS_IMG,urn:nasa:pds:messenger_mdis_3001:wac_ddr::1.0,Product_Collection,staged,Label_File_Info,s3://.../collection_wac_ddr.xml
