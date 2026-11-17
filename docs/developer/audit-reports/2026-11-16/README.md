@@ -24,50 +24,36 @@ Products that need attention, by owner. "Bundles missing members" counts collect
 
 | Node | Products examined | Node | Registry operations | Sweepers team | Needs a closer look | Bundles missing members | Waiting (no action) |
 |---|--:|--:|--:|--:|--:|--:|--:|
-| atm (earlier run, see below) | 2,784,370 | 2,782,642 | 0 | 0 | 3 | 0 | 1,725 |
+| atm | 2,784,370 | 2,782,642 | 0 | 1 | 2 | 0 | 1,725 |
 | en | 793 | 703 | 0 | 0 | 2 | 0 | 88 |
 | geo | 1,373 | 1,322 | 2 | 49 | 0 | 2 | 0 |
 | img | 36,839 | 516 | 36,323 | 0 | 0 | 6 | 0 |
 | naif | 2 | 0 | 2 | 0 | 0 | 0 | 0 |
 | ppi | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| psa | 1,561,792 | 28,938 | 233,104 | 0 | 57,525 | 0 | 1,242,225 |
 | rms | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | sbnpsi | 98 | 2 | 67 | 0 | 0 | 0 | 29 |
 | sbnumd | 25 | 1 | 24 | 0 | 0 | 58 | 0 |
-| **Total** | **2,823,500** | **2,785,186** | **36,418** | **49** | **5** | **66** | **1,842** |
+| **Total** | **4,385,292** | **2,814,124** | **269,522** | **50** | **57,529** | **66** | **1,244,067** |
 
-PSA is not in the table yet. `scripts/audit_rollup.py` produces this table from the `metrics.json` files.
-
-The ATM row comes from the ATM audit run earlier on 2026-11-16, before the owner-first reporting existed: its counts are mapped to owners by rule, and its 3 `refs_missing` products are shown as needing a closer look because that run did not record whether the inventory was used for them. A final ATM run (and a PSA run) with the same code as the other nodes replaces this row and adds PSA when they finish.
+`scripts/audit_rollup.py` produces this table from the `metrics.json` files. "Needs a closer look" are products whose collection inventory could not be read (ATM: the `pds-ama` sample, whose files were loaded from a local path; PSA: see its report).
 
 ## Per node
 
 | Node | Report | Audit output |
 |---|---|---|
-| atm | [`atm-unprocessed-products/summary.md`](atm-unprocessed-products/summary.md) (earlier run) | [`atm-unprocessed-products/`](atm-unprocessed-products) |
+| atm | [`nodes/atm.md`](nodes/atm.md) | [`audit-output/atm/`](audit-output/atm) |
 | en | [`nodes/en.md`](nodes/en.md) | [`audit-output/en/`](audit-output/en) |
 | geo | [`nodes/geo.md`](nodes/geo.md) | [`audit-output/geo/`](audit-output/geo) |
 | img | [`nodes/img.md`](nodes/img.md) | [`audit-output/img/`](audit-output/img) |
 | naif | [`nodes/naif.md`](nodes/naif.md) | [`audit-output/naif/`](audit-output/naif) |
 | ppi | [`nodes/ppi.md`](nodes/ppi.md) | [`audit-output/ppi/`](audit-output/ppi) |
+| psa | [`nodes/psa.md`](nodes/psa.md) | [`audit-output/psa/`](audit-output/psa) |
 | rms | [`nodes/rms.md`](nodes/rms.md) | [`audit-output/rms/`](audit-output/rms) |
 | sbnpsi | [`nodes/sbnpsi.md`](nodes/sbnpsi.md) | [`audit-output/sbnpsi/`](audit-output/sbnpsi) |
 | sbnumd | [`nodes/sbnumd.md`](nodes/sbnumd.md) | [`audit-output/sbnumd/`](audit-output/sbnumd) |
 
-Each `nodes/<node>.md` is a plain-language report: a verdict, a "What needs to happen" table by owner, the evidence checked by hand, and a short index-mapping section. Each `audit-output/<node>/` holds the script output: `summary.md` (opens with the same owner table), `metrics.json` (totals, counts per rule and per owner, usable as the `--baseline` of a later `--check` run), `collections.csv` and `anomalous_collections.txt`. The per-product CSVs (`unprocessed_products.csv.gz`, up to about 50 MB for ATM) are not committed; regenerate them with the commands below.
-
-## ATM unprocessed products (`atm-unprocessed-products/`)
-
-`scripts/audit_unprocessed_products.py` on the ATM node with `--check`, ancestry version 7. Tracking issue: NASA-PDS/registry#610.
-
-| File | Content |
-|---|---|
-| `summary.md` | The report: anomalies by rule, anomalous collections, expected-pending counts, orphans, breakdowns, and the regression check result |
-| `metrics.json` | Totals, anomalous count per rule, and the anomalous collection lists |
-| `collections.csv` | One row per collection with state, bundles and refs coverage |
-| `anomalous_collections.txt` | Collections to look at or re-harvest, for `audit_collection.py --from-file` |
-| `history.csv` | The run's row for `--history-csv` trend files |
-
-Result: 2,784,370 candidates, 2,782,645 anomalous (mostly `inventory_version_mismatch` and `not_in_collection_inventory`, both the node's), no collection stamped with empty refs that has a bundle. The regression check fails on `no_anomalous_products` (no baseline was given) and on `superseded_by_mapped` (NASA-PDS/registry#611).
+Each `nodes/<node>.md` is a plain-language report: a verdict, a "What needs to happen" table by owner, the evidence checked by hand, and a short index-mapping section. Each `audit-output/<node>/` holds the script output: `summary.md` (opens with the same owner table), `metrics.json` (totals, counts per rule and per owner, usable as the `--baseline` of a later `--check` run), `collections.csv` and `anomalous_collections.txt`. The per-product CSVs (`unprocessed_products.csv.gz`, up to about 50 MB for ATM and 18 MB for PSA) are not committed; regenerate them with the commands below.
 
 ## Index mappings (`index-mappings/`)
 

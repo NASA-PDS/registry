@@ -1,0 +1,13 @@
+urn:esa:psa:bc_mtm_mcam:browse::13.1
+urn:esa:psa:bc_mtm_mcam:data_raw::13.1
+urn:esa:psa:bc_spice:miscellaneous::4.0
+urn:esa:psa:bc_spice:spice_kernels::4.0
+urn:esa:psa:em16:miscellaneous_ancillary::125.3
+urn:esa:psa:em16_spice:miscellaneous::10.0
+urn:esa:psa:em16_spice:spice_kernels::10.0
+urn:esa:psa:em16_tgo_cas:browse_calibrated::2.0
+urn:esa:psa:em16_tgo_cas:browse_raw::2.0
+urn:esa:psa:em16_tgo_cas:data_raw::105.1
+urn:esa:psa:em16_tgo_frd:data_partially_processed::59.3
+urn:esa:psa:em16_tgo_nmd:calibration_files::1.1
+urn:esa:psa:psa_master:xml_schema::7.0

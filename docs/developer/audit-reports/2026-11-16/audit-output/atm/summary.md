@@ -1,20 +1,38 @@
 # Unprocessed product audit
 
-Run time: 2026-11-16T16:00:35+00:00
+Run time: 2026-11-16T22:23:46+00:00
+Nodes: atm
 
 - Candidates examined: **2,784,370**
 - Expected (should resolve on their own): **1,725**
 - Anomalous (need attention): **2,782,645**
 
-Run parameters:
+## What needs to happen
 
-- Ancestry version: 7
-- Collection grace period: 1 days
-- Product grace period: 7 days
-- Nodes: atm
-- Node filter: atm
-- Refs coverage queried for up to: 200 collections
-- Previous run: unprocessed_products.csv.gz
+**Needs attention: 2,782,642 for node; 1 for sweepers team; 2 for needs a closer look.**
+
+| Who | What is wrong | Products | Collections | What to do |
+|---|---|--:|--:|---|
+| Node | **Orphaned**: The collection's inventory lists a different version of these products than the one loaded | 2,765,640 | 16 | Load the version the inventory lists, or correct the inventory |
+| Node | **Orphaned**: The collection's inventory does not list these products under any version | 16,960 | 8 | Add them to the inventory, or remove the products from the registry |
+| Node | **Orphaned**: No collection with the identifier these products belong to is in the registry | 42 | 1 | Load the collection, or correct the product identifiers |
+| Sweepers team | **Orphaned**: The collection's inventory lists these products by LID without a version, which the sweepers do not follow | 1 | 1 | Re-harvesting does not help. The node lists LIDVIDs in the inventory, or the sweepers support LID references |
+| Needs a closer look | **Orphaned**: No refs record lists these products and the collection inventory could not be used to say why | 2 | 1 | Re-run the audit with the inventories (not --no-inventory), or check the collection's inventory by hand |
+| No action | **Waiting**: Not in the registry's refs yet | 1,725 | - | None; re-check later |
+
+Kinds of problem:
+
+- **Orphaned**: no registry record confirms which collection the product belongs to. The collection named for it in this report is a best guess from its identifier; it may really belong to a collection version that is not loaded.
+- **Waiting**: loaded recently; expected to resolve by itself.
+
+Who fixes what:
+
+- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory); only the node can fix it.
+- **Sweepers team**: everything looks right but the sweepers cannot or do not follow it; a software gap, possibly worked around by the node.
+- **Needs a closer look**: the cause cannot be told apart because the collection inventory could not be used.
+- **No action**: loaded recently; expected to resolve by itself.
+
+2 products were not checked against the collection inventory (it was skipped with `--no-inventory` or could not be read).
 
 ## Anomalies by rule
 
@@ -23,7 +41,8 @@ Run parameters:
 | collection_not_loaded_overdue | 42 |
 | inventory_version_mismatch | 2,765,640 |
 | not_in_collection_inventory | 16,960 |
-| refs_missing | 3 |
+| bare_lid_in_inventory | 1 |
+| refs_missing | 2 |
 
 ### By rule and node
 
@@ -32,7 +51,8 @@ Run parameters:
 | collection_not_loaded_overdue | temp-atm | 42 |
 | inventory_version_mismatch | temp-atm | 2,765,640 |
 | not_in_collection_inventory | temp-atm | 16,960 |
-| refs_missing | temp-atm | 3 |
+| bare_lid_in_inventory | temp-atm | 1 |
+| refs_missing | temp-atm | 2 |
 
 ## Anomalous collections
 
@@ -103,19 +123,23 @@ Run parameters:
 | 1-7d | 1,725 | 86 | 1,811 |
 | >30d | 0 | 2,782,559 | 2,782,559 |
 
-## Change since previous run
-
-- New: 0
-- Resolved: 0
-- Persisting: 2,784,370
-
 ## What each rule means
 
 - **collection_not_loaded_overdue** (42 products): The parent collection is still not in the registry (or is not API-visible) long after the product was harvested. Check whether the collection failed to load, is staged or superseded, or whether the product LID does not follow the bundle:collection:product pattern.
 - **inventory_version_mismatch** (2,765,640 products): The collection's inventory (as recorded in registry-refs) lists this product at a different version than the one in the registry, so the sweeper never selects the registered version. Re-harvesting the collection will not help: load the product version the inventory lists, after which the registered version is superseded. Confirm with audit_collection.py --diff.
 - **not_in_collection_inventory** (16,960 products): The product is registered under this collection's LID, but the collection's current inventory does not list it under any version, so the sweeper can never give it this collection as an ancestor. The provider may have dropped it from the inventory or it may be a leftover. The node should decide whether it belongs in the inventory or should be removed from the registry; re-harvesting or loading more products will not fix it.
+- **bare_lid_in_inventory** (1 products): The collection's inventory lists the product by LID only, without a version. Harvest records that as a product_lid in the registry-refs document, but the ancestry sweeper follows only product_lidvid, so it never reaches the product. Re-harvesting the collection writes the same refs; the inventory must list LIDVIDs, or the sweepers must follow LID references.
 - **refs_missing_pending** (1,725 products): The collection is processed but no registry-refs document lists the product yet, and the product was harvested recently. This may resolve once refs are written; re-check after the grace period.
-- **refs_missing** (3 products): The collection is processed but no registry-refs document lists the product, so the sweeper never selects it. The refs were probably never written for this product; the loader or harvest step is the likely place to look.
+- **refs_missing** (2 products): The collection is processed but no registry-refs document lists the product, so the sweeper never selects it. The refs were probably never written for this product; the loader or harvest step is the likely place to look.
+
+## Run parameters
+
+- Ancestry version: 7
+- Collection grace period: 1 days
+- Product grace period: 7 days
+- Nodes: atm
+- Node filter: atm
+- Refs coverage queried for up to: 200 collections
 
 ## Regression check
 
@@ -127,6 +151,7 @@ Evaluated with no baseline (any anomaly fails).
   - inventory_version_mismatch: 2,765,640
   - not_in_collection_inventory: 16,960
   - collection_not_loaded_overdue: 42
-  - refs_missing: 3
+  - refs_missing: 2
+  - bare_lid_in_inventory: 1
 - `superseded_by_mapped`: 1 registry indices do not map ops:Provenance/ops:superseded_by, so the API cannot exclude superseded products there
   - atm-registry

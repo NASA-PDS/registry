@@ -2,7 +2,7 @@
 
 ## Verdict
 
-Mostly healthy. 1,373 of about 10.6 million visible products (0.013%) are missing "ancestry" (the record of which collection and bundle a product belongs to, which the public API needs for `/members` and `/ancestors`). The 1,373 split as: 1,322 for the node, 2 for registry operations (plus 2 collections to repair), 49 need a closer look, none for the sweepers team. The audit ran with `--no-inventory`; every `refs_missing` group below was re-checked against the collection's current inventory by hand.
+Mostly healthy. 1,373 of about 10.6 million visible products (0.013%) are missing "ancestry" (the record of which collection and bundle a product belongs to, which the public API needs for `/members` and `/ancestors`). The 1,373 split as: 1,322 for the node, 2 for registry operations (plus 2 collections to repair), and 49 for the sweepers team (or the node: see Details). The final audit output in `../audit-output/geo/` read the collection inventories; an earlier run without them labelled some of these differently, and every group below was also checked against the collection's current inventory by hand.
 
 ## What needs to happen
 
@@ -15,14 +15,14 @@ Terms: the inventory is the list of products in a collection, published by the n
 | Node | 2 products belong to a collection that is not loaded in `geo-registry` | 2 | 2 | Load the collection, or fix the product ids |
 | Registry operations | 2 collections are marked as swept but have no ancestors, and their bundle does not list them as members | 0 (4 products already counted in row 1) | 2 | Re-harvest both, then run the sweepers with the registry-sweepers PR #286 fix |
 | Registry operations | 2 products carry an old ancestry stamp (version 3) | 2 | 1 | Run the sweepers, but expect no change until row 1 is settled (same stale versions) |
-| Needs a closer look | MESSENGER document collections: the inventories list the products by id without a version; the refs store them the same way and the sweepers read only versioned ids | 49 | 11 | Decide between two fixes (see Details) |
-| Sweepers team | None | 0 | 0 | - |
+| Sweepers team | MESSENGER document collections: the inventories list the products by id without a version; the refs store them the same way and the sweepers read only versioned ids (registry-sweepers#299) | 49 | 11 | Decide between two fixes (see Details) |
+| Needs a closer look | None | 0 | 0 | - |
 | No action | None | 0 | 0 | - |
 
 Collections, row 1: `mars2020_mission:calibration_camera::1.1` (1,127), `mars2020_mission:miscellaneous::1.1` (21), `mars2020_mission:document_camera::16.0` (4).
 Row 2: `mars2020_mission:calibration_camera::1.1`. Row 3: `urn:nasa:pds:messenger:document` (1 product), `urn:nasa:pds:system_bundle:xml_schema` (1 product).
 Registry operations: `mars2020_mission:document_camera::16.0`, `mars2020_rimfax:document::16.0`; stale stamp in `mars2020_mission:miscellaneous::1.1`.
-Closer look: the 11 `urn:nasa:pds:mess_*:document::1.0` collections (grs, mla, ns, rs and xrs bundles in their raw, calibrated and derived variants); the largest are `mess_grs_derived` (8) and `mess_rs_derived` (6).
+Sweepers team: the 11 `urn:nasa:pds:mess_*:document::1.0` collections (grs, mla, ns, rs and xrs bundles in their raw, calibrated and derived variants); the largest are `mess_grs_derived` (8) and `mess_rs_derived` (6).
 
 ## Details
 
@@ -40,7 +40,7 @@ Closer look: the 11 `urn:nasa:pds:mess_*:document::1.0` collections (grs, mla, n
 
 **Registry operations.** `mars2020_mission:document_camera::16.0` and `mars2020_rimfax:document::16.0` are stamped with current version and empty ancestors, and each has a bundle. The bundle `/members` is not empty: `mars2020_mission::4.0` returns 3 collections and `mars2020_rimfax::1.0` returns 4; the stamped collection is the one missing from each. Fixed when: the bundle's `/members` includes it and `empty_refs_with_bundle` is empty in `metrics.json`. The 2 old-stamp products (`mipl_browse.vm::2.0`, `msam_velocity_macros.vmac::8.0`) have provider labels at 1.0 too.
 
-**Closer look (49 products, 11 collections).** All 49 are in their collection's current inventory, but as an id without a version (0 of the entries carry a version). The refs documents of all 11 collections have `product_lid` and no `product_lidvid`. The sweepers' source (`develop`) reads only `product_lidvid`, so these are never selected, and a re-harvest alone would write the same refs (not tested). Fix options: (a) the node lists exact versioned ids in the inventories, then registry operations re-harvests and runs the sweepers; or (b) the sweepers team resolves unversioned refs to the latest version. Fixed when: the 49 leave the audit.
+**Sweepers team (49 products, 11 collections).** All 49 are in their collection's current inventory, but as an id without a version (0 of the entries carry a version). The refs documents of all 11 collections have `product_lid` and no `product_lidvid`. The sweepers' source (`develop`) reads only `product_lidvid`, so these are never selected, and a re-harvest alone would write the same refs (not tested). Fix options: (a) the node lists exact versioned ids in the inventories, then registry operations re-harvests and runs the sweepers; or (b) the sweepers team resolves unversioned refs to the latest version. Fixed when: the 49 leave the audit.
 
 ## Index mapping
 
