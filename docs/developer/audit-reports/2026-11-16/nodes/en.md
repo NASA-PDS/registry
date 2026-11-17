@@ -42,6 +42,22 @@ Collections: `urn:nasa:pds:system_bundle:product_aip` (registry current 56.0), `
 
 From `mapping_discrepancies.csv` (`en-registry`): no field missing at error level; `superseded_by`, `vid`, `lidvid` and the ancestry fields are mapped. Two type conflicts at error level, both against `sbnumd-registry`: `nh:Mission_Elapsed_Time/nh:clock_partition` (en `long`, sbnumd `keyword`) and `sb:Exposure/sb:exposure_description` (en `text`, sbnumd `keyword`). Seven more `sb:` fields (en `double` or `date`, sbnumd `keyword`) and two `insight:` fields (en `integer`, geo `keyword`) are flagged on the other node. Effect: a query across all nodes that treats such a field as a number, date or text can fail or behave differently on one of the two. Ten warnings: fields mapped on most nodes but not here (`pds:Collection/pds:description`, `pds:Observation_Area/pds:comment`, six `pds:SPICE_Kernel` fields, `pds:Special_Constants/pds:not_applicable_constant`, `ref_lid_data`); such values would be returned but not searchable. The en documents I sampled do not carry them; I did not check all. Owner: registry operations with the index owners.
 
+<!-- product-samples:start -->
+## Example products
+
+Up to 3 products from each of the 6 largest problem groups of 6 (one rule in one collection, node problems first). Every group, with up to 10 products and the reason for each, is in [`product_samples.csv`](../audit-output/en/product_samples.csv).
+
+| Who | Rule | Collection | Products in group | Examples |
+|---|---|---|--:|---|
+| Node | `collection_not_loaded_overdue` | `(none found)` | 342 | `tbd_urnprefixsystem_bundle:xml_schema:img-xml_schema::1.0`<br>`urn:jaxa:darts:system_bundle:xml_schema:hyb2-xml_schema_1.14.0.0_1.0.0.0::1.0`<br>`urn:jaxa:darts:system_bundle:xml_schema:hyb2-xml_schema_1.14.0.0_1.1.0.0::1.0` |
+| Node | `not_in_collection_inventory` | `urn:nasa:pds:system_bundle:product_sip_deep_archive::1.0` | 180 | `urn:nasa:pds:system_bundle:product_sip_deep_archive:astromat_v1.0_20240528::1.0`<br>`urn:nasa:pds:system_bundle:product_sip_deep_archive:asurgcps_slides_jovian_system_v1.0_20240209::1.0`<br>`urn:nasa:pds:system_bundle:product_sip_deep_archive:bc_spice_v1.0_20231128::1.0` |
+| Node | `not_in_collection_inventory` | `urn:nasa:pds:system_bundle:product_aip::1.0` | 179 | `urn:nasa:pds:system_bundle:product_aip:astromat_v1.0_20240528::1.0`<br>`urn:nasa:pds:system_bundle:product_aip:asurgcps_slides_jovian_system_v1.0_20240209::1.0`<br>`urn:nasa:pds:system_bundle:product_aip:bc_spice_v1.0_20231128::1.0` |
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:context:miscellaneous::1.1` | 1 | `urn:nasa:pds:context:miscellaneous:lids_deprecated::1.2` |
+| Node | `not_in_collection_inventory` | `urn:nasa:pds:system_bundle:product_aip::2.0` | 1 | `urn:nasa:pds:system_bundle:product_aip:msl_gt_diagenesis_supplement_v1.1_20240209::2.0` |
+| Needs a closer look | `refs_missing` | `urn:nasa:pds:system_bundle:document_policy::1.0` | 2 | `urn:nasa:pds:system_bundle:document_policy:pdsmc_data_integrity_schedule_policy::2.0`<br>`urn:nasa:pds:system_bundle:document_policy:pdsmc_formats_policy::2.0` |
+
+<!-- product-samples:end -->
+
 ## Reproduce
 
 ```bash

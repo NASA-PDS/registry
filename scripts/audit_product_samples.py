@@ -28,6 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from unprocessed_audit.model import Rule  # noqa: E402
 from unprocessed_audit.model import Severity  # noqa: E402
+from unprocessed_audit.ownership import OWNER_LABELS  # noqa: E402
 from unprocessed_audit.ownership import Owner  # noqa: E402
 from unprocessed_audit.ownership import owner_of  # noqa: E402
 
@@ -125,6 +126,69 @@ def sample_rows(node: str, path: Path, per_group: int) -> list[dict[str, str]]:
     return rows
 
 
+REPORT_START = "<!-- product-samples:start -->"
+REPORT_END = "<!-- product-samples:end -->"
+
+
+def render_examples_section(node: str, rows: list[dict[str, str]], examples: int = 3, max_groups: int = 10) -> str:
+    """Render the "Example products" section of a node report.
+
+    Args:
+        node: Node name, used in the link to the sample file.
+        rows: Rows from ``sample_rows``, ordered by owner and then by group size.
+        examples: Example products shown per group.
+        max_groups: Groups shown, in the order of ``rows``.
+
+    Returns:
+        Markdown between the start and end markers, ending in a newline.
+    """
+    lines = [REPORT_START, "## Example products", ""]
+    groups: dict[tuple[str, str, str], list[dict[str, str]]] = {}
+    for row in rows:
+        groups.setdefault((row["owner"], row["rule"], row["collection_lidvid"]), []).append(row)
+    if not groups:
+        lines += ["No product needs attention.", "", REPORT_END]
+        return "\n".join(lines) + "\n"
+    shown = list(groups.items())[:max_groups]
+    lines += [
+        f"Up to {examples} products from each of the {len(shown)} largest problem groups of {len(groups)} "
+        f"(one rule in one collection, node problems first). Every group, with up to 10 products and the reason for "
+        f"each, is in [`product_samples.csv`](../audit-output/{node}/product_samples.csv).",
+        "",
+        "| Who | Rule | Collection | Products in group | Examples |",
+        "|---|---|---|--:|---|",
+    ]
+    for (owner, rule, collection), group_rows in shown:
+        owner_label = OWNER_LABELS[Owner(owner)]
+        names = "<br>".join(f"`{r['lidvid']}`" for r in group_rows[:examples])
+        size = int(group_rows[0]["products_in_group"])
+        lines.append(f"| {owner_label} | `{rule}` | `{collection}` | {size:,} | {names} |")
+    lines += ["", REPORT_END]
+    return "\n".join(lines) + "\n"
+
+
+def update_node_report(report: Path, section: str) -> None:
+    """Put the examples section into a node report, replacing an earlier one.
+
+    The section goes between its markers. A report without markers gets it before its "Reproduce" heading, or at
+    the end when it has none.
+
+    Args:
+        report: The node's markdown report.
+        section: Output of ``render_examples_section``.
+    """
+    text = report.read_text(encoding="utf-8")
+    if REPORT_START in text and REPORT_END in text:
+        start = text.index(REPORT_START)
+        end = text.index(REPORT_END) + len(REPORT_END) + 1
+        text = text[:start] + section + text[end:]
+    elif "\n## Reproduce" in text:
+        text = text.replace("\n## Reproduce", "\n" + section + "\n## Reproduce", 1)
+    else:
+        text = text.rstrip("\n") + "\n\n" + section
+    report.write_text(text, encoding="utf-8")
+
+
 def find_products_csv(node_dir: Path) -> Path | None:
     """Return the per-product CSV in a node's audit directory, or ``None``."""
     for name in ("unprocessed_products.csv.gz", "unprocessed_products.csv"):
@@ -152,9 +216,18 @@ def main(argv: list[str] | None = None) -> int:
         help="Where to write <node>/product_samples.csv (default: --audits-dir)",
     )
     parser.add_argument("--per-group", type=int, default=10, metavar="N", help="Example products per group (default: 10)")
+    parser.add_argument(
+        "--report-dir",
+        type=Path,
+        default=None,
+        metavar="DIR",
+        help="Directory of <node>.md reports; each gets an 'Example products' section (between markers)",
+    )
+    parser.add_argument("--examples", type=int, default=3, metavar="N", help="Products per group in a report (default: 3)")
+    parser.add_argument("--max-groups", type=int, default=10, metavar="N", help="Groups in a report (default: 10)")
     args = parser.parse_args(argv)
-    if args.per_group < 1:
-        parser.error("--per-group must be at least 1")
+    if min(args.per_group, args.examples, args.max_groups) < 1:
+        parser.error("--per-group, --examples and --max-groups must be at least 1")
     logging.basicConfig(level=logging.INFO, stream=sys.stderr, format="%(levelname)s %(message)s")
 
     output_dir = args.output_dir or args.audits_dir
@@ -170,6 +243,9 @@ def main(argv: list[str] | None = None) -> int:
             writer = csv.DictWriter(handle, fieldnames=SAMPLE_COLUMNS)
             writer.writeheader()
             writer.writerows(rows)
+        if args.report_dir is not None and (args.report_dir / f"{node_dir.name}.md").is_file():
+            section = render_examples_section(node_dir.name, rows, args.examples, args.max_groups)
+            update_node_report(args.report_dir / f"{node_dir.name}.md", section)
         groups = len({(r["rule"], r["collection_lidvid"]) for r in rows})
         logger.info("%s: %d example products from %d groups -> %s", node_dir.name, len(rows), groups, target)
         written += 1

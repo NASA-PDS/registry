@@ -31,6 +31,26 @@ Tracking issue: NASA-PDS/registry#610, which has the per-collection tables.
 
 `atm-registry` (concrete index `temp-atm-registry`) has two error-level problems: `ops:Provenance/ops:superseded_by` and `vid` are not mapped, so superseded products cannot be excluded in searches and `vid` cannot be searched or sorted (NASA-PDS/registry#611). It also has 2 warning-level missing fields and one type conflict (`img:Exposure/img:exposure_duration_count` is `long` here and on `img`, `double` on `geo` and `sbnpsi`). Owner: registry operations, by mapping the two fields and rewriting the documents.
 
+<!-- product-samples:start -->
+## Example products
+
+Up to 3 products from each of the 10 largest problem groups of 27 (one rule in one collection, node problems first). Every group, with up to 10 products and the reason for each, is in [`product_samples.csv`](../audit-output/atm/product_samples.csv).
+
+| Who | Rule | Collection | Products in group | Examples |
+|---|---|---|--:|---|
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:maven.iuvs.raw:disk::13.0` | 662,080 | `urn:nasa:pds:maven.iuvs.raw:disk:mvn_iuv_l1a_apoapse-orbit00107-fuv_20141018t084026::13.1`<br>`urn:nasa:pds:maven.iuvs.raw:disk:mvn_iuv_l1a_apoapse-orbit00107-fuv_20141018t084402::13.1`<br>`urn:nasa:pds:maven.iuvs.raw:disk:mvn_iuv_l1a_apoapse-orbit00107-fuv_20141018t085130::13.1` |
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:maven.iuvs.raw:limb::13.0` | 652,875 | `urn:nasa:pds:maven.iuvs.raw:limb:mvn_iuv_l1a_inlimb-orbit03442-fuv_20160706t060729::13.0`<br>`urn:nasa:pds:maven.iuvs.raw:limb:mvn_iuv_l1a_inlimb-orbit03442-fuv_20160706t060934::13.0`<br>`urn:nasa:pds:maven.iuvs.raw:limb:mvn_iuv_l1a_inlimb-orbit03442-fuvdark_20160706t061138::13.0` |
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:maven.iuvs.calibrated:disk::13.0` | 572,804 | `urn:nasa:pds:maven.iuvs.calibrated:disk:mvn_iuv_l1b_apoapse-orbit00107-fuv_20141018t084026::13.0`<br>`urn:nasa:pds:maven.iuvs.calibrated:disk:mvn_iuv_l1b_apoapse-orbit00107-fuv_20141018t084402::13.0`<br>`urn:nasa:pds:maven.iuvs.calibrated:disk:mvn_iuv_l1b_apoapse-orbit00107-fuv_20141018t085130::13.0` |
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:maven.iuvs.calibrated:limb::13.0` | 564,930 | `urn:nasa:pds:maven.iuvs.calibrated:limb:mvn_iuv_l1b_inlimb-orbit03190-fuv_20160520t144707::13.0`<br>`urn:nasa:pds:maven.iuvs.calibrated:limb:mvn_iuv_l1b_inlimb-orbit03190-fuv_20160520t144912::13.0`<br>`urn:nasa:pds:maven.iuvs.calibrated:limb:mvn_iuv_l1b_inlimb-orbit03190-muv_20160520t144707::13.0` |
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:maven.iuvs.raw:calibration::13.0` | 70,966 | `urn:nasa:pds:maven.iuvs.raw:calibration:mvn_iuv_l1a_centroid-orbit00420-muvdark_20141217t073310::13.0`<br>`urn:nasa:pds:maven.iuvs.raw:calibration:mvn_iuv_l1a_centroid-orbit00421-muvdark_20141217t102809::13.0`<br>`urn:nasa:pds:maven.iuvs.raw:calibration:mvn_iuv_l1a_centroid-orbit00424-muvdark_20141218t015237::13.0` |
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:maven.iuvs.raw:echelle::13.0` | 68,592 | `urn:nasa:pds:maven.iuvs.raw:echelle:mvn_iuv_l1a_apoapse-orbit00727-echdark_20150213t191758::13.0`<br>`urn:nasa:pds:maven.iuvs.raw:echelle:mvn_iuv_l1a_apoapse-orbit00729-echdark_20150214t042312::13.0`<br>`urn:nasa:pds:maven.iuvs.raw:echelle:mvn_iuv_l1a_apoapse-orbit00737-echdark_20150215t163859::13.0` |
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:maven.iuvs.calibrated:calibration::13.0` | 62,437 | `urn:nasa:pds:maven.iuvs.calibrated:calibration:mvn_iuv_l1b_centroid-orbit00458-fuv_20141224t133833::13.0`<br>`urn:nasa:pds:maven.iuvs.calibrated:calibration:mvn_iuv_l1b_centroid-orbit00462-fuv_20141225t075759::13.0`<br>`urn:nasa:pds:maven.iuvs.calibrated:calibration:mvn_iuv_l1b_centroid-orbit00466-fuv_20141226t021718::13.0` |
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:maven.iuvs.calibrated:echelle::13.0` | 41,947 | `urn:nasa:pds:maven.iuvs.calibrated:echelle:mvn_iuv_l1b_apoapse-orbit01274-ech_20150527t050045::13.0`<br>`urn:nasa:pds:maven.iuvs.calibrated:echelle:mvn_iuv_l1b_apoapse-orbit01274-ech_20150527t052719::13.0`<br>`urn:nasa:pds:maven.iuvs.calibrated:echelle:mvn_iuv_l1b_apoapse-orbit01274-ech_20150527t055351::13.0` |
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:maven.iuvs.raw:corona::13.0` | 28,542 | `urn:nasa:pds:maven.iuvs.raw:corona:mvn_iuv_l1a_incorona-orbit03442-fuv_20160706t054634::13.0`<br>`urn:nasa:pds:maven.iuvs.raw:corona:mvn_iuv_l1a_incorona-orbit03442-fuvdark_20160706t054600::13.0`<br>`urn:nasa:pds:maven.iuvs.raw:corona:mvn_iuv_l1a_incorona-orbit03442-muv_20160706t054634::13.0` |
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:maven.iuvs.calibrated:corona::13.0` | 17,617 | `urn:nasa:pds:maven.iuvs.calibrated:corona:mvn_iuv_l1b_incorona-orbit03190-fuv_20160520t142612::13.0`<br>`urn:nasa:pds:maven.iuvs.calibrated:corona:mvn_iuv_l1b_incorona-orbit03190-muv_20160520t142612::13.0`<br>`urn:nasa:pds:maven.iuvs.calibrated:corona:mvn_iuv_l1b_incorona-orbit03442-fuv_20160706t054634::13.0` |
+
+<!-- product-samples:end -->
+
 ## Reproduce
 
 ```bash

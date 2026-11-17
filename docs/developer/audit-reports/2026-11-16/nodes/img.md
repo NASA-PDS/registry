@@ -49,6 +49,22 @@ Collections for registry operations: `urn:nasa:pds:artemis2_crew_camera:data_pro
 - 22 warning-level fields are absent from img but present on most nodes, mainly table and binary-record descriptions (`pds:Table_Binary/*`, `pds:Field_Binary/*`, `pds:Record_Binary/*`) plus `pds:Collection/pds:description` and `ref_lid_facility`. Products carrying them can be fetched but those fields cannot be searched on img. I did not check whether img holds such products.
 - Owner: registry operations with the index owners; none of this blocks the actions above.
 
+<!-- product-samples:start -->
+## Example products
+
+Up to 3 products from each of the 6 largest problem groups of 6 (one rule in one collection, node problems first). Every group, with up to 10 products and the reason for each, is in [`product_samples.csv`](../audit-output/img/product_samples.csv).
+
+| Who | Rule | Collection | Products in group | Examples |
+|---|---|---|--:|---|
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:mars2020_navcam_ops_mosaic:data::16.0` | 516 | `urn:nasa:pds:mars2020_navcam_ops_mosaic:data:n_lrgb_1756_fdr_0831252_cyl_l_autogenj.lis::1.0`<br>`urn:nasa:pds:mars2020_navcam_ops_mosaic:data:n_lrgb_1756_fdr_0831252_cyl_l_hrestopj.lis::1.0`<br>`urn:nasa:pds:mars2020_navcam_ops_mosaic:data:n_lrgb_1756_fdr_0831252_cyp_r_autogenj.lis::1.0` |
+| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:artemis2_crew_camera:data_processed::1.0` | 9,961 | `urn:nasa:pds:artemis2_crew_camera:data_processed:art002e004437_nkd5015_prc.tif::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_processed:art002e004438_nkd5015_prc.tif::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_processed:art002e004439_nkd5017_prc.tif::1.0` |
+| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:artemis2_crew_camera:data_raw::1.0` | 9,141 | `urn:nasa:pds:artemis2_crew_camera:data_raw:art002e009179_nkd5017_raw.tif::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_raw:art002e009180_nkd5017_raw.tif::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_raw:art002e009181_nkd5017_raw.tif::1.0` |
+| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:artemis2_crew_camera:data_source::1.0` | 8,671 | `urn:nasa:pds:artemis2_crew_camera:data_source:art002e009276_nkd5017_src.nef::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_source:art002e009277_nkd5015_src.nef::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_source:art002e009278_nkd5015_src.nef::1.0` |
+| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:artemis2_crew_camera:browse::1.0` | 8,530 | `urn:nasa:pds:artemis2_crew_camera:browse:art002e009624_nkd5015_prc.png::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:browse:art002e009625_nkd5015_prc.png::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:browse:art002e009626_nkd5015_prc.png::1.0` |
+| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data::1.0` | 20 | `urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data:wac.m101013765ce::2.0`<br>`urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data:wac.m101014131ce::2.0`<br>`urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data:wac.m101014500ce::2.0` |
+
+<!-- product-samples:end -->
+
 ## Reproduce
 
 ```bash

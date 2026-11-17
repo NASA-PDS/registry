@@ -46,6 +46,26 @@ Sweepers team: the 11 `urn:nasa:pds:mess_*:document::1.0` collections (grs, mla,
 
 `geo-registry` has no missing fields. It has 2 error-level type mismatches, both `keyword` where the other nodes use `integer`: `insight:Observation_Information/insight:release_number` (integer in en, ppi, temp-atm) and `insight:Observation_Information/insight:spacecraft_clock_count_partition` (integer in en, ppi). On geo these cannot be searched as numbers (no range queries, string ordering), and a search across all nodes mixes types. `img:Exposure/img:exposure_duration_count` is `double` on geo and sbnpsi, `long` on img and temp-atm (reported against img and temp-atm). Owner: registry operations with the index owners; changing a type needs a new index and reindex.
 
+<!-- product-samples:start -->
+## Example products
+
+Up to 3 products from each of the 10 largest problem groups of 17 (one rule in one collection, node problems first). Every group, with up to 10 products and the reason for each, is in [`product_samples.csv`](../audit-output/geo/product_samples.csv).
+
+| Who | Rule | Collection | Products in group | Examples |
+|---|---|---|--:|---|
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:mars2020_mission:calibration_camera::1.1` | 1,127 | `urn:nasa:pds:mars2020_mission:calibration_camera:fm102_flat_raw_bias_mask::1.1`<br>`urn:nasa:pds:mars2020_mission:calibration_camera:fm102_flat_rgb_bias_mask::1.1`<br>`urn:nasa:pds:mars2020_mission:calibration_camera:fm103_flat_raw_bias_mask::1.1` |
+| Node | `not_in_collection_inventory` | `urn:nasa:pds:mars2020_mission:calibration_camera::1.1` | 168 | `urn:nasa:pds:mars2020_mission:calibration_camera:heli_nav_fm_mframe.cahvore::1.0`<br>`urn:nasa:pds:mars2020_mission:calibration_camera:l0_0000_cont_v1::1.0`<br>`urn:nasa:pds:mars2020_mission:calibration_camera:l0_0660_cont_v1::1.0` |
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:mars2020_mission:miscellaneous::1.1` | 21 | `urn:nasa:pds:mars2020_mission:miscellaneous:ancillary_file_text.vm::2.0`<br>`urn:nasa:pds:mars2020_mission:miscellaneous:cal_file_image.vm::3.0`<br>`urn:nasa:pds:mars2020_mission:miscellaneous:cal_file_text.vm::2.0` |
+| Node | `inventory_version_mismatch` | `urn:nasa:pds:mars2020_mission:document_camera::16.0` | 4 | `urn:nasa:pds:mars2020_mission:document_camera:helicam_release_notes.txt::12.0`<br>`urn:nasa:pds:mars2020_mission:document_camera:mars2020_camera_bundle_sis.pdf::3.0`<br>`urn:nasa:pds:mars2020_mission:document_camera:mars2020_camera_sis_pipeline_flow.pdf::2.0` |
+| Node | `collection_not_loaded_overdue` | `(none found)` | 2 | `urn:nasa:pds:messenger:document:geo_notes_and_errata::1.0`<br>`urn:nasa:pds:system_bundle:xml_schema:speclib-xml_schema_1.22.0.0_1.5.0.0::1.0` |
+| Registry operations | `stale_stamp` | `urn:nasa:pds:mars2020_mission:miscellaneous::1.1` | 2 | `urn:nasa:pds:mars2020_mission:miscellaneous:mipl_browse.vm::2.0`<br>`urn:nasa:pds:mars2020_mission:miscellaneous:msam_velocity_macros.vmac::8.0` |
+| Sweepers team | `bare_lid_in_inventory` | `urn:nasa:pds:mess_grs_derived:document::1.0` | 8 | `urn:nasa:pds:mess_grs_derived:document:geometry_info::1.0`<br>`urn:nasa:pds:mess_grs_derived:document:grs_cdr-rdr-dap_sis::1.0`<br>`urn:nasa:pds:mess_grs_derived:document:mess_grs_cdr_rdr_ds::1.0` |
+| Sweepers team | `bare_lid_in_inventory` | `urn:nasa:pds:mess_rs_derived:document::1.0` | 6 | `urn:nasa:pds:mess_rs_derived:document:mess_rs_inst::1.0`<br>`urn:nasa:pds:mess_rs_derived:document:mess_rs_occsum_sis::1.0`<br>`urn:nasa:pds:mess_rs_derived:document:mess_rs_rdr_ds::1.0` |
+| Sweepers team | `bare_lid_in_inventory` | `urn:nasa:pds:mess_mla_calibrated:document::1.0` | 5 | `urn:nasa:pds:mess_mla_calibrated:document:jp2info::1.0`<br>`urn:nasa:pds:mess_mla_calibrated:document:mess_mla_cdr_rdr_ds::1.0`<br>`urn:nasa:pds:mess_mla_calibrated:document:mess_mla_gdr_v1_ds::1.0` |
+| Sweepers team | `bare_lid_in_inventory` | `urn:nasa:pds:mess_mla_derived:document::1.0` | 5 | `urn:nasa:pds:mess_mla_derived:document:jp2info::1.0`<br>`urn:nasa:pds:mess_mla_derived:document:mess_mla_gdr_v2_ds::1.0`<br>`urn:nasa:pds:mess_mla_derived:document:mess_mla_rdr_ds::1.0` |
+
+<!-- product-samples:end -->
+
 ## Reproduce
 
 ```bash

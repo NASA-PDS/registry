@@ -23,6 +23,13 @@ The audit was run with the collection inventories enabled; with no candidate pro
 - **Type conflict:** `ops:Provenance/ops:registry_sweepers_provenance_version` is `keyword` on RMS and `integer` on the other 9 tenant indices. This is the legacy provenance version field: the sweepers now select work on a separate field, `ops:Provenance/ops:registry_sweepers_provenance_hotfixed_version`, and clear this one, so the difference has no known effect on current sweeper runs. It is a leftover of the earlier keyword-versus-integer problem. A mapping type cannot be changed in place, so aligning it means reindexing RMS; owner: registry operations, with the index owners.
 - **Missing fields (warnings):** 12 `pds:` fields that most nodes map, for example `pds:Array_3D_Image/pds:axes`, `pds:Person/pds:family_name` and `pds:Science_Facets/pds:domain`. A value in these fields is stored but cannot be searched on RMS.
 
+<!-- product-samples:start -->
+## Example products
+
+No product needs attention.
+
+<!-- product-samples:end -->
+
 ## Reproduce
 
 ```bash

@@ -60,6 +60,26 @@ Confirm: the 67 products show stamp 7 and `ancestor_refs`, and `/products/<colle
 `sbnpsi-registry` has 1356 mapped fields and no discrepancies (0 errors, 0 warnings). It is the reference
 mapping the other nodes are compared with (for example `title` and `description` are `text`). Nothing to do.
 
+<!-- product-samples:start -->
+## Example products
+
+Up to 3 products from each of the 10 largest problem groups of 11 (one rule in one collection, node problems first). Every group, with up to 10 products and the reason for each, is in [`product_samples.csv`](../audit-output/sbnpsi/product_samples.csv).
+
+| Who | Rule | Collection | Products in group | Examples |
+|---|---|---|--:|---|
+| Node | `collection_not_loaded_overdue` | `(none found)` | 1 | `urn:nasa:pds:system_bundle:xml_schema:sp-xml_schema_1.15.0.0_1.3.1.0::1.0` |
+| Node | `not_in_collection_inventory` | `urn:nasa:pds:hst.ast-ceres.uv-spectra:document::1.0` | 1 | `urn:nasa:pds:hst.ast-ceres.uv-spectra:document:hst.hstacs::1.0` |
+| Registry operations | `stale_stamp` | `urn:nasa:pds:iue.ast.hendrix.spectra:document::1.0` | 21 | `urn:nasa:pds:iue.ast.hendrix.spectra:document:22kalliope_lwr12303_ines_fits_headers::1.0`<br>`urn:nasa:pds:iue.ast.hendrix.spectra:document:3juno_lwr01896_ines_fits_headers::1.0`<br>`urn:nasa:pds:iue.ast.hendrix.spectra:document:3juno_lwr05678_ines_fits_headers::1.0` |
+| Registry operations | `stale_stamp` | `urn:nasa:pds:iue.ast.hendrix.spectra:data::1.0` | 16 | `urn:nasa:pds:iue.ast.hendrix.spectra:data:hebe_9488_refl_csv::1.0`<br>`urn:nasa:pds:iue.ast.hendrix.spectra:data:hebe_9495_refl_csv::1.0`<br>`urn:nasa:pds:iue.ast.hendrix.spectra:data:hebe_9496_refl_csv::1.0` |
+| Registry operations | `stale_stamp` | `urn:nasa:pds:neowise_diameters_albedos:data::1.0` | 8 | `urn:nasa:pds:neowise_diameters_albedos:data:neowise_ambos_tab::1.0`<br>`urn:nasa:pds:neowise_diameters_albedos:data:neowise_centaurs_tab::1.0`<br>`urn:nasa:pds:neowise_diameters_albedos:data:neowise_hildas_tab::1.0` |
+| Registry operations | `stale_stamp` | `urn:nasa:pds:smallbodiesoccultations:data::1.0` | 6 | `urn:nasa:pds:smallbodiesoccultations:data:occlist_tab::1.0`<br>`urn:nasa:pds:smallbodiesoccultations:data:occsatlist_tab::1.0`<br>`urn:nasa:pds:smallbodiesoccultations:data:occsatsummary_tab::1.0` |
+| Registry operations | `stale_stamp` | `urn:nasa:pds:smallbodiesoccultations:data::2.0` | 6 | `urn:nasa:pds:smallbodiesoccultations:data:occlist_20180322_tab::2.0`<br>`urn:nasa:pds:smallbodiesoccultations:data:occsatlist_20180322_tab::2.0`<br>`urn:nasa:pds:smallbodiesoccultations:data:occsatsummary_20180712_tab::2.0` |
+| Registry operations | `stale_stamp` | `urn:nasa:pds:smallbodiesoccultations:data::3.0` | 6 | `urn:nasa:pds:smallbodiesoccultations:data:occlist_2019_tab::3.0`<br>`urn:nasa:pds:smallbodiesoccultations:data:occsatlist_2019_tab::3.0`<br>`urn:nasa:pds:smallbodiesoccultations:data:occsatsummary_2019_tab::3.0` |
+| Registry operations | `stale_stamp` | `urn:nasa:pds:neowise_diameters_albedos:document::1.0` | 2 | `urn:nasa:pds:neowise_diameters_albedos:document:aa_document_index::1.0`<br>`urn:nasa:pds:neowise_diameters_albedos:document:ref::1.0` |
+| Registry operations | `stale_stamp` | `urn:nasa:pds:smallbodiesoccultations:document::1.0` | 1 | `urn:nasa:pds:smallbodiesoccultations:document:occ2017::1.0` |
+
+<!-- product-samples:end -->
+
 ## Reproduce
 
 ```bash

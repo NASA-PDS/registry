@@ -54,6 +54,18 @@ Warnings and errors from `mapping_discrepancies.csv` (`naif-registry`: 134 mappe
   so their values cannot be searched or filtered. Fixing the types normally needs a new index and a reindex
   (not verified). Owner: registry operations with the index owners.
 
+<!-- product-samples:start -->
+## Example products
+
+Up to 3 products from each of the 2 largest problem groups of 2 (one rule in one collection, node problems first). Every group, with up to 10 products and the reason for each, is in [`product_samples.csv`](../audit-output/naif/product_samples.csv).
+
+| Who | Rule | Collection | Products in group | Examples |
+|---|---|---|--:|---|
+| Registry operations | `refs_missing` | `urn:nasa:pds:dart.spice:document::4.0` | 1 | `urn:nasa:pds:dart.spice:document:spiceds::4.0` |
+| Registry operations | `refs_missing` | `urn:nasa:pds:dart.spice:miscellaneous::4.0` | 1 | `urn:nasa:pds:dart.spice:miscellaneous:checksum_checksum::4.0` |
+
+<!-- product-samples:end -->
+
 ## Reproduce
 
 ```bash

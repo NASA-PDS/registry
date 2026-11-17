@@ -20,6 +20,13 @@ The audit was run with the collection inventories enabled; with no candidate pro
 
 `ppi-registry` has no error-level problems: no missing core field and no type conflict. It has 2 warning-level missing fields, `geom:SPICE_Kernel_Identification/geom:spice_kernel_file_name` and `pds:Element_Array/pds:value_offset`, which most other nodes map. A value in either field is stored but cannot be searched on PPI. Fixing it means adding the fields to the mapping and rewriting the documents (see NASA-PDS/registry#612); owner: registry operations with the index owners.
 
+<!-- product-samples:start -->
+## Example products
+
+No product needs attention.
+
+<!-- product-samples:end -->
+
 ## Reproduce
 
 ```bash

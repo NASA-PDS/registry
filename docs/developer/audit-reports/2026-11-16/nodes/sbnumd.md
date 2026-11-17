@@ -38,6 +38,26 @@ Collections: reloaded products - `bopps2014:raw::1.0` (10 products), `bopps2014:
 What it breaks: number or date range and sort queries on these fields compare text on `sbnumd` and behave differently from `en`, so a search across nodes gives inconsistent results; `exposure_description` is not full-text searchable here.
 Who fixes it: registry operations with the owners of the `en`, `sbnpsi` and `sbnumd` indices; a changed field type needs a new index and a reindex.
 
+<!-- product-samples:start -->
+## Example products
+
+Up to 3 products from each of the 10 largest problem groups of 12 (one rule in one collection, node problems first). Every group, with up to 10 products and the reason for each, is in [`product_samples.csv`](../audit-output/sbnumd/product_samples.csv).
+
+| Who | Rule | Collection | Products in group | Examples |
+|---|---|---|--:|---|
+| Node | `not_in_collection_inventory` | `urn:nasa:pds:lucy.rss:data_dinkinesh_trk234::1.0` | 1 | `urn:nasa:pds:lucy.rss:data_dinkinesh_trk234:collection_overview::1.0` |
+| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:bopps2014:raw::1.0` | 10 | `urn:nasa:pds:bopps2014:raw:jaca_4_041959996_n016_0003r_fit::1.0`<br>`urn:nasa:pds:bopps2014:raw:jaca_4_042759996_n016_0003r_fit::1.0`<br>`urn:nasa:pds:bopps2014:raw:jacb_3_043960000_n017_0122r_fit::1.0` |
+| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:bopps2014:groundcalibration::1.0` | 3 | `urn:nasa:pds:bopps2014:groundcalibration:st28_9_021159996_p012_0003r_fit::1.0`<br>`urn:nasa:pds:bopps2014:groundcalibration:st79_3_161259986_p018_0014b_fit::1.0`<br>`urn:nasa:pds:bopps2014:groundcalibration:st79_3_161259986_p018_0014r_fit::1.0` |
+| Registry operations | `stale_stamp` | `urn:nasa:pds:lucy.mvic:document::1.0` | 3 | `urn:nasa:pds:lucy.mvic:document:collection_overview::1.0`<br>`urn:nasa:pds:lucy.mvic:document:lralph_mvic_cal_procedure::1.0`<br>`urn:nasa:pds:lucy.mvic:document:mvic_sis::1.0` |
+| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:bopps2014:biassub::1.0` | 1 | `urn:nasa:pds:bopps2014:biassub:jca2_3_054000012_n019_0007b_fit::1.0` |
+| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:bopps2014:calibrated::1.0` | 1 | `urn:nasa:pds:bopps2014:calibrated:jca2_3_054000012_n019_0007e_fit::1.0` |
+| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:liciacube:document::1.0` | 1 | `urn:nasa:pds:liciacube:document:asi_liciacube_leialuke_calibration_pipeline_description::1.0` |
+| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:lucy.leisa:data_donaldjohanson_calibrated::1.0` | 1 | `urn:nasa:pds:lucy.leisa:data_donaldjohanson_calibrated:collection_overview::1.0` |
+| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:lucy.leisa:data_donaldjohanson_raw::1.0` | 1 | `urn:nasa:pds:lucy.leisa:data_donaldjohanson_raw:collection_overview::1.0` |
+| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:lucy.ltes:data_donaldjohanson_calibrated::1.0` | 1 | `urn:nasa:pds:lucy.ltes:data_donaldjohanson_calibrated:collection_overview::1.0` |
+
+<!-- product-samples:end -->
+
 ## Reproduce
 
 ```bash

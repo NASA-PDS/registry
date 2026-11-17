@@ -49,6 +49,26 @@ Waiting: `em16_tgo_cas:browse_calibrated::2.0` (601,275), `em16_tgo_cas:data_cal
 
 `psa-registry` has no error-level problems and `psa-registry-refs` has none at all. Six warning-level fields, absent from `psa-registry` but present on 8 of 10 nodes: `pds:Affiliation/pds:organization_name`, `pds:Person/pds:family_name`, `pds:Person/pds:given_name`, `pds:Person/pds:person_orcid`, `pds:Context_Area/pds:comment`, `pds:Special_Constants/pds:invalid_constant`. Because the index is not dynamic, products carrying them can be fetched but those fields cannot be searched. I did not check whether PSA documents carry them. Owner: registry operations with the index owners.
 
+<!-- product-samples:start -->
+## Example products
+
+Up to 3 products from each of the 10 largest problem groups of 50 (one rule in one collection, node problems first). Every group, with up to 10 products and the reason for each, is in [`product_samples.csv`](../audit-output/psa/product_samples.csv).
+
+| Who | Rule | Collection | Products in group | Examples |
+|---|---|---|--:|---|
+| Node | `collection_not_loaded_overdue` | `(none found)` | 20,941 | `urn:esa:psa:bc_mpo_berm:document:ber_doc_pinto_2022::1.0`<br>`urn:esa:psa:bc_mpo_berm:document:eaicd::2.1`<br>`urn:esa:psa:bc_mpo_berm:document:pdd::1.2` |
+| Node | `inventory_version_mismatch` | `urn:esa:psa:em16_tgo_cas:browse_calibrated::2.0` | 5,673 | `urn:esa:psa:em16_tgo_cas:browse_calibrated:cas_cal_sc_browse_20180901t033549-20180901t033553-3446-36-blu-275493888-0-2::4.0`<br>`urn:esa:psa:em16_tgo_cas:browse_calibrated:cas_cal_sc_browse_20180901t033549-20180901t033553-3446-36-blu-275493888-1-2::4.0`<br>`urn:esa:psa:em16_tgo_cas:browse_calibrated:cas_cal_sc_browse_20180901t033549-20180901t033553-3446-36-blu-275493888-2-2::4.0` |
+| Node | `inventory_version_mismatch` | `urn:esa:psa:em16_tgo_cas:browse_raw::2.0` | 912 | `urn:esa:psa:em16_tgo_cas:browse_raw:cas_raw_sc_browse_20180621t095757-20180621t095801-2570-24-blu-273699053-4-2::4.0`<br>`urn:esa:psa:em16_tgo_cas:browse_raw:cas_raw_sc_browse_20180621t095757-20180621t095801-2570-24-nir-273699053-4-1::4.0`<br>`urn:esa:psa:em16_tgo_cas:browse_raw:cas_raw_sc_browse_20180621t095757-20180621t095801-2570-24-pan-273699053-4-0::4.0` |
+| Node | `inventory_version_mismatch` | `urn:esa:psa:em16_tgo_cas:data_raw::105.1` | 912 | `urn:esa:psa:em16_tgo_cas:data_raw:cas_raw_sc_20180621t095757-20180621t095801-2570-24-blu-273699053-4-2::4.0`<br>`urn:esa:psa:em16_tgo_cas:data_raw:cas_raw_sc_20180621t095757-20180621t095801-2570-24-nir-273699053-4-1::4.0`<br>`urn:esa:psa:em16_tgo_cas:data_raw:cas_raw_sc_20180621t095757-20180621t095801-2570-24-pan-273699053-4-0::4.0` |
+| Node | `inventory_version_mismatch` | `urn:esa:psa:bc_mtm_mcam:browse::2.0` | 236 | `urn:esa:psa:bc_mtm_mcam:browse:cam_raw_sc_cam1_browse_20181020t170632_01_f__a0100::2.0`<br>`urn:esa:psa:bc_mtm_mcam:browse:cam_raw_sc_cam1_browse_20181020t170738_02_f__t0005::2.0`<br>`urn:esa:psa:bc_mtm_mcam:browse:cam_raw_sc_cam1_browse_20181020t170748_03_f__t0020::2.0` |
+| Node | `inventory_version_mismatch` | `urn:esa:psa:bc_mtm_mcam:data_raw::2.0` | 236 | `urn:esa:psa:bc_mtm_mcam:data_raw:cam_raw_sc_cam1_image_20181020t170632_01_f__a0100::2.0`<br>`urn:esa:psa:bc_mtm_mcam:data_raw:cam_raw_sc_cam1_image_20181020t170738_02_f__t0005::2.0`<br>`urn:esa:psa:bc_mtm_mcam:data_raw:cam_raw_sc_cam1_image_20181020t170748_03_f__t0020::2.0` |
+| Node | `inventory_version_mismatch` | `urn:esa:psa:em16_tgo_frd:data_partially_processed::59.3` | 24 | `urn:esa:psa:em16_tgo_frd:data_partially_processed:frd_par_sc_d_h_20240524t000000-20240524t235959::4.0`<br>`urn:esa:psa:em16_tgo_frd:data_partially_processed:frd_par_sc_d_h_20240525t000000-20240525t235959::4.0`<br>`urn:esa:psa:em16_tgo_frd:data_partially_processed:frd_par_sc_d_h_20240526t000000-20240526t235959::4.0` |
+| Node | `inventory_version_mismatch` | `urn:esa:psa:bc_spice:miscellaneous::4.0` | 1 | `urn:esa:psa:bc_spice:miscellaneous:checksum_checksum::11.0` |
+| Node | `inventory_version_mismatch` | `urn:esa:psa:bc_spice:spice_kernels::4.0` | 1 | `urn:esa:psa:bc_spice:spice_kernels:mk_bc::11.0` |
+| Node | `inventory_version_mismatch` | `urn:esa:psa:em16_spice:miscellaneous::10.0` | 1 | `urn:esa:psa:em16_spice:miscellaneous:checksum_checksum::18.0` |
+
+<!-- product-samples:end -->
+
 ## Reproduce
 
 ```bash
