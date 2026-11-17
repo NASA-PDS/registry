@@ -6,7 +6,7 @@ This directory contains utility scripts for managing and reporting on the PDS Re
 
 ### Registry Status Report Generator
 
-Generate CSV reports for missing and staged products in the PDS Registry.
+Generate CSV reports for missing, staged, loaded and invalid-`file_ref` products in the PDS Registry.
 
 **Script:** `generate_registry_status_reports.py`
 
@@ -15,8 +15,10 @@ Generate CSV reports for missing and staged products in the PDS Registry.
 This script queries the PDS Registry OpenSearch instance to generate reports for:
 1. **Missing products** - Product_Bundle and Product_Collection records marked as missing (`found_in_registry: false`)
 2. **Staged products** - Product_Bundle and Product_Collection records with archive status "staged"
+3. **Loaded products** - all Product_Bundle and Product_Collection records in the registry, used for the burnup chart
+4. **Invalid `file_ref` products** - products whose label or data `file_ref` does not start with `https://`
 
-This helps track data gaps, identify products that need to be ingested, and monitor products that are staged for archiving.
+This helps track data gaps, identify products that need to be ingested, monitor products that are staged for archiving, and find products whose files cannot be served.
 
 #### Requirements
 
@@ -77,21 +79,21 @@ export REQUEST_SIGNER_COGNITO_PASSWORD='your_password'
 Run from the repository root:
 
 ```bash
-# Generate reports and commit/push to GitHub (default behavior)
+# Generate reports only, without committing to git (default behavior)
 ./scripts/generate_registry_status_reports.py
 
-# Generate reports only, without committing to git
-./scripts/generate_registry_status_reports.py --no-commit
+# Generate reports and commit/push to GitHub
+./scripts/generate_registry_status_reports.py --commit
 
 # Show help
 ./scripts/generate_registry_status_reports.py --help
 ```
 
-**Note:** By default, the script will commit and push the generated CSV files to GitHub. Use the `--no-commit` flag to disable this behavior.
+**Note:** By default, the script does not commit or push anything. Use the `--commit` flag to commit and push the generated files to GitHub.
 
 #### Output
 
-Generates four CSV files in `docs/status/` and updates the metrics summary:
+Generates CSV files in `docs/status/` and updates the metrics summary:
 
 **Missing Products (queried from `/en-legacy-registry/_search`):**
 1. **`missing_bundles_in_registry.csv`** - Missing Product_Bundle records
@@ -101,8 +103,18 @@ Generates four CSV files in `docs/status/` and updates the metrics summary:
 3. **`staged_bundles_in_registry.csv`** - Staged Product_Bundle records
 4. **`staged_collections_in_registry.csv`** - Staged Product_Collection records
 
-**Metrics Summary:**
-5. **`README.md`** - Updated with metrics tables showing counts by node
+**Loaded Products (queried from `/*-registry/_search`, paginated):**
+5. **`loaded_bundles_in_registry.csv`** - All Product_Bundle records
+6. **`loaded_collections_in_registry.csv`** - All Product_Collection records
+
+**Invalid `file_ref` Products (queried from `/*-registry/_search`, paginated):**
+7. **`bad_file_ref_bundles_in_registry.csv`** - One row per invalid `file_ref` value on a Product_Bundle
+8. **`bad_file_ref_collections_in_registry.csv`** - One row per invalid `file_ref` value on a Product_Collection
+9. **`bad_file_ref_products_in_registry.csv`** - All other product classes, grouped by node, bundle, collection and archive status
+
+**Metrics Summary and History:**
+10. **`README.md`** - Updated with metrics tables showing counts by node
+11. **`counts_history.csv`**, **`burnup_*.csv`** and **`burnup_chart.html`** - Count history and the burnup chart
 
 **CSV Formats:**
 
@@ -130,6 +142,21 @@ Staged products:
 "PDS_GEO","urn:nasa:pds:mars2020_spice::2.1","Product_Bundle","2024-03-16T14:22:00Z"
 ```
 
+Invalid `file_ref` bundles and collections (6 columns, one row per invalid value):
+```
+node,lidvid,product_class,archive_status,file_ref_field,file_ref
+PDS_ATM,urn:nasa:pds:insight_rad::1.0,Product_Bundle,archived,Label_File_Info,.../insight_rad_bundle.xml
+PDS_GEO,urn:nasa:pds:mars2020_spice::2.1,Product_Bundle,staged,Label_File_Info,s3://.../mars2020_spice_bundle.xml
+```
+
+Invalid `file_ref` other products (10 columns, one row per node, bundle, collection and archive status):
+```
+node,bundle_lid,collection_lid,archive_status,products,values,value_kinds,file_ref_fields,example_lidvid,example_file_ref
+PDS_GEO,urn:nasa:pds:mars2020_spice,urn:nasa:pds:mars2020_spice:data,archived,120,240,local path,Data_File_Info; Label_File_Info,urn:nasa:pds:mars2020_spice:data:p001::1.0,.../p001.xml
+```
+
+Only `https://` file references are valid, because the archive is served through CloudFront. Any other value is reported, including `s3://`, regardless of archive status. Empty values and the placeholder `null` are ignored. The directory part of a reported value is a path on the harvesting machine, so the reports keep only the scheme and the file name.
+
 #### How It Works
 
 1. Loads environment variables from `.env` file (if present)
@@ -139,10 +166,12 @@ Staged products:
    - `conf/status/missing_collections_per_node.json` → `/en-legacy-registry/_search`
    - `conf/status/staged_bundles_per_node.json` → `/*-registry/_search`
    - `conf/status/staged_collections_per_node.json` → `/*-registry/_search`
+   - `conf/status/loaded_bundles_per_node.json` and `loaded_collections_per_node.json` → `/*-registry/_search`
+   - `conf/status/bad_file_ref_bundles_per_node.json`, `bad_file_ref_collections_per_node.json` and `bad_file_ref_products_per_node.json` → `/*-registry/_search`
 4. Transforms JSON responses into CSV format
 5. Saves results to `docs/status/`
 6. Generates metrics summary and updates `docs/status/README.md` with counts by node
-7. Commits and pushes changes to GitHub (unless `--no-commit` is specified)
+7. Commits and pushes changes to GitHub (only if `--commit` is specified)
 
 #### Query Details
 
@@ -158,6 +187,13 @@ Staged products:
 - Filter by `product_class` (Product_Bundle or Product_Collection)
 - Filter by `ops:Tracking_Meta/ops:archive_status: staged`
 - Return fields: `ops:Harvest_Info/ops:node_name`, `lidvid`, `product_class`, `ops:Harvest_Info/ops:harvest_date_time`
+- Query endpoint: `/*-registry/_search` (searches all registry indices)
+
+**Invalid `file_ref` Queries:**
+- Paginate with `search_after` on `_id`, 10,000 results per page
+- Match Product_Bundle, Product_Collection, or all other product classes
+- Match any product where `ops:Label_File_Info/ops:file_ref` or `ops:Data_File_Info/ops:file_ref` does not match the regular expression `https://.*`, with no condition on `archive_status`
+- Return fields: `ops:Harvest_Info/ops:node_name`, `lidvid`, `product_class`, `ops:Tracking_Meta/ops:archive_status`, `ops:Label_File_Info/ops:file_ref`, `ops:Data_File_Info/ops:file_ref`
 - Query endpoint: `/*-registry/_search` (searches all registry indices)
 
 **Note:** The script automatically handles the different field names for node information (`node` vs `ops:Harvest_Info/ops:node_name`).
