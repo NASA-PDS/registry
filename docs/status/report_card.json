@@ -27,7 +27,7 @@
     "overall": "red",
     "registry_health": {
       "as_of": "2026-11-16",
-      "detail": "Products without ancestry for EN or the sweepers team: 1; Index mapping problems on API fields: ops:Provenance/ops:superseded_by",
+      "detail": "Products without ancestry for EN or the sweepers team: 1; Index mapping problems on API fields: ops:Provenance/ops:superseded_by, vid",
       "issues": null,
       "stale": false,
       "status": "red",

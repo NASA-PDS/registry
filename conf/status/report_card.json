@@ -66,7 +66,7 @@
   "api_mapping_fields": [
     "lid",
     "lidvid",
-    "archive_status",
+    "vid",
     "ops:Tracking_Meta/ops:archive_status",
     "ops:Provenance/ops:superseded_by",
     "ops:Provenance/ops:ancestor_refs"
