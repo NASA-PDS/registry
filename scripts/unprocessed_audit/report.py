@@ -647,6 +647,19 @@ def _section_actions(tally: Tally, collections: CollectionABC[Collection]) -> li
         len(ownership.empty_refs_collections(collections)),
         tally.unverified_refs_missing,
     )
+    return render_action_section(rows, tally.unverified_refs_missing)
+
+
+def render_action_section(rows: CollectionABC[ownership.ActionRow], unverified_refs_missing: int = 0) -> list[str]:
+    """Render the "What needs to happen" section from its rows.
+
+    Args:
+        rows: Rows from ``ownership.build_rows``.
+        unverified_refs_missing: Products reached without the collection inventory.
+
+    Returns:
+        The section's lines.
+    """
     lines = ["## What needs to happen", "", f"**{ownership.verdict(rows)}**"]
     if not rows:
         return lines
@@ -665,10 +678,10 @@ def _section_actions(tally: Tally, collections: CollectionABC[Collection]) -> li
     lines += [f"- **{ownership.KIND_LABELS[k]}**: {ownership.KIND_MEANING[k]}." for k in kinds_present]
     lines += ["", "Who fixes what:", ""]
     lines += [f"- **{ownership.OWNER_LABELS[o]}**: {ownership.OWNER_MEANING[o]}." for o in owners_present]
-    if tally.unverified_refs_missing:
+    if unverified_refs_missing:
         lines += [
             "",
-            f"{tally.unverified_refs_missing:,} products were not checked against the collection inventory "
+            f"{unverified_refs_missing:,} products were not checked against the collection inventory "
             "(it was skipped with `--no-inventory` or could not be read).",
         ]
     return lines

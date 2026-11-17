@@ -21,6 +21,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from unprocessed_audit import ownership  # noqa: E402
 from unprocessed_audit.ownership import OWNER_LABELS  # noqa: E402
 from unprocessed_audit.ownership import Owner  # noqa: E402
 from unprocessed_audit.regression import BaselineError  # noqa: E402
@@ -33,7 +34,7 @@ _COLUMNS = [
     "Node",
     "Products examined",
     f"Needs attention: {OWNER_LABELS[Owner.NODE]}",
-    f"Needs attention: {OWNER_LABELS[Owner.REGISTRY_OPERATIONS]}",
+    f"Needs attention: {OWNER_LABELS[Owner.EN]}",
     f"Needs attention: {OWNER_LABELS[Owner.SWEEPERS_TEAM]}",
     f"Needs attention: {OWNER_LABELS[Owner.NEEDS_CHECK]}",
     "Collections whose bundle shows no members",
@@ -71,11 +72,11 @@ def render_table(all_metrics: dict[str, Metrics]) -> str:
     lines = ["| " + " | ".join(_COLUMNS) + " |", "|---|" + "--:|" * (len(_COLUMNS) - 1)]
     totals = [0] * (len(_COLUMNS) - 1)
     for node, m in all_metrics.items():
-        owners = m.owners
+        owners = ownership.count_by_owner(m.rules, m.unverified_refs_missing)
         cells = [
             m.examined,
             owners.get(Owner.NODE.value, 0),
-            owners.get(Owner.REGISTRY_OPERATIONS.value, 0),
+            owners.get(Owner.EN.value, 0),
             owners.get(Owner.SWEEPERS_TEAM.value, 0),
             owners.get(Owner.NEEDS_CHECK.value, 0),
             len(m.empty_refs_with_bundle),

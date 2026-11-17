@@ -26,20 +26,24 @@ def metrics(**overrides: object) -> Metrics:
     return Metrics(**values)  # type: ignore[arg-type]
 
 
+def rules(**counts: int) -> dict[str, int]:
+    return {rule.value: counts.get(rule.value, 0) for rule in Rule}
+
+
 def write(audits: Path, node: str, m: Metrics) -> None:
     (audits / node).mkdir(parents=True)
     (audits / node / "metrics.json").write_text(m.to_json(), encoding="utf-8")
 
 
 def test_table_has_a_row_per_node_a_total_and_counts_by_owner(tmp_path: Path):
-    write(tmp_path, "b", metrics(examined=50, expected=2, owners={"node": 30, "registry_operations": 5}))
-    write(tmp_path, "a", metrics(examined=10, owners={"sweepers_team": 1}, empty_refs_with_bundle=["x", "y"]))
+    write(tmp_path, "b", metrics(examined=50, expected=2, rules=rules(inventory_version_mismatch=25, reloaded_after_collection=5)))
+    write(tmp_path, "a", metrics(examined=10, rules=rules(sweeper_miss=1, collection_overdue=3), empty_refs_with_bundle=["x", "y"]))
     table = rollup.render_table(rollup.load_all(tmp_path))
     lines = table.splitlines()
     assert lines[0].startswith("| Node | Products examined | Needs attention: Node |")
-    assert lines[2] == "| a | 10 | 0 | 0 | 1 | 0 | 2 | 10 |"  # sorted by node name
-    assert lines[3] == "| b | 50 | 30 | 5 | 0 | 0 | 0 | 2 |"
-    assert lines[4] == "| **Total** | **60** | **30** | **5** | **1** | **0** | **2** | **12** |"
+    assert lines[2] == "| a | 10 | 0 | 3 | 1 | 0 | 2 | 10 |"  # sorted by node name
+    assert lines[3] == "| b | 50 | 30 | 0 | 0 | 0 | 0 | 2 |"
+    assert lines[4] == "| **Total** | **60** | **30** | **3** | **1** | **0** | **2** | **12** |"
 
 
 def test_products_without_an_inventory_check_are_called_out(tmp_path: Path):

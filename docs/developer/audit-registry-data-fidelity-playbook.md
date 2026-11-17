@@ -210,7 +210,7 @@ Harvest configuration). In `manifest.csv`, check two columns before anyone re-ha
   the node must.
 
 Collections whose registered label `file_ref` is not a URL cannot be downloaded and are listed in the
-script's summary. The scripts never re-harvest; registry operations does that with the downloaded files.
+script's summary. The scripts never re-harvest; the node does that with its own files.
 
 ## 4. Is the node still loading?
 
@@ -262,8 +262,8 @@ A third group, **waiting**, is products loaded so recently that the sweepers hav
 
 | Owner | Fixes | How |
 |---|---|---|
-| **Node** (the data provider's PDS node) | Orphans whose cause is the node's data: the collection is not loaded, the inventory lists a different version of the product, or the inventory does not list it | Load, correct or remove data; only the node can |
-| **Registry operations** (re-harvests and runs the sweepers) | Orphans whose inventory does list the product but whose refs are stale or missing; products that are linked but not processed; collections stamped with empty refs | Re-harvest the collection, then run the sweepers. No change to the node's data |
+| **Node** (the data provider's PDS node) | Orphans whose cause is the node's data: the collection is not loaded, the inventory lists a different version of the product, or the inventory does not list it. Also everything fixed by re-harvesting the collection: orphans whose inventory does list the product but whose refs are stale or missing; products that are linked but not processed; collections stamped with empty refs | Load, correct or remove data; or re-harvest the collection (EN then runs the sweepers). Only the node can |
+| **EN** (runs the sweepers, fixes the registry) | Collections the sweepers have not processed; index mapping fixes | Run the sweepers once the node has re-harvested; fix the mapping |
 | **Sweepers team** | `sweeper_miss`: everything looks right and the sweepers skipped the product | Software fix |
 | **Needs a closer look** | `refs_missing` products the audit could not check against the collection's inventory | Re-run with the inventories (not `--no-inventory`), or check the inventory by hand |
 
@@ -300,13 +300,13 @@ part-way through a sequential load.
 | `collection_not_loaded_overdue` | Orphaned | No collection with the product's collection identifier is registered in the audited node's index. Check first whether the collection is registered under another node (a LIDVID can be registered under several) | Load the parent collection, change its archive status, or fix the product identifier | node |
 | `inventory_version_mismatch` | Orphaned | The collection's inventory lists a different version of the product than the registry holds. Usually the registry is older (the listed version is not loaded); it can also be newer (the registry holds a version the inventory does not list). `audit_collection.py --diff` shows the direction | Make them agree: load the listed version, or correct the inventory, or remove the unlisted version. First confirm whether a load is running; a long-stalled load usually means the node does not know about the gap. Re-harvesting the collection does not help | node |
 | `not_in_collection_inventory` | Orphaned | The product is registered under the collection but the current inventory lists it under no version | Add it to the inventory, or remove it from the registry | node |
-| `refs_missing` (inventory lists the exact product) | Orphaned | The refs were written from an older inventory, or never written | Re-harvest the collection from its current label and inventory (step 5), then run the sweepers | registry operations |
+| `refs_missing` (inventory lists the exact product) | Orphaned | The refs were written from an older inventory, or never written | Node re-harvests the collection from its current label and inventory (step 5); EN then runs the sweepers | node |
 | `refs_missing` (inventory not checked) | Orphaned, cause unknown | See 5.3 | Re-run with inventories | needs a closer look |
-| `reloaded_after_collection` | Not processed | The collection was processed before the product was loaded, and the sweepers do not go back | Re-harvest the collection (step 5), then run the sweepers | registry operations |
-| `stale_stamp` (non-superseded products only) | Not processed | The product carries an older ancestry stamp than its already-stamped collection, which is not revisited. A plain sweeper run does not reach it | Re-harvest the collection and run the sweepers, or run ancestry in overwrite mode (registry-sweepers PR #291) | registry operations |
-| `collection_overdue` / `collection_pending` | Not processed | The parent collection has no current stamp; the collection is the root cause. Pending is within the grace period, overdue is beyond it | Confirm the ancestry sweeper ran for the node since the collection was harvested | registry operations |
+| `reloaded_after_collection` | Not processed | The collection was processed before the product was loaded, and the sweepers do not go back | Node re-harvests the collection (step 5); EN then runs the sweepers | node |
+| `stale_stamp` (non-superseded products only) | Not processed | The product carries an older ancestry stamp than its already-stamped collection, which is not revisited. A plain sweeper run does not reach it | Re-harvest the collection and run the sweepers, or run ancestry in overwrite mode (registry-sweepers PR #291) | node (re-harvest); EN (sweepers) |
+| `collection_overdue` / `collection_pending` | Not processed | The parent collection has no current stamp; the collection is the root cause. Pending is within the grace period, overdue is beyond it | Confirm the ancestry sweeper ran for the node since the collection was harvested | EN |
 | `sweeper_miss` | Not processed | The collection is processed, the refs list the product, the product was loaded before the collection, and it still has no ancestry | Gather the evidence from the reference document's checks (including the refs `batch_id`) and report it | sweepers team |
-| Stamped collection with empty `ancestor_refs` that has a bundle | Not processed | The collection counts as swept, so its products are not revisited, and the bundle does not list it as a member | Re-harvest the collection and run the sweepers with the fix from registry-sweepers PR #286 (NASA-PDS/registry-sweepers#284), or run ancestry in overwrite mode. On ATM, that repaired 44 of 45 such collections | registry operations (sweepers team if it recurs after the fix) |
+| Stamped collection with empty `ancestor_refs` that has a bundle | Not processed | The collection counts as swept, so its products are not revisited, and the bundle does not list it as a member | Re-harvest the collection and run the sweepers with the fix from registry-sweepers PR #286 (NASA-PDS/registry-sweepers#284), or run ancestry in overwrite mode. On ATM, that repaired 44 of 45 such collections | node (re-harvest); EN (sweepers); sweepers team if it recurs after the fix |
 | Superseded collection version whose products are unprocessed | - | A superseded version is not re-harvested; its bundle refers to the newer version | No re-harvest. Report the products against the real (current) collection version | reporting only |
 | Old Harvest version on recent loads | - | The node loads with an outdated Harvest release | Informational. Ask the node to upgrade | node |
 
@@ -377,8 +377,8 @@ Recommended structure:
 
 4. **Actions for the node**: loading, inventory and LID problems, each with the collections involved and
    what "done" looks like (the next audit run does not list them).
-5. **Items for registry operations and sweepers**, kept in a separate section so the node is not asked to
-   do work that belongs to others: re-harvests, sweeper runs, the empty-refs collections and the
+5. **Items for EN and the sweepers team**, kept in a separate section so the node is not asked to
+   do work that belongs to others: sweeper runs after the node's re-harvests, mapping fixes and the
    registry-sweepers issue link.
 6. **Evidence**: audit run date, the commands (with variable names, not values), and which
    cross-checks from section 7 were done. Name the output files; do not attach files that contain
@@ -400,7 +400,7 @@ Follow the NASA-PDS issue templates and labels, and add the new issue to the the
 Re-run the full node audit:
 
 - after the node reports a load finished, to confirm the version mismatches clear;
-- after registry operations re-harvests collections and the ancestry sweeper has run;
+- after the node re-harvests collections and EN has run the ancestry sweeper;
 - after a sweepers fix is deployed, to confirm empty-refs collections are repaired;
 - on a regular schedule while a node is loading (the pending counts should fall).
 
@@ -463,7 +463,7 @@ numbers below exclude superseded versions.
 | maven.iuvs collections | Registry holds product versions 13.1; the inventory lists 14.0; only 4 to 8 percent loaded | Rule `inventory_version_mismatch`; refs follow the inventory, so the registered versions are never swept | Node: load the 14.0 versions; the 13.1 versions are then superseded. Re-harvesting does not help |
 | juno_mwr 3.0 | Collection registered, none of its products loaded | Verdict `not_started` | Node: start loading the products the inventory lists |
 | Harvest version | Newest loaded members written by Harvest 4.0.7 while 5.1.3 was current | Informational | Node: upgrade Harvest |
-| Re-harvested collections | 45 collections re-harvested on 2026-11-14 were stamped with empty `ancestor_refs` although their bundle was already stamped | Sweepers defect (NASA-PDS/registry-sweepers#284, fixed by PR #286); the bundle's `/members` stays empty until repaired | Registry operations: re-harvest and run the sweepers with the fix. Done on 2026-11-15: 44 of the 45 now have the bundle in `ancestor_refs`; `juno_mwr:document::3.0` is still empty and needs a closer look |
+| Re-harvested collections | 45 collections re-harvested on 2026-11-14 were stamped with empty `ancestor_refs` although their bundle was already stamped | Sweepers defect (NASA-PDS/registry-sweepers#284, fixed by PR #286); the bundle's `/members` stays empty until repaired | Node re-harvests; EN runs the sweepers with the fix. Done on 2026-11-15: 44 of the 45 now have the bundle in `ancestor_refs`; `juno_mwr:document::3.0` is still empty and needs a closer look |
 
 How the analysis ran: dry run on the node, full run with `--gzip`, `audit_collection.py --diff
 --load-status` over `anomalous_collections.txt` to produce the load verdicts, `download_collection_files.py`

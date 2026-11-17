@@ -23,10 +23,10 @@
     "psa"
   ],
   "owners": {
+    "en": 0,
     "needs_check": 57525,
     "no_action": 0,
-    "node": 28938,
-    "registry_operations": 233104,
+    "node": 262042,
     "sweepers_team": 0
   },
   "rules": {

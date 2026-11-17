@@ -78,8 +78,8 @@ why the owner follows from the rule:
 
 | Owner | Rules |
 |---|---|
-| Node | `collection_not_loaded_overdue`, `inventory_version_mismatch`, `not_in_collection_inventory` |
-| Registry operations (re-harvest the collection, then run the sweepers) | `refs_missing` where the inventory lists the exact product, `reloaded_after_collection`, `stale_stamp`, `collection_overdue`, a collection stamped with empty refs that has a bundle |
+| Node | `collection_not_loaded_overdue`, `inventory_version_mismatch`, `not_in_collection_inventory`; and, by re-harvesting the collection (EN then runs the sweepers), `refs_missing` where the inventory lists the exact product, `reloaded_after_collection`, `stale_stamp`, a collection stamped with empty refs that has a bundle |
+| EN (runs the sweepers) | `collection_overdue` |
 | Sweepers team | `sweeper_miss`, `bare_lid_in_inventory` |
 | Needs a closer look | `refs_missing` that was reached without the collection inventory |
 | No action | `*_pending`, `no_parent_by_design` |
@@ -87,7 +87,7 @@ why the owner follows from the rule:
 `refs_missing` is therefore not a verdict on its own. With the inventory read, a product that no refs document
 lists is classified by what the inventory says: another version (`inventory_version_mismatch`, node), no
 listing (`not_in_collection_inventory`, node), a LID without a version (`bare_lid_in_inventory`), or the exact
-product (`refs_missing`: stale or never-written refs, registry operations). Without the inventory (`--no-inventory`,
+product (`refs_missing`: stale or never-written refs, the node re-harvests). Without the inventory (`--no-inventory`,
 or a provider file that cannot be downloaded) it stays `refs_missing` and is reported as needing a closer look.
 
 ## Background: what "processed" means

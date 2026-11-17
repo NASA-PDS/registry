@@ -73,10 +73,10 @@ def test_rows_carry_the_owner_and_are_ordered_by_owner_then_group_size(tmp_path:
     )
     rows = samples.sample_rows("atm", path, 10)
     assert [(r["owner"], r["rule"], r["products_in_group"]) for r in rows] == [
+        ("node", "reloaded_after_collection", "3"),
+        ("node", "reloaded_after_collection", "3"),
+        ("node", "reloaded_after_collection", "3"),
         ("node", "inventory_version_mismatch", "1"),
-        ("registry_operations", "reloaded_after_collection", "3"),
-        ("registry_operations", "reloaded_after_collection", "3"),
-        ("registry_operations", "reloaded_after_collection", "3"),
         ("sweepers_team", "sweeper_miss", "2"),
         ("sweepers_team", "sweeper_miss", "2"),
     ]
@@ -84,7 +84,7 @@ def test_rows_carry_the_owner_and_are_ordered_by_owner_then_group_size(tmp_path:
 
 
 def test_refs_missing_without_the_inventory_needs_a_closer_look():
-    assert samples.owner_for("refs_missing", "stale refs") == "registry_operations"
+    assert samples.owner_for("refs_missing", "stale refs") == "node"
     assert samples.owner_for("refs_missing", "The collection inventory was not used, so the cause is unknown.") == "needs_check"
 
 
@@ -121,7 +121,7 @@ def test_the_examples_section_shows_a_few_products_per_group_and_links_the_full_
     assert section.startswith(samples.REPORT_START) and section.rstrip().endswith(samples.REPORT_END)
     assert "[`product_samples.csv`](../audit-output/atm/product_samples.csv)" in section
     assert "| Node | `inventory_version_mismatch` | `urn:a:b:n::1.0` | 5 | `urn:a:b:c:n0::1.0`<br>`urn:a:b:c:n1::1.0` |" in section
-    assert "| Registry operations | `reloaded_after_collection` | `urn:a:b:r::1.0` | 2 |" in section
+    assert "| Node | `reloaded_after_collection` | `urn:a:b:r::1.0` | 2 |" in section
     assert "n2::1.0" not in section  # only two examples per group
 
 

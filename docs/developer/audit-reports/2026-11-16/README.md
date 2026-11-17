@@ -13,28 +13,28 @@ and each one has an owner, the party that can fix it:
 
 | Owner | What they do |
 |---|---|
-| **Node** | Fix the node's data: load a collection or a product version, correct an inventory, or remove a product |
-| **Registry operations** | Re-harvest the collection, then run the sweepers. No change to the node's data |
+| **Node** | Fix the node's data: load a collection or a product version, correct an inventory, or remove a product. Also re-harvest the collection when its refs are stale or missing, or the sweepers never reached the products |
+| **EN** | Run the sweepers after the node's re-harvest, and fix the registry itself (index mappings). No product is waiting on EN alone in this run |
 | **Sweepers team** | Fix a software gap: the sweepers skipped a product that looks right, or do not follow an inventory that lists products without a version |
 | **Needs a closer look** | The audit could not check the collection's inventory, so the cause is unknown |
 
 ## Roll-up by node
 
-Products that need attention, by owner. "Bundles missing members" counts collections that are marked processed but have no link to their bundle, so the bundle does not list them (fixed by registry operations).
+Products that need attention, by owner. "Bundles missing members" counts collections that are marked processed but have no link to their bundle, so the bundle does not list them (the node re-harvests the collection, then EN runs the sweepers).
 
-| Node | Products examined | Node | Registry operations | Sweepers team | Needs a closer look | Bundles missing members | Waiting (no action) |
+| Node | Products examined | Needs attention: Node | Needs attention: EN | Needs attention: Sweepers team | Needs attention: Needs a closer look | Collections whose bundle shows no members | Waiting (no action) |
 |---|--:|--:|--:|--:|--:|--:|--:|
 | atm | 2,784,370 | 2,782,642 | 0 | 1 | 2 | 0 | 1,725 |
 | en | 793 | 703 | 0 | 0 | 2 | 0 | 88 |
-| geo | 1,373 | 1,322 | 2 | 49 | 0 | 2 | 0 |
-| img | 36,839 | 516 | 36,323 | 0 | 0 | 6 | 0 |
-| naif | 2 | 0 | 2 | 0 | 0 | 0 | 0 |
+| geo | 1,373 | 1,324 | 0 | 49 | 0 | 2 | 0 |
+| img | 36,839 | 36,839 | 0 | 0 | 0 | 6 | 0 |
+| naif | 2 | 2 | 0 | 0 | 0 | 0 | 0 |
 | ppi | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| psa | 1,561,792 | 28,938 | 233,104 | 0 | 57,525 | 0 | 1,242,225 |
+| psa | 1,561,792 | 262,042 | 0 | 0 | 57,525 | 0 | 1,242,225 |
 | rms | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| sbnpsi | 98 | 2 | 67 | 0 | 0 | 0 | 29 |
-| sbnumd | 25 | 1 | 24 | 0 | 0 | 58 | 0 |
-| **Total** | **4,385,292** | **2,814,124** | **269,522** | **50** | **57,529** | **66** | **1,244,067** |
+| sbnpsi | 98 | 69 | 0 | 0 | 0 | 0 | 29 |
+| sbnumd | 25 | 25 | 0 | 0 | 0 | 58 | 0 |
+| **Total** | **4,385,292** | **3,083,646** | **0** | **50** | **57,529** | **66** | **1,244,067** |
 
 `scripts/audit_rollup.py` produces this table from the `metrics.json` files. "Needs a closer look" are products whose collection inventory could not be read (ATM: the `pds-ama` sample, whose files were loaded from a local path; PSA: see its report).
 

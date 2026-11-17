@@ -121,7 +121,9 @@ confirms the product's collection; the collection shown is a best guess from its
 is produced: Harvest writes the refs from a collection's inventory, and the sweeper reaches a product only
 through them. `refs_missing` is split by the collection inventory: the inventory decides whether the node's data
 is at fault or the refs are stale. A `refs_missing` product that could not be checked against the inventory is
-reported as needing a closer look instead of being assigned an owner on a guess.
+reported as needing a closer look instead of being assigned an owner on a guess. Anything fixed by re-harvesting
+a collection belongs to the node, since only the node holds the files; EN's part is running the sweepers afterwards
+and fixing the registry itself.
 
 ## Extra diagnostics
 

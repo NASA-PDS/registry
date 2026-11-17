@@ -398,10 +398,12 @@ def test_summary_empty_tally_is_healthy_and_has_no_problem_sections() -> None:
 
 
 def test_summary_leads_with_what_needs_to_happen_grouped_by_owner() -> None:
-    text = render_summary(build_tally(), [], {}, TH, {}, None)
+    tally = build_tally()
+    tally.add(make_candidate("p9"), make_verdict(Rule.COLLECTION_OVERDUE, Severity.ANOMALOUS, COLL, None), NOW)
+    text = render_summary(tally, [], {}, TH, {}, None)
     assert text.index("## What needs to happen") < text.index("## Anomalies by rule")
     assert "| Who | What is wrong | Products | Collections | What to do |" in text
-    assert text.index("| Node |") < text.index("| Registry operations |") < text.index("| Sweepers team |")
+    assert text.index("| Node |") < text.index("| EN |") < text.index("| Sweepers team |")
     assert "Who fixes what:" in text
 
 

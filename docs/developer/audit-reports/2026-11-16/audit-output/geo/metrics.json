@@ -27,10 +27,10 @@
     "geo"
   ],
   "owners": {
+    "en": 0,
     "needs_check": 0,
     "no_action": 0,
-    "node": 1322,
-    "registry_operations": 2,
+    "node": 1324,
     "sweepers_team": 49
   },
   "rules": {

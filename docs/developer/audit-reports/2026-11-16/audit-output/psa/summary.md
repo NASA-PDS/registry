@@ -9,13 +9,13 @@ Nodes: psa
 
 ## What needs to happen
 
-**Needs attention: 28,938 for node; 233,104 for registry operations; 57,525 for needs a closer look.**
+**Needs attention: 262,042 for the node; 57,525 that need a closer look.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|
+| Node | **Not processed**: Linked to their collection, but loaded after the sweepers processed it, so the sweepers never went back | 233,104 | 10 | Re-harvest the collection; EN then runs the sweepers |
 | Node | **Orphaned**: No collection with the identifier these products belong to is in the registry | 20,941 | 17 | Load the collection, or correct the product identifiers |
 | Node | **Orphaned**: The collection's inventory lists a different version of these products than the one loaded | 7,997 | 10 | Load the version the inventory lists, or correct the inventory |
-| Registry operations | **Not processed**: Linked to their collection, but loaded after the sweepers processed it, so the sweepers never went back | 233,104 | 10 | Re-harvest the collection, then run the sweepers |
 | Needs a closer look | **Orphaned**: No refs record lists these products and the collection inventory could not be used to say why | 57,525 | 29 | Re-run the audit with the inventories (not --no-inventory), or check the collection's inventory by hand |
 | No action | **Waiting**: Not in the registry's refs yet | 1,241,560 | - | None; re-check later |
 | No action | **Waiting**: Waiting for the collection to be loaded | 663 | - | None; re-check later |
@@ -29,8 +29,7 @@ Kinds of problem:
 
 Who fixes what:
 
-- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory); only the node can fix it.
-- **Registry operations**: the node's data is fine and the registry's own processing missed it; fixed by re-harvesting the collection and running the sweepers.
+- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory), or the collection has to be re-harvested by the node so that the registry's refs are rewritten from its inventory; EN then runs the sweepers.
 - **Needs a closer look**: the cause cannot be told apart because the collection inventory could not be used.
 - **No action**: loaded recently; expected to resolve by itself.
 
@@ -171,7 +170,7 @@ Who fixes what:
 - **reloaded_after_collection** (233,104 products): The product was re-harvested after its collection was processed, so the sweeper has no reason to revisit it. Candidate fix: re-harvest the collection so the sweeper reprocesses it.
 - **inventory_version_mismatch** (7,997 products): The collection's inventory (as recorded in registry-refs) lists this product at a different version than the one in the registry, so the sweeper never selects the registered version. Re-harvesting the collection will not help: load the product version the inventory lists, after which the registered version is superseded. Confirm with audit_collection.py --diff.
 - **refs_missing_pending** (1,241,560 products): The collection is processed but no registry-refs document lists the product, and the product was harvested within the grace period, so a load may still be running. Re-check after the grace period; if the product is still missing, it is classified like refs_missing.
-- **refs_missing** (57,525 products): The collection is processed and has refs, but no registry-refs document lists this product, so the sweeper never selects it. Harvest writes a collection's refs from its inventory when the collection is harvested, so the inventory read at that time did not list the product, or the inventory has changed since, or the refs were not written. Read the collection's current inventory. If it lists this exact product, the refs are stale: registry operations re-harvest the collection from its current label and inventory, then run the sweepers. If it lists another version of the product or does not list it, the node's data does not line up and the node fixes it (the audit reports those as inventory_version_mismatch and not_in_collection_inventory when it can read the inventory). The collection named for the product is a best guess from its identifier.
+- **refs_missing** (57,525 products): The collection is processed and has refs, but no registry-refs document lists this product, so the sweeper never selects it. Harvest writes a collection's refs from its inventory when the collection is harvested, so the inventory read at that time did not list the product, or the inventory has changed since, or the refs were not written. Read the collection's current inventory. If it lists this exact product, the refs are stale: the node re-harvests the collection from its current label and inventory, then EN runs the sweepers. If it lists another version of the product or does not list it, the node's data does not line up and the node fixes it (the audit reports those as inventory_version_mismatch and not_in_collection_inventory when it can read the inventory). The collection named for the product is a best guess from its identifier.
 
 ## Run parameters
 

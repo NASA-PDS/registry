@@ -9,15 +9,15 @@ Nodes: geo
 
 ## What needs to happen
 
-**Needs attention: 1,322 for node; 4 for registry operations; 49 for sweepers team.**
+**Needs attention: 1,326 for the node; 49 for the sweepers team.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|
 | Node | **Orphaned**: The collection's inventory lists a different version of these products than the one loaded | 1,152 | 3 | Load the version the inventory lists, or correct the inventory |
 | Node | **Orphaned**: The collection's inventory does not list these products under any version | 168 | 1 | Add them to the inventory, or remove the products from the registry |
 | Node | **Orphaned**: No collection with the identifier these products belong to is in the registry | 2 | 2 | Load the collection, or correct the product identifiers |
-| Registry operations | **Not processed**: Linked to their collection, but processed by an older sweepers version while the collection is on the current one, so the sweepers do not go back | 2 | 1 | Re-harvest the collection, then run the sweepers |
-| Registry operations | **Not processed**: The collection is marked processed but has no link to its bundle, so the bundle does not list it as a member | - | 2 | Re-harvest the collection, then run the sweepers (the sweepers bug that caused this is fixed in registry-sweepers PR #286) |
+| Node | **Not processed**: Linked to their collection, but processed by an older sweepers version while the collection is on the current one, so the sweepers do not go back | 2 | 1 | Re-harvest the collection; EN then runs the sweepers |
+| Node | **Not processed**: The collection is marked processed but has no link to its bundle, so the bundle does not list it as a member | - | 2 | Re-harvest the collection; EN then runs the sweepers (the sweepers bug that caused this is fixed in registry-sweepers PR #286) |
 | Sweepers team | **Orphaned**: The collection's inventory lists these products by LID without a version, which the sweepers do not follow | 49 | 11 | Re-harvesting does not help. The node lists LIDVIDs in the inventory, or the sweepers support LID references |
 
 Kinds of problem:
@@ -27,8 +27,7 @@ Kinds of problem:
 
 Who fixes what:
 
-- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory); only the node can fix it.
-- **Registry operations**: the node's data is fine and the registry's own processing missed it; fixed by re-harvesting the collection and running the sweepers.
+- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory), or the collection has to be re-harvested by the node so that the registry's refs are rewritten from its inventory; EN then runs the sweepers.
 - **Sweepers team**: everything looks right but the sweepers cannot or do not follow it; a software gap, possibly worked around by the node.
 
 ## Anomalies by rule

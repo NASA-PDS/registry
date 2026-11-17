@@ -9,13 +9,13 @@ Nodes: sbnpsi
 
 ## What needs to happen
 
-**Needs attention: 2 for node; 67 for registry operations.**
+**Needs attention: 69 for the node.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|
+| Node | **Not processed**: Linked to their collection, but processed by an older sweepers version while the collection is on the current one, so the sweepers do not go back | 67 | 9 | Re-harvest the collection; EN then runs the sweepers |
 | Node | **Orphaned**: The collection's inventory does not list these products under any version | 1 | 1 | Add them to the inventory, or remove the products from the registry |
 | Node | **Orphaned**: No collection with the identifier these products belong to is in the registry | 1 | 1 | Load the collection, or correct the product identifiers |
-| Registry operations | **Not processed**: Linked to their collection, but processed by an older sweepers version while the collection is on the current one, so the sweepers do not go back | 67 | 9 | Re-harvest the collection, then run the sweepers |
 | No action | **Waiting**: Product classes that never belong to a collection | 29 | - | None |
 
 Kinds of problem:
@@ -26,8 +26,7 @@ Kinds of problem:
 
 Who fixes what:
 
-- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory); only the node can fix it.
-- **Registry operations**: the node's data is fine and the registry's own processing missed it; fixed by re-harvesting the collection and running the sweepers.
+- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory), or the collection has to be re-harvested by the node so that the registry's refs are rewritten from its inventory; EN then runs the sweepers.
 - **No action**: loaded recently; expected to resolve by itself.
 
 ## Anomalies by rule

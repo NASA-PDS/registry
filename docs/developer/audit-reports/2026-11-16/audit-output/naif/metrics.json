@@ -12,10 +12,10 @@
     "naif"
   ],
   "owners": {
+    "en": 0,
     "needs_check": 0,
     "no_action": 0,
-    "node": 0,
-    "registry_operations": 2,
+    "node": 2,
     "sweepers_team": 0
   },
   "rules": {

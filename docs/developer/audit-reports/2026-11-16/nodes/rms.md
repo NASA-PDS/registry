@@ -9,7 +9,7 @@ Healthy for ancestry. Every API-visible product on the node has current ancestry
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|
 | Node | Nothing | 0 | 0 | None |
-| Registry operations | Nothing in the product data. One legacy field is mapped with a different type from the other nodes (see Index mapping) | 0 | 0 | Align the field type at the next reindex; no urgency |
+| EN | Nothing in the product data. One legacy field is mapped with a different type from the other nodes (see Index mapping) | 0 | 0 | Align the field type at the next reindex; no urgency |
 | Sweepers team | Nothing | 0 | 0 | None |
 | Needs a closer look | Nothing | 0 | 0 | None |
 | No action | Nothing | 0 | 0 | None |
@@ -20,7 +20,7 @@ The audit was run with the collection inventories enabled; with no candidate pro
 
 `rms-registry` has 1 error-level problem and 12 warning-level missing fields.
 
-- **Type conflict:** `ops:Provenance/ops:registry_sweepers_provenance_version` is `keyword` on RMS and `integer` on the other 9 tenant indices. This is the legacy provenance version field: the sweepers now select work on a separate field, `ops:Provenance/ops:registry_sweepers_provenance_hotfixed_version`, and clear this one, so the difference has no known effect on current sweeper runs. It is a leftover of the earlier keyword-versus-integer problem. A mapping type cannot be changed in place, so aligning it means reindexing RMS; owner: registry operations, with the index owners.
+- **Type conflict:** `ops:Provenance/ops:registry_sweepers_provenance_version` is `keyword` on RMS and `integer` on the other 9 tenant indices. This is the legacy provenance version field: the sweepers now select work on a separate field, `ops:Provenance/ops:registry_sweepers_provenance_hotfixed_version`, and clear this one, so the difference has no known effect on current sweeper runs. It is a leftover of the earlier keyword-versus-integer problem. A mapping type cannot be changed in place, so aligning it means reindexing RMS; owner: EN, with the index owners.
 - **Missing fields (warnings):** 12 `pds:` fields that most nodes map, for example `pds:Array_3D_Image/pds:axes`, `pds:Person/pds:family_name` and `pds:Science_Facets/pds:domain`. A value in these fields is stored but cannot be searched on RMS.
 
 <!-- product-samples:start -->

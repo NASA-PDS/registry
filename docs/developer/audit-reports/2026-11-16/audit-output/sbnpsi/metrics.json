@@ -11,10 +11,10 @@
     "sbnpsi"
   ],
   "owners": {
+    "en": 0,
     "needs_check": 0,
     "no_action": 0,
-    "node": 2,
-    "registry_operations": 67,
+    "node": 69,
     "sweepers_team": 0
   },
   "rules": {

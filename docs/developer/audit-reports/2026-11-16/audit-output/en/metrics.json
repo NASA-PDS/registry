@@ -12,10 +12,10 @@
     "en"
   ],
   "owners": {
+    "en": 0,
     "needs_check": 2,
     "no_action": 0,
     "node": 703,
-    "registry_operations": 0,
     "sweepers_team": 0
   },
   "rules": {

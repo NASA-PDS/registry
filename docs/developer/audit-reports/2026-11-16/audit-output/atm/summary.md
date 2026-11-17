@@ -9,7 +9,7 @@ Nodes: atm
 
 ## What needs to happen
 
-**Needs attention: 2,782,642 for node; 1 for sweepers team; 2 for needs a closer look.**
+**Needs attention: 2,782,642 for the node; 1 for the sweepers team; 2 that need a closer look.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|
@@ -27,7 +27,7 @@ Kinds of problem:
 
 Who fixes what:
 
-- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory); only the node can fix it.
+- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory), or the collection has to be re-harvested by the node so that the registry's refs are rewritten from its inventory; EN then runs the sweepers.
 - **Sweepers team**: everything looks right but the sweepers cannot or do not follow it; a software gap, possibly worked around by the node.
 - **Needs a closer look**: the cause cannot be told apart because the collection inventory could not be used.
 - **No action**: loaded recently; expected to resolve by itself.
@@ -130,7 +130,7 @@ Who fixes what:
 - **not_in_collection_inventory** (16,960 products): The product is registered under this collection's LID, but the collection's current inventory does not list it under any version, so the sweeper can never give it this collection as an ancestor. The provider may have dropped it from the inventory or it may be a leftover. The node should decide whether it belongs in the inventory or should be removed from the registry; re-harvesting or loading more products will not fix it.
 - **bare_lid_in_inventory** (1 products): The collection's inventory lists the product by LID only, without a version. Harvest records that as a product_lid in the registry-refs document, but the ancestry sweeper follows only product_lidvid, so it never reaches the product. Re-harvesting the collection writes the same refs; the inventory must list LIDVIDs, or the sweepers must follow LID references.
 - **refs_missing_pending** (1,725 products): The collection is processed but no registry-refs document lists the product, and the product was harvested within the grace period, so a load may still be running. Re-check after the grace period; if the product is still missing, it is classified like refs_missing.
-- **refs_missing** (2 products): The collection is processed and has refs, but no registry-refs document lists this product, so the sweeper never selects it. Harvest writes a collection's refs from its inventory when the collection is harvested, so the inventory read at that time did not list the product, or the inventory has changed since, or the refs were not written. Read the collection's current inventory. If it lists this exact product, the refs are stale: registry operations re-harvest the collection from its current label and inventory, then run the sweepers. If it lists another version of the product or does not list it, the node's data does not line up and the node fixes it (the audit reports those as inventory_version_mismatch and not_in_collection_inventory when it can read the inventory). The collection named for the product is a best guess from its identifier.
+- **refs_missing** (2 products): The collection is processed and has refs, but no registry-refs document lists this product, so the sweeper never selects it. Harvest writes a collection's refs from its inventory when the collection is harvested, so the inventory read at that time did not list the product, or the inventory has changed since, or the refs were not written. Read the collection's current inventory. If it lists this exact product, the refs are stale: the node re-harvests the collection from its current label and inventory, then EN runs the sweepers. If it lists another version of the product or does not list it, the node's data does not line up and the node fixes it (the audit reports those as inventory_version_mismatch and not_in_collection_inventory when it can read the inventory). The collection named for the product is a best guess from its identifier.
 
 ## Run parameters
 

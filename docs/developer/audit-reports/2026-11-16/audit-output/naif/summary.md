@@ -9,11 +9,11 @@ Nodes: naif
 
 ## What needs to happen
 
-**Needs attention: 2 for registry operations.**
+**Needs attention: 2 for the node.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|
-| Registry operations | **Orphaned**: The collection's inventory lists these products but the registry's refs do not (stale or never written) | 2 | 2 | Re-harvest the collection, then run the sweepers |
+| Node | **Orphaned**: The collection's inventory lists these products but the registry's refs do not (stale or never written) | 2 | 2 | Re-harvest the collection from its current label and inventory; EN then runs the sweepers |
 
 Kinds of problem:
 
@@ -21,7 +21,7 @@ Kinds of problem:
 
 Who fixes what:
 
-- **Registry operations**: the node's data is fine and the registry's own processing missed it; fixed by re-harvesting the collection and running the sweepers.
+- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory), or the collection has to be re-harvested by the node so that the registry's refs are rewritten from its inventory; EN then runs the sweepers.
 
 ## Anomalies by rule
 
@@ -61,7 +61,7 @@ Who fixes what:
 
 ## What each rule means
 
-- **refs_missing** (2 products): The collection is processed and has refs, but no registry-refs document lists this product, so the sweeper never selects it. Harvest writes a collection's refs from its inventory when the collection is harvested, so the inventory read at that time did not list the product, or the inventory has changed since, or the refs were not written. Read the collection's current inventory. If it lists this exact product, the refs are stale: registry operations re-harvest the collection from its current label and inventory, then run the sweepers. If it lists another version of the product or does not list it, the node's data does not line up and the node fixes it (the audit reports those as inventory_version_mismatch and not_in_collection_inventory when it can read the inventory). The collection named for the product is a best guess from its identifier.
+- **refs_missing** (2 products): The collection is processed and has refs, but no registry-refs document lists this product, so the sweeper never selects it. Harvest writes a collection's refs from its inventory when the collection is harvested, so the inventory read at that time did not list the product, or the inventory has changed since, or the refs were not written. Read the collection's current inventory. If it lists this exact product, the refs are stale: the node re-harvests the collection from its current label and inventory, then EN runs the sweepers. If it lists another version of the product or does not list it, the node's data does not line up and the node fixes it (the audit reports those as inventory_version_mismatch and not_in_collection_inventory when it can read the inventory). The collection named for the product is a best guess from its identifier.
 
 ## Run parameters
 

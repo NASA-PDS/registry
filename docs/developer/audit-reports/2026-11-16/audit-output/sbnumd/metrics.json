@@ -79,10 +79,10 @@
     "sbnumd"
   ],
   "owners": {
+    "en": 0,
     "needs_check": 0,
     "no_action": 0,
-    "node": 1,
-    "registry_operations": 24,
+    "node": 25,
     "sweepers_team": 0
   },
   "rules": {

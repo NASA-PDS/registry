@@ -25,9 +25,10 @@ def test_every_rule_has_a_problem_with_an_owner_and_a_plain_description():
         (Rule.COLLECTION_NOT_LOADED_OVERDUE, Owner.NODE),
         (Rule.INVENTORY_VERSION_MISMATCH, Owner.NODE),
         (Rule.NOT_IN_COLLECTION_INVENTORY, Owner.NODE),
-        (Rule.RELOADED_AFTER_COLLECTION, Owner.REGISTRY_OPERATIONS),
-        (Rule.REFS_MISSING, Owner.REGISTRY_OPERATIONS),
-        (Rule.STALE_STAMP, Owner.REGISTRY_OPERATIONS),
+        (Rule.RELOADED_AFTER_COLLECTION, Owner.NODE),
+        (Rule.REFS_MISSING, Owner.NODE),
+        (Rule.COLLECTION_OVERDUE, Owner.EN),
+        (Rule.STALE_STAMP, Owner.NODE),
         (Rule.SWEEPER_MISS, Owner.SWEEPERS_TEAM),
         (Rule.BARE_LID_IN_INVENTORY, Owner.SWEEPERS_TEAM),
         (Rule.REFS_MISSING_PENDING, Owner.NO_ACTION),
@@ -63,9 +64,9 @@ def test_count_by_owner_has_every_owner_and_sums_products():
     totals = ownership.count_by_owner(
         {"inventory_version_mismatch": 10, "not_in_collection_inventory": 5, "refs_missing": 3, "sweeper_miss": 1}
     )
-    assert totals == {"node": 15, "registry_operations": 3, "sweepers_team": 1, "needs_check": 0, "no_action": 0}
+    assert totals == {"node": 18, "en": 0, "sweepers_team": 1, "needs_check": 0, "no_action": 0}
     split = ownership.count_by_owner({"refs_missing": 5}, unverified_refs_missing=3)
-    assert (split["needs_check"], split["registry_operations"]) == (3, 2)
+    assert (split["needs_check"], split["node"]) == (3, 2)
 
 
 def make_collection(state: CollectionState, bundles: list[str], superseded_by: str | None = None) -> Collection:
@@ -104,9 +105,9 @@ def test_rows_are_ordered_by_owner_then_size_and_include_the_empty_refs_row():
     )
     assert [(r.owner, r.rule) for r in rows] == [
         (Owner.NODE, Rule.INVENTORY_VERSION_MISMATCH),
-        (Owner.REGISTRY_OPERATIONS, Rule.STALE_STAMP),
-        (Owner.REGISTRY_OPERATIONS, Rule.REFS_MISSING),
-        (Owner.REGISTRY_OPERATIONS, None),
+        (Owner.NODE, Rule.STALE_STAMP),
+        (Owner.NODE, Rule.REFS_MISSING),
+        (Owner.NODE, None),
         (Owner.SWEEPERS_TEAM, Rule.SWEEPER_MISS),
         (Owner.NO_ACTION, Rule.REFS_MISSING_PENDING),
     ]
@@ -116,7 +117,7 @@ def test_rows_are_ordered_by_owner_then_size_and_include_the_empty_refs_row():
 
 def test_unverified_refs_missing_gets_its_own_row_apart_from_the_verified_ones():
     rows = ownership.build_rows({"refs_missing": 5}, {}, {"refs_missing": 2}, 0, unverified_refs_missing=3)
-    assert [(r.owner, r.products) for r in rows] == [(Owner.REGISTRY_OPERATIONS, 2), (Owner.NEEDS_CHECK, 3)]
+    assert [(r.owner, r.products) for r in rows] == [(Owner.NODE, 2), (Owner.NEEDS_CHECK, 3)]
     only_unverified = ownership.build_rows({"refs_missing": 3}, {}, {}, 0, unverified_refs_missing=3)
     assert [(r.owner, r.products) for r in only_unverified] == [(Owner.NEEDS_CHECK, 3)]
 
@@ -127,9 +128,9 @@ def test_rows_skip_zero_counts():
 
 def test_verdict_names_the_owners_that_have_work_and_ignores_waiting():
     rows = ownership.build_rows(
-        {"inventory_version_mismatch": 1200, "reloaded_after_collection": 30}, {"refs_missing_pending": 9}, {}, 0
+        {"inventory_version_mismatch": 1200, "collection_overdue": 30}, {"refs_missing_pending": 9}, {}, 0
     )
-    assert ownership.verdict(rows) == "Needs attention: 1,200 for node; 30 for registry operations."
+    assert ownership.verdict(rows) == "Needs attention: 1,200 for the node; 30 for EN."
     assert ownership.verdict(ownership.build_rows({}, {"refs_missing_pending": 9}, {}, 0)) == (
         "Healthy: nothing needs doing."
     )

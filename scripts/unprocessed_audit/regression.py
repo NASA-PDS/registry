@@ -67,7 +67,7 @@ class Metrics:
         superseded_anomalous_collections: LIDVIDs of superseded collection versions rooting anomalous products.
         empty_refs_with_bundle: LIDVIDs of collections stamped with empty refs that have a bundle.
         unmapped_superseded: Indices whose mapping lacks the superseded field; ``None`` when not checked.
-        owners: Anomalous product count per owner (``node``, ``registry_operations``, ``sweepers_team``,
+        owners: Anomalous product count per owner (``node``, ``en``, ``sweepers_team``,
             ``needs_check``, ``no_action``); see ``ownership``.
         unverified_refs_missing: ``refs_missing`` products reached without the collection inventory (skipped or
             unreadable); they are counted under ``needs_check`` in ``owners``.

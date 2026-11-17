@@ -16,8 +16,8 @@ mapped at all.
 
 | Who | What is wrong (plain English) | Products | Collections | What to do |
 |---|---|---|---|---|
-| Registry operations | The two DART SPICE 4.0 collections have no refs documents at all, although their inventories list the registered product as a primary member. So the sweeper never links the two 4.0 products, and the API lists no members for either collection | 2 | 2 | Re-harvest both collections from their current label and inventory, then run the sweepers |
-| Registry operations (index owners) | NAIF maps text fields as `keyword` and lacks 97 `pds:` fields (see Index mapping) | - | all | Correct the `naif-registry` mapping and reindex |
+| Node | The two DART SPICE 4.0 collections have no refs documents at all, although their inventories list the registered product as a primary member. So the sweeper never links the two 4.0 products, and the API lists no members for either collection | 2 | 2 | Re-harvest both collections from their current label and inventory, then run the sweepers |
+| EN | NAIF maps text fields as `keyword` and lacks 97 `pds:` fields (see Index mapping) | - | all | Correct the `naif-registry` mapping and reindex |
 
 Collections: `dart.spice:document::4.0` and `dart.spice:miscellaneous::4.0`.
 
@@ -52,7 +52,7 @@ Warnings and errors from `mapping_discrepancies.csv` (`naif-registry`: 134 mappe
 - 97 warnings: `pds:` fields (for example `pds:Science_Facets/*`, `pds:Observing_System/pds:name`,
   `pds:Table_Delimited` and `pds:Field_Binary` fields, `pds:Modification_Detail/*`) are absent from the mapping,
   so their values cannot be searched or filtered. Fixing the types normally needs a new index and a reindex
-  (not verified). Owner: registry operations with the index owners.
+  (not verified). Owner: EN with the index owners.
 
 <!-- product-samples:start -->
 ## Example products
@@ -61,8 +61,8 @@ Up to 3 products from each of the 2 largest problem groups of 2 (one rule in one
 
 | Who | Rule | Collection | Products in group | Examples |
 |---|---|---|--:|---|
-| Registry operations | `refs_missing` | `urn:nasa:pds:dart.spice:document::4.0` | 1 | `urn:nasa:pds:dart.spice:document:spiceds::4.0` |
-| Registry operations | `refs_missing` | `urn:nasa:pds:dart.spice:miscellaneous::4.0` | 1 | `urn:nasa:pds:dart.spice:miscellaneous:checksum_checksum::4.0` |
+| Node | `refs_missing` | `urn:nasa:pds:dart.spice:document::4.0` | 1 | `urn:nasa:pds:dart.spice:document:spiceds::4.0` |
+| Node | `refs_missing` | `urn:nasa:pds:dart.spice:miscellaneous::4.0` | 1 | `urn:nasa:pds:dart.spice:miscellaneous:checksum_checksum::4.0` |
 
 <!-- product-samples:end -->
 

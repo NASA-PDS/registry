@@ -17,7 +17,7 @@ Tracking issue: NASA-PDS/registry#610, which has the per-collection tables.
 | Node | No collection with the identifier these products belong to is in the registry (`juno_uvs:data_raw`) | 42 | 1 | Load the collection, or correct the product identifiers |
 | Sweepers team | The collection's inventory lists a product by LID without a version, which the sweepers do not follow (`maven.iuvs.kp:document:sis::7.0`) | 1 | 1 | The node lists a LIDVID, or the sweepers support LID references (registry-sweepers#299) |
 | Needs a closer look | Two products of the `pds-ama:sample_bundle` sample have no refs and their collection's inventory cannot be downloaded (the files were loaded from a local path) | 2 | 1 | Decide whether the sample stays in the registry (see NASA-PDS/registry#614) |
-| Registry operations | None | 0 | 0 | - |
+| EN | None | 0 | 0 | - |
 | No action | Harvested in the last week in `maven.iuvs.processed:occultation::13.0`, within the grace period | 1,725 | 1 | Re-check later |
 
 ## Details
@@ -29,7 +29,7 @@ Tracking issue: NASA-PDS/registry#610, which has the per-collection tables.
 
 ## Index mapping
 
-`atm-registry` (concrete index `temp-atm-registry`) has two error-level problems: `ops:Provenance/ops:superseded_by` and `vid` are not mapped, so superseded products cannot be excluded in searches and `vid` cannot be searched or sorted (NASA-PDS/registry#611). It also has 2 warning-level missing fields and one type conflict (`img:Exposure/img:exposure_duration_count` is `long` here and on `img`, `double` on `geo` and `sbnpsi`). Owner: registry operations, by mapping the two fields and rewriting the documents.
+`atm-registry` (concrete index `temp-atm-registry`) has two error-level problems: `ops:Provenance/ops:superseded_by` and `vid` are not mapped, so superseded products cannot be excluded in searches and `vid` cannot be searched or sorted (NASA-PDS/registry#611). It also has 2 warning-level missing fields and one type conflict (`img:Exposure/img:exposure_duration_count` is `long` here and on `img`, `double` on `geo` and `sbnpsi`). Owner: EN, by mapping the two fields and rewriting the documents.
 
 <!-- product-samples:start -->
 ## Example products

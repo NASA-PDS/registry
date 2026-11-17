@@ -23,10 +23,10 @@
     "img"
   ],
   "owners": {
+    "en": 0,
     "needs_check": 0,
     "no_action": 0,
-    "node": 516,
-    "registry_operations": 36323,
+    "node": 36839,
     "sweepers_team": 0
   },
   "rules": {

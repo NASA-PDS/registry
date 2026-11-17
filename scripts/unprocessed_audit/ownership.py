@@ -2,7 +2,7 @@
 
 The audit rules are technical. This module maps each rule to the party that can fix it, to the kind of problem it
 is, and to a one-line description of the problem and the fix, so a report can say "the node must load these
-collections" or "registry operations must re-harvest these collections" instead of listing rule names.
+collections" or "the node must re-harvest these collections" instead of listing rule names.
 
 Ancestry is produced in two steps. Harvest writes ``registry-refs`` documents from a collection's inventory when
 the collection is harvested; they are the registry's record of which products belong to which collection. The
@@ -13,7 +13,7 @@ once it is stamped. A product therefore lacks ancestry in one of two ways:
   guess from its identifier (``bundle:collection:product``) and the collection versions that are registered; the
   product may really belong to a collection version that is not loaded. Usually the node's data does not line up
   (the collection is not loaded, the inventory lists another version, the inventory does not list the product);
-  sometimes the refs are stale or were never written, which registry operations fix by re-harvesting.
+  sometimes the refs are stale or were never written, which the node fixes by re-harvesting the collection.
 * **Not processed**: the refs do list the product, so its parent is confirmed, but the sweepers never gave it
   ancestry (it was loaded after its collection was processed, it carries an older stamp, or a sweepers bug).
 """
@@ -34,7 +34,7 @@ class Owner(str, Enum):
     """The party that can fix a finding."""
 
     NODE = "node"
-    REGISTRY_OPERATIONS = "registry_operations"
+    EN = "en"
     SWEEPERS_TEAM = "sweepers_team"
     NEEDS_CHECK = "needs_check"
     NO_ACTION = "no_action"
@@ -50,7 +50,7 @@ class Kind(str, Enum):
 
 OWNER_LABELS: dict[Owner, str] = {
     Owner.NODE: "Node",
-    Owner.REGISTRY_OPERATIONS: "Registry operations",
+    Owner.EN: "EN",
     Owner.SWEEPERS_TEAM: "Sweepers team",
     Owner.NEEDS_CHECK: "Needs a closer look",
     Owner.NO_ACTION: "No action",
@@ -58,9 +58,9 @@ OWNER_LABELS: dict[Owner, str] = {
 
 OWNER_MEANING: dict[Owner, str] = {
     Owner.NODE: "the node's data does not line up (a collection or product is missing, at the wrong version, or "
-    "not in the collection's inventory); only the node can fix it",
-    Owner.REGISTRY_OPERATIONS: "the node's data is fine and the registry's own processing missed it; fixed by "
-    "re-harvesting the collection and running the sweepers",
+    "not in the collection's inventory), or the collection has to be re-harvested by the node so that the "
+    "registry's refs are rewritten from its inventory; EN then runs the sweepers",
+    Owner.EN: "EN runs the sweepers or fixes the registry itself",
     Owner.SWEEPERS_TEAM: "everything looks right but the sweepers cannot or do not follow it; a software gap, "
     "possibly worked around by the node",
     Owner.NEEDS_CHECK: "the cause cannot be told apart because the collection inventory could not be used",
@@ -83,6 +83,14 @@ KIND_MEANING: dict[Kind, str] = {
 }
 
 _OWNER_ORDER = list(Owner)
+
+_VERDICT_PHRASE: dict[Owner, str] = {
+    Owner.NODE: "for the node",
+    Owner.EN: "for EN",
+    Owner.SWEEPERS_TEAM: "for the sweepers team",
+    Owner.NEEDS_CHECK: "that need a closer look",
+    Owner.NO_ACTION: "waiting",
+}
 
 
 @dataclass(frozen=True)
@@ -128,29 +136,29 @@ RULE_PROBLEMS: dict[Rule, Problem] = {
         "Re-harvesting does not help. The node lists LIDVIDs in the inventory, or the sweepers support LID references",
     ),
     Rule.REFS_MISSING: Problem(
-        Owner.REGISTRY_OPERATIONS,
+        Owner.NODE,
         Kind.ORPHANED,
         "The collection's inventory lists these products but the registry's refs do not (stale or never written)",
-        "Re-harvest the collection, then run the sweepers",
+        "Re-harvest the collection from its current label and inventory; EN then runs the sweepers",
     ),
     Rule.RELOADED_AFTER_COLLECTION: Problem(
-        Owner.REGISTRY_OPERATIONS,
+        Owner.NODE,
         Kind.NOT_PROCESSED,
         "Linked to their collection, but loaded after the sweepers processed it, so the sweepers never went back",
-        "Re-harvest the collection, then run the sweepers",
+        "Re-harvest the collection; EN then runs the sweepers",
     ),
     Rule.STALE_STAMP: Problem(
-        Owner.REGISTRY_OPERATIONS,
+        Owner.NODE,
         Kind.NOT_PROCESSED,
         "Linked to their collection, but processed by an older sweepers version while the collection is on the "
         "current one, so the sweepers do not go back",
-        "Re-harvest the collection, then run the sweepers",
+        "Re-harvest the collection; EN then runs the sweepers",
     ),
     Rule.COLLECTION_OVERDUE: Problem(
-        Owner.REGISTRY_OPERATIONS,
+        Owner.EN,
         Kind.NOT_PROCESSED,
         "The collection these products belong to is loaded but the sweepers never processed it",
-        "Run the sweepers (re-harvest the collection first if it has no refs)",
+        "EN runs the sweepers (the node re-harvests the collection first if it has no refs)",
     ),
     Rule.SWEEPER_MISS: Problem(
         Owner.SWEEPERS_TEAM,
@@ -180,10 +188,10 @@ REFS_MISSING_UNVERIFIED = Problem(
 )
 
 EMPTY_REFS_PROBLEM = Problem(
-    Owner.REGISTRY_OPERATIONS,
+    Owner.NODE,
     Kind.NOT_PROCESSED,
     "The collection is marked processed but has no link to its bundle, so the bundle does not list it as a member",
-    "Re-harvest the collection, then run the sweepers (the sweepers bug that caused this is fixed in "
+    "Re-harvest the collection; EN then runs the sweepers (the sweepers bug that caused this is fixed in "
     "registry-sweepers PR #286)",
 )
 
@@ -312,7 +320,7 @@ def verdict(rows: Iterable[ActionRow]) -> str:
         rows: Rows from ``build_rows``.
 
     Returns:
-        A sentence such as ``Needs attention: 1,200 for node; 30 for registry operations.``.
+        A sentence such as ``Needs attention: 1,200 for the node; 30 for EN.``.
     """
     needs: dict[Owner, int] = {}
     for row in rows:
@@ -322,5 +330,5 @@ def verdict(rows: Iterable[ActionRow]) -> str:
         needs[row.owner] = needs.get(row.owner, 0) + amount
     if not needs:
         return "Healthy: nothing needs doing."
-    parts = [f"{count:,} for {OWNER_LABELS[owner].lower()}" for owner, count in needs.items()]
+    parts = [f"{count:,} {_VERDICT_PHRASE[owner]}" for owner, count in needs.items()]
     return "Needs attention: " + "; ".join(parts) + "."

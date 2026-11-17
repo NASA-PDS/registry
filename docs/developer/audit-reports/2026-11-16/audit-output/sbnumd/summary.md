@@ -9,14 +9,14 @@ Nodes: sbnumd
 
 ## What needs to happen
 
-**Needs attention: 1 for node; 82 for registry operations.**
+**Needs attention: 83 for the node.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|
+| Node | **Not processed**: Linked to their collection, but loaded after the sweepers processed it, so the sweepers never went back | 20 | 9 | Re-harvest the collection; EN then runs the sweepers |
+| Node | **Not processed**: Linked to their collection, but processed by an older sweepers version while the collection is on the current one, so the sweepers do not go back | 4 | 2 | Re-harvest the collection; EN then runs the sweepers |
 | Node | **Orphaned**: The collection's inventory does not list these products under any version | 1 | 1 | Add them to the inventory, or remove the products from the registry |
-| Registry operations | **Not processed**: Linked to their collection, but loaded after the sweepers processed it, so the sweepers never went back | 20 | 9 | Re-harvest the collection, then run the sweepers |
-| Registry operations | **Not processed**: Linked to their collection, but processed by an older sweepers version while the collection is on the current one, so the sweepers do not go back | 4 | 2 | Re-harvest the collection, then run the sweepers |
-| Registry operations | **Not processed**: The collection is marked processed but has no link to its bundle, so the bundle does not list it as a member | - | 58 | Re-harvest the collection, then run the sweepers (the sweepers bug that caused this is fixed in registry-sweepers PR #286) |
+| Node | **Not processed**: The collection is marked processed but has no link to its bundle, so the bundle does not list it as a member | - | 58 | Re-harvest the collection; EN then runs the sweepers (the sweepers bug that caused this is fixed in registry-sweepers PR #286) |
 
 Kinds of problem:
 
@@ -25,8 +25,7 @@ Kinds of problem:
 
 Who fixes what:
 
-- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory); only the node can fix it.
-- **Registry operations**: the node's data is fine and the registry's own processing missed it; fixed by re-harvesting the collection and running the sweepers.
+- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory), or the collection has to be re-harvested by the node so that the registry's refs are rewritten from its inventory; EN then runs the sweepers.
 
 ## Anomalies by rule
 

@@ -2,20 +2,20 @@
 
 ## Verdict
 
-Mostly healthy: 36,839 of 26,339,723 products the public API can show (0.14 percent) lack ancestry, meaning the registry has not recorded which collection and bundle they belong to, so they are missing from the API's `/members` lists. 36,323 of them are for registry operations, 516 are for the node and none are for the sweepers team. Separately, 6 bundles have an empty member list, and one collection's inventory disagrees with the registry for 35,109 more products.
+Mostly healthy: 36,839 of 26,339,723 products the public API can show (0.14 percent) lack ancestry, meaning the registry has not recorded which collection and bundle they belong to, so they are missing from the API's `/members` lists. All are for the node: 36,323 are fixed by re-harvesting collections (EN then runs the sweepers) and 516 by loading the listed versions. None are for EN alone or the sweepers team. Separately, 6 bundles have an empty member list, and one collection's inventory disagrees with the registry for 35,109 more products.
 
 ## What needs to happen
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|---|---|---|
 | Node | The inventory of one collection lists a newer version of 516 products than the registry holds (registry has version 1.0, inventory lists 2.0 to 9.0) | 516 | 1 | Load the listed versions, or correct the inventory if 1.0 is right |
-| Registry operations | Sweepers processed these collections while the node was still loading their products; products loaded afterwards were never processed (sweepers do not revisit a processed collection) | 36,323 | 5 | Re-harvest the collections, then run the sweepers |
-| Registry operations | Collections stamped as processed with an empty ancestor list although their bundle exists, so the bundle's `/members` is empty (sweeper bug fixed in registry-sweepers PR #286) | 0 (3 of the 6 collections are also in the row above) | 6 | Re-harvest the collections, then run the sweepers that include PR #286 |
+| Node | Sweepers processed these collections while the node was still loading their products; products loaded afterwards were never processed (sweepers do not revisit a processed collection) | 36,323 | 5 | Re-harvest the collections, then run the sweepers |
+| Node | Collections stamped as processed with an empty ancestor list although their bundle exists, so the bundle's `/members` is empty (sweeper bug fixed in registry-sweepers PR #286) | 0 (3 of the 6 collections are also in the row above) | 6 | Re-harvest the collections, then run the sweepers that include PR #286 |
 | Sweepers team | Products the sweepers skipped with no explanation in the data | 0 | 0 | None |
 | Needs a closer look | Same collection as the node row: the inventory lists an older version than the registry holds, for products that already have ancestry (not counted in the 36,839) | 35,109 | 1 | Node confirms which versions the collection should contain |
 | No action | Products still within the grace period, and service/context products that never have a collection | 0 | 0 | None |
 
-Collections for registry operations: `urn:nasa:pds:artemis2_crew_camera:data_processed::1.0` (9,961 products), `:data_raw::1.0` (9,141), `:data_source::1.0` (8,671), `:browse::1.0` (8,530), `urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data::1.0` (20). Empty-refs collections with a bundle: Artemis 2 `browse`, `data_raw`, `data_source` and `urn:nasa:pds:mars2020_{hazcam,mastcamz,navcam}_ops_stereo:data::16.0`. Collection for the node: `urn:nasa:pds:mars2020_navcam_ops_mosaic:data::16.0`.
+Collections the node re-harvests: `urn:nasa:pds:artemis2_crew_camera:data_processed::1.0` (9,961 products), `:data_raw::1.0` (9,141), `:data_source::1.0` (8,671), `:browse::1.0` (8,530), `urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data::1.0` (20). Empty-refs collections with a bundle: Artemis 2 `browse`, `data_raw`, `data_source` and `urn:nasa:pds:mars2020_{hazcam,mastcamz,navcam}_ops_stereo:data::16.0`. Collection for the node: `urn:nasa:pds:mars2020_navcam_ops_mosaic:data::16.0`.
 
 ## Details
 
@@ -47,7 +47,7 @@ Collections for registry operations: `urn:nasa:pds:artemis2_crew_camera:data_pro
 - One error-level problem: `img:Exposure/img:exposure_duration_count` is a whole-number type (`long`) on img and atm, and a decimal type (`double`) on geo and sbnpsi. In img the values are whole numbers (sampled top values 0, 1, 3, 10, 200; examples 173, 188, 214), so img itself is unaffected. A search across several nodes' indices on this field may behave differently per node; I did not test that.
 - No error-level missing fields on img (the `superseded_by` and `vid` errors are atm's) and none on `img-registry-refs`.
 - 22 warning-level fields are absent from img but present on most nodes, mainly table and binary-record descriptions (`pds:Table_Binary/*`, `pds:Field_Binary/*`, `pds:Record_Binary/*`) plus `pds:Collection/pds:description` and `ref_lid_facility`. Products carrying them can be fetched but those fields cannot be searched on img. I did not check whether img holds such products.
-- Owner: registry operations with the index owners; none of this blocks the actions above.
+- Owner: EN with the index owners; none of this blocks the actions above.
 
 <!-- product-samples:start -->
 ## Example products
@@ -56,12 +56,12 @@ Up to 3 products from each of the 6 largest problem groups of 6 (one rule in one
 
 | Who | Rule | Collection | Products in group | Examples |
 |---|---|---|--:|---|
+| Node | `reloaded_after_collection` | `urn:nasa:pds:artemis2_crew_camera:data_processed::1.0` | 9,961 | `urn:nasa:pds:artemis2_crew_camera:data_processed:art002e004437_nkd5015_prc.tif::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_processed:art002e004438_nkd5015_prc.tif::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_processed:art002e004439_nkd5017_prc.tif::1.0` |
+| Node | `reloaded_after_collection` | `urn:nasa:pds:artemis2_crew_camera:data_raw::1.0` | 9,141 | `urn:nasa:pds:artemis2_crew_camera:data_raw:art002e009179_nkd5017_raw.tif::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_raw:art002e009180_nkd5017_raw.tif::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_raw:art002e009181_nkd5017_raw.tif::1.0` |
+| Node | `reloaded_after_collection` | `urn:nasa:pds:artemis2_crew_camera:data_source::1.0` | 8,671 | `urn:nasa:pds:artemis2_crew_camera:data_source:art002e009276_nkd5017_src.nef::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_source:art002e009277_nkd5015_src.nef::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_source:art002e009278_nkd5015_src.nef::1.0` |
+| Node | `reloaded_after_collection` | `urn:nasa:pds:artemis2_crew_camera:browse::1.0` | 8,530 | `urn:nasa:pds:artemis2_crew_camera:browse:art002e009624_nkd5015_prc.png::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:browse:art002e009625_nkd5015_prc.png::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:browse:art002e009626_nkd5015_prc.png::1.0` |
 | Node | `inventory_version_mismatch` | `urn:nasa:pds:mars2020_navcam_ops_mosaic:data::16.0` | 516 | `urn:nasa:pds:mars2020_navcam_ops_mosaic:data:n_lrgb_1756_fdr_0831252_cyl_l_autogenj.lis::1.0`<br>`urn:nasa:pds:mars2020_navcam_ops_mosaic:data:n_lrgb_1756_fdr_0831252_cyl_l_hrestopj.lis::1.0`<br>`urn:nasa:pds:mars2020_navcam_ops_mosaic:data:n_lrgb_1756_fdr_0831252_cyp_r_autogenj.lis::1.0` |
-| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:artemis2_crew_camera:data_processed::1.0` | 9,961 | `urn:nasa:pds:artemis2_crew_camera:data_processed:art002e004437_nkd5015_prc.tif::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_processed:art002e004438_nkd5015_prc.tif::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_processed:art002e004439_nkd5017_prc.tif::1.0` |
-| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:artemis2_crew_camera:data_raw::1.0` | 9,141 | `urn:nasa:pds:artemis2_crew_camera:data_raw:art002e009179_nkd5017_raw.tif::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_raw:art002e009180_nkd5017_raw.tif::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_raw:art002e009181_nkd5017_raw.tif::1.0` |
-| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:artemis2_crew_camera:data_source::1.0` | 8,671 | `urn:nasa:pds:artemis2_crew_camera:data_source:art002e009276_nkd5017_src.nef::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_source:art002e009277_nkd5015_src.nef::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:data_source:art002e009278_nkd5015_src.nef::1.0` |
-| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:artemis2_crew_camera:browse::1.0` | 8,530 | `urn:nasa:pds:artemis2_crew_camera:browse:art002e009624_nkd5015_prc.png::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:browse:art002e009625_nkd5015_prc.png::1.0`<br>`urn:nasa:pds:artemis2_crew_camera:browse:art002e009626_nkd5015_prc.png::1.0` |
-| Registry operations | `reloaded_after_collection` | `urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data::1.0` | 20 | `urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data:wac.m101013765ce::2.0`<br>`urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data:wac.m101014131ce::2.0`<br>`urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data:wac.m101014500ce::2.0` |
+| Node | `reloaded_after_collection` | `urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data::1.0` | 20 | `urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data:wac.m101013765ce::2.0`<br>`urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data:wac.m101014131ce::2.0`<br>`urn:nasa:pds:lro-l-lroc-2-edr:lrolrc_0001_data:wac.m101014500ce::2.0` |
 
 <!-- product-samples:end -->
 
