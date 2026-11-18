@@ -266,15 +266,9 @@ product lacks ancestry in one of two ways:
 
 A third group, **waiting**, is products loaded so recently that the sweepers have not had their chance.
 
-### 5.1.1 Loading order for operators
+### 5.1.1 Recommended loading order
 
-The sweepers process a collection together with the products its refs list, and do not revisit it once stamped. Until Harvest writes bundles and collections last in a run (NASA-PDS/harvest#350), load in this order:
-
-1. Harvest the products first.
-2. Wait until they are loaded. The audit's load status (`audit_collection.py --load-status`) shows whether the node is still loading.
-3. Harvest the bundle and collection labels last, so the sweepers see a complete collection.
-
-For a collection that is already stamped, the ancestry orphan repair and the bundle-link pass repair products and bundles loaded afterwards.
+The sweepers process a collection together with the products its refs list, and do not revisit it once stamped, so products written after their collection was swept need a repair. Harvest writes products first, then bundles, then collections, within a run (NASA-PDS/harvest#350), which reduces that reprocessing. Loads can be run in any order and split across runs; when they are, harvesting the products first and the bundle and collection labels last avoids most of it. The ancestry orphan repair and the bundle-link pass repair whatever is loaded in another order.
 
 ### 5.2 Who fixes what
 
