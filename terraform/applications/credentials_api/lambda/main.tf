@@ -10,8 +10,15 @@ locals {
   # Format: https://cognito-idp.{region}.amazonaws.com/{user-pool-id}/.well-known/jwks.json
   jwks_url = "https://cognito-idp.${var.aws_region}.amazonaws.com/${var.cognito_user_pool_id}/.well-known/jwks.json"
 
-  # Hash of layer files to trigger rebuild when dependencies change
-  layer_files_hash = fileexists("${path.module}/src/layer/requirements.txt") ? filesha256("${path.module}/src/layer/requirements.txt") : "none"
+  # The layer is identified by its inputs (requirements + runtime), NOT by the bytes of the built zip.
+  # The zip is not reproducible across machines (pip version, platform, absolute paths in scripts),
+  # and build/ is git-ignored so it does not exist in a fresh checkout (e.g. the terragrunt cache).
+  layer_inputs_hash = sha256(join("|", [
+    filesha256("${path.module}/src/layer/requirements.txt"),
+    var.runtime,
+  ]))
+  layer_zip_path = "${path.module}/build/layer.zip"
+  python_version = trimprefix(var.runtime, "python")
 }
 
 # CloudWatch Log Group for Lambda function
@@ -22,53 +29,53 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
   tags = var.common_tags
 }
 
-resource "null_resource" "build_trigger" {
-  triggers = {
-    source_py_hash = filesha256(local.source_file)
-    build_layer_exists = fileexists("${path.module}/build/${local.lambda_name}.zip") ? "yes" : "no"
-  }
-
-}
-
-# Package the lambda source file as a zip
-
+# Package the lambda source file as a zip.
+# Read at plan time from the sources only, so the hash is stable wherever the module is checked out.
 data "archive_file" "lambda_zip" {
   type        = "zip"
   source_file = local.source_file
   output_path = "${path.module}/build/${local.lambda_name}.zip"
-  depends_on  = [null_resource.build_trigger]
 }
 
-# Prepare Lambda Layer with Python dependencies
-resource "null_resource" "prepare_layer" {
+# Build the Lambda Layer zip with the Python dependencies.
+# Only re-runs when the requirements or runtime change (not based on the presence of files in build/).
+resource "null_resource" "build_layer" {
   triggers = {
-    files_hash       = local.layer_files_hash
-    layer_zip_exists = fileexists("${path.module}/build/layer.zip") ? "exists" : "missing"
+    layer_inputs_hash = local.layer_inputs_hash
   }
 
   provisioner "local-exec" {
-    command = "echo ${path.module} && rm -fr ${path.module}/build/layer/python && mkdir -p ${path.module}/build/layer/ && cp -r ${path.module}/src/layer ${path.module}/build/layer/python && pip3 install -r ${path.module}/build/layer/python/requirements.txt -t ${path.module}/build/layer/python 2>&1 | tee /tmp/layer-build.log"
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<-EOT
+      set -euo pipefail
+      build_dir="${path.module}/build/layer"
+      rm -rf "$build_dir" "${local.layer_zip_path}"
+      mkdir -p "$build_dir/python"
+      # Target the Lambda runtime (linux x86_64), not the machine running terraform.
+      python3 -m pip install \
+        --requirement "${path.module}/src/layer/requirements.txt" \
+        --target "$build_dir/python" \
+        --platform manylinux2014_x86_64 --implementation cp \
+        --python-version "${local.python_version}" --only-binary=:all: \
+        --no-compile --disable-pip-version-check 2>&1 | tee /tmp/layer-build.log
+      rm -rf "$build_dir/python/bin"
+      (cd "$build_dir" && zip -qr "../layer.zip" python)
+    EOT
   }
-
-}
-
-# Package the layer as a zip
-data "archive_file" "lambda_layer_zip" {
-  type        = "zip"
-  source_dir  = "${path.module}/build/layer"
-  output_path = "${path.module}/build/layer.zip"
-  depends_on  = [null_resource.prepare_layer]
 }
 
 # Create Lambda Layer
 resource "aws_lambda_layer_version" "layer" {
   layer_name          = local.layer_name
-  filename            = data.archive_file.lambda_layer_zip.output_path
+  filename            = local.layer_zip_path
   compatible_runtimes = [var.runtime]
   description         = "Common dependencies for PDS Registry Lambda (requests package)"
-  depends_on          = [data.archive_file.lambda_layer_zip]
 
-  source_code_hash = data.archive_file.lambda_layer_zip.output_base64sha256
+  # Derived from inputs: the provider keeps this value in state, so the layer is only
+  # republished when the requirements or runtime change.
+  source_code_hash = local.layer_inputs_hash
+
+  depends_on = [null_resource.build_layer]
 }
 
 resource "aws_lambda_function" "this" {
@@ -101,9 +108,5 @@ resource "aws_lambda_function" "this" {
 
   tags = var.common_tags
 
-  depends_on = [
-    data.archive_file.lambda_zip,
-    aws_cloudwatch_log_group.lambda_logs,
-    aws_lambda_layer_version.layer
-  ]
+  depends_on = [aws_cloudwatch_log_group.lambda_logs]
 }
