@@ -382,3 +382,39 @@ def test_metrics_owners_survive_a_round_trip(tmp_path: Path):
     del legacy["owners"], legacy["unverified_refs_missing"]
     path.write_text(json.dumps(legacy), encoding="utf-8")
     assert regression.load_metrics(path).owners == {} and regression.load_metrics(path).unverified_refs_missing == 0
+
+
+def test_not_visible_count_survives_a_round_trip_and_old_files_still_load(tmp_path: Path):
+    original = metrics(not_visible_without_ancestry={"staged": 1645, "none": 2})
+    path = tmp_path / "metrics.json"
+    path.write_text(original.to_json(), encoding="utf-8")
+    assert json.loads(path.read_text(encoding="utf-8"))["not_visible_without_ancestry"] == {"staged": 1645, "none": 2}
+    assert regression.load_metrics(path) == original
+    legacy = json.loads(original.to_json())
+    del legacy["not_visible_without_ancestry"]
+    path.write_text(json.dumps(legacy), encoding="utf-8")
+    assert regression.load_metrics(path).not_visible_without_ancestry == {}
+    legacy["not_visible_without_ancestry"] = None
+    path.write_text(json.dumps(legacy), encoding="utf-8")
+    assert regression.load_metrics(path).not_visible_without_ancestry == {}
+
+
+def test_the_not_visible_count_does_not_take_part_in_the_comparison():
+    baseline = metrics()
+    current = metrics(not_visible_without_ancestry={"staged": 5000})
+    regression.check_comparable(["atm"], 7, baseline)
+    assert regression.evaluate(current, baseline) == []
+    assert regression.evaluate(current) == []
+    assert regression.evaluate(baseline, current) == []
+
+
+def test_run_audit_records_the_not_visible_count_in_metrics_and_summary(tmp_path: Path, fake: FakeRegistry):
+    fake.not_visible = {"staged": 3, "none": 1}
+    result = cli.run_audit(make_args(tmp_path, "--node", "atm", "--no-inventory"), client=object(), now=NOW)  # type: ignore[arg-type]
+    assert fake.not_visible_calls == [(["atm"], 7)]
+    assert result.metrics.not_visible_without_ancestry == {"staged": 3, "none": 1}
+    written = json.loads((tmp_path / "out" / "metrics.json").read_text(encoding="utf-8"))
+    assert written["not_visible_without_ancestry"] == {"staged": 3, "none": 1}
+    assert "Not API-visible (staged etc.) without ancestry, not counted above: 4 (staged 3, none 1)" in result.summary
+    # the existing metrics keep their values
+    assert result.metrics.examined == 6 and result.metrics.anomalous == 4

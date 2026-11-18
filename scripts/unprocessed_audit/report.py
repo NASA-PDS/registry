@@ -90,6 +90,34 @@ PENDING_RULES = (
 NOT_LOADED_RULES = (Rule.COLLECTION_NOT_LOADED_PENDING, Rule.COLLECTION_NOT_LOADED_OVERDUE)
 """Rules for products whose parent collection has no API-visible document (orphans)."""
 
+REPAIR_BUCKET_REPAIRABLE = "repairable"
+REPAIR_BUCKET_UNRESOLVED = "unresolved"
+REPAIR_BUCKET_LISTED = "repairable if a refs document lists it, else unresolved"
+REPAIR_BUCKET_UNLESS_LISTED = "unresolved unless a refs document lists it under a collection in the registry"
+REPAIR_BUCKETS: dict[Rule, str] = {
+    Rule.RELOADED_AFTER_COLLECTION: REPAIR_BUCKET_REPAIRABLE,
+    Rule.SWEEPER_MISS: REPAIR_BUCKET_REPAIRABLE,
+    Rule.STALE_STAMP: REPAIR_BUCKET_LISTED,
+    Rule.COLLECTION_OVERDUE: REPAIR_BUCKET_LISTED,
+    Rule.COLLECTION_PENDING: REPAIR_BUCKET_LISTED,
+    Rule.REFS_MISSING: REPAIR_BUCKET_UNRESOLVED,
+    Rule.REFS_MISSING_PENDING: REPAIR_BUCKET_UNRESOLVED,
+    Rule.INVENTORY_VERSION_MISMATCH: REPAIR_BUCKET_UNRESOLVED,
+    Rule.NOT_IN_COLLECTION_INVENTORY: REPAIR_BUCKET_UNRESOLVED,
+    Rule.BARE_LID_IN_INVENTORY: REPAIR_BUCKET_UNRESOLVED,
+    Rule.COLLECTION_NOT_LOADED_OVERDUE: REPAIR_BUCKET_UNLESS_LISTED,
+    Rule.COLLECTION_NOT_LOADED_PENDING: REPAIR_BUCKET_UNLESS_LISTED,
+    Rule.NO_PARENT_BY_DESIGN: REPAIR_BUCKET_UNLESS_LISTED,
+}
+"""The ancestry orphan repair bucket each audit rule falls in.
+
+The repair calls a product repairable when a ``registry-refs`` document lists its LIDVID under a collection that exists
+in the registry (any archive status), and unresolved otherwise. ``reloaded_after_collection`` and ``sweeper_miss`` are
+only assigned to products that refs list under an API-visible collection, so they are always repairable. The refs rules
+are only assigned when no refs document lists the LIDVID, so they are always unresolved. The remaining rules are
+assigned without consulting refs, so the repair bucket depends on the refs.
+"""
+
 _BUNDLE_LID_PATTERN = re.compile(r"^urn:[^:]+:[^:]+:[^:]+(?:::[^:]+)?$")
 """A bundle LID(VID) has four URN segments; collection LIDs have five."""
 
@@ -612,7 +640,18 @@ def _bundles_for(
     return shown
 
 
-def _section_headline(tally: Tally, th: Thresholds, params: Mapping[str, object]) -> list[str]:
+def format_not_visible(not_visible: Mapping[str, int]) -> str:
+    """Format the not-visible counts as ``1,645 (staged 1,600, none 45)``; ``0`` when there are none."""
+    total = sum(not_visible.values())
+    if not total:
+        return "0"
+    parts = ", ".join(f"{status} {count:,}" for status, count in not_visible.items() if count)
+    return f"{total:,} ({parts})"
+
+
+def _section_headline(
+    tally: Tally, th: Thresholds, params: Mapping[str, object], not_visible: Mapping[str, int] | None = None
+) -> list[str]:
     """Section 1: headline counts."""
     lines = [
         "# Unprocessed product audit",
@@ -631,6 +670,8 @@ def _section_headline(tally: Tally, th: Thresholds, params: Mapping[str, object]
             f"- Expected (should resolve on their own): **{tally.expected:,}**",
             f"- Anomalous (need attention): **{tally.anomalous:,}**",
         ]
+    if not_visible is not None:
+        lines.append(f"- Not API-visible (staged etc.) without ancestry, not counted above: {format_not_visible(not_visible)}")
     return lines
 
 
@@ -860,6 +901,37 @@ def _section_breakdown(tally: Tally, max_rows: int) -> list[str]:
     return lines
 
 
+def _section_repair_mapping(tally: Tally, not_visible: Mapping[str, int] | None) -> list[str]:
+    """Mapping of the audit's rules onto the ancestry orphan repair report's buckets."""
+    if tally.examined == 0 and not not_visible:
+        return []
+    totals = tally.rule_totals()
+    rows: list[list[object]] = [
+        [rule.value, f"{totals[rule.value]:,}", bucket]
+        for rule, bucket in REPAIR_BUCKETS.items()
+        if totals.get(rule.value)
+    ]
+    hidden = sum(not_visible.values()) if not_visible else 0
+    if hidden:
+        rows.append(["not API-visible (not audited)", f"{hidden:,}", REPAIR_BUCKET_LISTED])
+    rows.append(["**all (the repair's products examined)**", f"**{tally.examined + hidden:,}**", ""])
+    lines = [
+        "## How this maps to the orphan repair report",
+        "",
+        "The ancestry orphan repair dry run prints products examined, repairable (a refs document lists the product "
+        "under a collection in the registry) and unresolved (no refs document lists it, or only under a collection "
+        "that is not in the registry).",
+        "",
+        f"- The repair examines the {tally.examined:,} audit candidates plus the {hidden:,} products that are not "
+        "API-visible, because it does not filter on archive status.",
+        "- The repair has no grace period, so waiting (`*_pending`) products are counted too.",
+        "- The audit counts any stamp other than the current version, the repair only a stamp below it.",
+        "",
+    ]
+    lines += _table(["Audit rule", "Products", "Repair bucket"], rows, len(rows), "rules")
+    return lines
+
+
 def _section_diff(diff: DiffCounts | None) -> list[str]:
     """Section 8: comparison with the previous run."""
     if diff is None:
@@ -893,6 +965,7 @@ def render_summary(
     params: Mapping[str, object],
     diff: DiffCounts | None,
     max_rows: int = _DEFAULT_MAX_ROWS,
+    not_visible: Mapping[str, int] | None = None,
 ) -> str:
     """Render ``summary.md``.
 
@@ -907,6 +980,8 @@ def render_summary(
         params: Extra run parameters to list in the headline, such as the node filter.
         diff: Comparison against the previous run, or ``None``.
         max_rows: Maximum rows shown in any one table.
+        not_visible: Non-aggregate, non-superseded products without current ancestry that are not API-visible, per
+            archive status (see ``registry.count_not_visible_without_ancestry``), or ``None`` when not counted.
 
     Returns:
         The Markdown report.
@@ -914,7 +989,7 @@ def render_summary(
     collection_list: CollectionABC[Collection] = list(collections)
     known = {c.lidvid: c for c in collection_list}
     sections = [
-        _section_headline(tally, th, params),
+        _section_headline(tally, th, params, not_visible),
         _section_actions(tally, collection_list),
         _section_anomalies(tally, max_rows),
         _section_anomalous_collections(tally, known, coverage, max_rows),
@@ -922,6 +997,7 @@ def render_summary(
         _section_pending(tally, max_rows),
         _section_orphans(tally, max_rows),
         _section_breakdown(tally, max_rows),
+        _section_repair_mapping(tally, not_visible),
         _section_diff(diff),
         _section_guidance(tally),
         _section_parameters(th, params),

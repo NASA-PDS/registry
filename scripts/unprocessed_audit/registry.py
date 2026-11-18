@@ -49,6 +49,10 @@ MAX_PAGE_SIZE = 10000
 """AOSS result window; a larger ``size`` silently returns garbage."""
 BUNDLE_COLLECTION_REF_FIELD = "ref_lid_collection"
 """Bundle field listing the LIDs of its collections (unverified on the registry index)."""
+ARCHIVE_STATUS_BUCKETS = 100
+"""Upper bound on the distinct archive-status values returned by the not-visible count."""
+NO_ARCHIVE_STATUS = "none"
+"""Key under which products without an archive status are counted."""
 REFS_PRODUCT_BATCH = 1000
 BUNDLE_LID_BATCH = 500
 MAX_RETRIES = 3
@@ -363,6 +367,20 @@ def collections_query() -> dict:
     }
 
 
+def _lacks_current_ancestry_clauses(ancestry_version: int) -> list[dict]:
+    """Return the ``should`` clauses that select products without current ancestry (A, B or C below)."""
+    return [
+        {"bool": {"must_not": [{"exists": {"field": STAMP_FIELD}}]}},
+        {"bool": {"must_not": [{"exists": {"field": REFS_FIELD}}]}},
+        {
+            "bool": {
+                "filter": [{"exists": {"field": STAMP_FIELD}}],
+                "must_not": [{"term": {STAMP_FIELD: str(ancestry_version)}}],
+            }
+        },
+    ]
+
+
 def candidate_query(ancestry_version: int) -> dict:
     """Return the query body selecting non-aggregate products that lack current ancestry.
 
@@ -375,18 +393,42 @@ def candidate_query(ancestry_version: int) -> dict:
     """
     clauses = api_visible_clauses()
     clauses["must_not"].append({"terms": {"product_class": list(AGGREGATE_CLASSES)}})
-    clauses["should"] = [
-        {"bool": {"must_not": [{"exists": {"field": STAMP_FIELD}}]}},
-        {"bool": {"must_not": [{"exists": {"field": REFS_FIELD}}]}},
-        {
-            "bool": {
-                "filter": [{"exists": {"field": STAMP_FIELD}}],
-                "must_not": [{"term": {STAMP_FIELD: str(ancestry_version)}}],
-            }
-        },
-    ]
+    clauses["should"] = _lacks_current_ancestry_clauses(ancestry_version)
     clauses["minimum_should_match"] = 1
     return {"query": {"bool": clauses}}
+
+
+def not_visible_without_ancestry_query(ancestry_version: int) -> dict:
+    """Return the body counting products that ``candidate_query`` leaves out only because they are not API-visible.
+
+    The predicate is that of ``candidate_query`` (non-aggregate, not superseded, no current ancestry), except that
+    the archive status must be neither ``archived`` nor ``certified`` (a product with no status matches). The
+    ancestry orphan repair examines these products too, because the ancestry sweeper does not filter on archive
+    status. The body is a size-0 terms aggregation on the archive status; an absent status is reported as
+    ``NO_ARCHIVE_STATUS``.
+
+    Args:
+        ancestry_version: The current ancestry version.
+    """
+    return {
+        "size": 0,
+        "query": {
+            "bool": {
+                "must_not": [
+                    {"terms": {ARCHIVE_STATUS_FIELD: list(API_VISIBLE_ARCHIVE_STATUSES)}},
+                    {"exists": {"field": SUPERSEDED_FIELD}},
+                    {"terms": {"product_class": list(AGGREGATE_CLASSES)}},
+                ],
+                "should": _lacks_current_ancestry_clauses(ancestry_version),
+                "minimum_should_match": 1,
+            }
+        },
+        "aggs": {
+            "archive_status": {
+                "terms": {"field": ARCHIVE_STATUS_FIELD, "size": ARCHIVE_STATUS_BUCKETS, "missing": NO_ARCHIVE_STATUS}
+            }
+        },
+    }
 
 
 def _members_query(collection_lid: str, ancestry_version: int | None) -> dict:
@@ -716,6 +758,43 @@ def lookup_refs_by_lid(
                         if entry not in found:
                             found.append(entry)
     return result
+
+
+def count_not_visible_without_ancestry(
+    client: RegistryClient, nodes: Sequence[str], ancestry_version: int
+) -> dict[str, int]:
+    """Count non-aggregate, non-superseded products without current ancestry that are not API-visible.
+
+    These are the products the audit never examines (for example ``staged`` ones) but the ancestry orphan
+    repair does. Read-only: one size-0 search per node.
+
+    Args:
+        client: Registry client.
+        nodes: Nodes to count, named explicitly (the wildcard index would include the legacy Solr mirror).
+        ancestry_version: Current ancestry version.
+
+    Returns:
+        ``{archive_status: count}`` summed over the nodes, in descending count order; a product with no archive
+        status is counted under ``none``. Empty when there are none.
+
+    Raises:
+        RegistryQueryError: If the aggregation response is unusable.
+    """
+    body = not_visible_without_ancestry_query(ancestry_version)
+    totals: dict[str, int] = {}
+    for node in nodes:
+        data = client.search(registry_index([node]), body)
+        try:
+            buckets = data["aggregations"]["archive_status"]["buckets"]
+            for bucket in buckets:
+                key = str(bucket["key"])
+                totals[key] = totals.get(key, 0) + int(bucket["doc_count"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise RegistryQueryError(
+                f"Unexpected archive-status aggregation response from {node}{REGISTRY_SUFFIX}: "
+                f"{str(data)[:_ERROR_BODY_LIMIT]}"
+            ) from exc
+    return dict(sorted(totals.items(), key=lambda item: (-item[1], item[0])))
 
 
 def find_bundles(

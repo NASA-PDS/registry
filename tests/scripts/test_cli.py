@@ -79,15 +79,22 @@ class FakeRegistry:
         self.listed: dict[str, str] = {}  # product LID -> product LIDVID that the refs of C_OK list
         self.coverage_calls: list[str] = []
         self.bundle_calls: list[list[str]] = []
+        self.not_visible: dict[str, int] = {"staged": 3}
+        self.not_visible_calls: list[tuple[list[str], int]] = []
 
     def install(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setattr(cli, "discover_nodes", lambda client: ["atm"])
         monkeypatch.setattr(cli, "iter_collections", lambda client, nodes: iter(self.collections))
         monkeypatch.setattr(cli, "find_bundles", self.find_bundles)
+        monkeypatch.setattr(cli, "count_not_visible_without_ancestry", self.count_not_visible_without_ancestry)
         monkeypatch.setattr(cli, "iter_candidate_pages", self.iter_candidate_pages)
         monkeypatch.setattr(cli, "lookup_refs", self.lookup_refs)
         monkeypatch.setattr(cli, "lookup_refs_by_lid", self.lookup_refs_by_lid)
         monkeypatch.setattr(cli, "get_refs_coverage", self.get_refs_coverage)
+
+    def count_not_visible_without_ancestry(self, client: object, nodes: list[str], version: int) -> dict[str, int]:
+        self.not_visible_calls.append((list(nodes), version))
+        return dict(self.not_visible)
 
     def find_bundles(self, client: object, lids: list[str], nodes: list[str]) -> dict[str, list[str]]:
         self.bundle_calls.append(list(lids))

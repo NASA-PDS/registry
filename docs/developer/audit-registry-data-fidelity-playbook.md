@@ -108,7 +108,9 @@ Read in this order.
 How to read `summary.md`:
 
 1. Headline: candidates examined, expected (will resolve on their own) and anomalous (need attention). Only
-   the anomalous count needs an owner. Record the run parameters with the numbers.
+   the anomalous count needs an owner. The "Not API-visible" line counts products without ancestry that the audit
+   does not examine (for example `staged`); the ancestry orphan repair examines them. Record the run parameters
+   with the numbers.
 2. "Anomalies by rule" and "By rule and node": the row counts that feed the decision table in section 5.
 3. "Anomalous collections": worst first, with the collection state, harvest time, affected product count
    and refs coverage.
@@ -357,7 +359,15 @@ Cross-checks that add confidence before you publish numbers:
    empty refs, products with no stamp) should be reproducible per node as `stamped_empty_refs` collections
    and population A and B products. Explain any difference (for example superseded versions, or products
    loaded since).
-4. **Per-collection spot check.** Run `audit_collection.py` with `--diff --load-status` on the two or three
+4. **Orphan repair dry run.** The repair's products examined equal "Candidates examined" plus the
+   "Not API-visible" line; its repairable bucket is the products that refs list under a collection in the
+   registry (`reloaded_after_collection`, `sweeper_miss`, and `stale_stamp` or `collection_*` products that refs
+   list) and its unresolved bucket is the products no refs document lists (`refs_missing*`,
+   `inventory_version_mismatch`, `not_in_collection_inventory`, `bare_lid_in_inventory`, and waiting products
+   not in refs yet). The repair has no grace period and counts a stamp below the current version where the
+   audit counts any other stamp. The full table is in
+   [the reference](audit-unprocessed-products-reference.md#mapping-to-the-ancestry-orphan-repair-report).
+5. **Per-collection spot check.** Run `audit_collection.py` with `--diff --load-status` on the two or three
    worst collections and confirm the load verdict and diff files match the product rules.
 
 ## 8. Turning findings into a node issue

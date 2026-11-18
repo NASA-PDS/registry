@@ -161,6 +161,44 @@ def test_candidate_query_never_uses_range() -> None:
     assert "range" not in json.dumps(registry.candidate_query(7))
 
 
+def test_not_visible_query_has_the_candidate_predicate_without_the_visibility_filter() -> None:
+    body = registry.not_visible_without_ancestry_query(7)
+    bool_ = body["query"]["bool"]
+    candidate = registry.candidate_query(7)["query"]["bool"]
+    assert body["size"] == 0
+    assert bool_["should"] == candidate["should"]
+    assert bool_["minimum_should_match"] == 1
+    # not API-visible: neither archived nor certified (a product without a status matches), not superseded, not aggregate
+    assert {"terms": {"ops:Tracking_Meta/ops:archive_status": ["archived", "certified"]}} in bool_["must_not"]
+    assert {"exists": {"field": "ops:Provenance/ops:superseded_by"}} in bool_["must_not"]
+    assert {"terms": {"product_class": ["Product_Bundle", "Product_Collection"]}} in bool_["must_not"]
+    assert "filter" not in bool_
+    assert body["aggs"]["archive_status"]["terms"]["missing"] == "none"
+    assert "range" not in json.dumps(body)
+
+
+def test_count_not_visible_sums_the_nodes_and_sorts_by_count() -> None:
+    answers = {
+        "atm-registry": [{"key": "staged", "doc_count": 4}, {"key": "none", "doc_count": 1}],
+        "img-registry": [{"key": "staged", "doc_count": 7}],
+    }
+    fake = FakeClient(lambda index, body: {"aggregations": {"archive_status": {"buckets": answers[index]}}})
+    assert registry.count_not_visible_without_ancestry(fake, ["atm", "img"], 7) == {"staged": 11, "none": 1}
+    assert [index for index, _ in fake.searches] == ["atm-registry", "img-registry"]
+    assert all(body == registry.not_visible_without_ancestry_query(7) for _, body in fake.searches)
+
+
+def test_count_not_visible_is_empty_without_buckets() -> None:
+    fake = FakeClient(lambda index, body: {"aggregations": {"archive_status": {"buckets": []}}})
+    assert registry.count_not_visible_without_ancestry(fake, ["atm"], 7) == {}
+
+
+def test_count_not_visible_rejects_an_unusable_response() -> None:
+    fake = FakeClient(lambda index, body: {"hits": {"hits": []}})
+    with pytest.raises(RegistryQueryError, match="archive-status aggregation"):
+        registry.count_not_visible_without_ancestry(fake, ["atm"], 7)
+
+
 # ── RegistryClient ────────────────────────────────────────────────────────────
 
 

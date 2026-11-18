@@ -11,6 +11,7 @@ from __future__ import annotations
 import csv
 import json
 from collections.abc import Iterable
+from collections.abc import Mapping
 from collections.abc import Sequence
 from dataclasses import dataclass
 from dataclasses import field
@@ -71,6 +72,10 @@ class Metrics:
             ``needs_check``, ``no_action``); see ``ownership``.
         unverified_refs_missing: ``refs_missing`` products reached without the collection inventory (skipped or
             unreadable); they are counted under ``needs_check`` in ``owners``.
+        not_visible_without_ancestry: Non-aggregate, non-superseded products without current ancestry that are not
+            API-visible, per archive status (``none`` for no status). The audit does not count them in ``examined``;
+            the ancestry orphan repair examines them. Informational: neither the invariants nor a baseline
+            comparison use it, and a metrics file written before it existed loads with ``{}``.
     """
 
     run_time: str
@@ -86,6 +91,7 @@ class Metrics:
     unmapped_superseded: list[str] | None = None
     owners: dict[str, int] = field(default_factory=dict)
     unverified_refs_missing: int = 0
+    not_visible_without_ancestry: dict[str, int] = field(default_factory=dict)
 
     def to_json(self) -> str:
         """Serialise to the ``metrics.json`` text."""
@@ -114,6 +120,7 @@ def build_metrics(
     nodes: Sequence[str],
     ancestry_version: int,
     now: datetime,
+    not_visible_without_ancestry: Mapping[str, int] | None = None,
 ) -> Metrics:
     """Condense a finished audit into ``Metrics``.
 
@@ -123,6 +130,8 @@ def build_metrics(
         nodes: Nodes audited.
         ancestry_version: Ancestry version stamp audited against.
         now: Run time.
+        not_visible_without_ancestry: Products without current ancestry that are not API-visible, per archive
+            status, or ``None`` when they were not counted.
 
     Returns:
         The metrics, without the mapping check (``unmapped_superseded`` is ``None``).
@@ -140,6 +149,7 @@ def build_metrics(
         rules={rule.value: anomalous_totals.get(rule.value, 0) for rule in Rule},
         owners=ownership.count_by_owner(anomalous_totals, tally.unverified_refs_missing),
         unverified_refs_missing=tally.unverified_refs_missing,
+        not_visible_without_ancestry=dict(not_visible_without_ancestry or {}),
         anomalous_collections=sorted(lidvid for lidvid in tally.collections if lidvid not in superseded),
         superseded_anomalous_collections=sorted(lidvid for lidvid in tally.collections if lidvid in superseded),
         empty_refs_with_bundle=sorted(
@@ -185,6 +195,9 @@ def load_metrics(path: Path) -> Metrics:
             else [str(i) for i in raw["unmapped_superseded"]],
             owners={str(k): int(v) for k, v in raw.get("owners", {}).items()},
             unverified_refs_missing=int(raw.get("unverified_refs_missing", 0)),
+            not_visible_without_ancestry={
+                str(k): int(v) for k, v in (raw.get("not_visible_without_ancestry") or {}).items()
+            },
         )
     except (KeyError, TypeError, ValueError, AttributeError) as exc:
         raise BaselineError(f"{path} is missing or has malformed metrics fields: {exc!r}") from exc

@@ -21,8 +21,9 @@ Files written to --output-dir (none are meant to be committed):
   anomalous_collections.txt  collection LIDVIDs to look at or re-harvest: those rooting anomalies and those
                              stamped with empty refs that have a bundle, for audit_collection.py --from-file
   summary.md                 the report; also printed to the terminal
-  metrics.json               machine-readable totals, per-rule counts and collection lists; the
-                             baseline for a later run's --check
+  metrics.json               machine-readable totals, per-rule counts, collection lists and the count
+                             of not API-visible products without ancestry; the baseline for a later
+                             run's --check
 
 Setup:
     Install registry-client dependencies before running registry queries:
@@ -123,6 +124,7 @@ from unprocessed_audit.model import TENANT_NODES  # noqa: E402
 from unprocessed_audit.model import RegistryQueryError  # noqa: E402
 from unprocessed_audit.model import Thresholds  # noqa: E402
 from unprocessed_audit.registry import RegistryClient  # noqa: E402
+from unprocessed_audit.registry import count_not_visible_without_ancestry  # noqa: E402
 from unprocessed_audit.registry import discover_nodes  # noqa: E402
 from unprocessed_audit.registry import find_bundles  # noqa: E402
 from unprocessed_audit.registry import get_refs_coverage  # noqa: E402
@@ -152,6 +154,7 @@ from unprocessed_audit.report import DiffCounts  # noqa: E402
 from unprocessed_audit.report import ProductCsvWriter  # noqa: E402
 from unprocessed_audit.report import Tally  # noqa: E402
 from unprocessed_audit.report import compute_diff  # noqa: E402
+from unprocessed_audit.report import format_not_visible  # noqa: E402
 from unprocessed_audit.report import load_previous_keys  # noqa: E402
 from unprocessed_audit.report import render_summary  # noqa: E402
 from unprocessed_audit.report import write_anomalous_collections  # noqa: E402
@@ -370,6 +373,11 @@ def run_audit(args: argparse.Namespace, client: RegistryClient, now: datetime | 
     if args.history_csv is not None:
         check_history_format(args.history_csv)
 
+    # Counted before the long scan so that a failure shows up early. These are the products the repair examines
+    # and the audit does not; they never enter the tally.
+    not_visible = count_not_visible_without_ancestry(client, nodes, args.ancestry_version)
+    logger.info("Not API-visible products without ancestry (not audited): %s", format_not_visible(not_visible))
+
     collections = list(iter_collections(client, nodes))
     collections_by_lid = _classify_collections(collections, th)
     _attach_bundles(client, collections, nodes)
@@ -431,7 +439,7 @@ def run_audit(args: argparse.Namespace, client: RegistryClient, now: datetime | 
         diff = compute_diff(load_previous_keys(Path(args.previous_csv)), tally.keys)
         logger.info("Diff: %d new, %d resolved, %d persisting", diff.new, diff.resolved, diff.persisting)
 
-    metrics = build_metrics(tally, collections, nodes, args.ancestry_version, now)
+    metrics = build_metrics(tally, collections, nodes, args.ancestry_version, now, not_visible)
     violations: list[Violation] = []
     if args.check:
         if not args.no_mapping_check:
@@ -440,7 +448,7 @@ def run_audit(args: argparse.Namespace, client: RegistryClient, now: datetime | 
         logger.info("Regression check: %d invariants violated", len(violations))
 
     params = _run_params(args, nodes, stale_nodes)
-    summary = render_summary(tally, collections, coverage, th, params, diff)
+    summary = render_summary(tally, collections, coverage, th, params, diff, not_visible=not_visible)
     if args.check:
         summary += "\n" + render_check_section(violations, baseline, not args.no_mapping_check)
     paths["summary"] = output_dir / SUMMARY_MD

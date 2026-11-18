@@ -463,3 +463,33 @@ def test_summary_bundle_fallbacks() -> None:
     # collection unknown: still renders from the verdict
     unknown = render_summary(tally, [], {}, TH, {}, None)
     assert "| atm | urn:nasa:pds:bundle1 |" in unknown
+
+
+def test_summary_states_the_products_that_are_not_api_visible() -> None:
+    tally = build_tally()
+    text = render_summary(tally, [], {}, TH, {}, None, not_visible={"staged": 1645})
+    headline = text.split("## ", 1)[0]
+    assert "- Not API-visible (staged etc.) without ancestry, not counted above: 1,645 (staged 1,645)" in headline
+    assert "Candidates examined: **7**" in headline
+    mixed = render_summary(tally, [], {}, TH, {}, None, not_visible={"staged": 10, "none": 2})
+    assert "not counted above: 12 (staged 10, none 2)" in mixed
+    assert "not counted above: 0\n" in render_summary(tally, [], {}, TH, {}, None, not_visible={})
+    assert "Not API-visible" not in render_summary(tally, [], {}, TH, {}, None)
+
+
+def test_summary_maps_the_rules_onto_the_orphan_repair_buckets() -> None:
+    tally = build_tally()
+    text = render_summary(tally, [], {}, TH, {}, None, not_visible={"staged": 5})
+    section = text.split("## How this maps to the orphan repair report", 1)[1].split("\n## ", 1)[0]
+    assert "| sweeper_miss | 2 | repairable |" in section
+    assert "| refs_missing_pending | 1 | unresolved |" in section
+    assert "| collection_pending | 1 | repairable if a refs document lists it, else unresolved |" in section
+    assert "| not API-visible (not audited) | 5 |" in section
+    assert "**12**" in section  # 7 candidates + 5 not API-visible
+    assert "no grace period" in section and "below it" in section
+
+
+def test_every_rule_has_a_repair_bucket() -> None:
+    from unprocessed_audit.report import REPAIR_BUCKETS
+
+    assert set(REPAIR_BUCKETS) == set(Rule)

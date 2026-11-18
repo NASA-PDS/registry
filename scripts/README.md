@@ -717,11 +717,11 @@ Written to `--output-dir`; none of it is meant to be committed (the products CSV
 
 | File | Content |
 |---|---|
-| `summary.md` | The report (also printed): anomalies by rule and node, anomalous collections with their bundles, stamped collections with empty refs, expected-pending counts, orphans, class and age breakdowns, diff against the previous run |
+| `summary.md` | The report (also printed): anomalies by rule and node, anomalous collections with their bundles, stamped collections with empty refs, expected-pending counts, orphans, class and age breakdowns, how the rules map onto the ancestry orphan repair report, diff against the previous run. The headline also counts the products without ancestry that are not API-visible (such as `staged`), which the audit does not examine and the repair does |
 | `unprocessed_products.csv` | One row per product, including `rule`, `severity` and `rationale` |
 | `collections.csv` | One row per collection with state, bundles and refs coverage |
 | `anomalous_collections.txt` | Collection LIDVIDs to look at or re-harvest, for `audit_collection.py --from-file`: those rooting anomalous products, and those stamped with empty refs that have a bundle |
-| `metrics.json` | Machine-readable totals, anomalous counts per rule, and the anomalous and empty-refs collection lists; the baseline for a later `--check` |
+| `metrics.json` | Machine-readable totals, anomalous counts per rule, the anomalous and empty-refs collection lists, and `not_visible_without_ancestry` (count per archive status of non-API-visible products without ancestry; not used by `--check`); the baseline for a later `--check` |
 
 #### Regression check
 

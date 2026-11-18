@@ -364,8 +364,10 @@ writes `metrics.json`; `--check` adds the result to `summary.md` under "Regressi
 
 `metrics.json` fields: `schema_version`, `run_time`, `ancestry_version`, `nodes`, `examined`, `expected`,
 `anomalous`, `rules` (anomalous product count for every rule, zero when unused), `anomalous_collections`,
-`superseded_anomalous_collections`, `empty_refs_with_bundle`, and `unmapped_superseded` (`null` when the mapping
-was not checked).
+`superseded_anomalous_collections`, `empty_refs_with_bundle`, `unmapped_superseded` (`null` when the mapping
+was not checked), and `not_visible_without_ancestry` (products with the same missing ancestry that are not
+API-visible, per `archive_status`, `none` for no status; informational, no invariant and no baseline
+comparison uses it, and a `metrics.json` written before it existed loads with `{}`).
 
 | Invariant | Without `--baseline` | With `--baseline` |
 |---|---|---|
@@ -414,8 +416,30 @@ scanning when the file exists with other columns.
 3. **Compare with known reports.** The orphan counts in registry-sweepers #273 (collections stamped with
    empty refs, products with no stamp) should be reproducible per node as `stamped_empty_refs`
    collections and population A and B products.
-4. **Public API symptom.** For any anomalous row, `api_member_hits` returning `0` for the product in its
+4. **Orphan repair dry run.** Its products-examined count must equal "Candidates examined" plus the
+   not-visible count in the headline, and its repairable and unresolved counts follow the table in
+   [Mapping to the ancestry orphan repair report](#mapping-to-the-ancestry-orphan-repair-report).
+5. **Public API symptom.** For any anomalous row, `api_member_hits` returning `0` for the product in its
    collection confirms the user-visible effect.
+
+## Mapping to the ancestry orphan repair report
+
+The ancestry orphan repair dry run prints three numbers: products examined (no ancestry, or a stamp below the current version), repairable (a `registry-refs` document lists the product's LIDVID under a collection that exists in the registry) and unresolved (no refs document lists it, or only under a collection that is not in the registry). They are the audit's rows regrouped, plus the products the audit never counts. `summary.md` repeats this table with the run's counts.
+
+| Audit rule (any severity) | Repair bucket |
+|---|---|
+| `reloaded_after_collection`, `sweeper_miss` | **repairable**: the audit assigns these only when a refs document lists the product under a collection it found |
+| `stale_stamp`, `collection_overdue`, `collection_pending` | **repairable** when a refs document lists the product (normally the case), otherwise unresolved; the audit does not look up refs for these |
+| `refs_missing`, `refs_missing_pending`, `inventory_version_mismatch`, `not_in_collection_inventory`, `bare_lid_in_inventory` | **unresolved** (no refs document lists the product): the audit assigns these only when no refs document lists the exact LIDVID. A listing by bare LID or under another version does not count for the repair either |
+| `collection_not_loaded_pending`, `collection_not_loaded_overdue`, `no_parent_by_design` | **unresolved** unless refs list the product under a collection that exists in the registry; the audit does not look up refs for these |
+| Not API-visible (`staged` and others), not in the audit: `summary.md` headline line and `not_visible_without_ancestry` in `metrics.json` | examined; **repairable** when refs list it, else **unresolved** (staged products usually are unresolved) |
+
+- The repair's "products examined" is the audit's "Candidates examined" plus the not-visible count. The repair does not filter on archive status, because the ancestry sweeper does not.
+- "Waiting" products (`*_pending`) count in the repair too: it has no grace period.
+- A collection "exists" for the repair in any archive status, while the audit looks for an API-visible one, so a product whose collection is only staged is "not loaded" for the audit and can be repairable.
+- The audit counts any stamp other than the current version as lacking ancestry, the repair only a stamp below it.
+
+Worked check, 2026-11-18, read-only: replaying the repair's examine query and refs lookup and joining the result to the audit's per-product rows reproduces the dry runs exactly. EN: 2,495 examined (2,464 audit candidates + 31 `staged`), 625 repairable (all `reloaded_after_collection`), 1,870 unresolved (1,272 `refs_missing_pending`, 561 `collection_not_loaded_pending`, 3 `inventory_version_mismatch`, 2 `not_in_collection_inventory`, 1 `no_parent_by_design`, 31 `staged`). IMG: 38,484 examined (36,839 audit candidates + 1,645 `staged`), 36,323 repairable (all `reloaded_after_collection`), 2,161 unresolved (516 `inventory_version_mismatch`, 1,645 `staged`). Once the repair has written ancestry the `reloaded_after_collection` rows disappear from the audit and from the repair's examined count.
 
 ## Limitations
 
@@ -430,7 +454,9 @@ scanning when the file exists with other columns.
   a candidate and is not examined (on IMG, the `mars2020_navcam_ops_mosaic` collection has about 35,000 of
   these). `audit_collection.py --diff` shows them.
 
-- Only API-visible products are examined: not superseded, `archived` or `certified`.
+- Only API-visible products are examined: not superseded, `archived` or `certified`. Products with another
+  status (such as `staged`) are only counted, per status, in the not-visible line of `summary.md` and in
+  `metrics.json`. On the ATM index that count cannot exclude superseded products (see below).
 - On the ATM registry index, `ops:Provenance/ops:superseded_by` is returned in a document's `_source` but cannot be
   searched: `exists`, `term` and `wildcard` queries on it match nothing. A query cannot exclude superseded
   products there, so the audit reads the field from each hit and drops superseded products itself. Counts taken

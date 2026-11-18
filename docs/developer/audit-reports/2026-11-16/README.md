@@ -38,6 +38,43 @@ Products that need attention, by owner. "Bundles missing members" counts collect
 
 `scripts/audit_rollup.py` produces this table from the `metrics.json` files. "Needs a closer look" are products whose collection inventory could not be read (ATM: the `pds-ama` sample, whose files were loaded from a local path; PSA: see its report).
 
+## How this maps to the orphan repair report
+
+The ancestry orphan repair dry run prints products examined, repairable (a refs document lists the product under a collection in the registry) and unresolved (no refs document lists it, or only under a collection that is not in the registry). Each audit rule falls in one of those buckets:
+
+| Audit rule (any severity) | Repair bucket |
+|---|---|
+| `reloaded_after_collection`, `sweeper_miss` | **repairable**: the audit assigns these only when a refs document lists the product under a collection it found |
+| `stale_stamp`, `collection_overdue`, `collection_pending` | **repairable** when a refs document lists the product (normally the case), otherwise unresolved; the audit does not look up refs for these |
+| `refs_missing`, `refs_missing_pending`, `inventory_version_mismatch`, `not_in_collection_inventory`, `bare_lid_in_inventory` | **unresolved** (no refs document lists the product): the audit assigns these only when no refs document lists the exact LIDVID. A listing by bare LID or under another version does not count for the repair either |
+| `collection_not_loaded_pending`, `collection_not_loaded_overdue`, `no_parent_by_design` | **unresolved** unless refs list the product under a collection that exists in the registry; the audit does not look up refs for these |
+| Not API-visible (`staged` and others), not in the audit: `summary.md` headline line and `not_visible_without_ancestry` in `metrics.json` | examined; **repairable** when refs list it, else **unresolved** (staged products usually are unresolved) |
+
+- The repair's "products examined" is the audit's "Candidates examined" plus the not-visible count. The repair does not filter on archive status, because the ancestry sweeper does not.
+- "Waiting" products (`*_pending`) count in the repair too: it has no grace period.
+- A collection "exists" for the repair in any archive status, while the audit looks for an API-visible one, so a product whose collection is only staged is "not loaded" for the audit and can be repairable.
+- The audit counts any stamp other than the current version as lacking ancestry, the repair only a stamp below it.
+
+Worked check, 2026-11-18, read-only (replaying the repair's query and refs lookup on the audit's per-product rows). It uses reruns of the audit made after the roll-up above, so its totals differ from that table (EN has kept loading). The `reloaded_after_collection` products have since gained ancestry, so a rerun no longer lists them.
+
+| EN | Examined | Repairable | Unresolved |
+|---|--:|--:|--:|
+| `reloaded_after_collection` | 625 | 625 | 0 |
+| `refs_missing_pending` (waiting) | 1,272 | 0 | 1,272 |
+| `collection_not_loaded_pending` (waiting) | 561 | 0 | 561 |
+| `inventory_version_mismatch` | 3 | 0 | 3 |
+| `not_in_collection_inventory` | 2 | 0 | 2 |
+| `no_parent_by_design` | 1 | 0 | 1 |
+| Not API-visible (`staged`) | 31 | 0 | 31 |
+| **Total** | **2,495** | **625** | **1,870** |
+
+| IMG | Examined | Repairable | Unresolved |
+|---|--:|--:|--:|
+| `reloaded_after_collection` | 36,323 | 36,323 | 0 |
+| `inventory_version_mismatch` | 516 | 0 | 516 |
+| Not API-visible (`staged`) | 1,645 | 0 | 1,645 |
+| **Total** | **38,484** | **36,323** | **2,161** |
+
 ## Where the numbers are
 
 Across the ten nodes, 4,385,292 API-visible products were examined: **3,141,225 need attention** (they have no ancestry and something has to be done) and 1,244,067 are only waiting (loaded within the last week). The products are not corrupted: each one is missing its link to a collection or its processing by the sweepers.
