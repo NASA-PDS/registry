@@ -347,13 +347,35 @@ python scripts/audit_collection.py \
     --verbose-report
 ```
 
+**Is the inventory still being loaded? (needs registry credentials):**
+
+```bash
+ENV_FILE="<path-to-your-registry-client-env-file>"
+source "${ENV_FILE}"
+python scripts/audit_collection.py \
+    urn:nasa:pds:mars2020_navcam_ops_stereo:data::16.0 \
+    --load-status --active-days 3
+```
+
+`--load-status` finds the products that are in the inventory *and* in the registry, takes the newest `harvest_date_time` among them, and says whether the collection is:
+
+| Verdict | Meaning |
+|---|---|
+| `complete` | Every inventory product is loaded |
+| `not_started` | No inventory product is in the registry |
+| `loading` | Partially loaded; the newest loaded member was harvested within `--active-days` (default 3), so loading looks active |
+| `stalled` | Partially loaded; nothing in the inventory has been harvested for longer than `--active-days`, so the node needs to load the rest |
+
+Registry products that the inventory does not list (for example an older version of a product) are ignored for the verdict, because their harvest times say nothing about whether the current inventory is being loaded. The report also gives the newest harvest time among those other products. The verdict is added to `summary.csv` (`inventory_loaded`, `inventory_not_loaded`, `latest_member_harvest`, `load_verdict`).
+
 **All options:**
 
 ```
 usage: audit_collection.py [-h] [--api-base URL] [--registry-index INDEX]
                            [--wildcard PAT] [--timeout N] [--no-registry]
                            [--from-file FILE] [--env-file FILE]
-                           [--log-level LEVEL] [--diff] [--check-files]
+                           [--log-level LEVEL] [--diff] [--load-status]
+                           [--active-days N] [--check-files]
                            [--output-dir DIR] [--verbose-report]
                            [LIDVID ...]
 
@@ -370,6 +392,9 @@ options:
   --env-file FILE       Supplement shell credentials from a file (optional)
   --log-level LEVEL     debug, info, warn, warning (default: info)
   --diff                Fetch full LIDVID sets and compute inventory vs. registry diff
+  --load-status         Report how much of the inventory is loaded and whether loading looks active
+  --active-days N       With --load-status, "still loading" means the newest loaded member was
+                        harvested within N days (default: 3)
   --check-files         Report file_refs that are not absolute URLs and md5_checksums that are not MD5 digests
   --output-dir DIR      Write summary.csv and per-collection diff and file problem CSVs to DIR
   --verbose-report      Explain each source in plain language and, when the API
@@ -574,6 +599,7 @@ The `diff_*` columns are empty unless `--diff` was passed, and `files_examined` 
 - **`diff_registry_not_inventory`** — non-superseded registry products not claimed by the collection inventory. These exist in the registry but the collection does not reference them. Investigate whether they belong to a different collection version.
 - **`file_problems.csv`** — products whose registry record has a `file_ref` or `md5_checksum` that cannot go into a manifest. A Deep Archive of any bundle containing them will fail until the records are corrected or the products re-registered. The `value` column holds the offending value (for example `null`). If `Products examined` is lower than the total the API reports, the check did not finish; re-run it.
 - **Registry lid:* counts are approximate** — the wildcard `<collection_lid>:*` matches any product whose LID begins with that prefix. It does not guarantee exact membership in the audited collection version.
+- **Superseded counts on the ATM registry** — on that index `ops:Provenance/ops:superseded_by` can be read but not searched, so the `_count` queries report `superseded` as 0 and the "API-visible" count includes superseded products. The `--diff` and `--load-status` LIDVID sets are filtered client-side and are not affected.
 
 #### Troubleshooting
 
@@ -583,6 +609,18 @@ The `pds.aossrequestsigner` library is not installed. Run:
 
 ```bash
 pip install -r scripts/requirements.txt
+```
+
+**`ModuleNotFoundError: No module named 'pds.aossrequestsigner'`** (the package is installed)
+
+This repository installs its own `pds` package in editable mode, which hides the registry client's
+`pds.aossrequestsigner` in the same virtualenv. Run the audit scripts with a virtualenv that has the
+registry client but not this repository's editable install, for example the `registry-client` checkout's
+virtualenv:
+
+```bash
+REGISTRY_CLIENT_VENV="<path-to-registry-client-venv>"
+"${REGISTRY_CLIENT_VENV}/bin/python" scripts/audit_unprocessed_products.py --output-dir ./audit_unprocessed/
 ```
 
 **`ERROR Missing required environment variables`**
@@ -597,3 +635,238 @@ source "${ENV_FILE}"
 **`ERROR Registry authentication failed`**
 
 Verify your Cognito credentials are current. Temporary credentials expire; re-source your credentials file.
+
+---
+
+### Unprocessed Product Audit
+
+Find API-visible products that the registry sweepers' ancestry sweeper has not processed, and say why.
+
+**Script:** `audit_unprocessed_products.py` (helpers in `unprocessed_audit/`). Design: [`docs/developer/audit-unprocessed-products-design.md`](../docs/developer/audit-unprocessed-products-design.md). Column meanings, the technical meaning of each rule and step-by-step checks for every CSV rationale: [`docs/developer/audit-unprocessed-products-reference.md`](../docs/developer/audit-unprocessed-products-reference.md).
+
+#### Purpose
+
+Products without `ops:Provenance/ops:ancestor_refs` and a current `ops:Provenance/ops:registry_sweepers_ancestry_version` stamp are missing from `/members` and related API results. Some are waiting on the sweeper or on a parent collection that is still loading; others are broken. The audit reads the registry and `registry-refs` indices directly (the public API does not expose refs), groups products by parent collection, and gives each product one rule, a severity (`expected` or `anomalous`) and a one-line rationale:
+
+| Rule | Severity | Meaning |
+|---|---|---|
+| `no_parent_by_design` | expected | Product class never belongs to a collection |
+| `collection_not_loaded_pending` / `_overdue` | expected / anomalous | Parent collection not in the registry; overdue after `--product-grace-days` |
+| `collection_pending` / `collection_overdue` | expected / anomalous | Parent collection unprocessed; overdue after `--collection-grace-days` |
+| `reloaded_after_collection` | anomalous | Collection was processed, then the product was re-harvested; re-harvesting the collection fixes it |
+| `inventory_version_mismatch` | anomalous | The collection's inventory lists the product at a different version than the registry holds; load that version (re-harvesting the collection does not help) |
+| `not_in_collection_inventory` | anomalous | The product is registered under the collection but its current inventory does not list it under any version; the node decides whether to add it to the inventory or remove it |
+| `bare_lid_in_inventory` | anomalous | The collection's inventory lists the product by LID without a version, which the sweepers do not follow; re-harvesting writes the same refs |
+| `sweeper_miss` | anomalous | Collection processed at or after the product's harvest and the product is in refs, but has no ancestry |
+| `refs_missing_pending` / `refs_missing` | expected / anomalous | No `registry-refs` document lists the product |
+| `stale_stamp` | anomalous | Product stamped with an older ancestry version than its processed collection |
+
+Only non-superseded products with archive status `archived` or `certified` are examined. The audit is read-only.
+
+**Reading the report.** `summary.md` opens with a "What needs to happen" table in plain language, grouped by who can fix each problem:
+
+| Who | Problems |
+|---|---|
+| Node | A collection is not loaded, the inventory lists a different version, or the inventory does not list the product; stale or missing refs, products loaded after their collection was processed, or an older stamp (the node re-harvests the collection, then EN runs the sweepers) |
+| EN | A collection stamped without a link to its bundle (a sweepers bug; EN re-harvests it and runs the fixed sweepers); a loaded collection the sweepers have not processed; fixes to the registry itself |
+| Sweepers team | `sweeper_miss`, or an inventory that lists products by LID without a version |
+| Needs a closer look | `refs_missing` products that could not be checked against the collection inventory |
+| No action | Products loaded recently |
+
+Each problem is marked **Orphaned** (no registry record confirms the product's collection; the collection named for it is a best guess from its identifier) or **Not processed** (the refs list the product but the sweepers never processed it). The same counts are in `metrics.json` under `owners`. `refs_missing` needs the collection inventory to be classified, so run without `--no-inventory` when owners matter.
+
+```bash
+AUDITS_DIR="<directory containing one sub-directory per node, each with the audit output>"
+python scripts/audit_rollup.py --audits-dir "${AUDITS_DIR}"
+```
+
+`audit_rollup.py` reads each node's `metrics.json` and prints one table of those counts, node by node.
+
+A per-product CSV can hold millions of rows. `audit_product_samples.py` reads the per-product CSV of every node and writes `<node>/product_samples.csv`: for each group of anomalous products (one rule in one collection) the group's size and up to `--per-group` example products (the lowest LIDVIDs, so reruns match), each with its owner and the reason. It is small enough to commit.
+
+```bash
+python scripts/audit_product_samples.py --audits-dir "${AUDITS_DIR}" --output-dir "${AUDITS_DIR}" --per-group 10
+```
+
+#### Usage
+
+Credentials come from the shell environment, as for the collection audit (`pip install -r scripts/requirements.txt` first).
+
+```bash
+ENV_FILE="<path-to-your-registry-client-env-file>"
+source "${ENV_FILE}"
+
+# Dry run: one node, stop after 5,000 candidates
+NODE="<node-name>"
+python scripts/audit_unprocessed_products.py \
+    --output-dir ./audit_unprocessed/ --node "${NODE}" --max-products 5000
+
+# Full run; compare with a previous run
+PREVIOUS_CSV="<path-to-previous-unprocessed_products.csv>"
+python scripts/audit_unprocessed_products.py \
+    --output-dir ./audit_unprocessed/ --previous-csv "${PREVIOUS_CSV}" --gzip
+```
+
+Run `python scripts/audit_unprocessed_products.py --help` for all options.
+
+When a product is in no `registry-refs` document, the audit reads the current inventory of its collection (the URL is on the collection's registry document) to tell stale refs, a product listed under another version, and a product the inventory does not list. Inventories come from the data providers' servers and can be slow to download (tens of megabytes for the large collections). Pass `--no-inventory` to skip the downloads; such products are then reported as `refs_missing`. Pass `--inventory-cache-dir DIR` to keep the downloaded inventories and reuse them in later runs (a kept file is never refreshed; delete it to fetch the current one). The login credentials expire after about an hour, so the audit renews them automatically during a long run.
+
+#### Output
+
+Written to `--output-dir`; none of it is meant to be committed (the products CSV can reach hundreds of MB).
+
+| File | Content |
+|---|---|
+| `summary.md` | The report (also printed): anomalies by rule and node, anomalous collections with their bundles, stamped collections with empty refs, expected-pending counts, orphans, class and age breakdowns, how the rules map onto the ancestry orphan repair report, diff against the previous run. The headline also counts the products without ancestry that are not API-visible (such as `staged`), which the audit does not examine and the repair does |
+| `unprocessed_products.csv` | One row per product, including `rule`, `severity` and `rationale` |
+| `collections.csv` | One row per collection with state, bundles and refs coverage |
+| `anomalous_collections.txt` | Collection LIDVIDs to look at or re-harvest, for `audit_collection.py --from-file`: those rooting anomalous products, and those stamped with empty refs that have a bundle |
+| `metrics.json` | Machine-readable totals, anomalous counts per rule, the anomalous and empty-refs collection lists, and `not_visible_without_ancestry` (count per archive status of non-API-visible products without ancestry; not used by `--check`); the baseline for a later `--check` |
+
+#### Regression check
+
+`--check` turns the audit into a pass/fail test that can run unattended. It evaluates these invariants and exits with code 2 when one is violated (0 when all hold, 1 on an error):
+
+| Invariant | Fails when |
+|---|---|
+| `no_anomalous_products` | Any product is anomalous (no baseline) |
+| `no_new_anomalies` | A collection newly roots anomalous products, or a rule's anomalous count grew (baseline) |
+| `no_empty_refs_collection_with_bundle` | A collection with a bundle is stamped with empty refs (no baseline), or newly so (baseline) |
+| `superseded_by_mapped` | A node's registry index does not map `ops:Provenance/ops:superseded_by`, so the API cannot exclude superseded products there (always) |
+
+Without `--baseline` every anomaly fails the check. Pass the `metrics.json` of an earlier run to fail only for what is new since then, so a known backlog does not fail every run. The baseline must cover the same nodes and ancestry version. `--check` cannot be combined with `--max-products`. `--no-mapping-check` skips reading the index mappings. `--history-csv FILE` appends one row of totals per run, with a column per rule, for trend charts.
+
+```bash
+BASELINE="<path-to-the-previous-metrics.json>"
+HISTORY="<path-to-the-history.csv>"
+python scripts/audit_unprocessed_products.py \
+    --output-dir ./audit_unprocessed/ --check --baseline "${BASELINE}" --history-csv "${HISTORY}" \
+    --inventory-cache-dir ./inventory_cache/
+echo "exit code: $?"
+```
+
+The check result is also appended to `summary.md` under "Regression check".
+
+---
+
+### Collection Re-harvest Download
+
+Download the label and inventory of collections that need to be re-harvested, from the URLs the registry holds for them.
+
+**Script:** `download_collection_files.py`
+
+#### Purpose
+
+Re-harvesting a collection rewrites its collection document (clearing its ancestry stamp) and regenerates its `registry-refs` documents from the inventory, so the registry sweepers process the collection and its members again. This script asks the PDS Search API where each collection's label and inventory are, downloads them, and checks them against the registry. It only needs the public API and the data providers' servers; no registry credentials.
+
+Files are stored mirrored under the URL they came from:
+
+```
+<output-dir>/files/<host>/<url path>   ->   <scheme>://<host>/<url path>
+```
+
+so one Harvest `fileRef` per host maps every local path back to the original URL. The label and inventory of a collection always land in the same directory, which Harvest requires.
+
+#### Usage
+
+```bash
+OUTPUT_DIR="./reharvest"
+COLLECTIONS_FILE="./audit_unprocessed/anomalous_collections.txt"
+
+# Show URLs and the fileRef prefixes first; nothing is downloaded
+python scripts/download_collection_files.py --list-only --output-dir "${OUTPUT_DIR}" --from-file "${COLLECTIONS_FILE}"
+
+# Download the label and inventory of every collection in the list
+python scripts/download_collection_files.py --output-dir "${OUTPUT_DIR}" --from-file "${COLLECTIONS_FILE}"
+
+# Or take the collections straight from an audit (default rules: refs_missing, reloaded_after_collection,
+# sweeper_miss, stale_stamp)
+AUDIT_CSV="./audit_unprocessed/unprocessed_products.csv.gz"
+python scripts/download_collection_files.py --output-dir "${OUTPUT_DIR}" --from-audit-csv "${AUDIT_CSV}"
+```
+
+Use `--skip-existing` to resume an interrupted run. Inventories can be large (hundreds of thousands of rows).
+
+#### Output
+
+| File | Content |
+|---|---|
+| `files/<host>/...` | The downloaded labels and inventories |
+| `manifest.csv` | One row per collection: URLs, `url_base`, local paths, MD5s from the registry and from the download, record counts, status |
+| `harvest_config_snippet.xml` | The `<load><directories>` paths and the `<fileInfo><fileRef replacePrefix=... with=... />` entries to merge into your Harvest configuration |
+
+The manifest columns `md5_changed_since_harvest` and `records_match` flag collections to look at before re-harvesting:
+
+- `md5_changed_since_harvest` is `True` when a downloaded file's MD5 differs from the checksum the registry holds, meaning the data provider changed the file after the collection was harvested. A re-harvest picks up the new content.
+- `records_match` is `False` when the downloaded label's `pds:Inventory/pds:records` differs from the number of rows in the downloaded inventory. That is a problem in the provider's data that re-harvesting does not fix.
+
+A collection whose registered label `file_ref` is not a URL (for example a local filesystem path) cannot be downloaded and is listed in the summary.
+
+---
+
+### Index Mapping Audit
+
+Compare the OpenSearch index mappings of every node and report the differences.
+
+**Script:** `audit_index_mappings.py` (helpers in `unprocessed_audit/mapping_audit.py`).
+
+#### Purpose
+
+Each node has its own `<node>-registry` index, created at a different time, so their mappings drift. A field missing from a mapping is returned in `_source` but cannot be searched (for example `ops:Provenance/ops:superseded_by` on the ATM index, issue #611). A field mapped with different types on different nodes behaves differently under the same query. The audit reads `GET /<index>/_mapping` for every node, and with `--include-refs` the `<node>-registry-refs` indices, flattens each mapping to `field -> type`, and compares the indices of a group with each other. A field's expected type is the most common type among the indices that define it; a field defined on at least `--presence-threshold` (default 0.8) of the indices is expected on all of them.
+
+| Discrepancy | Meaning |
+|---|---|
+| `missing_field` | Defined on most indices of the group, absent on this one |
+| `type_mismatch` | Defined with a different type than on most indices |
+| `dynamic_mismatch` | The index's `dynamic` setting differs from most indices |
+| `index_missing` | A `registry-refs` index that does not exist |
+
+A missing `ops:` field or core top-level field (`lid`, `lidvid`, `vid`, `title`, `description`, `product_class`, `alternate_ids`, `_package_id`) and every type mismatch is an **error**; any other missing field (`pds:...`, `ref_lid_*`) is a **warning**. Fields defined on fewer indices than the threshold are node-specific and not reported as missing. The audit is read-only.
+
+#### Usage
+
+Credentials come from the shell environment, as for the other audits.
+
+```bash
+ENV_FILE="<path-to-your-registry-client-env-file>"
+source "${ENV_FILE}"
+
+# Every node's registry index
+python scripts/audit_index_mappings.py --output-dir ./audit_mappings/
+
+# Include the registry-refs indices; exit code 2 when an error-level discrepancy is found
+python scripts/audit_index_mappings.py --output-dir ./audit_mappings/ --include-refs --check
+```
+
+The ATM products index is `temp-atm-registry` behind the alias `atm-registry`, while its refs index is `atm-registry-refs`. Node discovery returns the concrete name `temp-atm`, and the refs index is looked up under the tenant name `atm`.
+
+#### Output
+
+| File | Content |
+|---|---|
+| `mapping_summary.md` | The report (also printed): per-index counts, fields missing from some indices, one row per field with conflicting types showing which nodes use which type, missing indices |
+| `mapping_discrepancies.csv` | One row per discrepancy: group, index, field, kind, severity, expected and actual type, how many indices have the expected type, and for a type mismatch the nodes that use each type (`types_by_index`) |
+| `mapping_matrix.csv` | One row per field, one column per index, with the mapped type or `(absent)` |
+| `mapping_possibly_stale.csv` | Written only when such indices exist: one row per index that is not named after a tenant node, with its document count, mapped-field count and whether a refs index exists |
+
+#### Possibly stale indices
+
+Only tenant nodes are compared: `atm`, `en`, `geo`, `img`, `naif`, `ppi`, `psa`, `rms`, `sbnpsi` and `sbnumd` (`--known-node`, repeatable, replaces the list). When nodes are discovered, an index named `<prefix>-registry` whose prefix is not one of them (a personal, temporary or test copy) is left out of the comparison and listed under "Possibly stale or test indices" in the report with its document count, mapped-field count and refs-index presence. These are candidates for cleanup: confirm with the owner before deleting, since the audit never deletes anything. `audit_unprocessed_products.py` applies the same rule to discovered nodes and names the skipped indices in its report headline. Nodes named with `--node` are always audited as given.
+
+Exit codes: 0 on success (and, with `--check`, no error-level discrepancy), 1 on an error, 2 when `--check` finds an error-level discrepancy. A mapping type cannot be changed in place, so fixing a type mismatch means reindexing into a corrected index.
+
+
+### Registry Report Card
+
+Grade every node green, yellow or red from the status reports and the fidelity audits.
+
+**Scripts:** `generate_report_card.py` (reads local files only) and `collect_node_totals.py` (read-only `_count` queries). The rubric and the node list are in `conf/status/report_card.json`.
+
+Each node gets Loading, File paths and Fidelity scores (the node's) and a Index Health score (EN's). A score is green with no issues, yellow with issues below 5% of the node's items, and red from 5%. The index mapping counts only for the fields the API relies on (`lid`, `lidvid`, `vid`, `archive_status`, `superseded_by`, `ancestor_refs`): one missing from a node's mapping or mapped with a different type (`text` against `keyword` excepted) is red, and other mapping differences are ignored. The full rubric, the inputs and the refresh commands are in `docs/status/fidelity/README.md`.
+
+```bash
+PYTHON="<path-to-python-with-the-registry-client>"
+"${PYTHON}" scripts/generate_report_card.py          # writes docs/status/report_card.{html,md,json}
+```
+
+`collect_node_totals.py` counts each node's API-visible products, the denominator of the product-based scores, and needs registry credentials like the audits.

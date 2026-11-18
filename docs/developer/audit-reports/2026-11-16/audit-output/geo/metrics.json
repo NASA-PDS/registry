@@ -1,0 +1,56 @@
+{
+  "ancestry_version": 7,
+  "anomalous": 1373,
+  "anomalous_collections": [
+    "urn:nasa:pds:mars2020_mission:calibration_camera::1.1",
+    "urn:nasa:pds:mars2020_mission:document_camera::16.0",
+    "urn:nasa:pds:mars2020_mission:miscellaneous::1.1",
+    "urn:nasa:pds:mess_grs_derived:document::1.0",
+    "urn:nasa:pds:mess_grs_raw:document::1.0",
+    "urn:nasa:pds:mess_mla_calibrated:document::1.0",
+    "urn:nasa:pds:mess_mla_derived:document::1.0",
+    "urn:nasa:pds:mess_mla_raw:document::1.0",
+    "urn:nasa:pds:mess_ns_derived:document::1.0",
+    "urn:nasa:pds:mess_ns_raw:document::1.0",
+    "urn:nasa:pds:mess_rs_derived:document::1.0",
+    "urn:nasa:pds:mess_xrs_calibrated:document::1.0",
+    "urn:nasa:pds:mess_xrs_derived:document::1.0",
+    "urn:nasa:pds:mess_xrs_raw:document::1.0"
+  ],
+  "empty_refs_with_bundle": [
+    "urn:nasa:pds:mars2020_mission:document_camera::16.0",
+    "urn:nasa:pds:mars2020_rimfax:document::16.0"
+  ],
+  "examined": 1373,
+  "expected": 0,
+  "nodes": [
+    "geo"
+  ],
+  "owners": {
+    "en": 0,
+    "needs_check": 0,
+    "no_action": 0,
+    "node": 1324,
+    "sweepers_team": 49
+  },
+  "rules": {
+    "bare_lid_in_inventory": 49,
+    "collection_not_loaded_overdue": 2,
+    "collection_not_loaded_pending": 0,
+    "collection_overdue": 0,
+    "collection_pending": 0,
+    "inventory_version_mismatch": 1152,
+    "no_parent_by_design": 0,
+    "not_in_collection_inventory": 168,
+    "refs_missing": 0,
+    "refs_missing_pending": 0,
+    "reloaded_after_collection": 0,
+    "stale_stamp": 2,
+    "sweeper_miss": 0
+  },
+  "run_time": "2026-11-16T22:23:47+00:00",
+  "schema_version": 1,
+  "superseded_anomalous_collections": [],
+  "unmapped_superseded": [],
+  "unverified_refs_missing": 0
+}

@@ -1,0 +1,65 @@
+{
+  "ancestry_version": 7,
+  "anomalous": 2782645,
+  "anomalous_collections": [
+    "urn:nasa:pds-ama:sample_bundle:simulation02::1.0",
+    "urn:nasa:pds:maven.iuvs.calibrated:calibration::13.0",
+    "urn:nasa:pds:maven.iuvs.calibrated:corona::13.0",
+    "urn:nasa:pds:maven.iuvs.calibrated:disk::13.0",
+    "urn:nasa:pds:maven.iuvs.calibrated:echelle::13.0",
+    "urn:nasa:pds:maven.iuvs.calibrated:limb::13.0",
+    "urn:nasa:pds:maven.iuvs.calibrated:occultation::13.0",
+    "urn:nasa:pds:maven.iuvs.calibrated:transition::13.0",
+    "urn:nasa:pds:maven.iuvs.derived:limb::13.0",
+    "urn:nasa:pds:maven.iuvs.derived:occultation::13.0",
+    "urn:nasa:pds:maven.iuvs.kp:document::13.0",
+    "urn:nasa:pds:maven.iuvs.processed:occultation::13.0",
+    "urn:nasa:pds:maven.iuvs.raw:calibration::13.0",
+    "urn:nasa:pds:maven.iuvs.raw:corona::13.0",
+    "urn:nasa:pds:maven.iuvs.raw:disk::13.0",
+    "urn:nasa:pds:maven.iuvs.raw:echelle::13.0",
+    "urn:nasa:pds:maven.iuvs.raw:limb::13.0",
+    "urn:nasa:pds:maven.iuvs.raw:occultation::13.0",
+    "urn:nasa:pds:maven.iuvs.raw:transition::13.0",
+    "urn:nasa:pds:maven_ngims:calibration::1.0",
+    "urn:nasa:pds:maven_ngims:l1b::1.0"
+  ],
+  "empty_refs_with_bundle": [],
+  "examined": 2784370,
+  "expected": 1725,
+  "nodes": [
+    "atm"
+  ],
+  "owners": {
+    "en": 0,
+    "needs_check": 2,
+    "no_action": 0,
+    "node": 2782642,
+    "sweepers_team": 1
+  },
+  "rules": {
+    "bare_lid_in_inventory": 1,
+    "collection_not_loaded_overdue": 42,
+    "collection_not_loaded_pending": 0,
+    "collection_overdue": 0,
+    "collection_pending": 0,
+    "inventory_version_mismatch": 2765640,
+    "no_parent_by_design": 0,
+    "not_in_collection_inventory": 16960,
+    "refs_missing": 2,
+    "refs_missing_pending": 0,
+    "reloaded_after_collection": 0,
+    "stale_stamp": 0,
+    "sweeper_miss": 0
+  },
+  "run_time": "2026-11-16T22:23:46+00:00",
+  "schema_version": 1,
+  "superseded_anomalous_collections": [
+    "urn:nasa:pds:juno_mwr:data_calibrated::2.1",
+    "urn:nasa:pds:juno_mwr:data_raw::2.0"
+  ],
+  "unmapped_superseded": [
+    "atm-registry"
+  ],
+  "unverified_refs_missing": 2
+}

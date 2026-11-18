@@ -1,0 +1,50 @@
+{
+  "ancestry_version": 7,
+  "anomalous": 69,
+  "anomalous_collections": [
+    "urn:nasa:pds:hst.ast-ceres.uv-spectra:document::1.0"
+  ],
+  "empty_refs_with_bundle": [],
+  "examined": 98,
+  "expected": 29,
+  "nodes": [
+    "sbnpsi"
+  ],
+  "owners": {
+    "en": 0,
+    "needs_check": 0,
+    "no_action": 0,
+    "node": 69,
+    "sweepers_team": 0
+  },
+  "rules": {
+    "bare_lid_in_inventory": 0,
+    "collection_not_loaded_overdue": 1,
+    "collection_not_loaded_pending": 0,
+    "collection_overdue": 0,
+    "collection_pending": 0,
+    "inventory_version_mismatch": 0,
+    "no_parent_by_design": 0,
+    "not_in_collection_inventory": 1,
+    "refs_missing": 0,
+    "refs_missing_pending": 0,
+    "reloaded_after_collection": 0,
+    "stale_stamp": 67,
+    "sweeper_miss": 0
+  },
+  "run_time": "2026-11-16T22:23:53+00:00",
+  "schema_version": 1,
+  "superseded_anomalous_collections": [
+    "urn:nasa:pds:iue.ast.hendrix.spectra:data::1.0",
+    "urn:nasa:pds:iue.ast.hendrix.spectra:document::1.0",
+    "urn:nasa:pds:neowise_diameters_albedos:data::1.0",
+    "urn:nasa:pds:neowise_diameters_albedos:document::1.0",
+    "urn:nasa:pds:smallbodiesoccultations:data::1.0",
+    "urn:nasa:pds:smallbodiesoccultations:data::2.0",
+    "urn:nasa:pds:smallbodiesoccultations:data::3.0",
+    "urn:nasa:pds:smallbodiesoccultations:document::1.0",
+    "urn:nasa:pds:smallbodiesoccultations:document::3.0"
+  ],
+  "unmapped_superseded": [],
+  "unverified_refs_missing": 0
+}

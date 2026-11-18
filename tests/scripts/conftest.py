@@ -1,4 +1,4 @@
-"""Make the ``scripts/`` directory importable so tests can load ``generate_registry_status_reports``."""
+"""Make the ``scripts/`` directory importable so tests can load ``unprocessed_audit`` and ``generate_registry_status_reports``."""
 import sys
 from pathlib import Path
 
