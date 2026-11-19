@@ -132,6 +132,39 @@ def test_index_health_is_separate_from_the_node_status(tmp_path: Path):
     assert atm.en_issues  # EN-owned issues are flagged beside the node status
 
 
+def test_owners_are_computed_from_the_rule_counts_not_the_stored_owners(tmp_path: Path):
+    status, fidelity = build_tree(tmp_path)
+    # Stored under the earlier ownership: the reloaded products were the node's.
+    stale = metrics(
+        owners={"node": 60, "en": 0, "sweepers_team": 0, "needs_check": 0, "no_action": 0},
+        rules={"reloaded_after_collection": 50, "stale_stamp": 4, "inventory_version_mismatch": 6, "bare_lid_in_inventory": 2},
+    )
+    (fidelity / "atm" / "metrics.json").write_text(json.dumps(stale), encoding="utf-8")
+    atm = rc.build_cards(status, fidelity, CONFIG, TODAY)[0]
+    assert (atm.fidelity.issues, atm.fidelity.status) == (6, rc.Status.YELLOW)  # only the node's 6 products
+    assert atm.health.status is rc.Status.RED  # 54 EN products and 2 sweepers team products of 1000
+    assert "EN to repair (stamped before loaded, overwritten, never processed): 54 products" in atm.health.detail
+    assert "Sweepers team: 2 products" in atm.health.detail
+
+
+def test_owner_counts_use_the_rules_and_the_unverified_refs_and_fall_back_to_stored_owners():
+    split = rc.owner_counts({"rules": {"refs_missing": 5, "collection_overdue": 3}, "unverified_refs_missing": 2, "owners": {"node": 99}})
+    assert (split["node"], split["needs_check"], split["en"]) == (3, 2, 3)
+    assert rc.owner_counts({"owners": {"node": 7, "en": 1}}) == {"node": 7, "en": 1}
+    assert rc.owner_counts({}) == {}
+
+
+def test_index_health_labels_the_lines_as_ens(tmp_path: Path):
+    status, fidelity = build_tree(tmp_path)
+    (fidelity / "atm" / "metrics.json").write_text(
+        json.dumps(metrics(rules={"stale_stamp": 5}, empty_refs_with_bundle=["c1"])), encoding="utf-8"
+    )
+    detail = rc.build_cards(status, fidelity, CONFIG, TODAY)[0].health.detail
+    assert "EN to repair (stamped before loaded, overwritten, never processed): 5 products" in detail
+    assert "Collections without a bundle link (EN): 1" in detail
+    assert "Sweepers team" not in detail  # nothing is the sweepers team's here
+
+
 def test_only_missing_or_mismatched_api_fields_make_the_index_health_red(tmp_path: Path):
     missing = ["registry", "temp-atm-registry", "temp-atm", "ops:Provenance/ops:superseded_by", "missing_field", "error", "keyword", "(absent)"]
     status, fidelity = build_tree(tmp_path, discrepancies=[missing])
@@ -220,7 +253,15 @@ def test_outputs_are_written_with_a_row_per_node_and_links(tmp_path: Path):
     assert page.count("<tr>") == 4  # header and three nodes
     assert "https://example.test/docs/audits/latest/nodes/atm.md" in page
     assert "Index Health *" in page and '<abbr title="EN' in page and "&lt;" not in page.split("<style>")[0]
-    assert "| ATM |" in (out / "report_card.md").read_text(encoding="utf-8")
+    rubric = page.split("How the scores work")[1]
+    for case in ("stamped before their products were loaded", "overwrote", "link to their bundle", "never processed",
+                 "ancestry orphan repair", "bundle-link pass"):  # fmt: skip
+        assert case in rubric
+    assert "Fidelity</strong> (the node's)" in rubric
+    assert "EN's problem, not the node's" in page
+    markdown = (out / "report_card.md").read_text(encoding="utf-8")
+    assert "| ATM |" in markdown
+    assert "Loading, File paths and Fidelity are the node's" in markdown and "overwrote" in markdown
     assert json.loads((out / "report_card.json").read_text(encoding="utf-8"))["atm"]["overall"] == "red"
 
 

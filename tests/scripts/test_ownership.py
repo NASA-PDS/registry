@@ -25,10 +25,10 @@ def test_every_rule_has_a_problem_with_an_owner_and_a_plain_description():
         (Rule.COLLECTION_NOT_LOADED_OVERDUE, Owner.NODE),
         (Rule.INVENTORY_VERSION_MISMATCH, Owner.NODE),
         (Rule.NOT_IN_COLLECTION_INVENTORY, Owner.NODE),
-        (Rule.RELOADED_AFTER_COLLECTION, Owner.NODE),
         (Rule.REFS_MISSING, Owner.NODE),
+        (Rule.RELOADED_AFTER_COLLECTION, Owner.EN),
         (Rule.COLLECTION_OVERDUE, Owner.EN),
-        (Rule.STALE_STAMP, Owner.NODE),
+        (Rule.STALE_STAMP, Owner.EN),
         (Rule.SWEEPER_MISS, Owner.SWEEPERS_TEAM),
         (Rule.BARE_LID_IN_INVENTORY, Owner.SWEEPERS_TEAM),
         (Rule.REFS_MISSING_PENDING, Owner.NO_ACTION),
@@ -69,6 +69,25 @@ def test_count_by_owner_has_every_owner_and_sums_products():
     assert (split["needs_check"], split["node"]) == (3, 2)
 
 
+def test_products_the_sweepers_stamped_and_never_revisited_are_ens_not_the_nodes():
+    totals = ownership.count_by_owner(
+        {"reloaded_after_collection": 14208, "stale_stamp": 4, "collection_overdue": 9, "inventory_version_mismatch": 7}
+    )
+    assert (totals["en"], totals["node"]) == (14221, 7)
+    for rule in (Rule.RELOADED_AFTER_COLLECTION, Rule.STALE_STAMP):
+        assert ownership.RULE_PROBLEMS[rule].action == "EN runs the ancestry orphan repair"
+    assert ownership.EMPTY_REFS_PROBLEM.action == "EN runs the bundle-link pass"
+    assert ownership.RULE_PROBLEMS[Rule.REFS_MISSING].owner is Owner.NODE  # the node re-harvests that collection
+
+
+def test_owner_meaning_says_what_en_owns_and_what_the_node_owns():
+    en = ownership.OWNER_MEANING[Owner.EN]
+    for case in ("stamped before their products were loaded", "overwrote", "link to their bundle", "never processed",
+                 "index mappings"):  # fmt: skip
+        assert case in en
+    assert "re-harvests" in ownership.OWNER_MEANING[Owner.NODE]
+
+
 def make_collection(state: CollectionState, bundles: list[str], superseded_by: str | None = None) -> Collection:
     return Collection(
         lidvid="urn:a:b:c::1.0", lid="urn:a:b:c", node="atm", stamp="7", ancestor_refs=[], harvest=None,
@@ -105,8 +124,8 @@ def test_rows_are_ordered_by_owner_then_size_and_include_the_empty_refs_row():
     )
     assert [(r.owner, r.rule) for r in rows] == [
         (Owner.NODE, Rule.INVENTORY_VERSION_MISMATCH),
-        (Owner.NODE, Rule.STALE_STAMP),
         (Owner.NODE, Rule.REFS_MISSING),
+        (Owner.EN, Rule.STALE_STAMP),
         (Owner.EN, None),
         (Owner.SWEEPERS_TEAM, Rule.SWEEPER_MISS),
         (Owner.NO_ACTION, Rule.REFS_MISSING_PENDING),
@@ -138,7 +157,9 @@ def test_verdict_names_the_owners_that_have_work_and_ignores_waiting():
 
 
 def test_verdict_counts_products_and_collections_apart():
-    rows = ownership.build_rows({"reloaded_after_collection": 36323}, {}, {"reloaded_after_collection": 5}, 6)
+    rows = ownership.build_rows({"inventory_version_mismatch": 36323}, {}, {"inventory_version_mismatch": 5}, 6)
     assert ownership.verdict(rows) == "Needs attention: 36,323 products for the node; 6 collections for EN."
+    en_rows = ownership.build_rows({"reloaded_after_collection": 40}, {}, {"reloaded_after_collection": 2}, 6)
+    assert ownership.verdict(en_rows) == "Needs attention: 40 products and 6 collections for EN."
     only_collections = ownership.build_rows({}, {}, {}, 2)
     assert ownership.verdict(only_collections) == "Needs attention: 2 collections for EN."

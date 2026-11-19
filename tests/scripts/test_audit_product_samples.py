@@ -68,15 +68,15 @@ def test_rows_carry_the_owner_and_are_ordered_by_owner_then_group_size(tmp_path:
     write_csv(
         path,
         [row(f"urn:a:b:c:s{n}::1.0", "sweeper_miss", collection="urn:a:b:s::1.0") for n in range(2)]
-        + [row(f"urn:a:b:c:r{n}::1.0", "reloaded_after_collection", collection="urn:a:b:r::1.0") for n in range(3)]
-        + [row(f"urn:a:b:c:n{n}::1.0", "inventory_version_mismatch", collection="urn:a:b:n::1.0") for n in range(1)],
+        + [row(f"urn:a:b:c:r{n}::1.0", "inventory_version_mismatch", collection="urn:a:b:r::1.0") for n in range(3)]
+        + [row(f"urn:a:b:c:n{n}::1.0", "reloaded_after_collection", collection="urn:a:b:n::1.0") for n in range(1)],
     )
     rows = samples.sample_rows("atm", path, 10)
     assert [(r["owner"], r["rule"], r["products_in_group"]) for r in rows] == [
-        ("node", "reloaded_after_collection", "3"),
-        ("node", "reloaded_after_collection", "3"),
-        ("node", "reloaded_after_collection", "3"),
-        ("node", "inventory_version_mismatch", "1"),
+        ("node", "inventory_version_mismatch", "3"),
+        ("node", "inventory_version_mismatch", "3"),
+        ("node", "inventory_version_mismatch", "3"),
+        ("en", "reloaded_after_collection", "1"),
         ("sweepers_team", "sweeper_miss", "2"),
         ("sweepers_team", "sweeper_miss", "2"),
     ]
@@ -121,7 +121,7 @@ def test_the_examples_section_shows_a_few_products_per_group_and_links_the_full_
     assert section.startswith(samples.REPORT_START) and section.rstrip().endswith(samples.REPORT_END)
     assert "[`product_samples.csv`](../audit-output/atm/product_samples.csv)" in section
     assert "| Node | `inventory_version_mismatch` | `urn:a:b:n::1.0` | 5 | `urn:a:b:c:n0::1.0`<br>`urn:a:b:c:n1::1.0` |" in section
-    assert "| Node | `reloaded_after_collection` | `urn:a:b:r::1.0` | 2 |" in section
+    assert "| EN | `reloaded_after_collection` | `urn:a:b:r::1.0` | 2 |" in section
     assert "n2::1.0" not in section  # only two examples per group
 
 

@@ -2,7 +2,13 @@
 
 The audit rules are technical. This module maps each rule to the party that can fix it, to the kind of problem it
 is, and to a one-line description of the problem and the fix, so a report can say "the node must load these
-collections" or "the node must re-harvest these collections" instead of listing rule names.
+collections" or "EN runs the ancestry orphan repair" instead of listing rule names.
+
+The split follows who caused the gap. Problems in the data a node delivered (a collection that is not loaded, an
+inventory that lists another version or omits the product, refs that the collection's own inventory shows were never
+written) are the node's. Problems that EN's own sweepers and repairs leave behind are EN's: a collection the
+sweepers stamped before its products were loaded or overwritten and never revisited, a collection stamped with
+empty refs so that its bundle has no link to it, and a loaded collection the sweepers never processed.
 
 Ancestry is produced in two steps. Harvest writes ``registry-refs`` documents from a collection's inventory when
 the collection is harvested; they are the registry's record of which products belong to which collection. The
@@ -13,9 +19,12 @@ once it is stamped. A product therefore lacks ancestry in one of two ways:
   guess from its identifier (``bundle:collection:product``) and the collection versions that are registered; the
   product may really belong to a collection version that is not loaded. Usually the node's data does not line up
   (the collection is not loaded, the inventory lists another version, the inventory does not list the product);
-  sometimes the refs are stale or were never written, which the node fixes by re-harvesting the collection.
+  sometimes the collection's inventory lists the exact product but no refs document does, which the node fixes by
+  re-harvesting the collection (Harvest writes the refs).
 * **Not processed**: the refs do list the product, so its parent is confirmed, but the sweepers never gave it
-  ancestry (it was loaded after its collection was processed, it carries an older stamp, or a sweepers bug).
+  ancestry (it was loaded or overwritten after its collection was processed, it carries an older stamp, or a
+  sweepers bug). EN owns these: the ancestry orphan repair gives the products their ancestry without the node
+  re-harvesting anything.
 """
 
 from __future__ import annotations
@@ -57,11 +66,12 @@ OWNER_LABELS: dict[Owner, str] = {
 }
 
 OWNER_MEANING: dict[Owner, str] = {
-    Owner.NODE: "the node's data does not line up (a collection or product is missing, at the wrong version, or "
-    "not in the collection's inventory), or the collection has to be re-harvested by the node so that the "
-    "registry's refs are rewritten from its inventory; EN then runs the sweepers",
-    Owner.EN: "EN fixes the registry itself: runs the sweepers, repairs collections the sweepers bug left without "
-    "a bundle link, and fixes index mappings",
+    Owner.NODE: "the node's data does not line up (a collection is not loaded, a product is at the wrong version or "
+    "not in the collection's inventory), or the inventory lists the product but the registry's refs do not, so "
+    "the node re-harvests that collection to rewrite them",
+    Owner.EN: "EN's own sweepers and repairs left the gap: collections the sweepers stamped before their products "
+    "were loaded, products a node overwrote that the sweepers never revisited, collections without a link to "
+    "their bundle, loaded collections the sweepers never processed, and index mappings",
     Owner.SWEEPERS_TEAM: "everything looks right but the sweepers cannot or do not follow it; a software gap, "
     "possibly worked around by the node",
     Owner.NEEDS_CHECK: "the cause cannot be told apart because the collection inventory could not be used",
@@ -140,26 +150,26 @@ RULE_PROBLEMS: dict[Rule, Problem] = {
         Owner.NODE,
         Kind.ORPHANED,
         "The collection's inventory lists these products but the registry's refs do not (stale or never written)",
-        "Re-harvest the collection from its current label and inventory; EN then runs the sweepers",
+        "The node re-harvests the collection so Harvest rewrites its refs from the inventory",
     ),
     Rule.RELOADED_AFTER_COLLECTION: Problem(
-        Owner.NODE,
+        Owner.EN,
         Kind.NOT_PROCESSED,
-        "Linked to their collection, but loaded after the sweepers processed it, so the sweepers never went back",
-        "Re-harvest the collection; EN then runs the sweepers",
+        "Loaded or overwritten after the sweepers processed their collection, so the sweepers never went back",
+        "EN runs the ancestry orphan repair",
     ),
     Rule.STALE_STAMP: Problem(
-        Owner.NODE,
+        Owner.EN,
         Kind.NOT_PROCESSED,
-        "Linked to their collection, but processed by an older sweepers version while the collection is on the "
-        "current one, so the sweepers do not go back",
-        "Re-harvest the collection; EN then runs the sweepers",
+        "Stamped by an older sweepers version while their collection is on the current one, so the sweepers never "
+        "went back",
+        "EN runs the ancestry orphan repair",
     ),
     Rule.COLLECTION_OVERDUE: Problem(
         Owner.EN,
         Kind.NOT_PROCESSED,
         "The collection these products belong to is loaded but the sweepers never processed it",
-        "EN runs the sweepers (the node re-harvests the collection first if it has no refs)",
+        "EN runs the sweepers on the collection",
     ),
     Rule.SWEEPER_MISS: Problem(
         Owner.SWEEPERS_TEAM,
@@ -191,9 +201,9 @@ REFS_MISSING_UNVERIFIED = Problem(
 EMPTY_REFS_PROBLEM = Problem(
     Owner.EN,
     Kind.NOT_PROCESSED,
-    "The collection is marked processed but has no link to its bundle, so the bundle does not list it as a member "
-    "(a sweepers bug, fixed in registry-sweepers PR #286)",
-    "EN re-harvests the collection and runs the sweepers that include the fix",
+    "The sweepers stamped the collection but it has no link to its bundle, so the bundle does not list it as a "
+    "member",
+    "EN runs the bundle-link pass",
 )
 
 

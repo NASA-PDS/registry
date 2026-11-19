@@ -8,8 +8,15 @@ on four scores. Three belong to the node; the fourth, Index Health, belongs to E
   File paths       products, collections and bundles with an invalid ``file_ref``, of the node's visible products (node)
   Fidelity         visible products without ancestry that the node has to fix or that need a closer look, of the
                    node's visible products (node)
-  Index Health  products without ancestry that EN or the sweepers team fix, collections stamped without a link to
-                   their bundle, and index mapping problems on the fields the API relies on (EN)
+  Index Health     EN's own problems: products without ancestry that EN's sweepers and repairs left behind (a collection
+                   stamped before its products were loaded, products a node overwrote that the sweepers never
+                   revisited, a loaded collection the sweepers never processed), products the sweepers team owns,
+                   collections stamped without a link to their bundle, and index mapping problems on the fields the
+                   API relies on (EN)
+
+Who owns a product without ancestry is computed from the audit's per-rule counts with the current ``ownership``
+mapping, so older ``metrics.json`` files are scored by the same rules as new ones. A ``metrics.json`` without rule
+counts falls back to its stored ``owners``.
 
 A score is green with no issues, yellow with issues below ``yellow_below_percent`` of the node's items (default 5),
 and red from that percentage up. Index mappings count only for the fields the API relies on (``api_mapping_fields``
@@ -56,14 +63,18 @@ import json
 import logging
 import re
 import sys
+from collections.abc import Mapping
 from dataclasses import dataclass
 from dataclasses import field
 from datetime import date
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
+from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from unprocessed_audit import ownership  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -274,6 +285,21 @@ def read_metrics(fidelity_dir: Path, node: str) -> dict | None:
         raise ReportCardError(f"Cannot read {path}: {exc}") from exc
 
 
+def owner_counts(metrics: Mapping[str, Any]) -> dict[str, int]:
+    """Return a node's product count per owner under the current ownership mapping.
+
+    The counts come from the audit's ``rules`` (and ``unverified_refs_missing``), not from the ``owners`` stored in
+    ``metrics.json``, so a metrics file written under an earlier ownership is scored like a new one. Without ``rules``
+    the stored ``owners`` are used.
+    """
+    rules = metrics.get("rules")
+    if isinstance(rules, dict):
+        unverified = int(metrics.get("unverified_refs_missing") or 0)
+        return ownership.count_by_owner({str(rule): int(count) for rule, count in rules.items()}, unverified)
+    stored = metrics.get("owners")
+    return {str(owner): int(count) for owner, count in stored.items()} if isinstance(stored, dict) else {}
+
+
 def read_totals(fidelity_dir: Path) -> tuple[dict[str, int], date | None]:
     """Return the API-visible products per node and the date they were counted."""
     path = Path(fidelity_dir) / "node_totals.json"
@@ -446,7 +472,7 @@ def score_node(entry: dict, data: Inputs, config: Config, today: date) -> NodeCa
     else:
         visible = data.totals[node]
         run = _parse_date(metrics.get("run_time"))
-        owners = metrics.get("owners", {})
+        owners = owner_counts(metrics)
         node_issues = int(owners.get("node", 0)) + int(owners.get("needs_check", 0))
         fidelity = Score(
             grade(node_issues, visible, limit), node_issues, visible,
@@ -469,20 +495,28 @@ def _score_health(
     node: str, metrics: dict, visible: int, collections: int, data: Inputs, config: Config, run: date | None,
     links: list[Link],
 ) -> Score:
-    """Grade Index Health: EN-owned products, collections without a bundle link and mapping errors."""
+    """Grade Index Health: EN's products to repair, the sweepers team's, collections without a bundle link, mappings."""
     limit = config.yellow_below_percent
-    owners = metrics.get("owners", {})
-    registry_products = int(owners.get("en", 0)) + int(owners.get("sweepers_team", 0))
+    owners = owner_counts(metrics)
+    en_products, sweepers_products = int(owners.get("en", 0)), int(owners.get("sweepers_team", 0))
     unlinked = len(metrics.get("empty_refs_with_bundle", []))
-    parts = [
-        (grade(registry_products, visible, limit), f"Products without ancestry for EN or the sweepers team: {registry_products:,}"),
-        (grade(unlinked, collections, limit), f"Collections without a link to their bundle: {unlinked:,}"),
-    ]
+    products_status = grade(en_products + sweepers_products, visible, limit)
+    parts = []
+    if en_products:
+        parts.append(
+            (
+                products_status,
+                f"EN to repair (stamped before loaded, overwritten, never processed): {en_products:,} products",
+            )
+        )
+    if sweepers_products:
+        parts.append((products_status, f"Sweepers team: {sweepers_products:,} products"))
+    parts.append((grade(unlinked, collections, limit), f"Collections without a bundle link (EN): {unlinked:,}"))
     as_of = run
     if data.mapping_present:
         fields = data.mapping.get(node, [])
         listed = ", ".join(sorted(set(fields)))
-        parts.append((Status.RED if fields else Status.GREEN, f"Index mapping problems on API fields: {listed}"))
+        parts.append((Status.RED if fields else Status.GREEN, f"Index mapping problems on API fields (EN): {listed}"))
         as_of = min([d for d in (run, data.mapping_date) if d], default=run)
     links = [links[0], _link(config, "Index mappings", "status/fidelity/index-mappings/mapping_summary.md")]
     status = worst([s for s, _ in parts])
@@ -524,7 +558,7 @@ tr:last-child td{border-bottom:0}th small{display:block;text-transform:none;lett
 
 def _chip(status: Status, en: bool = False) -> str:
     css = status.value.replace(" ", "-")
-    star = '<abbr title="EN\'s responsibility">*</abbr>' if en else ""
+    star = '<abbr title="EN\'s problem, not the node\'s">*</abbr>' if en else ""
     return f'<span class="chip {css}">{_SYMBOL[status]} {html.escape(status.value.capitalize())}{star}</span>'
 
 
@@ -565,16 +599,16 @@ def render_html(cards: list[NodeCard], config: Config, today: date) -> str:
 {_chip(Status.STALE)} data older than {config.stale_after_days} days {_chip(Status.NO_DATA)} not measured</div>
 <div class="scroll"><table>
 <thead><tr><th>Node</th><th>Node status<small>worst of the next three</small></th><th>Loading<small>node</small></th>
-<th>File paths<small>node</small></th><th>Fidelity<small>node</small></th><th>Index Health *<small>EN's responsibility</small></th></tr></thead>
+<th>File paths<small>node</small></th><th>Fidelity<small>node</small></th><th>Index Health *<small>EN's problems</small></th></tr></thead>
 <tbody>{"".join(rows)}</tbody></table></div>
-<p class="muted">* EN's responsibility, not the node's. Every Index Health issue is EN's or the sweepers team's to fix. A node status marked * also has open Index Health issues; they are not counted in the node status.</p>
+<p class="muted">* EN's problem, not the node's. Every Index Health issue is EN's or the sweepers team's to fix: collections the sweepers stamped before their products were loaded, products a node overwrote that the sweepers never revisited, collections without a link to their bundle, loaded collections the sweepers never processed, and index mappings. A node status marked * also has open Index Health issues; they are not counted in the node status.</p>
 <h2>How the scores work</h2>
 <div class="rubric"><ul>
 <li><strong>Loading</strong>: current bundles and collections that are not yet in the registry, of all current ones.</li>
 <li><strong>File paths</strong>: products, collections and bundles with an invalid <code>file_ref</code>, of the node's visible products.</li>
-<li><strong>Fidelity</strong>: visible products without ancestry (missing from their collection's and bundle's <code>/members</code>) that the node must fix, or that need a closer look, of the node's visible products. Products still within the grace period are not counted.</li>
-<li><strong>Index Health</strong> (EN and the sweepers team, not the node): products without ancestry that EN or the sweepers team fix, collections stamped without a link to their bundle, and index mapping problems. Only the fields the API relies on count (<code>lid</code>, <code>lidvid</code>, <code>vid</code>, the archive status, <code>superseded_by</code> and <code>ancestor_refs</code>): one that is missing from the node's mapping, or mapped with a different type from the other nodes (text and keyword count as the same), makes the score red. Other mapping differences are ignored.</li>
-<li>Green is no issues. Yellow is some issues, but below {limit}% of the node's items. Red is {limit}% or more of the items, which is enough to harm users of the registry. A node's status is the worst of Loading, File paths and Fidelity.</li>
+<li><strong>Fidelity</strong> (the node's): visible products without ancestry (missing from their collection's and bundle's <code>/members</code>) that the node must fix, or that need a closer look, of the node's visible products. These are a collection that is not loaded, an inventory that lists another version of the product or omits it, and a collection whose inventory lists the product but whose refs do not. Products still within the grace period are not counted.</li>
+<li><strong>Index Health</strong> (EN's problems and the sweepers team's, not the node's): collections the sweepers stamped before their products were loaded and never revisited, and products a node overwrote that the sweepers never revisited (EN runs the ancestry orphan repair for both); collections without a link to their bundle (EN runs the bundle-link pass); loaded collections the sweepers never processed; products the sweepers team owns; and index mapping problems. Only the fields the API relies on count (<code>lid</code>, <code>lidvid</code>, <code>vid</code>, the archive status, <code>superseded_by</code> and <code>ancestor_refs</code>): one that is missing from the node's mapping, or mapped with a different type from the other nodes (text and keyword count as the same), makes the score red. Other mapping differences are ignored.</li>
+<li>Green is no issues. Yellow is some issues, but below {limit}% of the node's items. Red is {limit}% or more of the items, which is enough to harm users of the registry. A node's status is the worst of Loading, File paths and Fidelity, which are the node's. Index Health is EN's and is shown beside the node status, not in it.</li>
 </ul></div>
 </main></body></html>
 """  # noqa: B950
@@ -595,8 +629,11 @@ def render_markdown(cards: list[NodeCard], config: Config, today: date) -> str:
         "",
         f"Generated {today.isoformat()}. Green: no issues. Yellow: issues below {limit}% of the node's items. "
         f"Red: {limit}% or more. Stale: data older than {config.stale_after_days} days. "
-        "Loading, File paths and Fidelity are the node's. \\* Index Health is EN's responsibility, not the node's; "
-        "a node status marked \\* also has open Index Health issues, which are not counted in the node status.",
+        "Loading, File paths and Fidelity are the node's. \\* Index Health is EN's problem, not the node's: "
+        "collections the sweepers stamped before their products were loaded, products a node overwrote that the "
+        "sweepers never revisited, collections without a link to their bundle, loaded collections the sweepers "
+        "never processed, and index mappings. A node status marked \\* also has open Index Health issues, which are "
+        "not counted in the node status.",
         "",
         "| Node | Node status | Loading | File paths | Fidelity | Index Health * |",
         "|---|---|---|---|---|---|",

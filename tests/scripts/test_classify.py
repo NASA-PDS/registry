@@ -588,9 +588,9 @@ def test_rule_reloaded_after_collection() -> None:
     assert v.rule == Rule.RELOADED_AFTER_COLLECTION
     assert v.severity == Severity.ANOMALOUS
     assert v.in_refs is True
-    assert "re-harvested after the collection was processed" in v.rationale
-    assert "No sweeper defect is implied" in v.rationale
-    assert "re-harvesting the collection" in v.rationale
+    assert "loaded or overwritten after the collection was processed" in v.rationale
+    assert "EN's ancestry orphan repair" in v.rationale
+    assert "re-harvest" not in v.rationale
 
 
 def test_rule_sweeper_miss() -> None:
@@ -667,7 +667,8 @@ def test_rule_guidance_covers_every_rule_in_ascii() -> None:
     for text in RULE_GUIDANCE.values():
         assert text
         assert text.isascii()
-    assert "re-harvest the collection" in RULE_GUIDANCE[Rule.RELOADED_AFTER_COLLECTION]
+    assert "ancestry orphan repair" in RULE_GUIDANCE[Rule.RELOADED_AFTER_COLLECTION]
+    assert "ancestry orphan repair" in RULE_GUIDANCE[Rule.STALE_STAMP]
 
 
 def test_rationales_are_single_line_ascii() -> None:

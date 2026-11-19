@@ -58,8 +58,9 @@ RULE_GUIDANCE: dict[Rule, str] = {
         "with audit_collection.py); the products are a symptom."
     ),
     Rule.RELOADED_AFTER_COLLECTION: (
-        "The product was re-harvested after its collection was processed, so the sweeper has no reason to "
-        "revisit it. Candidate fix: re-harvest the collection so the sweeper reprocesses it."
+        "The product was loaded or overwritten after its collection was processed, so the sweeper has no reason "
+        "to revisit it. This is EN's to fix: EN runs the ancestry orphan repair, and the node need not "
+        "re-harvest anything."
     ),
     Rule.INVENTORY_VERSION_MISMATCH: (
         "The collection's inventory (as recorded in registry-refs) lists this product at a different version "
@@ -90,7 +91,7 @@ RULE_GUIDANCE: dict[Rule, str] = {
         "harvested, so the inventory read at that time did not list the product, or the inventory has changed "
         "since, or the refs were not written. Read the collection's current inventory. If it lists this exact "
         "product, the refs are stale: the node re-harvests the collection from its current label and "
-        "inventory, then EN runs the sweepers. If it lists another version of the product or does not list it, the "
+        "inventory so Harvest rewrites the refs. If it lists another version of the product or does not list it, the "
         "node's data does not line up and the node fixes it (the audit reports those as "
         "inventory_version_mismatch and not_in_collection_inventory when it can read the inventory). The "
         "collection named for the product is a best guess from its identifier."
@@ -103,8 +104,8 @@ RULE_GUIDANCE: dict[Rule, str] = {
     ),
     Rule.STALE_STAMP: (
         "The product carries an ancestry stamp from an older sweeper version although its collection is "
-        "already on the current version. The collection will not be revisited, so a re-sweep of the "
-        "collection may be needed."
+        "already on the current version. The collection will not be revisited. This is EN's to fix: EN runs "
+        "the ancestry orphan repair."
     ),
 }
 
@@ -608,8 +609,8 @@ def classify_product(
         return verdict(
             Rule.RELOADED_AFTER_COLLECTION,
             Severity.ANOMALOUS,
-            f"Product was re-harvested after the collection was processed ({c_when}); {c_desc}. "
-            f"No sweeper defect is implied; re-harvesting the collection fixes it.",
+            f"Product was loaded or overwritten after the collection was processed ({c_when}); {c_desc}. "
+            f"The sweepers never went back to it; EN's ancestry orphan repair fixes it.",
             collection,
         )
     return verdict(

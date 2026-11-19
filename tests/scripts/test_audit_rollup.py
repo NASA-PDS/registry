@@ -42,8 +42,8 @@ def test_table_has_a_row_per_node_a_total_and_counts_by_owner(tmp_path: Path):
     lines = table.splitlines()
     assert lines[0].startswith("| Node | Products examined | Needs attention: Node |")
     assert lines[2] == "| a | 10 | 0 | 3 | 1 | 0 | 2 | 10 |"  # sorted by node name
-    assert lines[3] == "| b | 50 | 30 | 0 | 0 | 0 | 0 | 2 |"
-    assert lines[4] == "| **Total** | **60** | **30** | **3** | **1** | **0** | **2** | **12** |"
+    assert lines[3] == "| b | 50 | 25 | 5 | 0 | 0 | 0 | 2 |"  # reloaded_after_collection is EN's
+    assert lines[4] == "| **Total** | **60** | **25** | **8** | **1** | **0** | **2** | **12** |"
 
 
 def test_products_without_an_inventory_check_are_called_out(tmp_path: Path):
