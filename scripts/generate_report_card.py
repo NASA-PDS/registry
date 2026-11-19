@@ -491,6 +491,11 @@ def score_node(entry: dict, data: Inputs, config: Config, today: date) -> NodeCa
     return NodeCard(node, entry["label"], cards[0], cards[1], cards[2], cards[3], shared_note)
 
 
+def _products(count: int) -> str:
+    """Return a product count with its noun, such as ``1 product`` or ``2 products``."""
+    return f"{count:,} product{'' if count == 1 else 's'}"
+
+
 def _score_health(
     node: str, metrics: dict, visible: int, collections: int, data: Inputs, config: Config, run: date | None,
     links: list[Link],
@@ -506,11 +511,11 @@ def _score_health(
         parts.append(
             (
                 products_status,
-                f"EN to repair (stamped before loaded, overwritten, never processed): {en_products:,} products",
+                f"EN to repair (stamped before loaded, overwritten, never processed): {_products(en_products)}",
             )
         )
     if sweepers_products:
-        parts.append((products_status, f"Sweepers team: {sweepers_products:,} products"))
+        parts.append((products_status, f"Sweepers team: {_products(sweepers_products)}"))
     parts.append((grade(unlinked, collections, limit), f"Collections without a bundle link (EN): {unlinked:,}"))
     as_of = run
     if data.mapping_present:

@@ -145,6 +145,7 @@ def test_owners_are_computed_from_the_rule_counts_not_the_stored_owners(tmp_path
     assert atm.health.status is rc.Status.RED  # 54 EN products and 2 sweepers team products of 1000
     assert "EN to repair (stamped before loaded, overwritten, never processed): 54 products" in atm.health.detail
     assert "Sweepers team: 2 products" in atm.health.detail
+    assert rc._products(1) == "1 product" and rc._products(1234) == "1,234 products"
 
 
 def test_owner_counts_use_the_rules_and_the_unverified_refs_and_fall_back_to_stored_owners():
