@@ -1,9 +1,9 @@
 # Index mapping audit
 
-Run time: 2026-11-16
+Run time: 2026-11-19T04:04:10+00:00
 
 - Indices read: **20**
-- Discrepancies: **182** (28 errors, 154 warnings)
+- Discrepancies: **180** (26 errors, 154 warnings)
 - A field defined on at least 80% of a group's indices is expected on all of them
 - Possibly stale or test indices (not compared): **1**
 
@@ -25,12 +25,12 @@ owner before deleting; the audit never changes or deletes anything.
 | registry | geo-registry | 1287 | false | 0 | 0 | 2 |
 | registry | img-registry | 1051 | false | 0 | 22 | 1 |
 | registry | naif-registry | 134 | false | 0 | 97 | 10 |
-| registry | ppi-registry | 403 | false | 0 | 2 | 0 |
+| registry | ppi-registry | 404 | false | 0 | 2 | 0 |
 | registry | psa-registry | 985 | false | 0 | 6 | 0 |
 | registry | rms-registry | 591 | false | 0 | 12 | 1 |
 | registry | sbnpsi-registry | 1356 | false | 0 | 0 | 0 |
 | registry | sbnumd-registry | 939 | false | 0 | 3 | 9 |
-| registry | temp-atm-registry | 765 | false | 2 | 2 | 1 |
+| registry | temp-atm-registry | 767 | false | 0 | 2 | 1 |
 | registry-refs | en-registry-refs | 10 | false | 0 | 0 | 0 |
 | registry-refs | geo-registry-refs | 10 | false | 0 | 0 | 0 |
 | registry-refs | img-registry-refs | 10 | false | 0 | 0 | 0 |
@@ -46,8 +46,6 @@ owner before deleting; the audit never changes or deletes anything.
 
 | Severity | Group | Field | Expected type | Missing from |
 |---|---|---|---|---|
-| error | registry | `ops:Provenance/ops:superseded_by` | keyword | temp-atm-registry |
-| error | registry | `vid` | float | temp-atm-registry |
 | warning | registry | `disp:Display_Direction/disp:horizontal_display_axis` | keyword | naif-registry |
 | warning | registry | `disp:Display_Direction/disp:horizontal_display_direction` | keyword | naif-registry |
 | warning | registry | `disp:Display_Direction/disp:vertical_display_axis` | keyword | naif-registry |
@@ -146,7 +144,9 @@ owner before deleting; the audit never changes or deletes anything.
 | warning | registry | `pds:Table_Binary/pds:records` | long | img-registry, naif-registry |
 | warning | registry | `pds:Table_Character/pds:description` | text | img-registry, naif-registry |
 | warning | registry | `pds:Table_Character/pds:name` | keyword | img-registry |
-| | | ... and 14 more fields (see mapping_discrepancies.csv) | | |
+| warning | registry | `pds:Table_Delimited/pds:description` | text | naif-registry |
+| warning | registry | `pds:Table_Delimited/pds:field_delimiter` | keyword | naif-registry |
+| | | ... and 12 more fields (see mapping_discrepancies.csv) | | |
 
 ## Fields mapped with different types
 

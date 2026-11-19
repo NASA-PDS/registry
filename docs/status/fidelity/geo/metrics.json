@@ -17,15 +17,16 @@
     "urn:nasa:pds:mess_xrs_derived:document::1.0",
     "urn:nasa:pds:mess_xrs_raw:document::1.0"
   ],
-  "empty_refs_with_bundle": [
-    "urn:nasa:pds:mars2020_mission:document_camera::16.0",
-    "urn:nasa:pds:mars2020_rimfax:document::16.0"
-  ],
+  "empty_refs_with_bundle": [],
   "examined": 1373,
   "expected": 0,
   "nodes": [
     "geo"
   ],
+  "not_visible_without_ancestry": {
+    "none": 1,
+    "staged": 7715
+  },
   "owners": {
     "en": 0,
     "needs_check": 0,
@@ -48,7 +49,7 @@
     "stale_stamp": 2,
     "sweeper_miss": 0
   },
-  "run_time": "2026-11-16T22:23:47+00:00",
+  "run_time": "2026-11-19T04:02:41+00:00",
   "schema_version": 1,
   "superseded_anomalous_collections": [],
   "unmapped_superseded": [],

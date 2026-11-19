@@ -1,9 +1,10 @@
 # Unprocessed product audit
 
-Run time: 2026-11-16T22:23:52+00:00
+Run time: 2026-11-19T04:03:23+00:00
 Nodes: rms
 
 No candidate products were found: every API-visible product has current ancestry.
+- Not API-visible (staged etc.) without ancestry, not counted above: 0
 
 ## What needs to happen
 
@@ -20,6 +21,6 @@ No candidate products were found: every API-visible product has current ancestry
 
 ## Regression check
 
-Evaluated with no baseline (any anomaly fails).
+Evaluated against the baseline of 2026-11-16T22:23:52+00:00.
 
 **PASS** - every invariant holds.

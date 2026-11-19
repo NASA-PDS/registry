@@ -1,11 +1,12 @@
 # Unprocessed product audit
 
-Run time: 2026-11-16T22:23:50+00:00
+Run time: 2026-11-19T04:03:03+00:00
 Nodes: naif
 
 - Candidates examined: **2**
 - Expected (should resolve on their own): **0**
 - Anomalous (need attention): **2**
+- Not API-visible (staged etc.) without ancestry, not counted above: 0
 
 ## What needs to happen
 
@@ -59,6 +60,19 @@ Who fixes what:
 |---|---|---|---|
 | >30d | 0 | 2 | 2 |
 
+## How this maps to the orphan repair report
+
+The ancestry orphan repair dry run prints products examined, repairable (a refs document lists the product under a collection in the registry) and unresolved (no refs document lists it, or only under a collection that is not in the registry).
+
+- The repair examines the 2 audit candidates plus the 0 products that are not API-visible, because it does not filter on archive status.
+- The repair has no grace period, so waiting (`*_pending`) products are counted too.
+- The audit counts any stamp other than the current version, the repair only a stamp below it.
+
+| Audit rule | Products | Repair bucket |
+|---|---|---|
+| refs_missing | 2 | unresolved |
+| **all (the repair's products examined)** | **2** |  |
+
 ## What each rule means
 
 - **refs_missing** (2 products): The collection is processed and has refs, but no registry-refs document lists this product, so the sweeper never selects it. Harvest writes a collection's refs from its inventory when the collection is harvested, so the inventory read at that time did not list the product, or the inventory has changed since, or the refs were not written. Read the collection's current inventory. If it lists this exact product, the refs are stale: the node re-harvests the collection from its current label and inventory, then EN runs the sweepers. If it lists another version of the product or does not list it, the node's data does not line up and the node fixes it (the audit reports those as inventory_version_mismatch and not_in_collection_inventory when it can read the inventory). The collection named for the product is a best guess from its identifier.
@@ -74,9 +88,6 @@ Who fixes what:
 
 ## Regression check
 
-Evaluated with no baseline (any anomaly fails).
+Evaluated against the baseline of 2026-11-16T22:23:50+00:00.
 
-**FAIL** - 1 invariant(s) violated.
-
-- `no_anomalous_products`: 2 products are anomalous
-  - refs_missing: 2
+**PASS** - every invariant holds.

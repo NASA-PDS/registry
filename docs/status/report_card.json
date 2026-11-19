@@ -2,59 +2,59 @@
   "atm": {
     "en_issues": true,
     "fidelity": {
-      "as_of": "2026-11-16",
-      "detail": "2,782,644 of 6,909,980 visible products without ancestry that the node or a closer look must resolve",
-      "issues": 2782644,
+      "as_of": "2026-11-19",
+      "detail": "2,796,852 of 7,286,641 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 2796852,
       "stale": false,
       "status": "red",
-      "total": 6909980
+      "total": 7286641
     },
     "file_paths": {
-      "as_of": "2026-11-10",
-      "detail": "11 of 6,909,980 products, collections and bundles with an invalid file path",
+      "as_of": "2026-11-19",
+      "detail": "11 of 7,286,641 products, collections and bundles with an invalid file path",
       "issues": 11,
       "stale": false,
       "status": "yellow",
-      "total": 6909980
+      "total": 7286641
     },
     "index_health": {
-      "as_of": "2026-11-16",
-      "detail": "Products without ancestry for EN or the sweepers team: 1; Index mapping problems on API fields: ops:Provenance/ops:superseded_by, vid",
+      "as_of": "2026-11-19",
+      "detail": "Products without ancestry for EN or the sweepers team: 1; Collections without a link to their bundle: 21",
       "issues": null,
       "stale": false,
-      "status": "red",
+      "status": "yellow",
       "total": null
     },
     "loading": {
-      "as_of": "2026-11-10",
-      "detail": "98 of 594 current bundles and collections not loaded",
-      "issues": 98,
+      "as_of": "2026-11-19",
+      "detail": "48 of 599 current bundles and collections not loaded",
+      "issues": 48,
       "stale": false,
       "status": "red",
-      "total": 594
+      "total": 599
     },
     "overall": "red"
   },
   "en": {
     "en_issues": false,
     "fidelity": {
-      "as_of": "2026-11-16",
-      "detail": "705 of 5,868 visible products without ancestry that the node or a closer look must resolve",
-      "issues": 705,
+      "as_of": "2026-11-19",
+      "detail": "5 of 5,868 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 5,
       "stale": false,
-      "status": "red",
+      "status": "yellow",
       "total": 5868
     },
     "file_paths": {
-      "as_of": "2026-11-10",
-      "detail": "38 of 5,868 products, collections and bundles with an invalid file path",
-      "issues": 38,
+      "as_of": "2026-11-19",
+      "detail": "34 of 5,868 products, collections and bundles with an invalid file path",
+      "issues": 34,
       "stale": false,
       "status": "yellow",
       "total": 5868
     },
     "index_health": {
-      "as_of": "2026-11-16",
+      "as_of": "2026-11-19",
       "detail": "No registry-side issues",
       "issues": null,
       "stale": false,
@@ -62,19 +62,19 @@
       "total": null
     },
     "loading": {
-      "as_of": "2026-11-10",
-      "detail": "7 of 41 current bundles and collections not loaded",
-      "issues": 7,
+      "as_of": "2026-11-19",
+      "detail": "6 of 40 current bundles and collections not loaded",
+      "issues": 6,
       "stale": false,
       "status": "red",
-      "total": 41
+      "total": 40
     },
     "overall": "red"
   },
   "geo": {
     "en_issues": true,
     "fidelity": {
-      "as_of": "2026-11-16",
+      "as_of": "2026-11-19",
       "detail": "1,324 of 10,612,890 visible products without ancestry that the node or a closer look must resolve",
       "issues": 1324,
       "stale": false,
@@ -82,7 +82,7 @@
       "total": 10612890
     },
     "file_paths": {
-      "as_of": "2026-11-10",
+      "as_of": "2026-11-19",
       "detail": "2 of 10,612,890 products, collections and bundles with an invalid file path",
       "issues": 2,
       "stale": false,
@@ -90,79 +90,43 @@
       "total": 10612890
     },
     "index_health": {
-      "as_of": "2026-11-16",
-      "detail": "Products without ancestry for EN or the sweepers team: 49; Collections without a link to their bundle: 2",
+      "as_of": "2026-11-19",
+      "detail": "Products without ancestry for EN or the sweepers team: 49",
       "issues": null,
       "stale": false,
       "status": "yellow",
       "total": null
     },
     "loading": {
-      "as_of": "2026-11-10",
-      "detail": "2 of 1,329 current bundles and collections not loaded",
-      "issues": 2,
+      "as_of": "2026-11-19",
+      "detail": "0 of 1,327 current bundles and collections not loaded",
+      "issues": 0,
       "stale": false,
-      "status": "yellow",
-      "total": 1329
+      "status": "green",
+      "total": 1327
     },
     "overall": "yellow"
   },
   "img": {
-    "en_issues": true,
-    "fidelity": {
-      "as_of": "2026-11-16",
-      "detail": "36,839 of 26,339,924 visible products without ancestry that the node or a closer look must resolve",
-      "issues": 36839,
-      "stale": false,
-      "status": "yellow",
-      "total": 26339924
-    },
-    "file_paths": {
-      "as_of": "2026-11-10",
-      "detail": "67,182 of 26,339,924 products, collections and bundles with an invalid file path",
-      "issues": 67182,
-      "stale": false,
-      "status": "yellow",
-      "total": 26339924
-    },
-    "index_health": {
-      "as_of": "2026-11-16",
-      "detail": "Collections without a link to their bundle: 6",
-      "issues": null,
-      "stale": false,
-      "status": "yellow",
-      "total": null
-    },
-    "loading": {
-      "as_of": "2026-11-10",
-      "detail": "1,640 of 1,863 current bundles and collections not loaded",
-      "issues": 1640,
-      "stale": false,
-      "status": "red",
-      "total": 1863
-    },
-    "overall": "red"
-  },
-  "naif": {
     "en_issues": false,
     "fidelity": {
-      "as_of": "2026-11-16",
-      "detail": "2 of 6,622 visible products without ancestry that the node or a closer look must resolve",
-      "issues": 2,
+      "as_of": "2026-11-19",
+      "detail": "516 of 26,339,924 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 516,
       "stale": false,
       "status": "yellow",
-      "total": 6622
+      "total": 26339924
     },
     "file_paths": {
-      "as_of": "2026-11-10",
-      "detail": "0 of 6,622 products, collections and bundles with an invalid file path",
-      "issues": 0,
+      "as_of": "2026-11-19",
+      "detail": "61,964 of 26,339,924 products, collections and bundles with an invalid file path",
+      "issues": 61964,
       "stale": false,
-      "status": "green",
-      "total": 6622
+      "status": "yellow",
+      "total": 26339924
     },
     "index_health": {
-      "as_of": "2026-11-16",
+      "as_of": "2026-11-19",
       "detail": "No registry-side issues",
       "issues": null,
       "stale": false,
@@ -170,7 +134,43 @@
       "total": null
     },
     "loading": {
-      "as_of": "2026-11-10",
+      "as_of": "2026-11-19",
+      "detail": "1,732 of 1,952 current bundles and collections not loaded",
+      "issues": 1732,
+      "stale": false,
+      "status": "red",
+      "total": 1952
+    },
+    "overall": "red"
+  },
+  "naif": {
+    "en_issues": false,
+    "fidelity": {
+      "as_of": "2026-11-19",
+      "detail": "2 of 6,622 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 2,
+      "stale": false,
+      "status": "yellow",
+      "total": 6622
+    },
+    "file_paths": {
+      "as_of": "2026-11-19",
+      "detail": "0 of 6,622 products, collections and bundles with an invalid file path",
+      "issues": 0,
+      "stale": false,
+      "status": "green",
+      "total": 6622
+    },
+    "index_health": {
+      "as_of": "2026-11-19",
+      "detail": "No registry-side issues",
+      "issues": null,
+      "stale": false,
+      "status": "green",
+      "total": null
+    },
+    "loading": {
+      "as_of": "2026-11-19",
       "detail": "0 of 56 current bundles and collections not loaded",
       "issues": 0,
       "stale": false,
@@ -182,23 +182,23 @@
   "ppi": {
     "en_issues": false,
     "fidelity": {
-      "as_of": "2026-11-16",
-      "detail": "0 of 1,438,449 visible products without ancestry that the node or a closer look must resolve",
+      "as_of": "2026-11-19",
+      "detail": "0 of 1,434,868 visible products without ancestry that the node or a closer look must resolve",
       "issues": 0,
       "stale": false,
       "status": "green",
-      "total": 1438449
+      "total": 1434868
     },
     "file_paths": {
-      "as_of": "2026-11-10",
-      "detail": "0 of 1,438,449 products, collections and bundles with an invalid file path",
+      "as_of": "2026-11-19",
+      "detail": "0 of 1,434,868 products, collections and bundles with an invalid file path",
       "issues": 0,
       "stale": false,
       "status": "green",
-      "total": 1438449
+      "total": 1434868
     },
     "index_health": {
-      "as_of": "2026-11-16",
+      "as_of": "2026-11-19",
       "detail": "No registry-side issues",
       "issues": null,
       "stale": false,
@@ -206,27 +206,27 @@
       "total": null
     },
     "loading": {
-      "as_of": "2026-11-10",
-      "detail": "9 of 1,355 current bundles and collections not loaded",
-      "issues": 9,
+      "as_of": "2026-11-19",
+      "detail": "12 of 1,362 current bundles and collections not loaded",
+      "issues": 12,
       "stale": false,
       "status": "yellow",
-      "total": 1355
+      "total": 1362
     },
     "overall": "yellow"
   },
   "psa": {
     "en_issues": false,
     "fidelity": {
-      "as_of": "2026-11-16",
-      "detail": "319,567 of 39,276,959 visible products without ancestry that the node or a closer look must resolve",
-      "issues": 319567,
+      "as_of": "2026-11-19",
+      "detail": "255,661 of 39,276,959 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 255661,
       "stale": false,
       "status": "yellow",
       "total": 39276959
     },
     "file_paths": {
-      "as_of": "2026-11-10",
+      "as_of": "2026-11-19",
       "detail": "0 of 39,276,959 products, collections and bundles with an invalid file path",
       "issues": 0,
       "stale": false,
@@ -234,7 +234,7 @@
       "total": 39276959
     },
     "index_health": {
-      "as_of": "2026-11-16",
+      "as_of": "2026-11-19",
       "detail": "No registry-side issues",
       "issues": null,
       "stale": false,
@@ -242,7 +242,7 @@
       "total": null
     },
     "loading": {
-      "as_of": "2026-11-10",
+      "as_of": "2026-11-19",
       "detail": "0 of 147 current bundles and collections not loaded",
       "issues": 0,
       "stale": false,
@@ -254,7 +254,7 @@
   "rms": {
     "en_issues": false,
     "fidelity": {
-      "as_of": "2026-11-16",
+      "as_of": "2026-11-19",
       "detail": "0 of 2,335,157 visible products without ancestry that the node or a closer look must resolve",
       "issues": 0,
       "stale": false,
@@ -262,7 +262,7 @@
       "total": 2335157
     },
     "file_paths": {
-      "as_of": "2026-11-10",
+      "as_of": "2026-11-19",
       "detail": "0 of 2,335,157 products, collections and bundles with an invalid file path",
       "issues": 0,
       "stale": false,
@@ -270,7 +270,7 @@
       "total": 2335157
     },
     "index_health": {
-      "as_of": "2026-11-16",
+      "as_of": "2026-11-19",
       "detail": "No registry-side issues",
       "issues": null,
       "stale": false,
@@ -278,7 +278,7 @@
       "total": null
     },
     "loading": {
-      "as_of": "2026-11-10",
+      "as_of": "2026-11-19",
       "detail": "0 of 393 current bundles and collections not loaded",
       "issues": 0,
       "stale": false,
@@ -290,15 +290,15 @@
   "sbnpsi": {
     "en_issues": false,
     "fidelity": {
-      "as_of": "2026-11-16",
-      "detail": "69 of 5,055,499 visible products without ancestry that the node or a closer look must resolve",
-      "issues": 69,
+      "as_of": "2026-11-19",
+      "detail": "1 of 5,055,499 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 1,
       "stale": false,
       "status": "yellow",
       "total": 5055499
     },
     "file_paths": {
-      "as_of": "2026-11-10",
+      "as_of": "2026-11-19",
       "detail": "0 of 7,177,699 products, collections and bundles with an invalid file path",
       "issues": 0,
       "stale": false,
@@ -306,7 +306,7 @@
       "total": 7177699
     },
     "index_health": {
-      "as_of": "2026-11-16",
+      "as_of": "2026-11-19",
       "detail": "No registry-side issues",
       "issues": null,
       "stale": false,
@@ -314,7 +314,7 @@
       "total": null
     },
     "loading": {
-      "as_of": "2026-11-10",
+      "as_of": "2026-11-19",
       "detail": "8 of 1,041 current bundles and collections not loaded",
       "issues": 8,
       "stale": false,
@@ -324,17 +324,17 @@
     "overall": "yellow"
   },
   "sbnumd": {
-    "en_issues": true,
+    "en_issues": false,
     "fidelity": {
-      "as_of": "2026-11-16",
-      "detail": "25 of 2,122,200 visible products without ancestry that the node or a closer look must resolve",
-      "issues": 25,
+      "as_of": "2026-11-19",
+      "detail": "1 of 2,122,200 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 1,
       "stale": false,
       "status": "yellow",
       "total": 2122200
     },
     "file_paths": {
-      "as_of": "2026-11-10",
+      "as_of": "2026-11-19",
       "detail": "0 of 7,177,699 products, collections and bundles with an invalid file path",
       "issues": 0,
       "stale": false,
@@ -342,15 +342,15 @@
       "total": 7177699
     },
     "index_health": {
-      "as_of": "2026-11-16",
-      "detail": "Collections without a link to their bundle: 58",
+      "as_of": "2026-11-19",
+      "detail": "No registry-side issues",
       "issues": null,
       "stale": false,
-      "status": "red",
+      "status": "green",
       "total": null
     },
     "loading": {
-      "as_of": "2026-11-10",
+      "as_of": "2026-11-19",
       "detail": "8 of 1,041 current bundles and collections not loaded",
       "issues": 8,
       "stale": false,

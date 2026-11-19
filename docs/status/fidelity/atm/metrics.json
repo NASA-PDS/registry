@@ -1,8 +1,10 @@
 {
   "ancestry_version": 7,
-  "anomalous": 2782645,
+  "anomalous": 2796853,
   "anomalous_collections": [
     "urn:nasa:pds-ama:sample_bundle:simulation02::1.0",
+    "urn:nasa:pds:juno_jiram:data_calibrated::1.0",
+    "urn:nasa:pds:juno_jiram:data_raw::1.0",
     "urn:nasa:pds:maven.iuvs.calibrated:calibration::13.0",
     "urn:nasa:pds:maven.iuvs.calibrated:corona::13.0",
     "urn:nasa:pds:maven.iuvs.calibrated:disk::13.0",
@@ -24,17 +26,42 @@
     "urn:nasa:pds:maven_ngims:calibration::1.0",
     "urn:nasa:pds:maven_ngims:l1b::1.0"
   ],
-  "empty_refs_with_bundle": [],
-  "examined": 2784370,
-  "expected": 1725,
+  "empty_refs_with_bundle": [
+    "urn:nasa:pds:cassini_saturn_radar_maps:context::1.1",
+    "urn:nasa:pds:cassini_saturn_radar_maps:document::1.1",
+    "urn:nasa:pds:cocirs_c2h4abund:context::1.1",
+    "urn:nasa:pds:corss_occul_el_dens:context::1.1",
+    "urn:nasa:pds:corss_saturn_ionosphere:context::1.1",
+    "urn:nasa:pds:corss_saturn_ionosphere:data_derived::1.1",
+    "urn:nasa:pds:corss_saturn_ionosphere:document::1.1",
+    "urn:nasa:pds:corss_titan_ionosphere:data_derived::1.1",
+    "urn:nasa:pds:irtf_io_photometry:data_derived::1.1",
+    "urn:nasa:pds:juno_mwr:data_calibrated::3.0",
+    "urn:nasa:pds:juno_mwr:data_raw::3.0",
+    "urn:nasa:pds:juno_mwr:document::3.0",
+    "urn:nasa:pds:mars2020_meda:data_calibrated_env::16.0",
+    "urn:nasa:pds:mars2020_meda:data_derived_env::16.0",
+    "urn:nasa:pds:mars2020_meda:data_partially_processed_env::16.0",
+    "urn:nasa:pds:mars2020_meda:data_raw_env::16.0",
+    "urn:nasa:pds:mer_imu:context::1.2",
+    "urn:nasa:pds:msledl:data::1.1",
+    "urn:nasa:pds:msledl:document::1.1",
+    "urn:nasa:pds:msledl:schema::1.1",
+    "urn:nasa:pds:saturn_thermosphere_h2_density_temp:context::1.1"
+  ],
+  "examined": 2804917,
+  "expected": 8064,
   "nodes": [
     "atm"
   ],
+  "not_visible_without_ancestry": {
+    "staged": 7770
+  },
   "owners": {
     "en": 0,
     "needs_check": 2,
     "no_action": 0,
-    "node": 2782642,
+    "node": 2796850,
     "sweepers_team": 1
   },
   "rules": {
@@ -48,18 +75,16 @@
     "not_in_collection_inventory": 16960,
     "refs_missing": 2,
     "refs_missing_pending": 0,
-    "reloaded_after_collection": 0,
+    "reloaded_after_collection": 14208,
     "stale_stamp": 0,
     "sweeper_miss": 0
   },
-  "run_time": "2026-11-16T22:23:46+00:00",
+  "run_time": "2026-11-19T04:02:40+00:00",
   "schema_version": 1,
   "superseded_anomalous_collections": [
     "urn:nasa:pds:juno_mwr:data_calibrated::2.1",
     "urn:nasa:pds:juno_mwr:data_raw::2.0"
   ],
-  "unmapped_superseded": [
-    "atm-registry"
-  ],
+  "unmapped_superseded": [],
   "unverified_refs_missing": 2
 }

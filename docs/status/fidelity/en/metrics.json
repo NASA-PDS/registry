@@ -1,45 +1,45 @@
 {
   "ancestry_version": 7,
-  "anomalous": 705,
+  "anomalous": 5,
   "anomalous_collections": [
     "urn:nasa:pds:context:miscellaneous::1.1",
+    "urn:nasa:pds:misc:document_cassini::1.0",
     "urn:nasa:pds:system_bundle:document_policy::1.0"
   ],
   "empty_refs_with_bundle": [],
-  "examined": 793,
-  "expected": 88,
+  "examined": 1839,
+  "expected": 1834,
   "nodes": [
     "en"
   ],
+  "not_visible_without_ancestry": {
+    "staged": 31
+  },
   "owners": {
     "en": 0,
-    "needs_check": 2,
+    "needs_check": 0,
     "no_action": 0,
-    "node": 703,
+    "node": 5,
     "sweepers_team": 0
   },
   "rules": {
     "bare_lid_in_inventory": 0,
-    "collection_not_loaded_overdue": 342,
+    "collection_not_loaded_overdue": 0,
     "collection_not_loaded_pending": 0,
     "collection_overdue": 0,
     "collection_pending": 0,
-    "inventory_version_mismatch": 1,
+    "inventory_version_mismatch": 3,
     "no_parent_by_design": 0,
-    "not_in_collection_inventory": 360,
-    "refs_missing": 2,
+    "not_in_collection_inventory": 2,
+    "refs_missing": 0,
     "refs_missing_pending": 0,
     "reloaded_after_collection": 0,
     "stale_stamp": 0,
     "sweeper_miss": 0
   },
-  "run_time": "2026-11-16T22:23:46+00:00",
+  "run_time": "2026-11-19T04:02:42+00:00",
   "schema_version": 1,
-  "superseded_anomalous_collections": [
-    "urn:nasa:pds:system_bundle:product_aip::1.0",
-    "urn:nasa:pds:system_bundle:product_aip::2.0",
-    "urn:nasa:pds:system_bundle:product_sip_deep_archive::1.0"
-  ],
+  "superseded_anomalous_collections": [],
   "unmapped_superseded": [],
-  "unverified_refs_missing": 2
+  "unverified_refs_missing": 0
 }

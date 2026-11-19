@@ -177,7 +177,5 @@ registry,sbnumd-registry,sbnumd,sb:Instrument_Position_Angles/sb:z_axis_position
 registry,sbnumd-registry,sbnumd,sb:Timing/sb:midobservation_time_UTC_JD,type_mismatch,error,double,keyword,1,10,double: en; keyword: sbnumd
 registry,sbnumd-registry,sbnumd,sb:Timing/sb:midobservation_time_UTC_YMD,type_mismatch,error,date,keyword,1,10,date: en; keyword: sbnumd
 registry,temp-atm-registry,temp-atm,img:Exposure/img:exposure_duration_count,type_mismatch,error,double,long,2,10,"double: geo, sbnpsi; long: img, temp-atm"
-registry,temp-atm-registry,temp-atm,ops:Provenance/ops:superseded_by,missing_field,error,keyword,(absent),9,10,
 registry,temp-atm-registry,temp-atm,pds:Document_File/pds:creation_date_time,missing_field,warning,date,(absent),9,10,
 registry,temp-atm-registry,temp-atm,pds:Document_File/pds:md5_checksum,missing_field,warning,keyword,(absent),9,10,
-registry,temp-atm-registry,temp-atm,vid,missing_field,error,float,(absent),9,10,
