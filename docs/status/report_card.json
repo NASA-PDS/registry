@@ -3,8 +3,8 @@
     "en_issues": true,
     "fidelity": {
       "as_of": "2026-11-19",
-      "detail": "2,796,852 of 7,286,641 visible products without ancestry that the node or a closer look must resolve",
-      "issues": 2796852,
+      "detail": "2,782,644 of 7,286,641 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 2782644,
       "stale": false,
       "status": "red",
       "total": 7286641
@@ -19,7 +19,7 @@
     },
     "index_health": {
       "as_of": "2026-11-19",
-      "detail": "Products without ancestry for EN or the sweepers team: 1; Collections without a link to their bundle: 21",
+      "detail": "EN to repair (stamped before loaded, overwritten, never processed): 14,208 products; Sweepers team: 1 product; Collections without a bundle link (EN): 21",
       "issues": null,
       "stale": false,
       "status": "yellow",
@@ -75,8 +75,8 @@
     "en_issues": true,
     "fidelity": {
       "as_of": "2026-11-19",
-      "detail": "1,324 of 10,612,890 visible products without ancestry that the node or a closer look must resolve",
-      "issues": 1324,
+      "detail": "1,322 of 10,612,890 visible products without ancestry that the node or a closer look must resolve",
+      "issues": 1322,
       "stale": false,
       "status": "yellow",
       "total": 10612890
@@ -91,7 +91,7 @@
     },
     "index_health": {
       "as_of": "2026-11-19",
-      "detail": "Products without ancestry for EN or the sweepers team: 49",
+      "detail": "EN to repair (stamped before loaded, overwritten, never processed): 2 products; Sweepers team: 49 products",
       "issues": null,
       "stale": false,
       "status": "yellow",

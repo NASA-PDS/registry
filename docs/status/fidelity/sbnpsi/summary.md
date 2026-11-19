@@ -24,7 +24,7 @@ Kinds of problem:
 
 Who fixes what:
 
-- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory), or the collection has to be re-harvested by the node so that the registry's refs are rewritten from its inventory; EN then runs the sweepers.
+- **Node**: the node's data does not line up (a collection is not loaded, a product is at the wrong version or not in the collection's inventory), or the inventory lists the product but the registry's refs do not, so the node re-harvests that collection to rewrite them.
 - **No action**: loaded recently; expected to resolve by itself.
 
 ## Anomalies by rule

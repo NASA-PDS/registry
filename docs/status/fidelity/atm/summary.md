@@ -10,15 +10,15 @@ Nodes: atm
 
 ## What needs to happen
 
-**Needs attention: 2,796,850 products for the node; 21 collections for EN; 1 product for the sweepers team; 2 products that need a closer look.**
+**Needs attention: 2,782,642 products for the node; 14,208 products and 21 collections for EN; 1 product for the sweepers team; 2 products that need a closer look.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|
 | Node | **Orphaned**: The collection's inventory lists a different version of these products than the one loaded | 2,765,640 | 16 | Load the version the inventory lists, or correct the inventory |
 | Node | **Orphaned**: The collection's inventory does not list these products under any version | 16,960 | 8 | Add them to the inventory, or remove the products from the registry |
-| Node | **Not processed**: Linked to their collection, but loaded after the sweepers processed it, so the sweepers never went back | 14,208 | 2 | Re-harvest the collection; EN then runs the sweepers |
 | Node | **Orphaned**: No collection with the identifier these products belong to is in the registry | 42 | 1 | Load the collection, or correct the product identifiers |
-| EN | **Not processed**: The collection is marked processed but has no link to its bundle, so the bundle does not list it as a member (a sweepers bug, fixed in registry-sweepers PR #286) | - | 21 | EN re-harvests the collection and runs the sweepers that include the fix |
+| EN | **Not processed**: Loaded or overwritten after the sweepers processed their collection, so the sweepers never went back | 14,208 | 2 | EN runs the ancestry orphan repair |
+| EN | **Not processed**: The sweepers stamped the collection but it has no link to its bundle, so the bundle does not list it as a member | - | 21 | EN runs the bundle-link pass |
 | Sweepers team | **Orphaned**: The collection's inventory lists these products by LID without a version, which the sweepers do not follow | 1 | 1 | Re-harvesting does not help. The node lists LIDVIDs in the inventory, or the sweepers support LID references |
 | Needs a closer look | **Orphaned**: No refs record lists these products and the collection inventory could not be used to say why | 2 | 1 | Re-run the audit with the inventories (not --no-inventory), or check the collection's inventory by hand |
 | No action | **Waiting**: Waiting for the collection to be loaded | 6,339 | - | None; re-check later |
@@ -32,8 +32,8 @@ Kinds of problem:
 
 Who fixes what:
 
-- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory), or the collection has to be re-harvested by the node so that the registry's refs are rewritten from its inventory; EN then runs the sweepers.
-- **EN**: EN fixes the registry itself: runs the sweepers, repairs collections the sweepers bug left without a bundle link, and fixes index mappings.
+- **Node**: the node's data does not line up (a collection is not loaded, a product is at the wrong version or not in the collection's inventory), or the inventory lists the product but the registry's refs do not, so the node re-harvests that collection to rewrite them.
+- **EN**: EN's own sweepers and repairs left the gap: collections the sweepers stamped before their products were loaded, products a node overwrote that the sweepers never revisited, collections without a link to their bundle, loaded collections the sweepers never processed, and index mappings.
 - **Sweepers team**: everything looks right but the sweepers cannot or do not follow it; a software gap, possibly worked around by the node.
 - **Needs a closer look**: the cause cannot be told apart because the collection inventory could not be used.
 - **No action**: loaded recently; expected to resolve by itself.
@@ -184,12 +184,12 @@ The ancestry orphan repair dry run prints products examined, repairable (a refs 
 
 - **collection_not_loaded_pending** (6,339 products): The parent collection is not in the registry yet and the product was harvested recently. This is expected to resolve once the collection is loaded and swept.
 - **collection_not_loaded_overdue** (42 products): The parent collection is still not in the registry (or is not API-visible) long after the product was harvested. Check whether the collection failed to load, is staged or superseded, or whether the product LID does not follow the bundle:collection:product pattern.
-- **reloaded_after_collection** (14,208 products): The product was re-harvested after its collection was processed, so the sweeper has no reason to revisit it. Candidate fix: re-harvest the collection so the sweeper reprocesses it.
+- **reloaded_after_collection** (14,208 products): The product was loaded or overwritten after its collection was processed, so the sweeper has no reason to revisit it. This is EN's to fix: EN runs the ancestry orphan repair, and the node need not re-harvest anything.
 - **inventory_version_mismatch** (2,765,640 products): The collection's inventory (as recorded in registry-refs) lists this product at a different version than the one in the registry, so the sweeper never selects the registered version. Re-harvesting the collection will not help: load the product version the inventory lists, after which the registered version is superseded. Confirm with audit_collection.py --diff.
 - **not_in_collection_inventory** (16,960 products): The product is registered under this collection's LID, but the collection's current inventory does not list it under any version, so the sweeper can never give it this collection as an ancestor. The provider may have dropped it from the inventory or it may be a leftover. The node should decide whether it belongs in the inventory or should be removed from the registry; re-harvesting or loading more products will not fix it.
 - **bare_lid_in_inventory** (1 products): The collection's inventory lists the product by LID only, without a version. Harvest records that as a product_lid in the registry-refs document, but the ancestry sweeper follows only product_lidvid, so it never reaches the product. Re-harvesting the collection writes the same refs; the inventory must list LIDVIDs, or the sweepers must follow LID references.
 - **refs_missing_pending** (1,725 products): The collection is processed but no registry-refs document lists the product, and the product was harvested within the grace period, so a load may still be running. Re-check after the grace period; if the product is still missing, it is classified like refs_missing.
-- **refs_missing** (2 products): The collection is processed and has refs, but no registry-refs document lists this product, so the sweeper never selects it. Harvest writes a collection's refs from its inventory when the collection is harvested, so the inventory read at that time did not list the product, or the inventory has changed since, or the refs were not written. Read the collection's current inventory. If it lists this exact product, the refs are stale: the node re-harvests the collection from its current label and inventory, then EN runs the sweepers. If it lists another version of the product or does not list it, the node's data does not line up and the node fixes it (the audit reports those as inventory_version_mismatch and not_in_collection_inventory when it can read the inventory). The collection named for the product is a best guess from its identifier.
+- **refs_missing** (2 products): The collection is processed and has refs, but no registry-refs document lists this product, so the sweeper never selects it. Harvest writes a collection's refs from its inventory when the collection is harvested, so the inventory read at that time did not list the product, or the inventory has changed since, or the refs were not written. Read the collection's current inventory. If it lists this exact product, the refs are stale: the node re-harvests the collection from its current label and inventory so Harvest rewrites the refs. If it lists another version of the product or does not list it, the node's data does not line up and the node fixes it (the audit reports those as inventory_version_mismatch and not_in_collection_inventory when it can read the inventory). The collection named for the product is a best guess from its identifier.
 
 ## Run parameters
 

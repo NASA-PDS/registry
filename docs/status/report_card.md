@@ -1,12 +1,12 @@
 # Registry Report Card
 
-Generated 2026-11-18. Green: no issues. Yellow: issues below 5% of the node's items. Red: 5% or more. Stale: data older than 14 days. Loading, File paths and Fidelity are the node's. \* Index Health is EN's responsibility, not the node's; a node status marked \* also has open Index Health issues, which are not counted in the node status.
+Generated 2026-11-19. Green: no issues. Yellow: issues below 5% of the node's items. Red: 5% or more. Stale: data older than 14 days. Loading, File paths and Fidelity are the node's. \* Index Health is EN's problem, not the node's: collections the sweepers stamped before their products were loaded, products a node overwrote that the sweepers never revisited, collections without a link to their bundle, loaded collections the sweepers never processed, and index mappings. A node status marked \* also has open Index Health issues, which are not counted in the node status.
 
 | Node | Node status | Loading | File paths | Fidelity | Index Health * |
 |---|---|---|---|---|---|
-| ATM | ■ Red \* | ■ Red: 48 of 599 (8.01%) | ▲ Yellow: 11 of 7,286,641 (<0.01%) | ■ Red: 2,796,852 of 7,286,641 (38.38%) | ▲ Yellow \* |
+| ATM | ■ Red \* | ■ Red: 48 of 599 (8.01%) | ▲ Yellow: 11 of 7,286,641 (<0.01%) | ■ Red: 2,782,644 of 7,286,641 (38.19%) | ▲ Yellow \* |
 | EN (System Bundle) | ■ Red | ■ Red: 6 of 40 (15.00%) | ▲ Yellow: 34 of 5,868 (0.58%) | ▲ Yellow: 5 of 5,868 (0.09%) | ● Green \* |
-| GEO | ▲ Yellow \* | ● Green | ▲ Yellow: 2 of 10,612,890 (<0.01%) | ▲ Yellow: 1,324 of 10,612,890 (0.01%) | ▲ Yellow \* |
+| GEO | ▲ Yellow \* | ● Green | ▲ Yellow: 2 of 10,612,890 (<0.01%) | ▲ Yellow: 1,322 of 10,612,890 (0.01%) | ▲ Yellow \* |
 | IMG | ■ Red | ■ Red: 1,732 of 1,952 (88.73%) | ▲ Yellow: 61,964 of 26,339,924 (0.24%) | ▲ Yellow: 516 of 26,339,924 (<0.01%) | ● Green \* |
 | NAIF | ▲ Yellow | ● Green | ● Green | ▲ Yellow: 2 of 6,622 (0.03%) | ● Green \* |
 | PPI | ▲ Yellow | ▲ Yellow: 12 of 1,362 (0.88%) | ● Green | ● Green | ● Green \* |

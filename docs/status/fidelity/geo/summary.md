@@ -10,14 +10,14 @@ Nodes: geo
 
 ## What needs to happen
 
-**Needs attention: 1,324 products for the node; 49 products for the sweepers team.**
+**Needs attention: 1,322 products for the node; 2 products for EN; 49 products for the sweepers team.**
 
 | Who | What is wrong | Products | Collections | What to do |
 |---|---|--:|--:|---|
 | Node | **Orphaned**: The collection's inventory lists a different version of these products than the one loaded | 1,152 | 3 | Load the version the inventory lists, or correct the inventory |
 | Node | **Orphaned**: The collection's inventory does not list these products under any version | 168 | 1 | Add them to the inventory, or remove the products from the registry |
 | Node | **Orphaned**: No collection with the identifier these products belong to is in the registry | 2 | 2 | Load the collection, or correct the product identifiers |
-| Node | **Not processed**: Linked to their collection, but processed by an older sweepers version while the collection is on the current one, so the sweepers do not go back | 2 | 1 | Re-harvest the collection; EN then runs the sweepers |
+| EN | **Not processed**: Stamped by an older sweepers version while their collection is on the current one, so the sweepers never went back | 2 | 1 | EN runs the ancestry orphan repair |
 | Sweepers team | **Orphaned**: The collection's inventory lists these products by LID without a version, which the sweepers do not follow | 49 | 11 | Re-harvesting does not help. The node lists LIDVIDs in the inventory, or the sweepers support LID references |
 
 Kinds of problem:
@@ -27,7 +27,8 @@ Kinds of problem:
 
 Who fixes what:
 
-- **Node**: the node's data does not line up (a collection or product is missing, at the wrong version, or not in the collection's inventory), or the collection has to be re-harvested by the node so that the registry's refs are rewritten from its inventory; EN then runs the sweepers.
+- **Node**: the node's data does not line up (a collection is not loaded, a product is at the wrong version or not in the collection's inventory), or the inventory lists the product but the registry's refs do not, so the node re-harvests that collection to rewrite them.
+- **EN**: EN's own sweepers and repairs left the gap: collections the sweepers stamped before their products were loaded, products a node overwrote that the sweepers never revisited, collections without a link to their bundle, loaded collections the sweepers never processed, and index mappings.
 - **Sweepers team**: everything looks right but the sweepers cannot or do not follow it; a software gap, possibly worked around by the node.
 
 ## Anomalies by rule
@@ -121,7 +122,7 @@ The ancestry orphan repair dry run prints products examined, repairable (a refs 
 - **inventory_version_mismatch** (1,152 products): The collection's inventory (as recorded in registry-refs) lists this product at a different version than the one in the registry, so the sweeper never selects the registered version. Re-harvesting the collection will not help: load the product version the inventory lists, after which the registered version is superseded. Confirm with audit_collection.py --diff.
 - **not_in_collection_inventory** (168 products): The product is registered under this collection's LID, but the collection's current inventory does not list it under any version, so the sweeper can never give it this collection as an ancestor. The provider may have dropped it from the inventory or it may be a leftover. The node should decide whether it belongs in the inventory or should be removed from the registry; re-harvesting or loading more products will not fix it.
 - **bare_lid_in_inventory** (49 products): The collection's inventory lists the product by LID only, without a version. Harvest records that as a product_lid in the registry-refs document, but the ancestry sweeper follows only product_lidvid, so it never reaches the product. Re-harvesting the collection writes the same refs; the inventory must list LIDVIDs, or the sweepers must follow LID references.
-- **stale_stamp** (2 products): The product carries an ancestry stamp from an older sweeper version although its collection is already on the current version. The collection will not be revisited, so a re-sweep of the collection may be needed.
+- **stale_stamp** (2 products): The product carries an ancestry stamp from an older sweeper version although its collection is already on the current version. The collection will not be revisited. This is EN's to fix: EN runs the ancestry orphan repair.
 
 ## Run parameters
 
