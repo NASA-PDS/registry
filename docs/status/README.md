@@ -9,33 +9,44 @@ This directory contains automatically generated CSV reports that track the statu
 ## Metrics Summary
 
 <!-- METRICS_START -->
-*Last updated: 2026-11-10 19:31:52 UTC*
+*Last updated: 2026-11-19 04:06:04 UTC*
 
 ### Missing Products by Node
 
 | Node | Latest Bundles | Superseded Bundles | Total Bundles | Latest Collections | Superseded Collections | Total Collections |
 |------|---------------:|-------------------:|--------------:|-------------------:|-----------------------:|------------------:|
 | KPDS | 1 | 0 | 1 | 3 | 0 | 3 |
-| PDS_ATM | 11 | 9 | 20 | 87 | 95 | 182 |
-| PDS_ENG | 1 | 6 | 7 | 6 | 100 | 106 |
-| PDS_GEO | 0 | 24 | 24 | 2 | 363 | 365 |
-| PDS_IMG | 48 | 49 | 97 | 1592 | 407 | 1999 |
-| PDS_PPI | 3 | 200 | 203 | 6 | 1334 | 1340 |
-| PDS_SBN | 1 | 24 | 25 | 7 | 87 | 94 |
-| **Total** | **65** | **312** | **377** | **1703** | **2386** | **4089** |
+| PDS_ATM | 11 | 9 | 20 | 37 | 83 | 120 |
+| PDS_ENG | 1 | 6 | 7 | 5 | 89 | 94 |
+| PDS_GEO | 0 | 24 | 24 | 0 | 350 | 350 |
+| PDS_IMG | 48 | 49 | 97 | 1684 | 362 | 2046 |
+| PDS_PPI | 3 | 198 | 201 | 9 | 1312 | 1321 |
+| PDS_SBN | 1 | 24 | 25 | 7 | 86 | 93 |
+| **Total** | **65** | **310** | **375** | **1745** | **2282** | **4027** |
 
 ### Staged Products by Node
 
 | Node | Bundles | Collections |
 |------|--------:|------------:|
-| PDS_ATM | 3 | 30 |
+| PDS_ATM | 3 | 29 |
 | PDS_GEO | 0 | 7 |
-| PDS_IMG | 0 | 64 |
-| PDS_PPI | 2 | 37 |
-| PDS_RMS | 0 | 1 |
-| PDS_SBN | 20 | 98 |
+| PDS_IMG | 0 | 61 |
+| PDS_PPI | 3 | 46 |
+| PDS_SBN | 22 | 102 |
 | PSA | 902 | 4171 |
-| **Total** | **927** | **4408** |
+| **Total** | **930** | **4416** |
+
+### Products with Invalid file_ref by Node
+
+Products with a Label or Data `file_ref` that does not start with `https://`. Only `https://` is valid because the archive is served through CloudFront.
+
+| Node | Bundles | Collections | Other Products |
+|------|--------:|------------:|---------------:|
+| PDS_ATM | 1 | 3 | 7 |
+| PDS_ENG | 0 | 0 | 34 |
+| PDS_GEO | 0 | 0 | 2 |
+| PDS_IMG | 0 | 27 | 61937 |
+| **Total** | **1** | **30** | **61980** |
 
 ### Loading Progress
 
