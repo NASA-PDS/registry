@@ -28,7 +28,7 @@ Taken from the ancestry sweeper source (`SWEEPERS_ANCESTRY_VERSION = 7`) and the
   pending collection. A product with no refs document is never touched.
 - Once a collection is stamped it is never revisited. A product force-overwritten afterwards loses
   its ancestry and nothing repairs it. Refs added to a stamped collection later are never swept.
-  This describes registry-sweepers `main`, which production runs (registry-sweepers #298). `develop`, which is not deployed because it uses structured metadata, adds a deferral (PR #256) that processes products that were not yet loaded when their collection was swept. It does not cover products overwritten afterwards or refs added afterwards (#270), or a bundle loaded after its collection (#301); the completeness flag verified by count (#243) and Harvest preserving `ops:` metadata on overwrite (harvest#349) are the planned fixes. Until production moves to `develop`, the workaround is for the node to re-harvest the collection and for EN to run the sweepers.
+  This describes registry-sweepers `main`, which production runs (registry-sweepers #298). `develop`, which is not deployed because it uses structured metadata, adds a deferral (PR #256) that processes products that were not yet loaded when their collection was swept. It does not cover products overwritten afterwards or refs added afterwards (#270), or a bundle loaded after its collection (#301); the completeness flag verified by count (#243) and Harvest preserving `ops:` metadata on overwrite (harvest#349) are the planned fixes. Until production moves to `develop`, EN repairs the products and collections left behind with the ancestry orphan repair (#302, #307) and the bundle-link pass (#303, #304); the node does not re-harvest for that.
 - A collection can be stamped with empty `ancestor_refs` (fixed going forward, but already-stamped
   collections are not reprocessed). Its bundle's `/members` then returns nothing.
 - The version field is mapped as `keyword`, so range queries on it are lexicographic. Compare
@@ -102,7 +102,7 @@ that is written to the CSV.
 | `collection_not_loaded_overdue` | Same, but product harvested longer ago than that | anomalous |
 | `collection_pending` | Collection unprocessed, within collection grace | expected |
 | `collection_overdue` | Collection unprocessed beyond collection grace. Root cause is the collection, not the product | anomalous |
-| `reloaded_after_collection` | Collection processed, product listed in refs, collection harvested **before** the product. The product was overwritten after the collection was swept | anomalous, fixable by re-harvesting the collection |
+| `reloaded_after_collection` | Collection processed, product listed in refs, collection harvested **before** the product. The product was overwritten after the collection was swept | anomalous, EN's to fix with the ancestry orphan repair |
 | `inventory_version_mismatch` | Collection processed, no refs document lists the product's LIDVID, but refs (found with a `terms` query on `product_lid`) or the collection's current inventory list the same product LID under another version. The inventory names a different version than the registry holds | anomalous, fixed by loading the listed version |
 | `not_in_collection_inventory` | Collection processed, no refs document lists the product, and the collection's current inventory lists it under no version. The inventory is read from the URL on the collection's registry document, only for collections with such products, and only after the cheaper refs checks | anomalous after the product grace period; the node adds it to the inventory or removes it |
 | `sweeper_miss` | Collection processed, product listed in refs, collection harvested at or after the product. Nothing explains the gap | anomalous |
@@ -110,7 +110,7 @@ that is written to the CSV.
 | `stale_stamp` | Product stamp is below the current version and its collection is processed | anomalous |
 
 `reloaded_after_collection` is flagged `anomalous` because the product is still missing ancestry and
-will stay that way, but its rationale says no sweeper bug is implied.
+will stay that way. It is EN's problem, not the node's: the sweepers stamped the collection and did not go back.
 
 ## Responsibility
 
@@ -122,9 +122,14 @@ confirms the product's collection; the collection shown is a best guess from its
 is produced: Harvest writes the refs from a collection's inventory, and the sweeper reaches a product only
 through them. `refs_missing` is split by the collection inventory: the inventory decides whether the node's data
 is at fault or the refs are stale. A `refs_missing` product that could not be checked against the inventory is
-reported as needing a closer look instead of being assigned an owner on a guess. Anything fixed by re-harvesting
-a collection belongs to the node, since only the node holds the files; EN's part is running the sweepers afterwards
-and fixing the registry itself.
+reported as needing a closer look instead of being assigned an owner on a guess. The owner follows who caused the
+gap. What a node delivered belongs to the node: a collection that is not loaded, an inventory that lists another
+version or omits the product, and refs missing for a product the inventory lists (Harvest writes the refs when the
+collection is harvested, so the node re-harvests that collection). What the sweepers stamped and never revisited
+belongs to EN: a collection stamped before its products were loaded, a product a node overwrote afterwards, a
+collection stamped with empty refs so its bundle has no link to it, and a loaded collection the sweepers never
+processed. EN repairs these with the ancestry orphan repair and the bundle-link pass, and fixes the registry itself.
+The report card counts them as EN's (Index Health), not the node's (Fidelity).
 
 ## Extra diagnostics
 

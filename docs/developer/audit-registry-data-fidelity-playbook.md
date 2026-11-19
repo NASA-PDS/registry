@@ -191,6 +191,9 @@ AUDIT_CSV="${OUT_DIR}/unprocessed_products.csv.gz"
 - With `--from-audit-csv` the default rules are `refs_missing`, `reloaded_after_collection`,
   `sweeper_miss` and `stale_stamp`. Change them with `--rules`. The rules `inventory_version_mismatch` and
   `not_in_collection_inventory` are not re-harvest cases and are not in the default list.
+- Only `refs_missing` needs the node to re-harvest. `reloaded_after_collection`, `stale_stamp` and
+  `sweeper_miss` are EN's or the sweepers team's to fix, so limit `--rules` to `refs_missing` when the list is
+  for the node.
 - `--from-file` accepts a list of collection LIDVIDs instead, for example `anomalous_collections.txt` or a
   hand-edited subset. `--skip-existing` resumes an interrupted run.
 - A LIDVID can be registered under several nodes, each with its own copy of the files. For those the
@@ -252,8 +255,9 @@ collection is stamped. That is the behaviour of registry-sweepers `main`, which 
 loaded when their collection was swept, but not products overwritten or listed in refs afterwards (#270); a bundle
 loaded after its collection was stamped is not linked on either branch (#301). The planned fixes are a completeness
 flag verified by count (#243) and Harvest preserving `ops:` metadata on overwrite (harvest#349). Until production
-moves to `develop`, the workaround is the node re-harvesting the collection and EN running the sweepers. So a
-product lacks ancestry in one of two ways:
+moves to `develop`, EN repairs what the sweepers leave behind with the ancestry orphan repair (registry-sweepers
+#302, #307) and the bundle-link pass (#303, #304); the node does not have to re-harvest for that. So a product
+lacks ancestry in one of two ways:
 
 - **Orphaned**: no registry record confirms which collection the product belongs to. The collection a report
   names for it is a **best guess** from its identifier (`bundle:collection:product`) and the collection versions
@@ -261,21 +265,21 @@ product lacks ancestry in one of two ways:
   products whose inventory is `::64.0` while the registry holds `::56.0` are orphans of a collection the registry
   does not have.
 - **Not processed**: the refs do list the product, so its collection is confirmed, but the sweepers never gave
-  it ancestry (it was loaded after its collection was processed, it carries an older stamp, or the sweepers have
-  a bug).
+  it ancestry (it was loaded or overwritten after its collection was processed, it carries an older stamp, or the
+  sweepers have a bug). These are EN's problem, not the node's: EN stamped the collection and did not go back.
 
 A third group, **waiting**, is products loaded so recently that the sweepers have not had their chance.
 
 ### 5.1.1 Recommended loading order
 
-The sweepers process a collection together with the products its refs list, and do not revisit it once stamped, so products written after their collection was swept need a repair. Harvest writes products first, then bundles, then collections, within a run (NASA-PDS/harvest#350), which reduces that reprocessing. Loads can be run in any order and split across runs; when they are, harvesting the products first and the bundle and collection labels last avoids most of it. The ancestry orphan repair and the bundle-link pass repair whatever is loaded in another order.
+The sweepers process a collection together with the products its refs list, and do not revisit it once stamped, so products written after their collection was swept need a repair. Harvest writes products first, then bundles, then collections, within a run (NASA-PDS/harvest#350), which reduces that reprocessing. Loads can be run in any order and split across runs; when they are, harvesting the products first and the bundle and collection labels last avoids most of it. The ancestry orphan repair and the bundle-link pass repair whatever is loaded in another order; running them is EN's job, and the report card counts what they have yet to repair as EN's (Index Health), not the node's.
 
 ### 5.2 Who fixes what
 
 | Owner | Fixes | How |
 |---|---|---|
-| **Node** (the data provider's PDS node) | Orphans whose cause is the node's data: the collection is not loaded, the inventory lists a different version of the product, or the inventory does not list it. Also everything fixed by re-harvesting the collection: orphans whose inventory does list the product but whose refs are stale or missing; products that are linked but not processed | Load, correct or remove data; or re-harvest the collection (EN then runs the sweepers). Only the node can |
-| **EN** (runs the sweepers, fixes the registry) | Collections stamped with empty refs by the sweepers bug (the bundle lists no members); collections the sweepers have not processed; index mapping fixes | Re-harvest the affected collections and run the sweepers with the fix; run the sweepers once the node has re-harvested; fix the mapping |
+| **Node** (the data provider's PDS node) | Orphans whose cause is the node's data: the collection is not loaded, the inventory lists a different version of the product, or the inventory does not list it. Also orphans whose inventory lists the exact product but whose refs are missing: Harvest writes the refs when the collection is harvested, so the node re-harvests that collection | Load, correct or remove data; or re-harvest the collection so Harvest rewrites its refs. Only the node can |
+| **EN** (runs the sweepers, fixes the registry) | Problems the sweepers and repairs leave behind: collections the sweepers stamped before their products were loaded (`reloaded_after_collection`), products a node overwrote that the sweepers never revisited (`reloaded_after_collection`, `stale_stamp`), collections stamped with empty refs so the bundle lists no members, loaded collections the sweepers never processed (`collection_overdue`); index mapping fixes | Run the ancestry orphan repair for products; run the bundle-link pass for collections without a bundle link; run the sweepers on collections they have not processed; fix the mapping. The node need not re-harvest |
 | **Sweepers team** | `sweeper_miss`: everything looks right and the sweepers skipped the product | Software fix |
 | **Needs a closer look** | `refs_missing` products the audit could not check against the collection's inventory | Re-run with the inventories (not `--no-inventory`), or check the inventory by hand |
 
@@ -300,8 +304,8 @@ product while its collection exists. The inventory settles who is responsible:
 
 A product that was overwritten (re-harvested) after its collection was processed, and whose collection was not
 re-harvested, is a different case: it is `reloaded_after_collection`. Its refs still list it, so it is linked,
-but the stamped collection is never revisited and so the product is never reprocessed. The fix is to re-harvest
-the collection and run the sweepers. The naming is an inference from harvest times: on IMG the products of
+but the stamped collection is never revisited and so the product is never reprocessed. This is EN's problem, not
+the node's: EN stamped the collection and did not go back, so EN runs the ancestry orphan repair. The naming is an inference from harvest times: on IMG the products of
 four collections were stamped up to one point in time and not after it, which fits the sweepers having run
 part-way through a sequential load.
 
@@ -312,13 +316,13 @@ part-way through a sequential load.
 | `collection_not_loaded_overdue` | Orphaned | No collection with the product's collection identifier is registered in the audited node's index. Check first whether the collection is registered under another node (a LIDVID can be registered under several) | Load the parent collection, change its archive status, or fix the product identifier | node |
 | `inventory_version_mismatch` | Orphaned | The collection's inventory lists a different version of the product than the registry holds. Usually the registry is older (the listed version is not loaded); it can also be newer (the registry holds a version the inventory does not list). `audit_collection.py --diff` shows the direction | Make them agree: load the listed version, or correct the inventory, or remove the unlisted version. First confirm whether a load is running; a long-stalled load usually means the node does not know about the gap. Re-harvesting the collection does not help | node |
 | `not_in_collection_inventory` | Orphaned | The product is registered under the collection but the current inventory lists it under no version | Add it to the inventory, or remove it from the registry | node |
-| `refs_missing` (inventory lists the exact product) | Orphaned | The refs were written from an older inventory, or never written | Node re-harvests the collection from its current label and inventory (step 5); EN then runs the sweepers | node |
+| `refs_missing` (inventory lists the exact product) | Orphaned | The refs were written from an older inventory, or never written | Node re-harvests the collection from its current label and inventory (step 5) so Harvest rewrites the refs | node |
 | `refs_missing` (inventory not checked) | Orphaned, cause unknown | See 5.3 | Re-run with inventories | needs a closer look |
-| `reloaded_after_collection` | Not processed | The collection was processed before the product was loaded, and the sweepers do not go back | Node re-harvests the collection (step 5); EN then runs the sweepers | node |
-| `stale_stamp` (non-superseded products only) | Not processed | The product carries an older ancestry stamp than its already-stamped collection, which is not revisited. A plain sweeper run does not reach it | Re-harvest the collection and run the sweepers, or run ancestry in overwrite mode (registry-sweepers PR #291) | node (re-harvest); EN (sweepers) |
-| `collection_overdue` / `collection_pending` | Not processed | The parent collection has no current stamp; the collection is the root cause. Pending is within the grace period, overdue is beyond it | Confirm the ancestry sweeper ran for the node since the collection was harvested | EN |
+| `reloaded_after_collection` | Not processed | The product was loaded or overwritten after the sweepers processed its collection, and the sweepers do not go back | EN runs the ancestry orphan repair | EN |
+| `stale_stamp` (non-superseded products only) | Not processed | The product carries an older ancestry stamp than its already-stamped collection, which is not revisited. A plain sweeper run does not reach it | EN runs the ancestry orphan repair, or runs ancestry in overwrite mode (registry-sweepers PR #291) | EN |
+| `collection_overdue` / `collection_pending` | Not processed | The parent collection has no current stamp; the collection is the root cause. Pending is within the grace period, overdue is beyond it | EN runs the sweepers on the collection; confirm the ancestry sweeper ran for the node since the collection was harvested | EN |
 | `sweeper_miss` | Not processed | The collection is processed, the refs list the product, the product was loaded before the collection, and it still has no ancestry | Gather the evidence from the reference document's checks (including the refs `batch_id`) and report it | sweepers team |
-| Stamped collection with empty `ancestor_refs` that has a bundle | Not processed | The collection counts as swept, so its products are not revisited, and the bundle does not list it as a member | Re-harvest the collection and run the sweepers with the fix from registry-sweepers PR #286 (NASA-PDS/registry-sweepers#284), or run ancestry in overwrite mode. On ATM, that repaired 44 of 45 such collections | EN (sweepers team if it recurs after the fix) |
+| Stamped collection with empty `ancestor_refs` that has a bundle | Not processed | The collection counts as swept, so its products are not revisited, and the bundle does not list it as a member | EN runs the bundle-link pass, or runs the sweepers with the fix from registry-sweepers PR #286 (NASA-PDS/registry-sweepers#284), or runs ancestry in overwrite mode. On ATM, that repaired 44 of 45 such collections | EN (sweepers team if it recurs after the fix) |
 | Superseded collection version whose products are unprocessed | - | A superseded version is not re-harvested; its bundle refers to the newer version | No re-harvest. Report the products against the real (current) collection version | reporting only |
 | Old Harvest version on recent loads | - | The node loads with an outdated Harvest release | Informational. Ask the node to upgrade | node |
 
@@ -398,7 +402,8 @@ Recommended structure:
 4. **Actions for the node**: loading, inventory and LID problems, each with the collections involved and
    what "done" looks like (the next audit run does not list them).
 5. **Items for EN and the sweepers team**, kept in a separate section so the node is not asked to
-   do work that belongs to others: sweeper runs after the node's re-harvests, mapping fixes and the
+   do work that belongs to others: the ancestry orphan repair for products loaded or overwritten after their
+   collection was stamped, the bundle-link pass, sweeper runs on unprocessed collections, mapping fixes and the
    registry-sweepers issue link.
 6. **Evidence**: audit run date, the commands (with variable names, not values), and which
    cross-checks from section 7 were done. Name the output files; do not attach files that contain
@@ -420,7 +425,7 @@ Follow the NASA-PDS issue templates and labels, and add the new issue to the the
 Re-run the full node audit:
 
 - after the node reports a load finished, to confirm the version mismatches clear;
-- after the node re-harvests collections and EN has run the ancestry sweeper;
+- after the node re-harvests collections, or after EN has run the ancestry orphan repair or the sweepers;
 - after a sweepers fix is deployed, to confirm empty-refs collections are repaired;
 - on a regular schedule while a node is loading (the pending counts should fall).
 

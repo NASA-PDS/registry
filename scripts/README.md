@@ -653,13 +653,13 @@ Products without `ops:Provenance/ops:ancestor_refs` and a current `ops:Provenanc
 | `no_parent_by_design` | expected | Product class never belongs to a collection |
 | `collection_not_loaded_pending` / `_overdue` | expected / anomalous | Parent collection not in the registry; overdue after `--product-grace-days` |
 | `collection_pending` / `collection_overdue` | expected / anomalous | Parent collection unprocessed; overdue after `--collection-grace-days` |
-| `reloaded_after_collection` | anomalous | Collection was processed, then the product was re-harvested; re-harvesting the collection fixes it |
+| `reloaded_after_collection` | anomalous | Collection was processed, then the product was loaded or overwritten; the sweepers never went back, so EN runs the ancestry orphan repair |
 | `inventory_version_mismatch` | anomalous | The collection's inventory lists the product at a different version than the registry holds; load that version (re-harvesting the collection does not help) |
 | `not_in_collection_inventory` | anomalous | The product is registered under the collection but its current inventory does not list it under any version; the node decides whether to add it to the inventory or remove it |
 | `bare_lid_in_inventory` | anomalous | The collection's inventory lists the product by LID without a version, which the sweepers do not follow; re-harvesting writes the same refs |
 | `sweeper_miss` | anomalous | Collection processed at or after the product's harvest and the product is in refs, but has no ancestry |
 | `refs_missing_pending` / `refs_missing` | expected / anomalous | No `registry-refs` document lists the product |
-| `stale_stamp` | anomalous | Product stamped with an older ancestry version than its processed collection |
+| `stale_stamp` | anomalous | Product stamped with an older ancestry version than its processed collection; EN runs the ancestry orphan repair |
 
 Only non-superseded products with archive status `archived` or `certified` are examined. The audit is read-only.
 
@@ -667,8 +667,8 @@ Only non-superseded products with archive status `archived` or `certified` are e
 
 | Who | Problems |
 |---|---|
-| Node | A collection is not loaded, the inventory lists a different version, or the inventory does not list the product; stale or missing refs, products loaded after their collection was processed, or an older stamp (the node re-harvests the collection, then EN runs the sweepers) |
-| EN | A collection stamped without a link to its bundle (a sweepers bug; EN re-harvests it and runs the fixed sweepers); a loaded collection the sweepers have not processed; fixes to the registry itself |
+| Node | A collection is not loaded, the inventory lists a different version, or the inventory does not list the product; missing refs for a product the inventory lists (the node re-harvests that collection so Harvest rewrites them) |
+| EN | What the sweepers and repairs leave behind: collections stamped before their products were loaded, products a node overwrote that the sweepers never revisited, or an older stamp (EN runs the ancestry orphan repair); a collection stamped without a link to its bundle (EN runs the bundle-link pass); a loaded collection the sweepers have not processed; index mappings |
 | Sweepers team | `sweeper_miss`, or an inventory that lists products by LID without a version |
 | Needs a closer look | `refs_missing` products that could not be checked against the collection inventory |
 | No action | Products loaded recently |
@@ -862,7 +862,7 @@ Grade every node green, yellow or red from the status reports and the fidelity a
 
 **Scripts:** `generate_report_card.py` (reads local files only) and `collect_node_totals.py` (read-only `_count` queries). The rubric and the node list are in `conf/status/report_card.json`.
 
-Each node gets Loading, File paths and Fidelity scores (the node's) and a Index Health score (EN's). A score is green with no issues, yellow with issues below 5% of the node's items, and red from 5%. The index mapping counts only for the fields the API relies on (`lid`, `lidvid`, `vid`, `archive_status`, `superseded_by`, `ancestor_refs`): one missing from a node's mapping or mapped with a different type (`text` against `keyword` excepted) is red, and other mapping differences are ignored. The full rubric, the inputs and the refresh commands are in `docs/status/fidelity/README.md`.
+Each node gets Loading, File paths and Fidelity scores (the node's) and an Index Health score (EN's problems: products the sweepers stamped and never revisited, collections without a bundle link, loaded collections the sweepers never processed, and index mappings). The owners are computed from the audit's per-rule counts with the current ownership mapping, not read from the stored `owners`. A score is green with no issues, yellow with issues below 5% of the node's items, and red from 5%. The index mapping counts only for the fields the API relies on (`lid`, `lidvid`, `vid`, `archive_status`, `superseded_by`, `ancestor_refs`): one missing from a node's mapping or mapped with a different type (`text` against `keyword` excepted) is red, and other mapping differences are ignored. The full rubric, the inputs and the refresh commands are in `docs/status/fidelity/README.md`.
 
 ```bash
 PYTHON="<path-to-python-with-the-registry-client>"

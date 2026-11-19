@@ -74,12 +74,13 @@ Add `--junitxml=test-results.xml` for a report file.
 
 Harvest writes the refs from a collection's inventory when the collection is harvested, and the ancestry sweeper
 reaches a non-aggregate product only through them. It does not revisit a collection once it is stamped (on `main`, which production runs). That is
-why the owner follows from the rule:
+why the owner follows from the rule. The split follows who caused the gap: what a node delivered is the node's; what
+the sweepers stamped and never revisited is EN's.
 
 | Owner | Rules |
 |---|---|
-| Node | `collection_not_loaded_overdue`, `inventory_version_mismatch`, `not_in_collection_inventory`; and, by re-harvesting the collection (EN then runs the sweepers), `refs_missing` where the inventory lists the exact product, `reloaded_after_collection`, `stale_stamp` |
-| EN (runs the sweepers) | `collection_overdue`, a collection stamped with empty refs that has a bundle (sweepers bug, fixed in PR #286) |
+| Node | `collection_not_loaded_overdue`, `inventory_version_mismatch`, `not_in_collection_inventory`; and `refs_missing` where the inventory lists the exact product (the refs are written when the collection is harvested, so the node re-harvests that collection) |
+| EN (runs the sweepers and the repairs) | `reloaded_after_collection` and `stale_stamp` (products loaded or overwritten after the sweepers stamped their collection, or stamped by an older version; EN runs the ancestry orphan repair, registry-sweepers #302, #307), `collection_overdue` (a loaded collection the sweepers never processed), and a collection stamped with empty refs that has a bundle (EN runs the bundle-link pass, registry-sweepers #303, #304; the cause was a sweepers bug, fixed in PR #286); also index mappings |
 | Sweepers team | `sweeper_miss`, `bare_lid_in_inventory` |
 | Needs a closer look | `refs_missing` that was reached without the collection inventory |
 | No action | `*_pending`, `no_parent_by_design` |
@@ -87,7 +88,7 @@ why the owner follows from the rule:
 `refs_missing` is therefore not a verdict on its own. With the inventory read, a product that no refs document
 lists is classified by what the inventory says: another version (`inventory_version_mismatch`, node), no
 listing (`not_in_collection_inventory`, node), a LID without a version (`bare_lid_in_inventory`), or the exact
-product (`refs_missing`: stale or never-written refs, the node re-harvests). Without the inventory (`--no-inventory`,
+product (`refs_missing`: stale or never-written refs, the node re-harvests that collection). Without the inventory (`--no-inventory`,
 or a provider file that cannot be downloaded) it stays `refs_missing` and is reported as needing a closer look.
 
 ## Background: what "processed" means
@@ -105,7 +106,7 @@ Facts that drive the rules:
   `<node>-registry-refs` document whose `collection_lidvid` is a pending collection. A product with no
   refs document is never touched.
 - A stamped collection is never revisited. A product re-harvested afterwards loses its ancestry and
-  nothing restores it. Refs added to a stamped collection later are never swept. This describes registry-sweepers `main`, which production runs (registry-sweepers #298). `develop`, which is not deployed because it uses structured metadata, adds a deferral (PR #256) that processes products that were not yet loaded when their collection was swept. It does not cover products overwritten afterwards or refs added afterwards (#270), or a bundle loaded after its collection (#301); the completeness flag verified by count (#243) and Harvest preserving `ops:` metadata on overwrite (harvest#349) are the planned fixes. Until production moves to `develop`, the workaround is for the node to re-harvest the collection and for EN to run the sweepers.
+  nothing restores it. Refs added to a stamped collection later are never swept. This describes registry-sweepers `main`, which production runs (registry-sweepers #298). `develop`, which is not deployed because it uses structured metadata, adds a deferral (PR #256) that processes products that were not yet loaded when their collection was swept. It does not cover products overwritten afterwards or refs added afterwards (#270), or a bundle loaded after its collection (#301); the completeness flag verified by count (#243) and Harvest preserving `ops:` metadata on overwrite (harvest#349) are the planned fixes. Until production moves to `develop`, EN repairs the products and collections left behind with the ancestry orphan repair (#302, #307) and the bundle-link pass (#303, #304); the node does not re-harvest for that.
 - `exists` queries treat an empty array as absent, so population B is found with
   `must_not exists ancestor_refs`.
 - The stamp is a `keyword` field. The audit compares it for equality, never with a range.
@@ -230,14 +231,14 @@ than the current version, or a current stamp with no `ancestor_refs`.
 - **Meaning:** the collection is stamped with the current version and a refs document lists the product,
   but the collection's `harvest_date_time` is strictly earlier than the product's. The product was
   re-harvested (replaced) after the collection was swept, which wiped its ancestry. The sweeper does not
-  revisit stamped collections, so nothing restores it. This is not a sweeper defect.
+  revisit stamped collections, so nothing restores it. This is EN's problem, not the node's: EN stamped the collection and did not go back.
 - **Check:**
   1. `show_doc "${LIDVID}"`: no stamp or refs fields (or no `ancestor_refs`), and note its harvest time.
   2. `show_doc "${COLLECTION_LIDVID}"`: stamp is the current version, `ancestor_refs` non-empty, and an
      earlier harvest time than the product.
   3. `show_refs "${LIDVID}"`: a hit whose `collection_lidvid` equals `COLLECTION_LIDVID`.
   4. `api_member_hits "${COLLECTION_LIDVID}" "${LIDVID}"` returns `0`: the API omits the product.
-- **Action:** re-harvest the collection so it is no longer stamped, then let the sweeper run.
+- **Action:** EN runs the ancestry orphan repair. The node does not re-harvest.
 
 ### `inventory_version_mismatch` (anomalous)
 
@@ -307,7 +308,7 @@ document with `product_lid` and no `product_lidvid`.
   means the refs are stale. When the inventory does not list it, the verdict is
   `not_in_collection_inventory`; when it lists another version, `inventory_version_mismatch`. With
   `--no-inventory`, or when the inventory cannot be downloaded, every such product is `refs_missing`.
-- **Action:** re-harvest the collection from its current label and inventory so its refs are regenerated
+- **Action:** the node re-harvests the collection from its current label and inventory so Harvest regenerates its refs
   (`scripts/download_collection_files.py` fetches them). To confirm one product, run
   `audit_collection.py "${COLLECTION_LIDVID}" --diff`.
 
@@ -379,7 +380,7 @@ comparison uses it, and a `metrics.json` written before it existed loads with `{
 How each invariant relates to a known failure:
 
 - A collection stamped with empty refs that has a bundle is the sweeper collection-stamping failure: the bundle's
-  `/members` is empty. Re-harvest the collection, then re-run the sweepers.
+  `/members` is empty. EN runs the bundle-link pass.
 - A load that has stalled shows up as `inventory_version_mismatch`: the collection's inventory lists a product
   version that the node has not loaded. A growing count against the baseline fails `no_new_anomalies`.
 - `superseded_by_mapped` reads `GET /<node>-registry/_mapping` and looks for `ops:Provenance/ops:superseded_by`. A
