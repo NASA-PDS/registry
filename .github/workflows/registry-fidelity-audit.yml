@@ -1,0 +1,399 @@
+# Scheduled registry data fidelity audit
+# ======================================
+#
+# Runs the read-only audits from scripts/ against the production registry, refreshes the inputs of the
+# registry report card (docs/status/ and docs/status/fidelity/), regenerates the card, and opens or updates a
+# pull request with the results. Nothing is pushed to a protected branch directly: a person reviews and merges
+# the pull request, and the "Publish Status Pages" workflow then publishes the card.
+#
+# Credentials: a read-only registry service user, kept in the "registry-audit" GitHub environment. See
+# docs/status/fidelity/README.md, section "Automated runs", for the one-time setup.
+#
+# Exit codes of the audit scripts: 0 = ran and every check holds; 2 = ran and a regression check failed
+# (the outputs are still valid and are committed); 1 = the run itself failed (outputs are discarded and the
+# previous ones are kept).
+
+name: Registry Fidelity Audit
+
+on:
+  schedule:
+    # Mondays at 09:41 UTC
+    - cron: '41 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      nodes:
+        description: 'Nodes to audit, space-separated (blank = every node in conf/status/report_card.json)'
+        required: false
+        default: ''
+      inventories:
+        description: 'Read collection inventories (full audit). Untick for a fast check'
+        type: boolean
+        required: false
+        default: true
+      status_reports:
+        description: 'Also refresh the loading and file_ref status reports (needed for an up-to-date card)'
+        type: boolean
+        required: false
+        default: true
+      open_pr:
+        description: 'Open or update the results pull request'
+        type: boolean
+        required: false
+        default: true
+
+concurrency:
+  group: registry-fidelity-audit
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: '3.13'
+  FIDELITY_DIR: docs/status/fidelity
+  RESULTS_BRANCH: automation/registry-fidelity-audit
+
+jobs:
+  plan:
+    name: Plan the nodes to audit
+    runs-on: ubuntu-latest
+    outputs:
+      nodes: ${{ steps.nodes.outputs.nodes }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Choose nodes
+        id: nodes
+        env:
+          REQUESTED: ${{ github.event.inputs.nodes }}
+        run: |
+          if [ -n "${REQUESTED// /}" ]; then
+            nodes=$(printf '%s\n' ${REQUESTED} | jq -R . | jq -cs .)
+          else
+            nodes=$(jq -c '[.nodes[].node]' conf/status/report_card.json)
+          fi
+          echo "Auditing: ${nodes}"
+          echo "nodes=${nodes}" >> "${GITHUB_OUTPUT}"
+
+  products:
+    name: Unprocessed products (${{ matrix.node }})
+    needs: plan
+    runs-on: ubuntu-latest
+    environment: registry-audit
+    timeout-minutes: 345
+    strategy:
+      fail-fast: false
+      # Keep the load on the registry modest.
+      max-parallel: 3
+      matrix:
+        node: ${{ fromJSON(needs.plan.outputs.nodes) }}
+    env:
+      NODE: ${{ matrix.node }}
+      REQUEST_SIGNER_AWS_REGION: ${{ vars.REQUEST_SIGNER_AWS_REGION }}
+      REQUEST_SIGNER_AWS_ACCOUNT: ${{ vars.REQUEST_SIGNER_AWS_ACCOUNT }}
+      REQUEST_SIGNER_CLIENT_ID: ${{ vars.REQUEST_SIGNER_CLIENT_ID }}
+      REQUEST_SIGNER_IDENTITY_POOL_ID: ${{ vars.REQUEST_SIGNER_IDENTITY_POOL_ID }}
+      REQUEST_SIGNER_USER_POOL_ID: ${{ vars.REQUEST_SIGNER_USER_POOL_ID }}
+      REQUEST_SIGNER_AOSS_ENDPOINT: ${{ vars.REQUEST_SIGNER_AOSS_ENDPOINT }}
+      REQUEST_SIGNER_COGNITO_USER: ${{ secrets.REQUEST_SIGNER_COGNITO_USER }}
+      REQUEST_SIGNER_COGNITO_PASSWORD: ${{ secrets.REQUEST_SIGNER_COGNITO_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install the registry client
+        run: pip install -r scripts/requirements.txt
+
+      - name: Restore the inventory cache
+        uses: actions/cache@v6
+        with:
+          path: ${{ runner.temp }}/inventory-cache
+          key: inventories-${{ matrix.node }}-${{ github.run_id }}
+          restore-keys: inventories-${{ matrix.node }}-
+
+      - name: Run the audit
+        id: audit
+        env:
+          WITH_INVENTORIES: ${{ github.event_name == 'schedule' || github.event.inputs.inventories == 'true' }}
+          CACHE_DIR: ${{ runner.temp }}/inventory-cache
+        run: |
+          WORK_DIR="${RUNNER_TEMP}/audit"
+          mkdir -p "${WORK_DIR}" "${CACHE_DIR}"
+          args=(--node "${NODE}" --output-dir "${WORK_DIR}" --gzip --check
+                --history-csv "${FIDELITY_DIR}/${NODE}/history.csv")
+          # Compare against the last committed run, so only anomalies that are new since then fail the check.
+          if [ -f "${FIDELITY_DIR}/${NODE}/metrics.json" ]; then
+            cp "${FIDELITY_DIR}/${NODE}/metrics.json" "${RUNNER_TEMP}/baseline.json"
+            args+=(--baseline "${RUNNER_TEMP}/baseline.json")
+          fi
+          if [ "${WITH_INVENTORIES}" = "true" ]; then
+            args+=(--inventory-cache-dir "${CACHE_DIR}")
+          else
+            args+=(--no-inventory)
+          fi
+          set +e
+          python scripts/audit_unprocessed_products.py "${args[@]}"
+          rc=$?
+          set -e
+          echo "exit_code=${rc}" >> "${GITHUB_OUTPUT}"
+          if [ "${rc}" -eq 1 ]; then
+            echo "::error title=Audit failed (${NODE})::The audit did not complete; the previous results are kept."
+            exit 1
+          fi
+          if [ "${rc}" -eq 2 ]; then
+            echo "::warning title=Regression (${NODE})::New anomalies since the last committed run. See summary.md."
+          fi
+
+      - name: Stage the files the report card reads
+        run: |
+          WORK_DIR="${RUNNER_TEMP}/audit"
+          stage="${RUNNER_TEMP}/stage/${NODE}"
+          mkdir -p "${stage}"
+          cp "${WORK_DIR}/metrics.json" "${WORK_DIR}/summary.md" "${stage}/"
+          cp "${FIDELITY_DIR}/${NODE}/history.csv" "${stage}/"
+          echo "${{ steps.audit.outputs.exit_code }}" > "${stage}/.exit_code"
+          {
+            echo "### ${NODE}"
+            echo
+            sed -n '1,60p' "${WORK_DIR}/summary.md"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload the report card inputs
+        uses: actions/upload-artifact@v7
+        with:
+          name: fidelity-${{ matrix.node }}
+          path: ${{ runner.temp }}/stage/
+          include-hidden-files: true
+          retention-days: 14
+
+      - name: Upload the full audit output
+        uses: actions/upload-artifact@v7
+        with:
+          # Includes unprocessed_products.csv.gz (every affected product); too large to commit.
+          name: audit-output-${{ matrix.node }}
+          path: ${{ runner.temp }}/audit/
+          retention-days: 30
+
+  mappings:
+    name: Index mappings
+    needs: plan
+    runs-on: ubuntu-latest
+    environment: registry-audit
+    timeout-minutes: 30
+    env:
+      REQUEST_SIGNER_AWS_REGION: ${{ vars.REQUEST_SIGNER_AWS_REGION }}
+      REQUEST_SIGNER_AWS_ACCOUNT: ${{ vars.REQUEST_SIGNER_AWS_ACCOUNT }}
+      REQUEST_SIGNER_CLIENT_ID: ${{ vars.REQUEST_SIGNER_CLIENT_ID }}
+      REQUEST_SIGNER_IDENTITY_POOL_ID: ${{ vars.REQUEST_SIGNER_IDENTITY_POOL_ID }}
+      REQUEST_SIGNER_USER_POOL_ID: ${{ vars.REQUEST_SIGNER_USER_POOL_ID }}
+      REQUEST_SIGNER_AOSS_ENDPOINT: ${{ vars.REQUEST_SIGNER_AOSS_ENDPOINT }}
+      REQUEST_SIGNER_COGNITO_USER: ${{ secrets.REQUEST_SIGNER_COGNITO_USER }}
+      REQUEST_SIGNER_COGNITO_PASSWORD: ${{ secrets.REQUEST_SIGNER_COGNITO_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install the registry client
+        run: pip install -r scripts/requirements.txt
+
+      - name: Audit the index mappings and collect node totals
+        run: |
+          out="${RUNNER_TEMP}/stage"
+          mkdir -p "${out}/index-mappings"
+          set +e
+          python scripts/audit_index_mappings.py --check --output-dir "${out}/index-mappings"
+          rc=$?
+          set -e
+          if [ "${rc}" -eq 1 ]; then
+            echo "::error title=Mapping audit failed::The index mapping audit did not complete."
+            exit 1
+          fi
+          echo "${rc}" > "${out}/index-mappings/.exit_code"
+          if [ "${rc}" -eq 2 ]; then
+            echo "::warning title=Index mappings::Error-level mapping discrepancies found. See mapping_summary.md."
+          fi
+          python scripts/collect_node_totals.py --output "${out}/node_totals.json"
+          sed -n '1,40p' "${out}/index-mappings/mapping_summary.md" >> "${GITHUB_STEP_SUMMARY}"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: fidelity-index-mappings
+          path: ${{ runner.temp }}/stage/
+          include-hidden-files: true
+          retention-days: 14
+
+  status:
+    name: Loading and file_ref status reports
+    needs: plan
+    if: github.event_name == 'schedule' || github.event.inputs.status_reports == 'true'
+    runs-on: ubuntu-latest
+    environment: registry-audit
+    timeout-minutes: 120
+    env:
+      REQUEST_SIGNER_AWS_REGION: ${{ vars.REQUEST_SIGNER_AWS_REGION }}
+      REQUEST_SIGNER_AWS_ACCOUNT: ${{ vars.REQUEST_SIGNER_AWS_ACCOUNT }}
+      REQUEST_SIGNER_CLIENT_ID: ${{ vars.REQUEST_SIGNER_CLIENT_ID }}
+      REQUEST_SIGNER_IDENTITY_POOL_ID: ${{ vars.REQUEST_SIGNER_IDENTITY_POOL_ID }}
+      REQUEST_SIGNER_USER_POOL_ID: ${{ vars.REQUEST_SIGNER_USER_POOL_ID }}
+      REQUEST_SIGNER_AOSS_ENDPOINT: ${{ vars.REQUEST_SIGNER_AOSS_ENDPOINT }}
+      REQUEST_SIGNER_COGNITO_USER: ${{ secrets.REQUEST_SIGNER_COGNITO_USER }}
+      REQUEST_SIGNER_COGNITO_PASSWORD: ${{ secrets.REQUEST_SIGNER_COGNITO_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install the registry client
+        run: pip install -r scripts/requirements.txt
+
+      - name: Generate the status reports (no commit)
+        run: python scripts/generate_registry_status_reports.py --no-commit
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: status-reports
+          # Everything in docs/status/ except the fidelity inputs, which the other jobs produce.
+          path: |
+            docs/status/*.csv
+            docs/status/*.html
+            docs/status/README.md
+          retention-days: 14
+
+  report:
+    name: Report card and results pull request
+    needs: [plan, products, mappings, status]
+    # Run even when a node failed or the status reports were skipped: the card is built from what did complete.
+    if: always() && needs.plan.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Download the fidelity results
+        uses: actions/download-artifact@v8
+        with:
+          pattern: fidelity-*
+          merge-multiple: true
+          path: ${{ env.FIDELITY_DIR }}
+
+      - name: Download the status reports
+        if: needs.status.result == 'success'
+        uses: actions/download-artifact@v8
+        with:
+          name: status-reports
+          path: docs/status
+
+      - name: Collect the check results
+        id: checks
+        run: |
+          regressions=""
+          for f in $(find "${FIDELITY_DIR}" -name .exit_code); do
+            if [ "$(cat "${f}")" = "2" ]; then
+              regressions="${regressions} $(basename "$(dirname "${f}")")"
+            fi
+            rm -f "${f}"
+          done
+          regressions="${regressions# }"
+          echo "regressions=${regressions}" >> "${GITHUB_OUTPUT}"
+          echo "Regressions: ${regressions:-none}"
+
+      - name: Roll up and regenerate the report card
+        run: |
+          python scripts/audit_rollup.py --audits-dir "${FIDELITY_DIR}" --output "${FIDELITY_DIR}/rollup.md"
+          python scripts/generate_report_card.py
+          {
+            echo "## Registry report card"
+            echo
+            cat docs/status/report_card.md
+            echo
+            echo "## Roll-up by owner"
+            echo
+            cat "${FIDELITY_DIR}/rollup.md"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Open or update the results pull request
+        if: github.event_name == 'schedule' || github.event.inputs.open_pr == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REGRESSIONS: ${{ steps.checks.outputs.regressions }}
+          NODE_RESULT: ${{ needs.products.result }}
+          MAPPING_RESULT: ${{ needs.mappings.result }}
+          STATUS_RESULT: ${{ needs.status.result }}
+          BASE: ${{ github.ref_name }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B "${RESULTS_BRANCH}"
+          git add docs/status
+          if git diff --cached --quiet; then
+            echo "No changes to the status files."
+            exit 0
+          fi
+          today=$(date -u +%F)
+          git commit -m "Registry fidelity audit results ${today}"
+          git push --force origin "${RESULTS_BRANCH}"
+
+          body_file="${RUNNER_TEMP}/pr_body.md"
+          {
+            echo "Automated results of the [registry fidelity audit](${RUN_URL}) of ${today}."
+            echo
+            echo "| Job | Result |"
+            echo "|---|---|"
+            echo "| Unprocessed products (per node) | ${NODE_RESULT} |"
+            echo "| Index mappings | ${MAPPING_RESULT} |"
+            echo "| Status reports | ${STATUS_RESULT} |"
+            echo
+            echo "**New anomalies since the last committed run:** ${REGRESSIONS:-none}"
+            echo
+            echo "## Report card"
+            echo
+            cat docs/status/report_card.md
+            echo
+            echo "## Roll-up by owner"
+            echo
+            cat "${FIDELITY_DIR}/rollup.md"
+            echo
+            echo "Merging publishes the report card and accepts these results as the baseline for the next run."
+            echo "The per-product CSVs are in the run's \`audit-output-<node>\` artifacts (kept 30 days)."
+          } > "${body_file}"
+
+          title="Registry fidelity audit results (${today})"
+          number=$(gh api "repos/${GITHUB_REPOSITORY}/pulls?head=${GITHUB_REPOSITORY_OWNER}:${RESULTS_BRANCH}&state=open" \
+                     --jq '.[0].number // empty')
+          if [ -n "${number}" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/pulls/${number}" -f title="${title}" -F body=@"${body_file}" > /dev/null
+            echo "Updated pull request #${number}"
+          else
+            gh api "repos/${GITHUB_REPOSITORY}/pulls" -f title="${title}" -f head="${RESULTS_BRANCH}" \
+              -f base="${BASE}" -F body=@"${body_file}" --jq '"Opened pull request #\(.number)"'
+          fi
+
+      - name: Fail on regressions
+        if: steps.checks.outputs.regressions != ''
+        env:
+          REGRESSIONS: ${{ steps.checks.outputs.regressions }}
+        run: |
+          echo "::error title=Registry fidelity regressions::New anomalies or mapping errors: ${REGRESSIONS}"
+          exit 1
