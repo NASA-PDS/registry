@@ -45,3 +45,58 @@ done
 "${PYTHON}" scripts/collect_node_totals.py --output "${FIDELITY_DIR}/node_totals.json"
 "${PYTHON}" scripts/generate_report_card.py
 ```
+
+## Automated runs
+
+`.github/workflows/registry-fidelity-audit.yml` runs the refresh above every Monday and on demand (Actions →
+Registry Fidelity Audit → Run workflow). It:
+
+1. audits each node with `audit_unprocessed_products.py --check --baseline <last committed metrics.json>`,
+   three nodes at a time, reading collection inventories (cached between runs) and appending one row per run to
+   `<node>/history.csv`;
+2. runs `audit_index_mappings.py --check` and `collect_node_totals.py`;
+3. runs `generate_registry_status_reports.py --no-commit`, because the Loading and File paths scores and the
+   staleness date come from those reports;
+4. rolls the nodes up into `rollup.md`, regenerates the report card, and opens or updates one pull request from
+   the `automation/registry-fidelity-audit` branch. Merging it publishes the card and makes these results the
+   baseline for the next run.
+
+The run fails, after the pull request is updated, when a node has anomalies that are new since the last
+committed run or the mapping audit finds an error-level discrepancy. A node whose audit cannot complete (exit
+code 1) keeps its previous files, so its card turns stale rather than wrong. The per-product CSVs and the full
+audit output are kept as run artifacts (`audit-output-<node>`) for 30 days; pass one as `--previous-csv` for a
+new/resolved/persisting comparison by hand.
+
+Manual runs can be limited to some nodes (`nodes: "atm geo"`), skip the inventories for a fast check, skip the
+status reports, or skip the pull request.
+
+### One-time setup
+
+1. **Read-only service user.** Create a registry Cognito user for automation (not a person's account), in a
+   group whose identity-pool role can only read: in the OpenSearch Serverless data access policy grant
+   `aoss:DescribeCollectionItems` on the registry collection and only `aoss:ReadDocument` and
+   `aoss:DescribeIndex` on the registry indices. The audits issue `_search`, `_count` and
+   `GET /<index>/_mapping` only, so no write permission is needed. Do not reuse the harvest or sweepers users.
+2. **GitHub environment.** Create the `registry-audit` environment (Settings → Environments), limit its
+   deployment branches to `develop`, and add:
+
+   | Kind | Name |
+   |---|---|
+   | Secret | `REQUEST_SIGNER_COGNITO_USER`, `REQUEST_SIGNER_COGNITO_PASSWORD` |
+   | Variable | `REQUEST_SIGNER_AWS_REGION`, `REQUEST_SIGNER_AWS_ACCOUNT`, `REQUEST_SIGNER_CLIENT_ID`, `REQUEST_SIGNER_IDENTITY_POOL_ID`, `REQUEST_SIGNER_USER_POOL_ID`, `REQUEST_SIGNER_AOSS_ENDPOINT` |
+
+   These are the same values as in a personal `~/.pds/.registry-client`, with the service user's name and
+   password.
+3. **Pull requests from Actions.** Enable "Allow GitHub Actions to create and approve pull requests" (Settings →
+   Actions → General → Workflow permissions) so the workflow can open the results pull request.
+4. **Retire manual schedules.** If `generate_registry_status_reports.py --commit` runs from someone's machine on
+   a schedule, stop it once this workflow is merged, or the two will race on `docs/status/`.
+
+### Limits
+
+- GitHub-hosted runners stop a job after 6 hours. Each node job allows 345 minutes; if the full ATM audit with
+  inventories needs longer, run ATM on a self-hosted runner or with `--no-inventory`.
+- The runners reach the registry over the public internet, so the collection's network policy must allow the
+  public endpoint. If personal runs only work from the JPL network or VPN, the jobs need a self-hosted runner.
+- A baseline must come from the same nodes and ancestry version. After a change to `CURRENT_ANCESTRY_VERSION`,
+  delete the affected `<node>/metrics.json` in a commit so the next run starts without a baseline.
